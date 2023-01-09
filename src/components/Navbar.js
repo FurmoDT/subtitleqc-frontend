@@ -7,9 +7,11 @@ import {
     MDBNavbarLink,
     MDBNavbarNav,
 } from 'mdb-react-ui-kit';
-import {Outlet} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
+import {useCallback} from "react";
 
 export default function Navbar() {
+    const navigate = useNavigate()
     const public_url = process.env.REACT_APP_PUBLIC_URL
     const basename = public_url.substring(public_url.lastIndexOf('/'))
     return <div>
@@ -19,10 +21,14 @@ export default function Navbar() {
                 <MDBCollapse navbar>
                     <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
                         <MDBNavbarItem>
-                            <MDBNavbarLink href={`${basename}/production`}>Production</MDBNavbarLink>
+                            <MDBNavbarLink
+                                onClick={useCallback(() => navigate('/production', {replace: true}),
+                                    [navigate])}>Production</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink href={`${basename}/qc`}>QC</MDBNavbarLink>
+                            <MDBNavbarLink
+                                onClick={useCallback(() => navigate('/qc', {replace: true}),
+                                    [navigate])}>QC</MDBNavbarLink>
                         </MDBNavbarItem>
                     </MDBNavbarNav>
                 </MDBCollapse>

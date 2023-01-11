@@ -24,11 +24,14 @@ const TimelineWindow = () => {
                 }),
             ]
         });
+        wavesurfer.on('loading', function (e) {
+            if (buttonRef.current.style.display === '' && e === 0) buttonRef.current.style.display = 'none'
+        })
         wavesurfer.on('ready', function () {
             wavesurfer.play()
         });
     }, []);
-    return <div>
+    return <div style={{width: '50%'}}>
         <div ref={waveformRef}/>
         <div ref={timelineRef}/>
         <MDBBtn onClick={() => {

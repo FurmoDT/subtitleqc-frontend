@@ -6,10 +6,10 @@ const Production = () => {
     return <>
         <div style={{flexDirection: "row", display: 'flex'}}>
             <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>
-                <div style={{flexDirection: 'column', display: 'flex', width: '30%'}}>
+                <div style={{flexDirection: 'column', display: 'flex'}}>
                     <MediaWindow/>
                 </div>
-                <div style={{flexDirection: 'column', display: 'flex', width: '70%', alignItems: 'center'}}>
+                <div style={{flexDirection: 'column', display: 'flex', alignItems: 'center'}}>
                     <LanguageWindow/>
                     <TimelineWindow/>
                 </div>

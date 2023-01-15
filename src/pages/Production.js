@@ -14,13 +14,13 @@ const Production = () => {
     return <>
         <MenuToolbar/>
         <div ref={dropzone}>
-            <div style={{flexDirection: "row", display: 'flex', padding: '20px'}}>
-                <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>
+            <div style={{flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px'}}>
+                <div style={{display: 'flex', justifyContent: 'center'}}>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
                         <MediaWindow/>
                         <InformationWindow/>
                     </div>
-                    <div style={{flexDirection: 'column', display: 'flex', alignItems: 'center'}}>
+                    <div style={{flexDirection: 'column', display: 'flex'}}>
                         <LanguageWindow/>
                         <TimelineWindow/>
                     </div>

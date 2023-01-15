@@ -31,7 +31,7 @@ const TimelineWindow = () => {
             wavesurfer.play()
         });
     }, []);
-    return <div style={{width: '50%'}}>
+    return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>
         <div ref={waveformRef}/>
         <div ref={timelineRef}/>
         <MDBBtn onClick={() => {

@@ -1,5 +1,5 @@
 import WaveSurfer from 'wavesurfer.js';
-import {useEffect, useRef} from "react";
+import {useCallback, useEffect, useRef} from "react";
 import {MDBBtn} from "mdb-react-ui-kit";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 
@@ -10,7 +10,13 @@ const TimelineWindow = (props) => {
     const waveformRef = useRef(null);
     const timelineRef = useRef(null);
 
+    const handleRef = useCallback((node) => {
+        waveformRef.current = node
+        props.timelineRef.current = node
+    }, [props.timelineRef])
+
     useEffect(() => {
+        buttonRef.current.style.display = ''
         if (wavesurfer) wavesurfer.destroy()
         wavesurfer = WaveSurfer.create({
             container: waveformRef.current,
@@ -30,9 +36,9 @@ const TimelineWindow = (props) => {
         wavesurfer.on('ready', function () {
             wavesurfer.play()
         });
-    }, []);
+    }, [props.mediaFile]);
     return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>
-        <div ref={waveformRef}/>
+        <div ref={handleRef}/>
         <div ref={timelineRef}/>
         <MDBBtn onClick={() => {
             wavesurfer.playPause()

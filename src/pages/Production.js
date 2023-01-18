@@ -27,12 +27,12 @@ const Production = () => {
             <div style={{flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px'}}>
                 <div style={{display: 'flex', justifyContent: 'center'}}>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
-                        <MediaWindow playerRef={playerRef} url={mediaFile}/>
+                        <MediaWindow playerRef={playerRef} timelineRef={timelineRef} mediaFile={mediaFile}/>
                         <InformationWindow/>
                     </div>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
                         <LanguageWindow/>
-                        <TimelineWindow timelineRef={timelineRef}/>
+                        <TimelineWindow timelineRef={timelineRef} playerRef={playerRef} mediaFile={mediaFile}/>
                     </div>
                 </div>
             </div>

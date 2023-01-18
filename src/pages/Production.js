@@ -3,26 +3,36 @@ import LanguageWindow from "../components/production/LanguageWindow";
 import MediaWindow from "../components/production/MediaWindow";
 import MenuToolbar from "../components/production/MenuToolbar";
 import TimelineWindow from "../components/production/TimelineWindow";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {setDropzone} from "../utils/setDropzone";
 
 const Production = () => {
-    const dropzone = useRef(null)
+    const dropzoneRef = useRef(null)
+    const playerRef = useRef(null)
+    const timelineRef = useRef(null)
+    const [mediaFile, setMediaFile] = useState(null)
+    const [languageFile, setLanguageFile] = useState(null)
     useEffect(() => {
-        setDropzone(dropzone.current)
-    }, [dropzone])
+        setDropzone({
+            element: dropzoneRef.current, setMediaFile: (value) => {
+                setMediaFile(value)
+            }, setLanguageFile: (value) => {
+                setLanguageFile(value)
+            }
+        })
+    }, [dropzoneRef])
     return <>
         <MenuToolbar/>
-        <div ref={dropzone}>
+        <div ref={dropzoneRef}>
             <div style={{flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px'}}>
                 <div style={{display: 'flex', justifyContent: 'center'}}>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
-                        <MediaWindow/>
+                        <MediaWindow playerRef={playerRef} url={mediaFile}/>
                         <InformationWindow/>
                     </div>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
                         <LanguageWindow/>
-                        <TimelineWindow/>
+                        <TimelineWindow timelineRef={timelineRef}/>
                     </div>
                 </div>
             </div>

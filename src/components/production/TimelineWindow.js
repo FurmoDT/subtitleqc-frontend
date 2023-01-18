@@ -5,7 +5,7 @@ import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 
 let wavesurfer
 
-const TimelineWindow = () => {
+const TimelineWindow = (props) => {
     const buttonRef = useRef(null);
     const waveformRef = useRef(null);
     const timelineRef = useRef(null);

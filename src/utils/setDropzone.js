@@ -12,7 +12,7 @@ const dragStyle = {
     borderColor: '#2196f3',
 };
 
-export const setDropzone = (element) => {
+export const setDropzone = (props) => {
     let counter = 0
     const handleDragEnter = (e) => {
         e.preventDefault();
@@ -22,25 +22,32 @@ export const setDropzone = (element) => {
     const handleDragOver = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        Object.assign(element.style, dragStyle);
+        Object.assign(props.element.style, dragStyle);
     };
     const handleDragLeave = (e) => {
         e.preventDefault()
         e.stopPropagation();
         counter--
-        if (!counter) Object.assign(element.style, baseStyle);
+        if (!counter) Object.assign(props.element.style, baseStyle);
     };
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
         counter = 0
-        Object.assign(element.style, baseStyle);
+        Object.assign(props.element.style, baseStyle);
         const files = e.dataTransfer.files;
-        console.log(files);
+        Array.from(files).forEach((file) => {
+            const fileFormat = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
+            if (['.mp4'].includes(fileFormat)) {
+                props.setMediaFile(URL.createObjectURL(file))
+            } else if (['.fsp', '.srt'].includes(fileFormat)) {
+                props.setLanguageFile(file)
+            }
+        })
     };
-    Object.assign(element.style, baseStyle);
-    element.addEventListener('dragenter', handleDragEnter)
-    element.addEventListener('dragover', handleDragOver)
-    element.addEventListener('dragleave', handleDragLeave)
-    element.addEventListener('drop', handleDrop)
+    Object.assign(props.element.style, baseStyle);
+    props.element.addEventListener('dragenter', handleDragEnter)
+    props.element.addEventListener('dragover', handleDragOver)
+    props.element.addEventListener('dragleave', handleDragLeave)
+    props.element.addEventListener('drop', handleDrop)
 }

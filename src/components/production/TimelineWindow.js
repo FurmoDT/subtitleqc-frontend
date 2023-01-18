@@ -34,7 +34,7 @@ const TimelineWindow = (props) => {
             if (buttonRef.current.style.display === '' && e === 0) buttonRef.current.style.display = 'none'
         })
         wavesurfer.on('ready', function () {
-            wavesurfer.play()
+            wavesurfer.setMute(true)
         });
     }, [props.mediaFile]);
     return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>

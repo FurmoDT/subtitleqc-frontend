@@ -30,7 +30,7 @@ const TimelineWindow = (props) => {
         })
         wavesurfer.on('ready', function () {
             wavesurfer.setMute(true)
-            props.timelineRef.current = wavesurfer
+            props.waveformRef.current = wavesurfer
         });
         wavesurfer.on('seek', () => {
             console.log('seek')
@@ -41,7 +41,7 @@ const TimelineWindow = (props) => {
         wavesurfer.on('play', () => {
             console.log('play')
         })
-    }, [props.mediaFile, props.timelineRef]);
+    }, [props.mediaFile, props.playerRef, props.waveformRef]);
     return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>
         <div ref={waveformRef}/>
         <div ref={timelineRef}/>

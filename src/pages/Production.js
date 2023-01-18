@@ -9,7 +9,7 @@ import {setDropzone} from "../utils/setDropzone";
 const Production = () => {
     const dropzoneRef = useRef(null)
     const playerRef = useRef(null)
-    const timelineRef = useRef(null)
+    const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
     useEffect(() => {
@@ -27,12 +27,12 @@ const Production = () => {
             <div style={{flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px'}}>
                 <div style={{display: 'flex', justifyContent: 'center'}}>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
-                        <MediaWindow playerRef={playerRef} timelineRef={timelineRef} mediaFile={mediaFile}/>
+                        <MediaWindow playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}/>
                         <InformationWindow/>
                     </div>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
                         <LanguageWindow/>
-                        <TimelineWindow timelineRef={timelineRef} playerRef={playerRef} mediaFile={mediaFile}/>
+                        <TimelineWindow waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}/>
                     </div>
                 </div>
             </div>

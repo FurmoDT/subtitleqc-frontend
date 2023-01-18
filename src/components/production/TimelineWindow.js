@@ -36,10 +36,10 @@ const TimelineWindow = (props) => {
             console.log('seek')
         })
         wavesurfer.on('pause', () => {
-            console.log('pause')
+            props.playerRef.current.getInternalPlayer().pause()
         })
         wavesurfer.on('play', () => {
-            console.log('play')
+            props.playerRef.current.getInternalPlayer().play()
         })
     }, [props.mediaFile, props.playerRef, props.waveformRef]);
     return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>

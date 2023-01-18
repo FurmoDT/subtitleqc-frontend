@@ -5,13 +5,13 @@ import {useCallback} from "react";
 const MediaWindow = (props) => {
     const onSeek = useCallback(() => {
         console.log('onSeek')
-    }, [])
+    }, [props.waveformRef])
     const onPause = useCallback(() => {
-        console.log('onPause')
-    }, [])
+        if (props.waveformRef.current) props.waveformRef.current.pause()
+    }, [props.waveformRef])
     const onPlay = useCallback(() => {
-        console.log('onPlay')
-    }, [])
+        if (props.waveformRef.current) props.waveformRef.current.play()
+    }, [props.waveformRef])
     return <div style={{
         width: '100%', height: 300, justifyContent: 'center', alignItems: 'end', display: 'flex', minWidth: 400
     }}>

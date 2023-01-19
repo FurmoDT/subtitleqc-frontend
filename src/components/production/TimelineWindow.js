@@ -11,8 +11,10 @@ const TimelineWindow = (props) => {
     const timelineRef = useRef(null);
 
     useEffect(() => {
-        buttonRef.current.style.display = ''
-        if (wavesurfer) wavesurfer.destroy()
+        if (wavesurfer) {
+            wavesurfer.destroy()
+            if (!wavesurfer.isReady) buttonRef.current.style.display = ''
+        }
         wavesurfer = WaveSurfer.create({
             container: waveformRef.current,
             waveColor: 'violet',
@@ -45,10 +47,10 @@ const TimelineWindow = (props) => {
     return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>
         <div ref={waveformRef}/>
         <div ref={timelineRef}/>
-        <MDBBtn onClick={() => {
-            wavesurfer.playPause()
+        <MDBBtn disabled={!props.mediaFile} onClick={() => {
+            wavesurfer.isPlaying() ? wavesurfer.pause() : wavesurfer.play()
         }}>play/pause</MDBBtn>
-        <MDBBtn ref={buttonRef} onClick={() => {
+        <MDBBtn ref={buttonRef} disabled={!props.mediaFile} onClick={() => {
             wavesurfer.load(document.querySelector('video'))
         }}>Generate Waveform</MDBBtn>
     </div>

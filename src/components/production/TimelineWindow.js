@@ -21,11 +21,9 @@ const TimelineWindow = (props) => {
             progressColor: 'purple',
             cursorColor: 'purple',
             scrollParent: true,
-            plugins: [
-                TimelinePlugin.create({
-                    container: timelineRef.current
-                }),
-            ]
+            plugins: [TimelinePlugin.create({
+                container: timelineRef.current
+            }),]
         });
         wavesurfer.on('loading', function (e) {
             if (buttonRef.current.style.display === '' && e >= 0) buttonRef.current.style.display = 'none'

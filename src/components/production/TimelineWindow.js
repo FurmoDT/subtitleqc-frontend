@@ -28,28 +28,25 @@ const TimelineWindow = (props) => {
             ]
         });
         wavesurfer.on('loading', function (e) {
-            if (buttonRef.current.style.display === '' && e === 0) buttonRef.current.style.display = 'none'
+            if (buttonRef.current.style.display === '' && e >= 0) buttonRef.current.style.display = 'none'
         })
         wavesurfer.on('ready', function () {
             wavesurfer.setMute(true)
             props.waveformRef.current = wavesurfer
         });
         wavesurfer.on('seek', () => {
-            console.log('seek')
+            if (!wavesurfer.isReady) return
+            if (props.isVideoSeeking.current) {
+                props.isVideoSeeking.current = false
+                return
+            }
+            props.isWaveSeeking.current = true
+            props.playerRef.current.seekTo(10)
         })
-        wavesurfer.on('pause', () => {
-            props.playerRef.current.getInternalPlayer().pause()
-        })
-        wavesurfer.on('play', () => {
-            props.playerRef.current.getInternalPlayer().play()
-        })
-    }, [props.mediaFile, props.playerRef, props.waveformRef]);
+    }, [props.mediaFile, props.playerRef, props.waveformRef, props.isVideoSeeking, props.isWaveSeeking]);
     return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>
         <div ref={waveformRef}/>
         <div ref={timelineRef}/>
-        <MDBBtn disabled={!props.mediaFile} onClick={() => {
-            wavesurfer.isPlaying() ? wavesurfer.pause() : wavesurfer.play()
-        }}>play/pause</MDBBtn>
         <MDBBtn ref={buttonRef} disabled={!props.mediaFile} onClick={() => {
             wavesurfer.load(document.querySelector('video'))
         }}>Generate Waveform</MDBBtn>

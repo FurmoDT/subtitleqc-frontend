@@ -4,8 +4,13 @@ import {useCallback} from "react";
 
 const MediaWindow = (props) => {
     const onSeek = useCallback(() => {
-        console.log('onSeek')
-    }, [props.waveformRef])
+        if (props.isWaveSeeking.current) {
+            props.isWaveSeeking.current = false
+            return
+        }
+        props.isVideoSeeking.current = true
+        props.waveformRef.current.seekTo(0.1)
+    }, [props.waveformRef, props.isVideoSeeking, props.isWaveSeeking])
     const onPause = useCallback(() => {
         if (props.waveformRef.current) props.waveformRef.current.pause()
     }, [props.waveformRef])

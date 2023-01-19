@@ -12,6 +12,8 @@ const Production = () => {
     const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
+    const isVideoSeeking = useRef(false)
+    const isWaveSeeking = useRef(false)
     useEffect(() => {
         setDropzone({
             element: dropzoneRef.current, setMediaFile: (value) => {
@@ -27,12 +29,15 @@ const Production = () => {
             <div style={{flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px'}}>
                 <div style={{display: 'flex', justifyContent: 'center'}}>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
-                        <MediaWindow playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}/>
+                        <MediaWindow playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
+                                     isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}
+                        />
                         <InformationWindow/>
                     </div>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
                         <LanguageWindow/>
-                        <TimelineWindow waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}/>
+                        <TimelineWindow waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}
+                                        isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                     </div>
                 </div>
             </div>

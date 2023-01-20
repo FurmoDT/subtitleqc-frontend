@@ -39,7 +39,7 @@ const TimelineWindow = (props) => {
                 return
             }
             props.isWaveSeeking.current = true
-            props.playerRef.current.seekTo(10)
+            props.playerRef.current.seekTo(wavesurfer.getCurrentTime())
         })
     }, [props.mediaFile, props.playerRef, props.waveformRef, props.isVideoSeeking, props.isWaveSeeking]);
     return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>

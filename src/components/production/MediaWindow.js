@@ -9,7 +9,7 @@ const MediaWindow = (props) => {
             return
         }
         props.isVideoSeeking.current = true
-        props.waveformRef.current.seekAndCenter(0.1)
+        props.waveformRef.current.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
     }, [props.waveformRef, props.isVideoSeeking, props.isWaveSeeking])
     const onPause = useCallback(() => {
         if (props.waveformRef.current) props.waveformRef.current.pause()

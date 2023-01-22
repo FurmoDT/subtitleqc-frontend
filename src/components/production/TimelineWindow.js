@@ -39,10 +39,12 @@ const TimelineWindow = (props) => {
                 return
             }
             props.isWaveSeeking.current = true
+            props.playerRef.current.getInternalPlayer().pause()
             props.playerRef.current.seekTo(wavesurfer.getCurrentTime())
         })
     }, [props.mediaFile, props.playerRef, props.waveformRef, props.isVideoSeeking, props.isWaveSeeking]);
-    return <div style={{borderStyle: 'solid', borderWidth: 'thin'}}>
+    return <div
+        style={{borderStyle: 'solid', borderWidth: 'thin', width: props.size.width, height: props.size.height * 0.2}}>
         <div ref={waveformRef}/>
         <div ref={timelineRef}/>
         <MDBBtn ref={buttonRef} disabled={!props.mediaFile} onClick={() => {

@@ -27,12 +27,12 @@ const LanguageWindow = (props) => {
             colHeaders: ['TC_IN', "TC_OUT", "한국어", "영어(미국)"],
             rowHeaders: true,
             stretchH: 'last',
-            width: 1200,
-            height: 600,
+            width: props.size.width,
+            height: props.size.height * 0.8,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             manualColumnResize: true,
         })
-    }, []);
+    }, [props.size]);
 
     return <div style={{borderStyle: 'solid', borderWidth: 'thin'}} ref={containerMain}/>
 }

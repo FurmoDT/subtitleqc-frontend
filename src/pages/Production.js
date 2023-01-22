@@ -5,6 +5,8 @@ import MenuToolbar from "../components/production/MenuToolbar";
 import TimelineWindow from "../components/production/TimelineWindow";
 import {useEffect, useRef, useState} from "react";
 import {setDropzone} from "../utils/setDropzone";
+import Splitter from "m-react-splitters";
+import "../css/Splitter.css"
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -26,12 +28,14 @@ const Production = () => {
     return <>
         <MenuToolbar/>
         <div ref={dropzoneRef}>
-            <div style={{flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px'}}>
-                <div style={{display: 'flex', justifyContent: 'center'}}>
+            <div style={{
+                flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px', height: '90vh'
+            }}>
+                <Splitter position={'vertical'} primaryPaneWidth={'40%'}
+                          primaryPaneMaxWidth={'60%'} primaryPaneMinWidth={'20%'}>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
                         <MediaWindow playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
-                                     isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}
-                        />
+                                     isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                         <InformationWindow/>
                     </div>
                     <div style={{flexDirection: 'column', display: 'flex'}}>
@@ -39,7 +43,7 @@ const Production = () => {
                         <TimelineWindow waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}
                                         isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                     </div>
-                </div>
+                </Splitter>
             </div>
         </div>
     </>

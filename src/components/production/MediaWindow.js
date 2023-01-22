@@ -18,7 +18,7 @@ const MediaWindow = (props) => {
         if (props.waveformRef.current) props.waveformRef.current.play()
     }, [props.waveformRef])
     return <div style={{
-        width: '100%', height: 300, justifyContent: 'center', alignItems: 'end', display: 'flex', minWidth: 400,
+        width: '100%', height: 300, justifyContent: 'center', alignItems: 'end', display: 'flex',
         borderStyle: 'solid', borderWidth: 'thin'
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}

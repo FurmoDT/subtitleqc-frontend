@@ -32,7 +32,7 @@ const Production = () => {
                 flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px', height: '90vh'
             }}>
                 <Splitter position={'vertical'} primaryPaneWidth={'30%'}
-                          primaryPaneMaxWidth={'60%'} primaryPaneMinWidth={'20%'}>
+                          primaryPaneMaxWidth={'60%'} primaryPaneMinWidth={'300px'}>
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'}>
                             <MediaWindow playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}

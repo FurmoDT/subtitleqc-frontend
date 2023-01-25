@@ -34,7 +34,7 @@ const LanguageWindow = (props) => {
         })
     }, [props.size]);
 
-    return <div style={{borderStyle: 'solid', borderWidth: 'thin'}} ref={containerMain}/>
+    return <div ref={containerMain}/>
 }
 
 export default LanguageWindow

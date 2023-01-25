@@ -31,7 +31,7 @@ const Production = () => {
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
                 const {width, height} = entry.contentRect;
-                setRightRefSize({width: width - 10, height: height})
+                setRightRefSize({width: width, height: height})
             }
         });
         observer.observe(rightRef.current);
@@ -41,24 +41,27 @@ const Production = () => {
     }, []);
     return <>
         <MenuToolbar/>
-        <div ref={dropzoneRef}>
-            <div style={{
-                flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
-                width: '100vw', height: '90vh', position: 'relative'
-            }}>
+        <div ref={dropzoneRef} style={{
+            flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
+            width: '100vw', height: '90vh', position: 'relative'
+        }}>
+            <div id={'splitter-wrapper'} style={{width: '100%', height: '100%', position: 'relative'}}>
                 <Splitter position={'vertical'} primaryPaneWidth={'30%'}
                           primaryPaneMaxWidth={'60%'} primaryPaneMinWidth={'300px'}>
-                    <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%', zIndex: 1}}>
+                    <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'}>
                             <MediaWindow playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
                                          isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                             <InformationWindow/>
                         </Splitter>
                     </div>
-                    <div ref={rightRef}
-                         style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%', zIndex: 2}}>
+                    <div ref={rightRef} style={{
+                        flexDirection: 'column', display: 'flex', width: '100%', height: '100%',
+                        borderStyle: 'solid', borderWidth: 'thin'
+                    }}>
                         <LanguageWindow size={rightRefSize}/>
-                        <TimelineWindow size={rightRefSize} waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}
+                        <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
+                        <TimelineWindow waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}
                                         isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                     </div>
                 </Splitter>

@@ -46,8 +46,8 @@ const Production = () => {
             width: '100vw', height: '90vh', position: 'relative'
         }}>
             <div id={'splitter-wrapper'} style={{width: '100%', height: '100%', position: 'relative'}}>
-                <Splitter position={'vertical'} primaryPaneWidth={'30%'}
-                          primaryPaneMaxWidth={'60%'} primaryPaneMinWidth={'300px'}>
+                <Splitter position={'vertical'} primaryPaneWidth={'500px'}
+                          primaryPaneMaxWidth={'100%'} primaryPaneMinWidth={0}>
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'}>
                             <MediaWindow playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}

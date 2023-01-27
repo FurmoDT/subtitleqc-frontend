@@ -10,10 +10,24 @@ const TimelineWindow = (props) => {
     const waveformRef = useRef(null);
     const timelineRef = useRef(null);
 
+    const onWheel = (e) => {
+        if (props.waveformRef.current) {
+            if (e.deltaY > 0) {
+                props.waveformRef.current.zoom()
+            }
+            else {
+                props.waveformRef.current.zoom()
+            }
+        }
+    }
+
     useEffect(() => {
         if (wavesurfer) {
             wavesurfer.destroy()
-            if (!wavesurfer.isReady) buttonRef.current.style.display = ''
+            if (!wavesurfer.isReady) {
+                buttonRef.current.style.display = ''
+                if (props.waveformRef.current) props.waveformRef.current = null
+            }
         }
         wavesurfer = WaveSurfer.create({
             container: waveformRef.current,
@@ -43,7 +57,7 @@ const TimelineWindow = (props) => {
             props.playerRef.current.seekTo(wavesurfer.getCurrentTime())
         })
     }, [props.mediaFile, props.playerRef, props.waveformRef, props.isVideoSeeking, props.isWaveSeeking]);
-    return <div style={{width: '100%', height: 150}}>
+    return <div style={{width: '100%', height: 150}} onWheel={onWheel}>
         <MDBBtn ref={buttonRef} disabled={!props.mediaFile} onClick={() => {
             wavesurfer.load(document.querySelector('video'))
         }}>Generate Waveform</MDBBtn>

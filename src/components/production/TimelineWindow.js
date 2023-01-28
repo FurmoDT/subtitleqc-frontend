@@ -13,7 +13,7 @@ function formatTimeCallback(seconds, pxPerSec) {
     seconds = seconds % 60;
 
     // fill up seconds with zeroes
-    let secondsStr = Math.round(seconds).toString();
+    let secondsStr
     if (pxPerSec >= 150) {
         secondsStr = seconds.toFixed(3);
     } else {
@@ -39,19 +39,8 @@ function timeInterval(pxPerSec) {
     return retval;
 }
 
-/**
- * Return the cadence of notches that get labels in the primary color.
- * EG, return 2 if every 2nd notch should be labeled,
- * return 10 if every 10th notch should be labeled, etc.
- *
- * Note that if you override the default function, you'll almost
- * certainly want to override formatTimeCallback, primaryLabelInterval
- * and/or secondaryLabelInterval so they all work together.
- *
- * @param pxPerSec
- */
 function primaryLabelInterval(pxPerSec) {
-    var retval = 1;
+    let retval
     if (pxPerSec >= 250) {
         retval = 10;
     } else if (pxPerSec >= 100) {
@@ -89,6 +78,7 @@ const TimelineWindow = (props) => {
         }
         wavesurfer = WaveSurfer.create({
             container: waveformRef.current,
+            autoCenter: false,
             waveColor: 'violet',
             progressColor: 'purple',
             cursorColor: 'purple',

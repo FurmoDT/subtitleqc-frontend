@@ -4,6 +4,63 @@ import {MDBBtn} from "mdb-react-ui-kit";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 
 let wavesurfer
+let pxPerSec = 300
+
+function formatTimeCallback(seconds, pxPerSec) {
+    seconds = Number(seconds);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(seconds / 60 / 60);
+    seconds = seconds % 60;
+
+    // fill up seconds with zeroes
+    let secondsStr = Math.round(seconds).toString();
+    if (pxPerSec >= 150) {
+        secondsStr = seconds.toFixed(3);
+    } else {
+        secondsStr = seconds.toFixed(1);
+    }
+    let minutesStr = minutes < 10 ? '0' + minutes.toString() : minutes
+    let hoursStr = hours < 10 ? '0' + hours.toString() : hours
+
+    if (seconds < 10) secondsStr = '0' + secondsStr;
+
+    return `${hoursStr}:${minutesStr}:${secondsStr}`;
+}
+
+function timeInterval(pxPerSec) {
+    let retval = 1;
+    if (pxPerSec >= 250) {
+        retval = 0.1;
+    } else if (pxPerSec >= 100) {
+        retval = 0.25;
+    } else {
+        retval = 1;
+    }
+    return retval;
+}
+
+/**
+ * Return the cadence of notches that get labels in the primary color.
+ * EG, return 2 if every 2nd notch should be labeled,
+ * return 10 if every 10th notch should be labeled, etc.
+ *
+ * Note that if you override the default function, you'll almost
+ * certainly want to override formatTimeCallback, primaryLabelInterval
+ * and/or secondaryLabelInterval so they all work together.
+ *
+ * @param pxPerSec
+ */
+function primaryLabelInterval(pxPerSec) {
+    var retval = 1;
+    if (pxPerSec >= 250) {
+        retval = 10;
+    } else if (pxPerSec >= 100) {
+        retval = 4;
+    } else {
+        retval = 1;
+    }
+    return retval;
+}
 
 const TimelineWindow = (props) => {
     const buttonRef = useRef(null);
@@ -13,10 +70,11 @@ const TimelineWindow = (props) => {
     const onWheel = (e) => {
         if (props.waveformRef.current) {
             if (e.deltaY > 0) {
-                props.waveformRef.current.zoom()
-            }
-            else {
-                props.waveformRef.current.zoom()
+                pxPerSec = Math.max(pxPerSec - 20, 100);
+                props.waveformRef.current.zoom(pxPerSec)
+            } else {
+                pxPerSec = Math.min(pxPerSec + 20, 300);
+                props.waveformRef.current.zoom(pxPerSec)
             }
         }
     }
@@ -35,8 +93,15 @@ const TimelineWindow = (props) => {
             progressColor: 'purple',
             cursorColor: 'purple',
             scrollParent: true,
+            minPxPerSec: pxPerSec,
             plugins: [TimelinePlugin.create({
-                container: timelineRef.current
+                container: timelineRef.current,
+                formatTimeCallback: formatTimeCallback,
+                timeInterval: timeInterval,
+                primaryLabelInterval: primaryLabelInterval,
+                secondaryLabelInterval: false,
+                primaryColor: 'blue',
+                primaryFontColor: 'blue',
             }),]
         });
         wavesurfer.on('loading', function (e) {

@@ -93,6 +93,7 @@ const TimelineWindow = (props) => {
             progressColor: 'purple',
             cursorColor: 'purple',
             scrollParent: true,
+            normalize: true,
             minPxPerSec: pxPerSec,
             plugins: [TimelinePlugin.create({
                 container: timelineRef.current,

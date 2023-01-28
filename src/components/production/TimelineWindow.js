@@ -5,6 +5,11 @@ import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 
 let wavesurfer
 let pxPerSec = 300
+let timelineWidthRatio
+
+const setTimelineWidthRatio = () => {
+    timelineWidthRatio = wavesurfer.drawer.wrapper.offsetWidth / wavesurfer.drawer.wrapper.scrollWidth
+}
 
 function formatTimeCallback(seconds, pxPerSec) {
     seconds = Number(seconds);
@@ -67,6 +72,9 @@ const TimelineWindow = (props) => {
             }
         }
     }
+    useEffect(() => {
+        if (props.waveformRef.current) setTimelineWidthRatio()
+    }, [props.size, props.waveformRef])
 
     useEffect(() => {
         if (wavesurfer) {
@@ -101,6 +109,7 @@ const TimelineWindow = (props) => {
         wavesurfer.on('ready', function () {
             wavesurfer.setMute(true)
             props.waveformRef.current = wavesurfer
+            setTimelineWidthRatio()
         });
         wavesurfer.on('seek', () => {
             if (!wavesurfer.isReady) return
@@ -112,6 +121,9 @@ const TimelineWindow = (props) => {
             props.playerRef.current.getInternalPlayer().pause()
             props.playerRef.current.seekTo(wavesurfer.getCurrentTime())
         })
+        wavesurfer.on('audioprocess', function () {
+            wavesurfer.drawer.wrapper.scrollLeft = wavesurfer.drawer.wrapper.offsetWidth * Math.floor((wavesurfer.getCurrentTime() / wavesurfer.getDuration()) / timelineWidthRatio)
+        });
     }, [props.mediaFile, props.playerRef, props.waveformRef, props.isVideoSeeking, props.isWaveSeeking]);
     return <div style={{width: '100%', height: 150}} onWheel={onWheel}>
         <MDBBtn ref={buttonRef} disabled={!props.mediaFile} onClick={() => {

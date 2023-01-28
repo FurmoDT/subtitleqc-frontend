@@ -61,7 +61,8 @@ const Production = () => {
                     }}>
                         <LanguageWindow size={rightRefSize}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
-                        <TimelineWindow waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}
+                        <TimelineWindow size={rightRefSize}
+                                        waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}
                                         isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                     </div>
                 </Splitter>

@@ -1,5 +1,6 @@
 const MenuToolbar = () => {
     return <div style={{
+        height: '40px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

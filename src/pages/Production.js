@@ -43,7 +43,7 @@ const Production = () => {
         <MenuToolbar/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
-            width: '100vw', height: '90vh', position: 'relative'
+            width: '100vw', height: 'calc(100vh - 100px)', position: 'relative'
         }}>
             <div id={'splitter-wrapper'} style={{width: '100%', height: '100%', position: 'relative'}}>
                 <Splitter position={'vertical'} primaryPaneWidth={'500px'}

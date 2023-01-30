@@ -5,11 +5,6 @@ import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 
 let wavesurfer
 let pxPerSec = 300
-let timelineWidthRatio
-
-const setTimelineWidthRatio = () => {
-    timelineWidthRatio = wavesurfer.drawer.wrapper.offsetWidth / wavesurfer.drawer.wrapper.scrollWidth
-}
 
 function formatTimeCallback(seconds, pxPerSec) {
     seconds = Number(seconds);
@@ -65,16 +60,13 @@ const TimelineWindow = (props) => {
         if (props.waveformRef.current) {
             if (e.deltaY > 0) {
                 pxPerSec = Math.max(pxPerSec - 20, 100);
-                props.waveformRef.current.zoom(pxPerSec)
+                // props.waveformRef.current.zoom(pxPerSec)
             } else {
                 pxPerSec = Math.min(pxPerSec + 20, 300);
-                props.waveformRef.current.zoom(pxPerSec)
+                // props.waveformRef.current.zoom(pxPerSec)
             }
         }
     }
-    useEffect(() => {
-        if (props.waveformRef.current) setTimelineWidthRatio()
-    }, [props.size, props.waveformRef])
 
     useEffect(() => {
         if (wavesurfer) {
@@ -109,7 +101,6 @@ const TimelineWindow = (props) => {
         wavesurfer.on('ready', function () {
             wavesurfer.setMute(true)
             props.waveformRef.current = wavesurfer
-            setTimelineWidthRatio()
         });
         wavesurfer.on('seek', () => {
             if (!wavesurfer.isReady) return
@@ -122,7 +113,8 @@ const TimelineWindow = (props) => {
             props.playerRef.current.seekTo(wavesurfer.getCurrentTime())
         })
         wavesurfer.on('audioprocess', function () {
-            wavesurfer.drawer.wrapper.scrollLeft = wavesurfer.drawer.wrapper.offsetWidth * Math.floor((wavesurfer.getCurrentTime() / wavesurfer.getDuration()) / timelineWidthRatio)
+            const curWidth = wavesurfer.drawer.wrapper.scrollWidth * wavesurfer.getCurrentTime() / wavesurfer.getDuration()
+            if (wavesurfer.drawer.wrapper.scrollLeft + wavesurfer.drawer.wrapper.offsetWidth < curWidth) wavesurfer.drawer.wrapper.scrollLeft = wavesurfer.drawer.wrapper.scrollLeft + wavesurfer.drawer.wrapper.offsetWidth
         });
     }, [props.mediaFile, props.playerRef, props.waveformRef, props.isVideoSeeking, props.isWaveSeeking]);
     return <div style={{width: '100%', height: 150}} onWheel={onWheel}>

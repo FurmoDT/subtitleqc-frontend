@@ -112,7 +112,6 @@
 
 .handsontable .wtHider {
   width: 0;
-  font-size: 12px;
 }
 
 .handsontable .wtSpreader {
@@ -159,6 +158,7 @@
   /* reset bootstrap table style. for more info see: https://github.com/handsontable/handsontable/issues/224 */
   max-width: none;
   max-height: none;
+  font-size: 13px;
 }
 
 .handsontable col {

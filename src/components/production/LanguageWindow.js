@@ -9,22 +9,32 @@ const LanguageWindow = (props) => {
     const containerMain = useRef(null);
 
     function sampleRenderer(instance, td) {
-        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        Handsontable.renderers.TextRenderer.apply(this, arguments)
         td.style.backgroundColor = 'yellow';
+    }
+
+    function textRenderer(instance, td) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments)
+        const label = document.createElement('label');
+        label.style.float = 'right'
+        label.style.fontSize = '10px'
+        label.textContent = "cps: 0";
+        td.appendChild(label);
     }
 
     useEffect(() => {
         if (hot) hot.destroy()
-        props.cellDataRef.current = [{'start': 1, 'end': 2, 'language_koKR': '샘플', 'language_enUS': 'sample'}]
+        const languages = {text: 'TEXT'}
         hot = new Handsontable(containerMain.current, {
-            // data: Array.from({length: 1}, () => props.cellDataRef.current).flat(),
             columns: [
-                {data: "start", type: 'text', renderer: sampleRenderer},
-                {data: "end", type: 'text'},
-                {data: "language_koKR", type: 'text', className: 'htLeft'},
-                {data: "language_enUS", type: 'text', className: 'htLeft'},
+                {data: 'start', type: 'text', renderer: sampleRenderer},
+                {data: 'end', type: 'text'},
+                ...Object.entries(languages).map(([key, value]) => {
+                    return {data: key, type: 'text', renderer: textRenderer}
+                }),
+                {data: 'error', type: 'text'},
             ],
-            colHeaders: ['TC_IN', "TC_OUT", "한국어", "영어(미국)"],
+            colHeaders: ['TC_IN', 'TC_OUT', ...Object.values(languages), 'error'],
             rowHeaders: true,
             stretchH: 'last',
             width: props.size.width,

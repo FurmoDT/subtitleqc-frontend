@@ -1,6 +1,7 @@
 import Handsontable from 'handsontable';
 import '../../css/Handsontable.css'
 import {useEffect, useRef} from "react";
+import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
 
 let hot
 
@@ -8,18 +9,19 @@ let hot
 const LanguageWindow = (props) => {
     const containerMain = useRef(null);
 
-    function sampleRenderer(instance, td) {
+    function tcInRenderer(instance, td) {
         Handsontable.renderers.TextRenderer.apply(this, arguments)
-        td.style.backgroundColor = 'yellow';
+        tcInValidator(arguments[2], arguments[3], arguments[5], td)
+    }
+
+    function tcOutRenderer(instance, td) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments)
+        tcOutValidator(arguments[2], arguments[3], arguments[5], td)
     }
 
     function textRenderer(instance, td) {
         Handsontable.renderers.TextRenderer.apply(this, arguments)
-        const label = document.createElement('label');
-        label.style.float = 'right'
-        label.style.fontSize = '10px'
-        label.textContent = `cps: ${arguments[5]?.length || 0}`;
-        td.appendChild(label);
+        textValidator(arguments[2], arguments[3], arguments[5], td)
     }
 
     useEffect(() => {
@@ -27,8 +29,8 @@ const LanguageWindow = (props) => {
         const languages = {text: 'TEXT'}
         hot = new Handsontable(containerMain.current, {
             columns: [
-                {data: 'start', type: 'text', renderer: sampleRenderer},
-                {data: 'end', type: 'text'},
+                {data: 'start', type: 'text', renderer: tcInRenderer},
+                {data: 'end', type: 'text', renderer: tcOutRenderer},
                 ...Object.entries(languages).map(([key, value]) => {
                     return {data: key, type: 'text', renderer: textRenderer}
                 }),

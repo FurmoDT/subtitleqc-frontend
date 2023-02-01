@@ -18,7 +18,7 @@ const LanguageWindow = (props) => {
         const label = document.createElement('label');
         label.style.float = 'right'
         label.style.fontSize = '10px'
-        label.textContent = "cps: 0";
+        label.textContent = `cps: ${arguments[5]?.length || 0}`;
         td.appendChild(label);
     }
 

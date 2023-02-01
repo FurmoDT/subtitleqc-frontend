@@ -101,7 +101,6 @@ const TimelineWindow = (props) => {
         wavesurfer.on('ready', function () {
             wavesurfer.setMute(true)
             props.waveformRef.current = wavesurfer
-            if (!props.playerRef.current.getInternalPlayer().paused) wavesurfer.play()
             wavesurfer.seekTo(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
         });
         wavesurfer.on('seek', () => {

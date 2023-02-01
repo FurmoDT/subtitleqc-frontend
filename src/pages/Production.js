@@ -16,6 +16,7 @@ const Production = () => {
     const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
+    const cellDataRef = useRef([])
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
     useEffect(() => {
@@ -59,7 +60,8 @@ const Production = () => {
                         flexDirection: 'column', display: 'flex', width: '100%', height: '100%',
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
-                        <LanguageWindow size={rightRefSize}/>
+                        <div style={{textAlign: 'center', height: '30px'}}>TransToolbar</div>
+                        <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}
                                         waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}

@@ -2,7 +2,6 @@ import Handsontable from 'handsontable';
 import '../../css/Handsontable.css'
 import {useEffect, useRef} from "react";
 
-let cellData = [{'start': 1, 'end': 2, 'language_koKR': '샘플', 'language_enUS': 'sample'}]
 let hot
 
 
@@ -16,8 +15,9 @@ const LanguageWindow = (props) => {
 
     useEffect(() => {
         if (hot) hot.destroy()
+        props.cellDataRef.current = [{'start': 1, 'end': 2, 'language_koKR': '샘플', 'language_enUS': 'sample'}]
         hot = new Handsontable(containerMain.current, {
-            data: Array.from({length: 100}, () => cellData).flat(),
+            // data: Array.from({length: 1}, () => props.cellDataRef.current).flat(),
             columns: [
                 {data: "start", type: 'text', renderer: sampleRenderer},
                 {data: "end", type: 'text'},
@@ -28,11 +28,13 @@ const LanguageWindow = (props) => {
             rowHeaders: true,
             stretchH: 'last',
             width: props.size.width,
-            height: props.size.height - 150,
+            height: props.size.height - 180,
+            startRows: 100,
+            minSpareRows: 2,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             manualColumnResize: true,
         })
-    }, [props.size]);
+    }, [props.size, props.cellDataRef]);
 
     return <div ref={containerMain}/>
 }

@@ -9,6 +9,6 @@ export const textValidator = (r, c, v, td) => {
     label.style.float = 'right'
     label.style.fontSize = '10px'
     label.style.paddingLeft = '5px'
-    label.textContent = `cps: ${v?.length || 0}`;
+    label.textContent = `len: ${v?.length || 0} cps: ${v?.length || 0}`;
     td.appendChild(label);
 }

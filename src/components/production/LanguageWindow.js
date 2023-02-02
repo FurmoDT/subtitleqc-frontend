@@ -13,20 +13,17 @@ const LanguageWindow = (props) => {
         if (hot) hot.destroy()
         function tcInRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            td.style.fontSize = props.hotFontSize
-            tcInValidator(arguments[2], arguments[3], arguments[5], td)
+            tcInValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
         }
 
         function tcOutRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            td.style.fontSize = props.hotFontSize
-            tcOutValidator(arguments[2], arguments[3], arguments[5], td)
+            tcOutValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
         }
 
         function textRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            td.style.fontSize = props.hotFontSize
-            textValidator(arguments[2], arguments[3], arguments[5], td)
+            textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
         }
         const languages = {text: 'TEXT'}
         hot = new Handsontable(containerMain.current, {

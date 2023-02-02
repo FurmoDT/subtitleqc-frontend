@@ -1,10 +1,13 @@
-export const tcInValidator = (r, c, v, td) => {
+export const tcInValidator = (r, c, v, td, fontSize) => {
+    td.style.fontSize = fontSize
 }
 
-export const tcOutValidator = (r, c, v, td) => {
+export const tcOutValidator = (r, c, v, td, fontSize) => {
+    td.style.fontSize = fontSize
 }
 
-export const textValidator = (r, c, v, td) => {
+export const textValidator = (r, c, v, td, fontSize) => {
+    td.style.fontSize = fontSize
     const label = document.createElement('label');
     if (v) td.innerHTML = `<label>${v}</label>`
     label.style.float = 'right'

@@ -43,7 +43,7 @@ const LanguageWindow = (props) => {
             rowHeaders: true,
             stretchH: 'last',
             width: props.size.width,
-            height: props.size.height - 180,
+            height: props.size.height - 190,
             minSpareRows: 2,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             manualColumnResize: true,

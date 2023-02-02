@@ -68,9 +68,9 @@ const Production = () => {
                         }}>
                             <label>TransToolbar - change fontsize, languages</label>
                             <MDBInput style={{width: '60px'}} size={'sm'} label='Font Size'
-                                      id='typeNumber' type='number' defaultValue={13} min={10} max={20}
+                                      id='typeNumber' type='number' defaultValue={13} min={10} max={25}
                                       onChange={(event) => {
-                                          SetHotFontSize(event.target.value + 'px')
+                                          SetHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
                                       }
                                       }/>
                         </div>

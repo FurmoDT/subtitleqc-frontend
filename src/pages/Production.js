@@ -16,7 +16,7 @@ const Production = () => {
     const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const cellDataRef = useRef([])
+    const cellDataRef = useRef(Array.from({ length: 100 }, () => ({})))
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
     useEffect(() => {

@@ -28,6 +28,7 @@ const LanguageWindow = (props) => {
         if (hot) hot.destroy()
         const languages = {text: 'TEXT'}
         hot = new Handsontable(containerMain.current, {
+            data: props.cellDataRef.current,
             columns: [
                 {data: 'start', type: 'text', renderer: tcInRenderer},
                 {data: 'end', type: 'text', renderer: tcOutRenderer},
@@ -41,7 +42,6 @@ const LanguageWindow = (props) => {
             stretchH: 'last',
             width: props.size.width,
             height: props.size.height - 180,
-            startRows: 100,
             minSpareRows: 2,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             manualColumnResize: true,

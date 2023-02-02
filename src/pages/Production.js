@@ -7,7 +7,7 @@ import {useEffect, useRef, useState} from "react";
 import {setDropzone} from "../utils/setDropzone";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
-import {MDBInput} from "mdb-react-ui-kit";
+import {MDBBtn, MDBInput} from "mdb-react-ui-kit";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -63,16 +63,18 @@ const Production = () => {
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
                         <div style={{
-                            flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center',
-                            height: '40px'
+                            flexDirection: 'row', display: 'flex', alignItems: 'center', height: '40px',
+                            position: 'relative'
                         }}>
-                            <label>TransToolbar - change fontsize, languages</label>
-                            <MDBInput style={{width: '60px'}} size={'sm'} label='Font Size'
+                            <MDBInput wrapperStyle={{marginLeft: '5px'}} style={{width: '60px'}} size={'sm'} label='Font Size'
                                       id='typeNumber' type='number' defaultValue={13} min={10} max={25}
                                       onChange={(event) => {
                                           SetHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
                                       }
                                       }/>
+                            <MDBBtn style={{marginLeft: '5px'}} size={'sm'} disabled>Languages</MDBBtn>
+                            <MDBBtn style={{marginLeft: '5px'}} size={'sm'} disabled>Download</MDBBtn>
+                            <label style={{position: 'absolute', left: '50%'}}>TransToolbar</label>
                         </div>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>

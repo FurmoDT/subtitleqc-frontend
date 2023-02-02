@@ -7,6 +7,7 @@ import {useEffect, useRef, useState} from "react";
 import {setDropzone} from "../utils/setDropzone";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
+import {MDBInput} from "mdb-react-ui-kit";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -17,6 +18,7 @@ const Production = () => {
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
     const cellDataRef = useRef(Array.from({ length: 100 }, () => ({})))
+    const [hotFontSize, SetHotFontSize] = useState('13px')
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
     useEffect(() => {
@@ -60,8 +62,19 @@ const Production = () => {
                         flexDirection: 'column', display: 'flex', width: '100%', height: '100%',
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
-                        <div style={{textAlign: 'center', height: '30px'}}>TransToolbar</div>
-                        <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef}/>
+                        <div style={{
+                            flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center',
+                            height: '40px'
+                        }}>
+                            <label>TransToolbar - change fontsize, languages</label>
+                            <MDBInput style={{width: '60px'}} size={'sm'} label='Font Size'
+                                      id='typeNumber' type='number' defaultValue={13} min={10} max={20}
+                                      onChange={(event) => {
+                                          SetHotFontSize(event.target.value + 'px')
+                                      }
+                                      }/>
+                        </div>
+                        <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}
                                         waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}

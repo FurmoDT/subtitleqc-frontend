@@ -115,7 +115,7 @@ const TimelineWindow = (props) => {
         })
         wavesurfer.on('audioprocess', function () {
             const curWidth = wavesurfer.drawer.wrapper.scrollWidth * wavesurfer.getCurrentTime() / wavesurfer.getDuration()
-            if (wavesurfer.drawer.wrapper.scrollLeft + wavesurfer.drawer.wrapper.offsetWidth < curWidth) wavesurfer.drawer.wrapper.scrollLeft = wavesurfer.drawer.wrapper.scrollLeft + wavesurfer.drawer.wrapper.offsetWidth
+            while (wavesurfer.drawer.wrapper.scrollLeft + wavesurfer.drawer.wrapper.offsetWidth < curWidth) wavesurfer.drawer.wrapper.scrollLeft = wavesurfer.drawer.wrapper.scrollLeft + wavesurfer.drawer.wrapper.offsetWidth
         });
     }, [props.mediaFile, props.playerRef, props.waveformRef, props.isVideoSeeking, props.isWaveSeeking]);
     return <div style={{width: '100%', height: 150}} onWheel={onWheel}>

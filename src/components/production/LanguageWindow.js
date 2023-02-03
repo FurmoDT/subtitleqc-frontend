@@ -11,6 +11,7 @@ const LanguageWindow = (props) => {
 
     useEffect(() => {
         if (hot) hot.destroy()
+
         function tcInRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
             tcInValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
@@ -25,17 +26,18 @@ const LanguageWindow = (props) => {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
             textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
         }
+
         hot = new Handsontable(containerMain.current, {
             data: props.cellDataRef.current,
             columns: [
                 {data: 'start', type: 'text', renderer: tcInRenderer},
                 {data: 'end', type: 'text', renderer: tcOutRenderer},
-                ...Object.entries(props.languages).map(([key, value]) => {
-                    return {data: key, type: 'text', renderer: textRenderer}
+                ...props.languages.map((value) => {
+                    return {data: value.code, type: 'text', renderer: textRenderer}
                 }),
                 {data: 'error', type: 'text'},
             ],
-            colHeaders: ['TC_IN', 'TC_OUT', ...Object.values(props.languages), 'error'],
+            colHeaders: ['TC_IN', 'TC_OUT', ...props.languages.map((v) => v.name), 'error'],
             rowHeaders: true,
             stretchH: 'last',
             width: props.size.width,
@@ -44,7 +46,7 @@ const LanguageWindow = (props) => {
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             manualColumnResize: true,
         })
-        hot.setDataAtCell([[0, 0, '00:00:00,000'],[0, 1, '00:00:00,000'], [0, 2, '-'.repeat(100)]])
+        hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000'], [0, 2, '-'.repeat(100)]])
     }, [props.size, props.cellDataRef, props.hotFontSize, props.languages])
 
     return <div ref={containerMain}/>

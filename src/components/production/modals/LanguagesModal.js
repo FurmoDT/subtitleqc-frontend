@@ -51,19 +51,24 @@ const LanguagesModal = (props) => {
                                 }}>기타</MDBDropdownItem>
                             </MDBDropdownMenu>
                         </MDBDropdown>
-                        <ReactSortable list={languages} setList={setLanguages}>
+                        <ReactSortable animation={200} easing={"ease-out"} list={languages} setList={setLanguages}>
                             {languages.map((item) => (
-                                <div key={item.code}>{item.name}</div>
+                                <div style={{
+                                    borderBottom: 'solid', borderWidth: 'thin', margin: '10px', paddingLeft: '3px',
+                                    fontSize: '15px'
+                                }} key={item.code}>{item.name}</div>
                             ))}
                         </ReactSortable>
                         <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Remove Languages</MDBDropdownToggle>
                             <MDBDropdownMenu>
-                                {languages.map((item, index) => {return <MDBDropdownItem link onClick={() => {
-                                    const removed = [...languages]
-                                    removed.splice(index, 1)
-                                    setLanguages(removed)
-                                }}>{item.name}</MDBDropdownItem>})}
+                                {languages.map((item, index) => {
+                                    return <MDBDropdownItem link onClick={() => {
+                                        const removed = [...languages]
+                                        removed.splice(index, 1)
+                                        setLanguages(removed)
+                                    }}>{item.name}</MDBDropdownItem>
+                                })}
                             </MDBDropdownMenu>
                         </MDBDropdown>
                     </MDBModalBody>

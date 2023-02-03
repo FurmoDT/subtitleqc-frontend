@@ -73,7 +73,9 @@ const Production = () => {
                                       onChange={(event) => {
                                           SetHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
                                       }}/>
-                            <LanguagesModal languages={languages}/>
+                            <LanguagesModal languages={languages} setLanguages={(value) => {
+                                setLanguages(value)
+                            }}/>
                             <MDBBtn style={{marginLeft: '5px'}} size={'sm'} disabled>Download</MDBBtn>
                             <label style={{position: 'absolute', left: '50%'}}>TransToolbar</label>
                         </div>

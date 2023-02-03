@@ -8,6 +8,7 @@ import {setDropzone} from "../utils/setDropzone";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
 import {MDBBtn, MDBInput} from "mdb-react-ui-kit";
+import LanguagesModal from "../components/production/modals/LanguagesModal";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -17,7 +18,8 @@ const Production = () => {
     const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const cellDataRef = useRef(Array.from({ length: 100 }, () => ({})))
+    const [languages, setLanguages] = useState({text: 'TEXT'})
+    const cellDataRef = useRef(Array.from({length: 100}, () => ({})))
     const [hotFontSize, SetHotFontSize] = useState('13px')
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
@@ -66,17 +68,17 @@ const Production = () => {
                             flexDirection: 'row', display: 'flex', alignItems: 'center', height: '40px',
                             position: 'relative'
                         }}>
-                            <MDBInput wrapperStyle={{marginLeft: '5px'}} style={{width: '60px'}} size={'sm'} label='Font Size'
-                                      id='typeNumber' type='number' defaultValue={13} min={10} max={25}
+                            <MDBInput wrapperStyle={{marginLeft: '5px'}} style={{width: '60px'}} size={'sm'}
+                                      label='Font Size' type='number' defaultValue={13} min={10} max={25}
                                       onChange={(event) => {
                                           SetHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
-                                      }
-                                      }/>
-                            <MDBBtn style={{marginLeft: '5px'}} size={'sm'} disabled>Languages</MDBBtn>
+                                      }}/>
+                            <LanguagesModal languages={languages}/>
                             <MDBBtn style={{marginLeft: '5px'}} size={'sm'} disabled>Download</MDBBtn>
                             <label style={{position: 'absolute', left: '50%'}}>TransToolbar</label>
                         </div>
-                        <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}/>
+                        <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
+                                        languages={languages}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}
                                         waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}

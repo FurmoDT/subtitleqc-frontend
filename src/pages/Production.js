@@ -18,7 +18,7 @@ const Production = () => {
     const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const [languages, setLanguages] = useState([{code: 'text', name: 'TEXT'}])
+    const [languages, setLanguages] = useState([{id: 0, code: 'text', name: 'TEXT'}])
     const cellDataRef = useRef(Array.from({length: 100}, () => ({})))
     const [hotFontSize, SetHotFontSize] = useState('13px')
     const isVideoSeeking = useRef(false)

@@ -33,7 +33,7 @@ const LanguageWindow = (props) => {
                 {data: 'start', type: 'text', renderer: tcInRenderer},
                 {data: 'end', type: 'text', renderer: tcOutRenderer},
                 ...props.languages.map((value) => {
-                    return {data: value.code, type: 'text', renderer: textRenderer}
+                    return {data: value.id, type: 'text', renderer: textRenderer}
                 }),
                 {data: 'error', type: 'text'},
             ],

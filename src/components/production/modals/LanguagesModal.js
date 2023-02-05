@@ -25,6 +25,13 @@ const LanguagesModal = (props) => {
         const counter = languages.filter(value => value.code === code).map(value => value.counter)
         return counter.length ? Math.max(...counter) + 1 : 1
     }
+    const handleAddClick = (code, name) => {
+        const counter = languageCounter(code)
+        setLanguages([...languages, {
+            id: idCounter, code: code, name: name + (counter > 1 ? `(${counter})` : ''), counter: counter
+        }])
+        setIdCounter(idCounter + 1)
+    }
     return <>
         <MDBBtn style={{marginLeft: '5px'}} size={'sm'} onClick={toggleShow}>LANGUAGES</MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
@@ -38,56 +45,18 @@ const LanguagesModal = (props) => {
                         <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Add Languages</MDBDropdownToggle>
                             <MDBDropdownMenu>
-                                <MDBDropdownItem link onClick={() => {
-                                    const counter = languageCounter('koKR')
-                                    setLanguages([...languages, {
-                                        id: idCounter,
-                                        code: 'koKR',
-                                        name: '한국어' + (counter > 1 ? `(${counter})` : ''),
-                                        counter: counter
-                                    }])
-                                    setIdCounter(idCounter + 1)
-                                }}>한국어</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() => {
-                                    const counter = languageCounter('enUS')
-                                    setLanguages([...languages, {
-                                        id: idCounter,
-                                        code: 'enUS',
-                                        name: '영어' + (counter > 1 ? `(${counter})` : ''),
-                                        counter: counter
-                                    }])
-                                    setIdCounter(idCounter + 1)
-                                }}>영어</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() => {
-                                    const counter = languageCounter('zhCN')
-                                    setLanguages([...languages, {
-                                        id: idCounter,
-                                        code: 'zhCN',
-                                        name: '중국어' + (counter > 1 ? `(${counter})` : ''),
-                                        counter: counter
-                                    }])
-                                    setIdCounter(idCounter + 1)
-                                }}>중국어</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() => {
-                                    const counter = languageCounter('viVN')
-                                    setLanguages([...languages, {
-                                        id: idCounter,
-                                        code: 'viVN',
-                                        name: '베트남어' + (counter > 1 ? `(${counter})` : ''),
-                                        counter: counter
-                                    }])
-                                    setIdCounter(idCounter + 1)
-                                }}>베트남어</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() => {
-                                    const counter = languageCounter('other')
-                                    setLanguages([...languages, {
-                                        id: idCounter,
-                                        code: 'other',
-                                        name: '기타' + (counter > 1 ? `(${counter})` : ''),
-                                        counter: counter
-                                    }])
-                                    setIdCounter(idCounter + 1)
-                                }}>기타</MDBDropdownItem>
+                                <MDBDropdownItem link onClick={() =>
+                                    handleAddClick('koKR', '한국어')}>한국어</MDBDropdownItem>
+                                <MDBDropdownItem link onClick={() =>
+                                    handleAddClick('enUS', '영어')}>영어</MDBDropdownItem>
+                                <MDBDropdownItem link onClick={() =>
+                                    handleAddClick('zhCN', '중국어')}>중국어</MDBDropdownItem>
+                                <MDBDropdownItem link onClick={() =>
+                                    handleAddClick('viVN', '베트남어')}>베트남어</MDBDropdownItem>
+                                <MDBDropdownItem link onClick={() =>
+                                    handleAddClick('text', 'TEXT')}>TEXT</MDBDropdownItem>
+                                <MDBDropdownItem link onClick={() =>
+                                    handleAddClick('other', '기타')}>기타</MDBDropdownItem>
                             </MDBDropdownMenu>
                         </MDBDropdown>
                         <ReactSortable animation={200} easing={"ease-out"} list={languages} setList={setLanguages}>

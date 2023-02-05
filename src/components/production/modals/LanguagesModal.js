@@ -5,6 +5,7 @@ import {
     MDBDropdownItem,
     MDBDropdownMenu,
     MDBDropdownToggle,
+    MDBIcon,
     MDBModal,
     MDBModalBody,
     MDBModalContent,
@@ -93,8 +94,10 @@ const LanguagesModal = (props) => {
                             {languages.map((item) => {
                                 return <div style={{
                                     borderBottom: 'solid', borderWidth: 'thin', margin: '10px', paddingLeft: '3px',
-                                    fontSize: '15px'
-                                }} key={item.id}>{item.name}</div>
+                                    fontSize: '15px', display: 'flex', alignItems: 'center'
+                                }} key={item.id}>{item.name}
+                                    <MDBIcon fas icon="bars" style={{cursor: 'pointer', marginLeft: 'auto'}}/>
+                                </div>
                             })}
                         </ReactSortable>
                         <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>

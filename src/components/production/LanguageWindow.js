@@ -9,7 +9,7 @@ let hot
 const LanguageWindow = (props) => {
     const containerMain = useRef(null);
     useEffect(() => {
-        props.cellDataRef.current = props.languageFile
+        if (props.languageFile) props.cellDataRef.current = props.languageFile
         //TODO set props.languages with existing languages
     }, [props.cellDataRef, props.languageFile])
 

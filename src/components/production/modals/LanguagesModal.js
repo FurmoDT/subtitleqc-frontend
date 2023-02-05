@@ -101,7 +101,7 @@ const LanguagesModal = (props) => {
                             <MDBDropdownToggle size={'sm'} color={'link'}>Remove Languages</MDBDropdownToggle>
                             <MDBDropdownMenu>
                                 {languages.map((item, index) => {
-                                    return <MDBDropdownItem link onClick={() => {
+                                    return <MDBDropdownItem key={item.id} link onClick={() => {
                                         const removed = [...languages]
                                         removed.splice(index, 1)
                                         setLanguages(removed)

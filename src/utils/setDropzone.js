@@ -1,3 +1,7 @@
+import languageEncoding from "detect-file-encoding-and-language";
+import {parseFsp, parseSrt} from "./fileParser";
+import {xml2json} from "xml-js";
+
 const baseStyle = {
     backgroundColor: '#fafafa',
     borderWidth: 2,
@@ -41,7 +45,21 @@ export const setDropzone = (props) => {
             if (['.mp4'].includes(fileFormat)) {
                 props.setMediaFile(URL.createObjectURL(file))
             } else if (['.fsp', '.srt'].includes(fileFormat)) {
-                props.setLanguageFile(file)
+                const reader = new FileReader()
+                reader.onload = () => {
+                    let binaryStr = new ArrayBuffer(0)
+                    binaryStr = reader.result
+                    languageEncoding(file).then((fileInfo) => {
+                        const decoder = new TextDecoder(fileInfo.encoding || 'UTF-8');
+                        const str = decoder.decode(binaryStr)
+                        if (file.name.endsWith('.fsp')) {
+                            props.setLanguageFile(parseFsp(JSON.parse(xml2json(str, {compact: false}))))
+                        } else if (file.name.endsWith('.srt')) {
+                            props.setLanguageFile(parseSrt(str))
+                        }
+                    })
+                }
+                reader.readAsArrayBuffer(file)
             }
         })
     };

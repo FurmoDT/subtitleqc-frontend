@@ -80,7 +80,7 @@ const Production = () => {
                             <label style={{position: 'absolute', left: '50%'}}>TransToolbar</label>
                         </div>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
-                                        languages={languages}/>
+                                        languageFile={languageFile} languages={languages}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}
                                         waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}

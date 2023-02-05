@@ -8,6 +8,10 @@ let hot
 
 const LanguageWindow = (props) => {
     const containerMain = useRef(null);
+    useEffect(() => {
+        props.cellDataRef.current = props.languageFile
+        //TODO set props.languages with existing languages
+    }, [props.cellDataRef, props.languageFile])
 
     useEffect(() => {
         if (hot) hot.destroy()
@@ -47,7 +51,7 @@ const LanguageWindow = (props) => {
             manualColumnResize: true,
         })
         hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000'], [0, 2, '-'.repeat(100)]])
-    }, [props.size, props.cellDataRef, props.hotFontSize, props.languages])
+    }, [props.size, props.cellDataRef, props.hotFontSize, props.languageFile, props.languages])
 
     return <div ref={containerMain}/>
 }

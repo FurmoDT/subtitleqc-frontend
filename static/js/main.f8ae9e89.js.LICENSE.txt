@@ -53,6 +53,13 @@ object-assign
  */
 
 /*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+/*!
  * wavesurfer.js 6.4.0 (2022-11-05)
  * https://wavesurfer-js.org
  * @license BSD-3-Clause
@@ -111,6 +118,12 @@ object-assign
 /*! ./webaudio */
 
 /*! debounce */
+
+/*! http://mths.be/fromcodepoint v0.1.0 by @mathias */
+
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
+/*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
 /*!***********************!*\
           !*** ./src/drawer.js ***!

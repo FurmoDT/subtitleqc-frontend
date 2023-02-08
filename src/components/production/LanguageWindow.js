@@ -48,7 +48,7 @@ const LanguageWindow = (props) => {
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             manualColumnResize: true,
         })
-    }, [props.size, props.cellDataRef, props.hotFontSize, props.languageFile, props.languages])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages])
 
     useEffect(() => {
         if (props.languageFile) {

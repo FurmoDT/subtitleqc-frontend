@@ -18,7 +18,7 @@ const Production = () => {
     const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const [languages, setLanguages] = useState([{id: 0, code: 'text', name: 'TEXT', counter: 1}])
+    const [languages, setLanguages] = useState([{code: 'text', name: 'TEXT', counter: 1}])
     const cellDataRef = useRef(Array.from({length: 100}, () => ({})))
     const [hotFontSize, SetHotFontSize] = useState('13px')
     const isVideoSeeking = useRef(false)
@@ -73,14 +73,12 @@ const Production = () => {
                                       onChange={(event) => {
                                           SetHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
                                       }}/>
-                            <LanguagesModal languages={languages} setLanguages={(value) => {
-                                setLanguages(value)
-                            }}/>
+                            <LanguagesModal languages={languages} setLanguages={setLanguages}/>
                             <MDBBtn style={{marginLeft: '5px'}} size={'sm'} disabled>Download</MDBBtn>
                             <label style={{position: 'absolute', left: '50%'}}>TransToolbar</label>
                         </div>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
-                                        languageFile={languageFile} languages={languages}/>
+                                        languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}
                                         waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}

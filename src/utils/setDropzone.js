@@ -50,7 +50,7 @@ export const setDropzone = (props) => {
                     let binaryStr = new ArrayBuffer(0)
                     binaryStr = reader.result
                     languageEncoding(file).then((fileInfo) => {
-                        const decoder = new TextDecoder(fileInfo.encoding || 'UTF-8');
+                        const decoder = new TextDecoder(fileInfo.encoding);
                         const str = decoder.decode(binaryStr)
                         if (file.name.endsWith('.fsp')) {
                             props.setLanguageFile(parseFsp(JSON.parse(xml2json(str, {compact: false}))))

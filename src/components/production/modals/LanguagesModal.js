@@ -15,10 +15,12 @@ import {
     MDBModalTitle,
 } from 'mdb-react-ui-kit';
 import {ReactSortable} from "react-sortablejs";
+import {languageCodes} from "../../../utils/config";
 
 const LanguagesModal = (props) => {
-    const [languages, setLanguages] = useState([...props.languages])
-    const [idCounter, setIdCounter] = useState(languages.length);
+    const [languages, setLanguages] = useState([...props.languages.map((value) => {
+        return Object.assign({}, value)
+    })])
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
     const languageCounter = (code) => {
@@ -28,9 +30,8 @@ const LanguagesModal = (props) => {
     const handleAddClick = (code, name) => {
         const counter = languageCounter(code)
         setLanguages([...languages, {
-            id: idCounter, code: code, name: name + (counter > 1 ? `(${counter})` : ''), counter: counter
+            code: code, name: name + (counter > 1 ? `(${counter})` : ''), counter: counter
         }])
-        setIdCounter(idCounter + 1)
     }
     return <>
         <MDBBtn style={{marginLeft: '5px'}} size={'sm'} onClick={toggleShow}>LANGUAGES</MDBBtn>
@@ -45,18 +46,10 @@ const LanguagesModal = (props) => {
                         <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Add Languages</MDBDropdownToggle>
                             <MDBDropdownMenu>
-                                <MDBDropdownItem link onClick={() =>
-                                    handleAddClick('koKR', '한국어')}>한국어</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() =>
-                                    handleAddClick('enUS', '영어')}>영어</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() =>
-                                    handleAddClick('zhCN', '중국어')}>중국어</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() =>
-                                    handleAddClick('viVN', '베트남어')}>베트남어</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() =>
-                                    handleAddClick('text', 'TEXT')}>TEXT</MDBDropdownItem>
-                                <MDBDropdownItem link onClick={() =>
-                                    handleAddClick('other', '기타')}>기타</MDBDropdownItem>
+                                {Object.entries(languageCodes).map(([key, value]) => (
+                                    <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value}
+                                    </MDBDropdownItem>)
+                                )}
                             </MDBDropdownMenu>
                         </MDBDropdown>
                         <ReactSortable animation={200} easing={"ease-out"} list={languages} setList={setLanguages}>
@@ -64,7 +57,7 @@ const LanguagesModal = (props) => {
                                 return <div style={{
                                     borderBottom: 'solid', borderWidth: 'thin', margin: '10px', paddingLeft: '3px',
                                     fontSize: '15px', display: 'flex', alignItems: 'center'
-                                }} key={item.id}>{item.name}
+                                }} key={`${item.code}_${item.counter}`}>{item.name}
                                     <MDBIcon fas icon="bars" style={{cursor: 'pointer', marginLeft: 'auto'}}/>
                                 </div>
                             })}
@@ -73,7 +66,7 @@ const LanguagesModal = (props) => {
                             <MDBDropdownToggle size={'sm'} color={'link'}>Remove Languages</MDBDropdownToggle>
                             <MDBDropdownMenu>
                                 {languages.map((item, index) => {
-                                    return <MDBDropdownItem key={item.id} link onClick={() => {
+                                    return <MDBDropdownItem key={`${item.code}_${item.counter}`} link onClick={() => {
                                         const removed = [...languages]
                                         removed.splice(index, 1)
                                         setLanguages(removed)
@@ -89,7 +82,11 @@ const LanguagesModal = (props) => {
                         }}>Close</MDBBtn>
                         <MDBBtn onClick={() => {
                             toggleShow()
-                            props.setLanguages([...languages])
+                            props.setLanguages([...languages.map((value) => ({
+                                code: value.code,
+                                name: value.name,
+                                counter: value.counter
+                            }))])
                         }}>Save changes</MDBBtn>
                     </MDBModalFooter>
                 </MDBModalContent>

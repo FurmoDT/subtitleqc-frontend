@@ -1,10 +1,11 @@
 export const parseSrt = (srtText) => {
+    const language = 'text_1'
     const normalizedSrtData = srtText.replace(/\r\n/g, '\n');
     const lines = normalizedSrtData.split('\n');
     const items = [];
 
     let o = {
-        text: ''
+        [language]: ''
     };
 
     for (let i = 0; i < lines.length; i++) {
@@ -19,29 +20,39 @@ export const parseSrt = (srtText) => {
             o.end = times[1];
         } else if (line === '') { // reset
             items.push(o);
-            o = {text: ''};
+            o = {[language]: ''};
         } else { // text
             if (lines[i + 1] === '') {
                 lineBreak = '';
             }
-            o.text += line + lineBreak;
+            o[language] += line + lineBreak;
         }
     }
-    return items;
+    return {languages: [language], data: items}
 }
 
 export const parseFsp = (fspJson) => {
     const items = []
     const subtitle = fspJson.elements[0].elements[5].elements
+    const language = fspJson.elements[0].elements[4].elements.map((value) => (value.attributes.code))
+    const languageCounts = language.reduce((acc, v) => {
+        if (v in acc) acc[v]++
+        else acc[v] = 1
+        return acc
+    }, {})
+    const languages = []
+    for (let i = language.length - 1; i >= 0; i--) {
+        const item = language[i];
+        languages.unshift(`${item}_${languageCounts[item]--}`);
+    }
     for (let i = 0; i < subtitle.length; i++) {
         const line = {}
         line.start = subtitle[i].attributes.i ? `0${subtitle[i].attributes.i}` : ''
         line.end = subtitle[i].attributes.o ? `0${subtitle[i].attributes.o}` : ''
-        subtitle[i].elements.forEach((v) => {
-            line[v.attributes.g] = v.elements ? v.elements[0].text.replaceAll('|', '\n').split('\n').map(v => v.trim()).join('\n') : ''
-            // TODO change KEY for line regarding languages key(numbering duplicates)
+        subtitle[i].elements.forEach((v, index) => {
+            line[languages[index]] = v.elements ? v.elements[0].text.replaceAll('|', '\n').split('\n').map(v => v.trim()).join('\n') : ''
         })
         items.push(line)
     }
-    return items
+    return {languages: languages, data: items}
 }

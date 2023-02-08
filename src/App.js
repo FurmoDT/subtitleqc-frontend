@@ -4,10 +4,10 @@ import Navbar from "./components/Navbar";
 import MainPage from "./pages/MainPage";
 import Production from "./pages/Production";
 import QualityControl from "./pages/QualityControl";
+import {publicUrl} from "./utils/config";
 
 function App() {
-    const public_url = process.env.REACT_APP_PUBLIC_URL
-    const basename = `/${public_url.split('/').slice(1).join('/')}`
+    const basename = `/${publicUrl.split('/').slice(1).join('/')}`
     return <div style={{overflow: 'hidden', width: '100vw', height: '100vh'}}>
         <BrowserRouter basename={basename}>
             <Routes>

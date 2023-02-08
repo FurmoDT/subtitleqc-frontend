@@ -2,16 +2,25 @@ import Handsontable from 'handsontable';
 import '../../css/Handsontable.css'
 import {useEffect, useRef} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
+import {languageCodes} from "../../utils/config";
 
 let hot
 
 
 const LanguageWindow = (props) => {
+    const setLanguages = props.setLanguages
     const containerMain = useRef(null);
     useEffect(() => {
-        if (props.languageFile) props.cellDataRef.current = props.languageFile
-        //TODO set props.languages with existing languages
-    }, [props.cellDataRef, props.languageFile])
+        if (props.languageFile) {
+            props.cellDataRef.current = props.languageFile.data
+            setLanguages(props.languageFile.languages.map((value) => {
+                const [code, counter] = value.split('_')
+                return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
+            }))
+        } else {
+            if (hot) hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000'], [0, 2, '-'.repeat(100)]])
+        }
+    }, [setLanguages, props.cellDataRef, props.languageFile])
 
     useEffect(() => {
         if (hot) hot.destroy()
@@ -37,11 +46,11 @@ const LanguageWindow = (props) => {
                 {data: 'start', type: 'text', renderer: tcInRenderer},
                 {data: 'end', type: 'text', renderer: tcOutRenderer},
                 ...props.languages.map((value) => {
-                    return {data: value.id, type: 'text', renderer: textRenderer}
+                    return {data: `${value.code}_${value.counter}`, type: 'text', renderer: textRenderer}
                 }),
                 {data: 'error', type: 'text'},
             ],
-            colHeaders: ['TC_IN', 'TC_OUT', ...props.languages.map((v) => v.name), 'error'],
+            colHeaders: ['TC_IN', 'TC_OUT', ...props.languages.map((value) => value.name), 'error'],
             rowHeaders: true,
             stretchH: 'last',
             width: props.size.width,
@@ -50,7 +59,6 @@ const LanguageWindow = (props) => {
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             manualColumnResize: true,
         })
-        hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000'], [0, 2, '-'.repeat(100)]])
     }, [props.size, props.cellDataRef, props.hotFontSize, props.languageFile, props.languages])
 
     return <div ref={containerMain}/>

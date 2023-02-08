@@ -14,7 +14,7 @@ const LanguageWindow = (props) => {
         if (props.languageFile) {
             props.cellDataRef.current = props.languageFile.data
             setLanguages(props.languageFile.languages.map((value) => {
-                const [code, counter] = value.split('_')
+                const [code, counter] = value.split('_').map((value, index) => (!index ? (languageCodes.hasOwnProperty(value) ? value : 'other') : value))
                 return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
             }))
         } else {

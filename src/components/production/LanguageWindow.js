@@ -10,17 +10,6 @@ let hot
 const LanguageWindow = (props) => {
     const setLanguages = props.setLanguages
     const containerMain = useRef(null);
-    useEffect(() => {
-        if (props.languageFile) {
-            props.cellDataRef.current = props.languageFile.data
-            setLanguages(props.languageFile.languages.map((value) => {
-                const [code, counter] = value.split('_').map((value, index) => (!index ? (languageCodes.hasOwnProperty(value) ? value : 'other') : value))
-                return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
-            }))
-        } else {
-            if (hot) hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000'], [0, 2, '-'.repeat(100)]])
-        }
-    }, [setLanguages, props.cellDataRef, props.languageFile])
 
     useEffect(() => {
         if (hot) hot.destroy()
@@ -60,6 +49,18 @@ const LanguageWindow = (props) => {
             manualColumnResize: true,
         })
     }, [props.size, props.cellDataRef, props.hotFontSize, props.languageFile, props.languages])
+
+    useEffect(() => {
+        if (props.languageFile) {
+            props.cellDataRef.current = props.languageFile.data
+            setLanguages(props.languageFile.languages.map((value) => {
+                const [code, counter] = value.split('_').map((value, index) => (!index ? (languageCodes.hasOwnProperty(value) ? value : 'other') : value))
+                return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
+            }))
+        } else {
+            if (hot) hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000'], [0, 2, '-'.repeat(100)]])
+        }
+    }, [setLanguages, props.cellDataRef, props.languageFile])
 
     return <div ref={containerMain}/>
 }

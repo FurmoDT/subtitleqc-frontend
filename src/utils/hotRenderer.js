@@ -1,9 +1,20 @@
+const setTDColor = (td, backgroundColor) => {
+    td.style.backgroundColor = backgroundColor
+    if (backgroundColor === 'red') td.style.color = 'white'
+}
+
+const isTCValid = (timecode) => {
+    return timecode?.match(`^(\\d{2}:\\d{2}:\\d{2}[\\.|,]\\d{3})`)
+}
+
 export const tcInValidator = (r, c, v, td, fontSize) => {
     td.style.fontSize = fontSize
+    if (!isTCValid(v)) setTDColor(td, 'red')
 }
 
 export const tcOutValidator = (r, c, v, td, fontSize) => {
     td.style.fontSize = fontSize
+    if (!isTCValid(v)) setTDColor(td, 'red')
 }
 
 export const textValidator = (r, c, v, td, fontSize) => {

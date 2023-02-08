@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     MDBBtn,
     MDBDropdown,
@@ -18,9 +18,7 @@ import {ReactSortable} from "react-sortablejs";
 import {languageCodes} from "../../../utils/config";
 
 const LanguagesModal = (props) => {
-    const [languages, setLanguages] = useState([...props.languages.map((value) => {
-        return Object.assign({}, value)
-    })])
+    const [languages, setLanguages] = useState([])
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
     const languageCounter = (code) => {
@@ -33,6 +31,9 @@ const LanguagesModal = (props) => {
             code: code, name: name + (counter > 1 ? `(${counter})` : ''), counter: counter
         }])
     }
+    useEffect(() => {
+        setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
+    }, [props.languages])
     return <>
         <MDBBtn style={{marginLeft: '5px'}} size={'sm'} onClick={toggleShow}>LANGUAGES</MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>

@@ -9,12 +9,12 @@ const isTCValid = (timecode) => {
 
 export const tcInValidator = (r, c, v, td, fontSize) => {
     td.style.fontSize = fontSize
-    if (!isTCValid(v)) setTDColor(td, 'red')
+    if (v && !isTCValid(v)) setTDColor(td, 'red')
 }
 
 export const tcOutValidator = (r, c, v, td, fontSize) => {
     td.style.fontSize = fontSize
-    if (!isTCValid(v)) setTDColor(td, 'red')
+    if (v && !isTCValid(v)) setTDColor(td, 'red')
 }
 
 export const textValidator = (r, c, v, td, fontSize) => {

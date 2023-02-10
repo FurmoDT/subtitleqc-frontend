@@ -21,13 +21,15 @@ const MediaWindow = (props) => {
     const onPlay = useCallback(() => {
         if (props.waveformRef.current) props.waveformRef.current.play()
     }, [props.waveformRef])
+    const onProgress = useCallback((state) => {
+    }, [])
     return <div style={{
         width: '100%', height: '100%', justifyContent: 'center', alignItems: 'end', display: 'flex',
         borderStyle: 'solid', borderWidth: 'thin'
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
                      controls={true} progressInterval={1} url={props.mediaFile}
-                     onSeek={onSeek} onPause={onPause} onPlay={onPlay}
+                     onSeek={onSeek} onPause={onPause} onPlay={onPlay} onProgress={onProgress}
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
         <label ref={subtitleLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>

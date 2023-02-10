@@ -1,15 +1,19 @@
 import ReactPlayer from "react-player";
-import {useCallback} from "react";
+import {useCallback, useRef} from "react";
+import {bisect, TCtoSec} from "../../utils/functions";
 
 
 const MediaWindow = (props) => {
-    const onSeek = useCallback(() => {
+    let subtitleIndex = 0
+    const subtitleLabelRef = useRef(null)
+    const onSeek = useCallback((seconds) => {
         if (props.isWaveSeeking.current) {
             props.isWaveSeeking.current = false
             return
         }
         props.isVideoSeeking.current = true
-        props.waveformRef.current.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
+        props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
+        subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
     }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking])
     const onPause = useCallback(() => {
         if (props.waveformRef.current) props.waveformRef.current.pause()
@@ -25,7 +29,8 @@ const MediaWindow = (props) => {
                      controls={true} progressInterval={1} url={props.mediaFile}
                      onSeek={onSeek} onPause={onPause} onPlay={onPlay}
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
-        <label style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}>sample</label>
+        <label ref={subtitleLabelRef}
+               style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>
     </div>
 };
 

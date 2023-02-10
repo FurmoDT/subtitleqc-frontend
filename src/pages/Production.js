@@ -55,7 +55,8 @@ const Production = () => {
                           primaryPaneMaxWidth={'100%'} primaryPaneMinWidth={0}>
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'}>
-                            <MediaWindow playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
+                            <MediaWindow cellDataRef={cellDataRef}
+                                         playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
                                          isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                             <InformationWindow/>
                         </Splitter>

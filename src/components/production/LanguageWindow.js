@@ -35,9 +35,12 @@ const LanguageWindow = (props) => {
                 {data: 'start', type: 'text', renderer: tcInRenderer},
                 {data: 'end', type: 'text', renderer: tcOutRenderer},
                 ...props.languages.map((value) => {
-                    return {data: `${value.code}_${value.counter}`, type: 'text', renderer: textRenderer}
+                    return {
+                        data: `${value.code}_${value.counter}`, type: 'text',
+                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
+                    }
                 }),
-                {data: 'error', type: 'text'},
+                // {data: 'error', type: 'text'},
             ],
             colHeaders: ['TC_IN', 'TC_OUT', ...props.languages.map((value) => value.name), 'error'],
             rowHeaders: true,
@@ -58,7 +61,7 @@ const LanguageWindow = (props) => {
                 return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
             }))
         } else {
-            if (hot) hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000'], [0, 2, '-'.repeat(100)]])
+            if (hot) hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000']])
         }
     }, [setLanguages, props.cellDataRef, props.languageFile])
 

@@ -1,5 +1,5 @@
 export const parseSrt = (srtText) => {
-    const language = 'text_1'
+    const language = 'other_1'
     const normalizedSrtData = srtText.replace(/\r\n/g, '\n');
     const lines = normalizedSrtData.split('\n');
     const items = [];

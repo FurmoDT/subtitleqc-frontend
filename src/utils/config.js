@@ -1,10 +1,18 @@
 export const languageCodes = {
-    text: 'TEXT',
+    nar: '화자',
     koKR: '한국어',
     enUS: '영어',
+    jaJP: '일어',
     zhCN: '중국어',
     viVN: '베트남어',
-    other: '기타'
+    thTH: '태국어',
+    idID: '인니어',
+    arAE: '아랍어',
+    ruRU: '러시아어',
+    frFR: '프랑스어',
+    esES: '스페인어',
+    memo: '메모',
+    other: '기타',
 }
 
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL

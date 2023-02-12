@@ -76,7 +76,6 @@ const Production = () => {
                                       }}/>
                             <LanguagesModal languages={languages} setLanguages={setLanguages}/>
                             <MDBBtn style={{marginLeft: '5px'}} size={'sm'} disabled>Download</MDBBtn>
-                            <label style={{position: 'absolute', left: '50%'}}>TransToolbar</label>
                         </div>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
                                         languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>

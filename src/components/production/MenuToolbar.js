@@ -7,7 +7,9 @@ const MenuToolbar = () => {
         borderStyle: 'solid',
         borderWidth: 'thin',
         backgroundColor: 'lightgray'
-    }}>MenuToolbar</div>
+    }}>
+        <label style={{position: 'absolute', left: '50%'}}>MenuToolbar</label>
+    </div>
 };
 
 export default MenuToolbar

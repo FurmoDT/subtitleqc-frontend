@@ -6,12 +6,12 @@ import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRende
 import {languageCodes} from "../../utils/config";
 
 let hot
+const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
 
 const LanguageWindow = (props) => {
     const setLanguages = props.setLanguages
     const containerMain = useRef(null);
-    const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
     useEffect(() => {
         if (hot) hot.destroy()

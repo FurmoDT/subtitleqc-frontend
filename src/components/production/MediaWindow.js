@@ -2,9 +2,9 @@ import ReactPlayer from "react-player";
 import {useCallback, useRef} from "react";
 import {bisect, TCtoSec} from "../../utils/functions";
 
+let subtitleIndex = 0
 
 const MediaWindow = (props) => {
-    let subtitleIndex = 0
     const subtitleLabelRef = useRef(null)
     const onSeek = useCallback((seconds) => {
         if (props.isWaveSeeking.current) {
@@ -14,7 +14,7 @@ const MediaWindow = (props) => {
         props.isVideoSeeking.current = true
         props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
         subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
-    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking])
+    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef])
     const onPause = useCallback(() => {
         if (props.waveformRef.current) props.waveformRef.current.pause()
     }, [props.waveformRef])

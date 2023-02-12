@@ -119,7 +119,7 @@ const TimelineWindow = (props) => {
         });
     }, [props.mediaFile, props.playerRef, props.waveformRef, props.isVideoSeeking, props.isWaveSeeking]);
     return <div style={{width: '100%', height: 150}} onWheel={onWheel}>
-        <MDBBtn ref={buttonRef} disabled={!props.mediaFile} onClick={() => {
+        <MDBBtn ref={buttonRef} color={'secondary'} disabled={!props.mediaFile} onClick={() => {
             wavesurfer.load(document.querySelector('video'))
         }}>Generate Waveform</MDBBtn>
         <div ref={waveformRef}/>

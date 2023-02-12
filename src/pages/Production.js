@@ -66,8 +66,7 @@ const Production = () => {
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
                         <div style={{
-                            flexDirection: 'row', display: 'flex', alignItems: 'center', height: '40px',
-                            position: 'relative'
+                            flexDirection: 'row', display: 'flex', alignItems: 'center', height: '40px'
                         }}>
                             <MDBInput wrapperStyle={{marginLeft: '5px'}} style={{width: '60px'}} size={'sm'}
                                       label='Font Size' type='number' defaultValue={13} min={10} max={25}

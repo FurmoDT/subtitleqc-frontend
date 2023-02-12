@@ -1,5 +1,6 @@
 import Handsontable from 'handsontable';
 import '../../css/Handsontable.css'
+import * as Grammarly from '@grammarly/editor-sdk'
 import {useEffect, useRef} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
 import {languageCodes} from "../../utils/config";
@@ -10,6 +11,7 @@ let hot
 const LanguageWindow = (props) => {
     const setLanguages = props.setLanguages
     const containerMain = useRef(null);
+    const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
     useEffect(() => {
         if (hot) hot.destroy()
@@ -50,6 +52,21 @@ const LanguageWindow = (props) => {
             minSpareRows: 2,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             manualColumnResize: true,
+        })
+        let grammarlyPlugin = null
+        hot.addHook('afterBeginEditing', (row) => {
+            grammarly.then(r => {
+                grammarlyPlugin = r.addPlugin(
+                    containerMain.current.querySelector('textarea'),
+                    {
+                        documentDialect: "american",
+                    },
+                )
+                containerMain.current.querySelector('grammarly-editor-plugin').querySelector('textarea').focus()
+            });
+        })
+        hot.addHook('afterChange', (changes) => {
+            grammarlyPlugin?.disconnect()
         })
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages])
 

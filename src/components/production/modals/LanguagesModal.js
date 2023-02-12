@@ -35,7 +35,7 @@ const LanguagesModal = (props) => {
         setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
     }, [props.languages])
     return <>
-        <MDBBtn style={{marginLeft: '5px'}} size={'sm'} onClick={toggleShow}>LANGUAGES</MDBBtn>
+        <MDBBtn style={{marginLeft: '5px'}} rounded outline size={'sm'} onClick={toggleShow}>LANGUAGES</MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>
                 <MDBModalContent>

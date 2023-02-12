@@ -75,7 +75,8 @@ const Production = () => {
                                           SetHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
                                       }}/>
                             <LanguagesModal languages={languages} setLanguages={setLanguages}/>
-                            <MDBBtn style={{marginLeft: '5px'}} size={'sm'} disabled>Download</MDBBtn>
+                            <MDBBtn style={{marginLeft: '5px'}} outline size={'sm'} disabled>셀 나누기</MDBBtn>
+                            <MDBBtn style={{marginLeft: '5px'}} outline size={'sm'} disabled>셀 합치기</MDBBtn>
                         </div>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
                                         languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>

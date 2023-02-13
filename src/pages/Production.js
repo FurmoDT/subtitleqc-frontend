@@ -25,7 +25,7 @@ const Production = () => {
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
     const handleKeyDown = useCallback((event) => {
-        if (event.code === 'Space') {
+        if (event.code === 'Space' && event.target.tagName !== 'TEXTAREA') {
             if (playerRef.current.getInternalPlayer()?.paused) playerRef.current.getInternalPlayer().play()
             else playerRef.current.getInternalPlayer()?.pause()
         }

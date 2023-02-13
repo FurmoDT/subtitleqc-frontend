@@ -101,7 +101,8 @@ const TimelineWindow = (props) => {
         wavesurfer.on('ready', function () {
             wavesurfer.setMute(true)
             props.waveformRef.current = wavesurfer
-            wavesurfer.seekTo(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
+            props.playerRef.current.getInternalPlayer().pause()
+            wavesurfer.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
         });
         wavesurfer.on('seek', () => {
             if (!wavesurfer.isReady) return
@@ -111,7 +112,7 @@ const TimelineWindow = (props) => {
             }
             props.isWaveSeeking.current = true
             props.playerRef.current.getInternalPlayer().pause()
-            props.playerRef.current.seekTo(wavesurfer.getCurrentTime())
+            props.playerRef.current.seekTo(wavesurfer.getCurrentTime(), 'seconds')
         })
         wavesurfer.on('audioprocess', function () {
             const curWidth = wavesurfer.drawer.wrapper.scrollWidth * wavesurfer.getCurrentTime() / wavesurfer.getDuration()

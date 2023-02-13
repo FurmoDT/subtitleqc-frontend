@@ -56,3 +56,17 @@ export const parseFsp = (fspJson) => {
     }
     return {languages: languages, data: items}
 }
+
+
+export function toSrt(array, language) {
+    let res = "";
+    for (let i = 0; i < array.length; i++) {
+        let s = array[i];
+        if (s.start && s.end) {
+            res += i + 1 + "\r\n";
+            res += s.start + " --> " + s.end + "\r\n";
+            res += (s[`${language.code}_${language.counter}`]?.replace("\n", "\r\n") || '') + "\r\n\r\n"
+        }
+    }
+    return res;
+}

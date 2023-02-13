@@ -46,7 +46,7 @@ const Production = () => {
         };
     }, []);
     return <>
-        <MenuToolbar/>
+        <MenuToolbar cellDataRef={cellDataRef} languages={languages}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
             width: '100vw', height: 'calc(100vh - 100px)', position: 'relative'

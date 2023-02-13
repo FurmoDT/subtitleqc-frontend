@@ -7,8 +7,9 @@ import {useEffect, useRef, useState} from "react";
 import {setDropzone} from "../utils/setDropzone";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
-import {MDBBtn, MDBInput} from "mdb-react-ui-kit";
+import {MDBBtn, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
 import LanguagesModal from "../components/production/modals/LanguagesModal";
+import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -74,8 +75,16 @@ const Production = () => {
                                           SetHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
                                       }}/>
                             <LanguagesModal languages={languages} setLanguages={setLanguages}/>
-                            <MDBBtn style={{marginLeft: '5px'}} outline size={'sm'} disabled>셀 나누기</MDBBtn>
-                            <MDBBtn style={{marginLeft: '5px'}} outline size={'sm'} disabled>셀 합치기</MDBBtn>
+                            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 나누기'>
+                                <MDBBtn color="link" size={'sm'} onClick={() => {
+                                    console.log('줄 나누기')
+                                }} disabled><TbArrowsSplit2 size={20}/></MDBBtn>
+                            </MDBTooltip>
+                            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 합치기'>
+                                <MDBBtn color="link" size={'sm'} onClick={() => {
+                                    console.log('줄 합치기')
+                                }} disabled><TbArrowsJoin2 size={20}/></MDBBtn>
+                            </MDBTooltip>
                         </div>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
                                         languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>

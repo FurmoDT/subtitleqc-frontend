@@ -3,7 +3,7 @@ import LanguageWindow from "../components/production/LanguageWindow";
 import MediaWindow from "../components/production/MediaWindow";
 import MenuToolbar from "../components/production/MenuToolbar";
 import TimelineWindow from "../components/production/TimelineWindow";
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {setDropzone} from "../utils/setDropzone";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
@@ -24,6 +24,18 @@ const Production = () => {
     const [hotFontSize, SetHotFontSize] = useState('13px')
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
+    const handleKeyDown = useCallback((event) => {
+        if (event.code === 'Space') {
+            if (playerRef.current.getInternalPlayer()?.paused) playerRef.current.getInternalPlayer().play()
+            else playerRef.current.getInternalPlayer()?.pause()
+        }
+    }, [])
+    useEffect(() => {
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
     useEffect(() => {
         setDropzone({
             element: dropzoneRef.current, setMediaFile: (value) => {

@@ -1,19 +1,24 @@
 import ReactPlayer from "react-player";
-import {useCallback, useRef} from "react";
+import {useCallback, useEffect, useRef} from "react";
 import {bisect, TCtoSec} from "../../utils/functions";
+import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
 
 let subtitleIndex = 0
+let subtitleLanguage = null
 
 const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
     const onSeek = useCallback((seconds) => {
+        subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
+        const row = props.cellDataRef.current[subtitleIndex]
+        if (seconds >= TCtoSec(row.start) && seconds <= TCtoSec(row.end)) subtitleLabelRef.current.innerText = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
+        else subtitleLabelRef.current.innerText = ''
         if (props.isWaveSeeking.current) {
             props.isWaveSeeking.current = false
             return
         }
         props.isVideoSeeking.current = true
         props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
-        subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
     }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef])
     const onPause = useCallback(() => {
         if (props.waveformRef.current) props.waveformRef.current.pause()
@@ -22,7 +27,16 @@ const MediaWindow = (props) => {
         if (props.waveformRef.current) props.waveformRef.current.play()
     }, [props.waveformRef])
     const onProgress = useCallback((state) => {
-    }, [])
+        const row = props.cellDataRef.current[subtitleIndex]
+        if (state.playedSeconds >= TCtoSec(row.start) && state.playedSeconds <= TCtoSec(row.end)) {
+            const text = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
+            if (subtitleLabelRef.current.innerText !== text) subtitleLabelRef.current.innerText = text
+        } else subtitleLabelRef.current.innerText = ''
+        if (state.playedSeconds >= TCtoSec(row.end)) subtitleIndex += 1
+    }, [props.cellDataRef])
+    useEffect(() => {
+        subtitleLanguage = `${props.languages[0].code}_${props.languages[0].counter}`
+    }, [props.languages])
     return <div style={{
         width: '100%', height: '100%', justifyContent: 'center', alignItems: 'end', display: 'flex',
         borderStyle: 'solid', borderWidth: 'thin'
@@ -33,6 +47,22 @@ const MediaWindow = (props) => {
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
         <label ref={subtitleLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>
+        <MDBDropdown style={{position: 'absolute', top: 5, right: 5}}>
+            <MDBDropdownToggle color={'none'} tag={'section'}>
+                <MDBBtn style={{color: 'white'}} tag='a' color={'none'}>
+                    <MDBIcon fas icon='globe' size={'lg'}/>
+                </MDBBtn>
+            </MDBDropdownToggle>
+            <MDBDropdownMenu>
+                {
+                    props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
+                        return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
+                            subtitleLanguage = `${value.code}_${value.counter}`
+                        }}>{value.name}</MDBDropdownItem>
+                    })
+                }
+            </MDBDropdownMenu>
+        </MDBDropdown>
     </div>
 };
 

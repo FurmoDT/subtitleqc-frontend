@@ -13,7 +13,7 @@ const MediaWindow = (props) => {
             props.waveformRef.current.setPlaybackRate(event)
             props.waveformRef.current.seekTo(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
         }
-    }, [props.waveformRef])
+    }, [props.waveformRef, props.playerRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
         const row = props.cellDataRef.current[subtitleIndex]

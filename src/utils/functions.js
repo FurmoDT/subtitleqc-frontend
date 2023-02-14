@@ -9,11 +9,18 @@ export const bisect = (arr, target) => {
     return left
 };
 
-export const TCtoSec = (tc) => {
+export const tcToSec = (tc) => {
     try {
         const t = tc.split(':')
         return Number(t[0]) * 60 * 60 + Number(t[1]) * 60 + Number(t[2].replace(',', '.'))
     } catch (error) {
         return NaN
     }
+}
+
+export const secToTc = (sec) => {
+    const h = Math.floor(sec / 3600).toString().padStart(2, '0')
+    const m = Math.floor((sec % 3600) / 60).toString().padStart(2, '0')
+    const s = (sec % 60).toFixed(3).padStart(6, '0')
+    return `${h}:${m}:${s}`
 }

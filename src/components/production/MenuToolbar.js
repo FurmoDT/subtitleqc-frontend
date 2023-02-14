@@ -11,7 +11,7 @@ const MenuToolbar = (props) => {
         backgroundColor: 'lightgray'
     }}>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='다운로드'>
-            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'secondary'} onClick={() => {
+            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
                 props.languages.forEach((value) => {
                     const fileData = toSrt(props.cellDataRef.current, value)
                     const blob = new Blob([fileData], {type: "text/plain"})
@@ -25,7 +25,11 @@ const MenuToolbar = (props) => {
                 <MDBIcon fas icon='download' size={'lg'}/>
             </MDBBtn>
         </MDBTooltip>
-        <MDBBtn style={{marginLeft: '5px'}} outline size={'sm'} disabled>Shortcuts</MDBBtn>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='단축키'>
+            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} disabled>
+                <MDBIcon fas icon="keyboard"/>
+            </MDBBtn>
+        </MDBTooltip>
         <label style={{position: 'absolute', left: '50%'}}>MenuToolbar</label>
     </div>
 };

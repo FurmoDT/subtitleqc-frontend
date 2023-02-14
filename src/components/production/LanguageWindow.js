@@ -5,7 +5,6 @@ import {useEffect, useRef} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
 import {languageCodes} from "../../utils/config";
 
-let hot
 const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
 
@@ -14,7 +13,7 @@ const LanguageWindow = (props) => {
     const containerMain = useRef(null);
 
     useEffect(() => {
-        if (hot) hot.destroy()
+        props.hotRef.current?.destroy()
 
         function tcInRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
@@ -31,7 +30,7 @@ const LanguageWindow = (props) => {
             textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
         }
 
-        hot = new Handsontable(containerMain.current, {
+        props.hotRef.current = new Handsontable(containerMain.current, {
             data: props.cellDataRef.current,
             columns: [
                 {data: 'start', type: 'text', renderer: tcInRenderer},
@@ -54,7 +53,7 @@ const LanguageWindow = (props) => {
             manualColumnResize: true,
         })
         let grammarlyPlugin = null
-        hot.addHook('afterBeginEditing', (row) => {
+        props.hotRef.current.addHook('afterBeginEditing', (row) => {
             grammarly.then(r => {
                 grammarlyPlugin = r.addPlugin(
                     containerMain.current.querySelector('textarea'),
@@ -65,10 +64,14 @@ const LanguageWindow = (props) => {
                 containerMain.current.querySelector('grammarly-editor-plugin').querySelector('textarea').focus()
             });
         })
-        hot.addHook('afterChange', (changes) => {
+        props.hotRef.current.addHook('afterChange', (changes) => {
             grammarlyPlugin?.disconnect()
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages])
+        props.hotRef.current.addHook('afterSelection', (row, column) => {
+            props.hotSelectionRef.current.row = row
+            props.hotSelectionRef.current.column = column
+        })
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef])
 
     useEffect(() => {
         if (props.languageFile) {
@@ -78,9 +81,9 @@ const LanguageWindow = (props) => {
                 return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
             }))
         } else {
-            if (hot) hot.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000']])
+            props.hotRef.current?.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000']])
         }
-    }, [setLanguages, props.cellDataRef, props.languageFile])
+    }, [setLanguages, props.cellDataRef, props.languageFile, props.hotRef])
 
     return <div ref={containerMain}/>
 }

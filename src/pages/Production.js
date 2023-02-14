@@ -19,6 +19,8 @@ const Production = () => {
     const [languageFile, setLanguageFile] = useState(null)
     const [languages, setLanguages] = useState([{code: 'other', name: '기타', counter: 1}])
     const cellDataRef = useRef(Array.from({length: 100}, () => ({})))
+    const hotRef = useRef(null)
+    const hotSelectionRef = useRef({row: null, column: null})
     const [hotFontSize, setHotFontSize] = useState('13px')
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
@@ -26,6 +28,10 @@ const Production = () => {
         if (event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO') {
             if (playerRef.current.getInternalPlayer()?.paused) playerRef.current.getInternalPlayer().play()
             else playerRef.current.getInternalPlayer()?.pause()
+        }
+        if (event.ctrlKey && event.key === 'f') {
+            event.preventDefault();
+            console.log('find')
         }
     }, [])
     useEffect(() => {
@@ -76,8 +82,11 @@ const Production = () => {
                         flexDirection: 'column', display: 'flex', width: '100%', height: '100%',
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
-                        <TransToolbar setHotFontSize={setHotFontSize} languages={languages} setLanguages={setLanguages}/>
+                        <TransToolbar setHotFontSize={setHotFontSize} cellDataRef={cellDataRef} playerRef={playerRef}
+                                      hotRef={hotRef} hotSelectionRef={hotSelectionRef}
+                                      languages={languages} setLanguages={setLanguages}/>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
+                                        hotRef={hotRef} hotSelectionRef={hotSelectionRef}
                                         languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}

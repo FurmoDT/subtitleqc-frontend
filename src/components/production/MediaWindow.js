@@ -1,6 +1,6 @@
 import ReactPlayer from "react-player";
 import {useCallback, useEffect, useRef} from "react";
-import {bisect, TCtoSec} from "../../utils/functions";
+import {bisect, tcToSec} from "../../utils/functions";
 import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
 
 let subtitleIndex = 0
@@ -10,7 +10,7 @@ const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
     const setSubtitleLabel = useCallback((seconds) => {
         const row = props.cellDataRef.current[subtitleIndex]
-        if (seconds >= TCtoSec(row.start) && seconds <= TCtoSec(row.end)) subtitleLabelRef.current.innerText = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
+        if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) subtitleLabelRef.current.innerText = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
         else subtitleLabelRef.current.innerText = ''
     }, [props.cellDataRef])
     const onPlaybackRateChange = useCallback((event) => {
@@ -20,7 +20,7 @@ const MediaWindow = (props) => {
         }
     }, [props.waveformRef, props.playerRef])
     const onSeek = useCallback((seconds) => {
-        subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
+        subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds) - 1, 0)
         setSubtitleLabel(seconds)
         if (props.isWaveSeeking.current) {
             props.isWaveSeeking.current = false
@@ -37,7 +37,7 @@ const MediaWindow = (props) => {
     }, [props.waveformRef])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
-        if (state.playedSeconds >= TCtoSec(props.cellDataRef.current[subtitleIndex].end)) subtitleIndex += 1
+        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[subtitleIndex].end)) subtitleIndex += 1
     }, [props.cellDataRef, setSubtitleLabel])
     useEffect(() => {
         subtitleLanguage = `${props.languages[0].code}_${props.languages[0].counter}`

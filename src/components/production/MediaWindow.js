@@ -8,6 +8,11 @@ let subtitleLanguage = null
 
 const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
+    const setSubtitleLabel = useCallback((seconds) => {
+        const row = props.cellDataRef.current[subtitleIndex]
+        if (seconds >= TCtoSec(row.start) && seconds <= TCtoSec(row.end)) subtitleLabelRef.current.innerText = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
+        else subtitleLabelRef.current.innerText = ''
+    }, [props.cellDataRef])
     const onPlaybackRateChange = useCallback((event) => {
         if (props.waveformRef.current) {
             props.waveformRef.current.setPlaybackRate(event)
@@ -16,16 +21,14 @@ const MediaWindow = (props) => {
     }, [props.waveformRef, props.playerRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
-        const row = props.cellDataRef.current[subtitleIndex]
-        if (seconds >= TCtoSec(row.start) && seconds <= TCtoSec(row.end)) subtitleLabelRef.current.innerText = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
-        else subtitleLabelRef.current.innerText = ''
+        setSubtitleLabel(seconds)
         if (props.isWaveSeeking.current) {
             props.isWaveSeeking.current = false
             return
         }
         props.isVideoSeeking.current = true
         props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
-    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef])
+    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef, setSubtitleLabel])
     const onPause = useCallback(() => {
         props.waveformRef.current?.pause()
     }, [props.waveformRef])
@@ -33,13 +36,9 @@ const MediaWindow = (props) => {
         props.waveformRef.current?.play()
     }, [props.waveformRef])
     const onProgress = useCallback((state) => {
-        const row = props.cellDataRef.current[subtitleIndex]
-        if (state.playedSeconds >= TCtoSec(row.start) && state.playedSeconds <= TCtoSec(row.end)) {
-            const text = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
-            if (subtitleLabelRef.current.innerText !== text) subtitleLabelRef.current.innerText = text
-        } else subtitleLabelRef.current.innerText = ''
-        if (state.playedSeconds >= TCtoSec(row.end)) subtitleIndex += 1
-    }, [props.cellDataRef])
+        setSubtitleLabel(state.playedSeconds)
+        if (state.playedSeconds >= TCtoSec(props.cellDataRef.current[subtitleIndex].end)) subtitleIndex += 1
+    }, [props.cellDataRef, setSubtitleLabel])
     useEffect(() => {
         subtitleLanguage = `${props.languages[0].code}_${props.languages[0].counter}`
     }, [props.languages])
@@ -64,6 +63,7 @@ const MediaWindow = (props) => {
                     props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
                         return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
                             subtitleLanguage = `${value.code}_${value.counter}`
+                            if (props.playerRef.current.getInternalPlayer()?.paused) setSubtitleLabel(props.playerRef.current.getCurrentTime())
                         }}>{value.name}</MDBDropdownItem>
                     })
                 }

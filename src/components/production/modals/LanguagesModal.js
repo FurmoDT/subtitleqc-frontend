@@ -13,6 +13,7 @@ import {
     MDBModalFooter,
     MDBModalHeader,
     MDBModalTitle,
+    MDBTooltip,
 } from 'mdb-react-ui-kit';
 import {ReactSortable} from "react-sortablejs";
 import {languageCodes} from "../../../utils/config";
@@ -35,7 +36,11 @@ const LanguagesModal = (props) => {
         setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
     }, [props.languages])
     return <>
-        <MDBBtn style={{marginLeft: '5px'}} color={'secondary'} size={'sm'} onClick={toggleShow}>LANGUAGES</MDBBtn>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='언어 설정'>
+            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
+                <MDBIcon fas icon='globe' size={'lg'}/>
+            </MDBBtn>
+        </MDBTooltip>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>
                 <MDBModalContent>

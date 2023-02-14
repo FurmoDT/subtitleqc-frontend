@@ -4,7 +4,7 @@ import {MDBBtn} from "mdb-react-ui-kit";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 
 let wavesurfer
-let pxPerSec = 300
+let pxPerSec = 150
 
 function formatTimeCallback(seconds, pxPerSec) {
     seconds = Number(seconds);

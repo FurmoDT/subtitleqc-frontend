@@ -7,9 +7,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {setDropzone} from "../utils/setDropzone";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
-import {MDBBtn, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
-import LanguagesModal from "../components/production/modals/LanguagesModal";
-import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
+import TransToolbar from "../components/production/TransToolbar";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -21,7 +19,7 @@ const Production = () => {
     const [languageFile, setLanguageFile] = useState(null)
     const [languages, setLanguages] = useState([{code: 'other', name: '기타', counter: 1}])
     const cellDataRef = useRef(Array.from({length: 100}, () => ({})))
-    const [hotFontSize, SetHotFontSize] = useState('13px')
+    const [hotFontSize, setHotFontSize] = useState('13px')
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
     const handleKeyDown = useCallback((event) => {
@@ -35,7 +33,7 @@ const Production = () => {
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
-    }, []);
+    }, [handleKeyDown]);
     useEffect(() => {
         setDropzone({
             element: dropzoneRef.current, setMediaFile: (value) => {
@@ -78,26 +76,7 @@ const Production = () => {
                         flexDirection: 'column', display: 'flex', width: '100%', height: '100%',
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
-                        <div style={{
-                            flexDirection: 'row', display: 'flex', alignItems: 'center', height: '40px'
-                        }}>
-                            <MDBInput wrapperStyle={{marginLeft: '5px'}} style={{width: '60px'}} size={'sm'}
-                                      label='Font Size' type='number' defaultValue={13} min={10} max={25}
-                                      onChange={(event) => {
-                                          SetHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
-                                      }}/>
-                            <LanguagesModal languages={languages} setLanguages={setLanguages}/>
-                            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 나누기'>
-                                <MDBBtn color="link" size={'sm'} onClick={() => {
-                                    console.log('줄 나누기')
-                                }} disabled><TbArrowsSplit2 size={20}/></MDBBtn>
-                            </MDBTooltip>
-                            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 합치기'>
-                                <MDBBtn color="link" size={'sm'} onClick={() => {
-                                    console.log('줄 합치기')
-                                }} disabled><TbArrowsJoin2 size={20}/></MDBBtn>
-                            </MDBTooltip>
-                        </div>
+                        <TransToolbar setHotFontSize={setHotFontSize} languages={languages} setLanguages={setLanguages}/>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
                                         languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>

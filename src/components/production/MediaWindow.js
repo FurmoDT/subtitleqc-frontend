@@ -9,7 +9,10 @@ let subtitleLanguage = null
 const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
     const onPlaybackRateChange = useCallback((event) => {
-        if (props.waveformRef.current) props.waveformRef.current.setPlaybackRate(event)
+        if (props.waveformRef.current) {
+            props.waveformRef.current.setPlaybackRate(event)
+            props.waveformRef.current.seekTo(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
+        }
     }, [props.waveformRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
@@ -24,10 +27,10 @@ const MediaWindow = (props) => {
         props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
     }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef])
     const onPause = useCallback(() => {
-        if (props.waveformRef.current) props.waveformRef.current.pause()
+        props.waveformRef.current?.pause()
     }, [props.waveformRef])
     const onPlay = useCallback(() => {
-        if (props.waveformRef.current) props.waveformRef.current.play()
+        props.waveformRef.current?.play()
     }, [props.waveformRef])
     const onProgress = useCallback((state) => {
         const row = props.cellDataRef.current[subtitleIndex]

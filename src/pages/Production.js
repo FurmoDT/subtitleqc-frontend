@@ -28,7 +28,8 @@ const Production = () => {
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
     const handleKeyDown = useCallback((event) => {
-        if (event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO') {
+        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO') || event.key === 'F6') {
+            event.preventDefault();
             if (playerRef.current.getInternalPlayer()?.paused) playerRef.current.getInternalPlayer().play()
             else playerRef.current.getInternalPlayer()?.pause()
         }

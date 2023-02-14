@@ -8,6 +8,9 @@ let subtitleLanguage = null
 
 const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
+    const onPlaybackRateChange = useCallback((event) => {
+        if (props.waveformRef.current) props.waveformRef.current.setPlaybackRate(event)
+    }, [props.waveformRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => TCtoSec(value.start)), seconds) - 1, 0)
         const row = props.cellDataRef.current[subtitleIndex]
@@ -42,8 +45,8 @@ const MediaWindow = (props) => {
         borderStyle: 'solid', borderWidth: 'thin'
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
-                     controls={true} progressInterval={1} url={props.mediaFile}
-                     onSeek={onSeek} onPause={onPause} onPlay={onPlay} onProgress={onProgress}
+                     controls={true} progressInterval={1} url={props.mediaFile} onPause={onPause} onPlay={onPlay}
+                     onPlaybackRateChange={onPlaybackRateChange} onSeek={onSeek} onProgress={onProgress}
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
         <label ref={subtitleLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>

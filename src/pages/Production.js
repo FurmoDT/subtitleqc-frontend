@@ -21,6 +21,9 @@ const Production = () => {
     const cellDataRef = useRef(Array.from({length: 100}, () => ({})))
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({row: null, column: null})
+    const tcIoButtonRef = useRef(null)
+    const tcInButtonRef = useRef(null)
+    const tcOutButtonRef = useRef(null)
     const [hotFontSize, setHotFontSize] = useState('13px')
     const isVideoSeeking = useRef(false)
     const isWaveSeeking = useRef(false)
@@ -32,6 +35,18 @@ const Production = () => {
         if (event.ctrlKey && event.key === 'f') {
             event.preventDefault();
             console.log('find')
+        }
+        if (event.key === 'F9') {
+            event.preventDefault();
+            tcIoButtonRef.current.click()
+        }
+        if (event.key === 'F10') {
+            event.preventDefault();
+            tcInButtonRef.current.click()
+        }
+        if (event.key === 'F11') {
+            event.preventDefault();
+            tcOutButtonRef.current.click()
         }
     }, [])
     useEffect(() => {
@@ -83,7 +98,8 @@ const Production = () => {
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
                         <TransToolbar setHotFontSize={setHotFontSize} cellDataRef={cellDataRef} playerRef={playerRef}
-                                      hotRef={hotRef} hotSelectionRef={hotSelectionRef}
+                                      hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
+                                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       languages={languages} setLanguages={setLanguages}/>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
                                         hotRef={hotRef} hotSelectionRef={hotSelectionRef}

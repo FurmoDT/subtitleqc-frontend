@@ -15,7 +15,7 @@ const TransToolbar = (props) => {
                   }}/>
         <LanguagesModal languages={props.languages} setLanguages={props.setLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN&OUT'>
-            <MDBBtn color={'link'} size={'sm'} onClick={() => {
+            <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const row = props.hotSelectionRef.current.row
                 const tc = secToTc(props.playerRef.current?.getCurrentTime())
                 if (row != null) {
@@ -25,7 +25,7 @@ const TransToolbar = (props) => {
             }}><FiSun color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN'>
-            <MDBBtn color={'link'} size={'sm'} onClick={() => {
+            <MDBBtn ref={props.tcInButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const row = props.hotSelectionRef.current.row
                 if (row) {
                     props.hotRef.current.setDataAtCell(row, 0, secToTc(props.playerRef.current?.getCurrentTime()))
@@ -34,7 +34,7 @@ const TransToolbar = (props) => {
             }}><FiSunrise color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC OUT'>
-            <MDBBtn color={'link'} size={'sm'} onClick={() => {
+            <MDBBtn ref={props.tcOutButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const row = props.hotSelectionRef.current.row
                 if (row) {
                     props.hotRef.current.setDataAtCell(row, 1, secToTc(props.playerRef.current?.getCurrentTime()))

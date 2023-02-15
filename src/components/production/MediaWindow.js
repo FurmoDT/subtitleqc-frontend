@@ -20,7 +20,8 @@ const MediaWindow = (props) => {
         }
     }, [props.waveformRef, props.playerRef])
     const onSeek = useCallback((seconds) => {
-        subtitleIndex = Math.max(bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds) - 1, 0)
+        subtitleIndex = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
+        if (tcToSec(props.cellDataRef.current[subtitleIndex].start) !== seconds) subtitleIndex = Math.max(subtitleIndex - 1, 0)
         setSubtitleLabel(seconds)
         if (props.isWaveSeeking.current) {
             props.isWaveSeeking.current = false

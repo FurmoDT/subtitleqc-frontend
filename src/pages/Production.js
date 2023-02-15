@@ -20,7 +20,7 @@ const Production = () => {
     const [languages, setLanguages] = useState([{code: 'other', name: '기타', counter: 1}])
     const cellDataRef = useRef(Array.from({length: 100}, () => ({})))
     const hotRef = useRef(null)
-    const hotSelectionRef = useRef({row: null, column: null})
+    const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
     const tcOutButtonRef = useRef(null)
@@ -98,7 +98,7 @@ const Production = () => {
                         flexDirection: 'column', display: 'flex', width: '100%', height: '100%',
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
-                        <TransToolbar setHotFontSize={setHotFontSize} cellDataRef={cellDataRef} playerRef={playerRef}
+                        <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       languages={languages} setLanguages={setLanguages}/>

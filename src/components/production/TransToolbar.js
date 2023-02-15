@@ -16,17 +16,17 @@ const TransToolbar = (props) => {
         <LanguagesModal languages={props.languages} setLanguages={props.setLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN&OUT'>
             <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {
-                const row = props.hotSelectionRef.current.row
+                const row = props.hotSelectionRef.current.rowStart
                 const tc = secToTc(props.playerRef.current?.getCurrentTime())
                 if (row != null) {
                     props.hotRef.current.setDataAtCell([[row, 0, tc], ...(row - 1 < 0 ? [] : [[row - 1, 1, tc]])])
-                    props.hotRef.current.selectCell(props.hotSelectionRef.current.row + 1, 0)
+                    props.hotRef.current.selectCell(row + 1, 0)
                 }
             }}><FiSun color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN'>
             <MDBBtn ref={props.tcInButtonRef} color={'link'} size={'sm'} onClick={() => {
-                const row = props.hotSelectionRef.current.row
+                const row = props.hotSelectionRef.current.rowStart
                 if (row) {
                     props.hotRef.current.setDataAtCell(row, 0, secToTc(props.playerRef.current?.getCurrentTime()))
                     props.hotRef.current.selectCell(row, 0)
@@ -35,7 +35,7 @@ const TransToolbar = (props) => {
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC OUT'>
             <MDBBtn ref={props.tcOutButtonRef} color={'link'} size={'sm'} onClick={() => {
-                const row = props.hotSelectionRef.current.row
+                const row = props.hotSelectionRef.current.rowStart
                 if (row) {
                     props.hotRef.current.setDataAtCell(row, 1, secToTc(props.playerRef.current?.getCurrentTime()))
                     props.hotRef.current.selectCell(row + 1, 0)
@@ -49,8 +49,18 @@ const TransToolbar = (props) => {
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Merge Line'>
             <MDBBtn color={'link'} size={'sm'} onClick={() => {
-                console.log('줄 합치기')
-            }} disabled><TbArrowsJoin2 color={'black'} size={20}/></MDBBtn>
+                const selection = props.hotSelectionRef.current
+                const selectedData = props.hotRef.current.getData(selection.rowStart, 0, selection.rowEnd, props.hotRef.current.countCols())
+                const result = [];
+                for (let i = 2; i < selectedData[0].length - 1; i++) {
+                    const colValues = selectedData.map(row => row[i]);
+                    result.push(colValues.join('\n'));
+                }
+                props.hotRef.current.setDataAtCell([[selection.rowStart, 1, selectedData[selectedData.length - 1][1]], ...result.map((value, index) => {
+                    return [selection.rowStart, index + 2, value]
+                })])
+                props.hotRef.current.alter('remove_row', selection.rowStart + 1, selection.rowEnd - selection.rowStart)
+            }}><TbArrowsJoin2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
     </div>
 };

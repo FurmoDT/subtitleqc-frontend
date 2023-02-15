@@ -67,9 +67,11 @@ const LanguageWindow = (props) => {
         props.hotRef.current.addHook('afterChange', (changes) => {
             grammarlyPlugin?.disconnect()
         })
-        props.hotRef.current.addHook('afterSelection', (row, column) => {
-            props.hotSelectionRef.current.row = row
-            props.hotSelectionRef.current.column = column
+        props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
+            props.hotSelectionRef.current.rowStart = row
+            props.hotSelectionRef.current.columnStart = column
+            props.hotSelectionRef.current.rowEnd = row2
+            props.hotSelectionRef.current.columnEnd = column2
         })
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef])
 

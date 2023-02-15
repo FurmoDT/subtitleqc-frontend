@@ -11,8 +11,8 @@ export const languageCodes = {
     ruRU: '러시아어',
     frFR: '프랑스어',
     esES: '스페인어',
+    xxXX: '기타 언어',
     memo: '메모',
-    other: '기타',
 }
 
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL

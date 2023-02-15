@@ -17,7 +17,7 @@ const Production = () => {
     const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const [languages, setLanguages] = useState(localStorage.languages ? JSON.parse(localStorage.languages) : [{code: 'other', name: '기타', counter: 1}])
+    const [languages, setLanguages] = useState(localStorage.languages ? JSON.parse(localStorage.languages) : [{code: 'xxXX', name: '기타 언어', counter: 1}])
     const cellDataRef = useRef(localStorage.cellData ? JSON.parse(localStorage.cellData) : Array.from({length: 100}, () => ({})))
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})

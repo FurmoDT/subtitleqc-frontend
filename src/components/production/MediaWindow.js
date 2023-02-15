@@ -53,10 +53,10 @@ const MediaWindow = (props) => {
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
         <label ref={subtitleLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>
-        <MDBDropdown style={{position: 'absolute', top: 5, right: 5}}>
-            <MDBDropdownToggle color={'none'} tag={'section'}>
-                <MDBBtn style={{color: 'white'}} tag='a' color={'none'}>
-                    <MDBIcon fas icon='globe' size={'lg'}/>
+        <MDBDropdown style={{position: 'absolute', top: 0, right: 0}}>
+            <MDBDropdownToggle color={'link'}>
+                <MDBBtn tag='a' color={'none'} >
+                    <MDBIcon fas icon='globe' color={'white'} size={'lg'}/>
                 </MDBBtn>
             </MDBDropdownToggle>
             <MDBDropdownMenu>

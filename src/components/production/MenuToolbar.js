@@ -12,6 +12,7 @@ const MenuToolbar = (props) => {
     }}>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New File'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
+                props.setLanguages([{code: 'other', name: '기타', counter: 1}])
                 props.hotRef.current.clear()
                 localStorage.clear()
             }}>

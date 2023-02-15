@@ -83,8 +83,6 @@ const LanguageWindow = (props) => {
                 const [code, counter] = value.split('_').map((value, index) => (!index ? (languageCodes.hasOwnProperty(value) ? value : 'other') : value))
                 return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
             }))
-        } else {
-            props.hotRef.current?.setDataAtCell([[0, 0, '00:00:00,000'], [0, 1, '00:00:00,000']])
         }
     }, [setLanguages, props.cellDataRef, props.languageFile, props.hotRef])
 

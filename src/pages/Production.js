@@ -17,7 +17,7 @@ const Production = () => {
     const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const [languages, setLanguages] = useState([{code: 'other', name: '기타', counter: 1}])
+    const [languages, setLanguages] = useState(localStorage.languages ? JSON.parse(localStorage.languages) : [{code: 'other', name: '기타', counter: 1}])
     const cellDataRef = useRef(localStorage.cellData ? JSON.parse(localStorage.cellData) : Array.from({length: 100}, () => ({})))
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
@@ -66,6 +66,9 @@ const Production = () => {
         })
     }, [dropzoneRef])
     useEffect(() => {
+        localStorage.setItem('languages', JSON.stringify(languages))
+    }, [languages])
+    useEffect(() => {
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
                 const {width, height} = entry.contentRect;
@@ -78,7 +81,7 @@ const Production = () => {
         };
     }, []);
     return <>
-        <MenuToolbar cellDataRef={cellDataRef} languages={languages} hotRef={hotRef}/>
+        <MenuToolbar cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages} hotRef={hotRef}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
             width: '100vw', height: 'calc(100vh - 100px)', position: 'relative'

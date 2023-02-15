@@ -66,6 +66,7 @@ const LanguageWindow = (props) => {
         })
         props.hotRef.current.addHook('afterChange', (changes) => {
             grammarlyPlugin?.disconnect()
+            localStorage.setItem('cellData', JSON.stringify(props.cellDataRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             props.hotSelectionRef.current.rowStart = row

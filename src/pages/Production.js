@@ -18,7 +18,7 @@ const Production = () => {
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
     const [languages, setLanguages] = useState([{code: 'other', name: '기타', counter: 1}])
-    const cellDataRef = useRef(Array.from({length: 100}, () => ({})))
+    const cellDataRef = useRef(localStorage.cellData ? JSON.parse(localStorage.cellData) : Array.from({length: 100}, () => ({})))
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const tcIoButtonRef = useRef(null)
@@ -78,7 +78,7 @@ const Production = () => {
         };
     }, []);
     return <>
-        <MenuToolbar cellDataRef={cellDataRef} languages={languages}/>
+        <MenuToolbar cellDataRef={cellDataRef} languages={languages} hotRef={hotRef}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
             width: '100vw', height: 'calc(100vh - 100px)', position: 'relative'
@@ -102,8 +102,8 @@ const Production = () => {
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       languages={languages} setLanguages={setLanguages}/>
-                        <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} hotFontSize={hotFontSize}
-                                        hotRef={hotRef} hotSelectionRef={hotSelectionRef}
+                        <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} playerRef={playerRef}
+                                        hotFontSize={hotFontSize} hotRef={hotRef} hotSelectionRef={hotSelectionRef}
                                         languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}

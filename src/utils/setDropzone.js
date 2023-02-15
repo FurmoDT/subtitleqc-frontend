@@ -42,7 +42,7 @@ export const setDropzone = (props) => {
         const files = e.dataTransfer.files;
         Array.from(files).forEach((file) => {
             const fileFormat = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
-            if (['.mp4'].includes(fileFormat)) {
+            if (['.mp4', '.mov'].includes(fileFormat)) {
                 props.setMediaFile(URL.createObjectURL(file))
             } else if (['.fsp', '.srt'].includes(fileFormat)) {
                 const reader = new FileReader()

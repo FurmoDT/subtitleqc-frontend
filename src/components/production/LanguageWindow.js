@@ -83,6 +83,7 @@ const LanguageWindow = (props) => {
                 const [code, counter] = value.split('_').map((value, index) => (!index ? (languageCodes.hasOwnProperty(value) ? value : 'other') : value))
                 return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
             }))
+            localStorage.setItem('cellData', JSON.stringify(props.cellDataRef.current))
         }
     }, [setLanguages, props.cellDataRef, props.languageFile, props.hotRef])
 

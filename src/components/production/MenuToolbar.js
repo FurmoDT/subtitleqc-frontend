@@ -19,6 +19,11 @@ const MenuToolbar = (props) => {
                 <MDBIcon far icon="file"/>
             </MDBBtn>
         </MDBTooltip>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
+            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} disabled>
+                <MDBIcon fas icon="keyboard"/>
+            </MDBBtn>
+        </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Download'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
                 props.languages.forEach((value) => {
@@ -32,11 +37,6 @@ const MenuToolbar = (props) => {
                 })
             }}>
                 <MDBIcon fas icon='download' size={'lg'}/>
-            </MDBBtn>
-        </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
-            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} disabled>
-                <MDBIcon fas icon="keyboard"/>
             </MDBBtn>
         </MDBTooltip>
         <label style={{position: 'absolute', left: '50%'}}>MenuToolbar</label>

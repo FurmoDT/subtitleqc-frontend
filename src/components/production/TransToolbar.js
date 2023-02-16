@@ -49,6 +49,7 @@ const TransToolbar = (props) => {
                 props.hotRef.current.alter('insert_row', selection.rowStart + 1, 1)
                 const mid = secToTc(tcToSec(selectedData[0]) + Number(((tcToSec(selectedData[1]) - tcToSec(selectedData[0])) / 2).toFixed(3)))
                 props.hotRef.current.setDataAtCell([[selection.rowStart, 1, mid], [selection.rowStart + 1, 0, mid], [selection.rowStart + 1, 1, selectedData[1]]])
+                props.hotRef.current.selectCell(selection.rowStart + 1, selection.columnStart)
             }}><TbArrowsSplit2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Merge Line'>
@@ -64,6 +65,7 @@ const TransToolbar = (props) => {
                     return [selection.rowStart, index + 2, value]
                 })])
                 props.hotRef.current.alter('remove_row', selection.rowStart + 1, selection.rowEnd - selection.rowStart)
+                props.hotRef.current.selectCell(selection.rowStart, selection.columnEnd)
             }}><TbArrowsJoin2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
     </div>

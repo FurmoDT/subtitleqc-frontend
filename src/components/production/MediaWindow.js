@@ -41,7 +41,9 @@ const MediaWindow = (props) => {
         if (state.playedSeconds >= tcToSec(props.cellDataRef.current[subtitleIndex].end)) subtitleIndex += 1
     }, [props.cellDataRef, setSubtitleLabel])
     useEffect(() => {
-        subtitleLanguage = `${props.languages[0].code}_${props.languages[0].counter}`
+        if (!subtitleLanguage || !props.languages.map((value) => `${value.code}_${value.counter}`).includes(subtitleLanguage)) {
+            subtitleLanguage = props.languages[0] ? `${props.languages[0].code}_${props.languages[0].counter}` : null
+        }
     }, [props.languages])
     return <div style={{
         width: '100%', height: '100%', justifyContent: 'center', alignItems: 'end', display: 'flex',
@@ -55,7 +57,7 @@ const MediaWindow = (props) => {
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>
         <MDBDropdown style={{position: 'absolute', top: 0, right: 0}}>
             <MDBDropdownToggle color={'link'}>
-                <MDBBtn tag='a' color={'none'} >
+                <MDBBtn tag='a' color={'none'}>
                     <MDBIcon fas icon='globe' color={'white'} size={'lg'}/>
                 </MDBBtn>
             </MDBDropdownToggle>

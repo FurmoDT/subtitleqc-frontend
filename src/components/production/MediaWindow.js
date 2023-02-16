@@ -10,7 +10,10 @@ const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
     const setSubtitleLabel = useCallback((seconds) => {
         const row = props.cellDataRef.current[subtitleIndex]
-        if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) subtitleLabelRef.current.innerText = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
+        if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
+            const nextSubtitle = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
+            if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
+        }
         else subtitleLabelRef.current.innerText = ''
     }, [props.cellDataRef])
     const onPlaybackRateChange = useCallback((event) => {

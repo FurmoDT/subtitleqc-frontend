@@ -1,11 +1,14 @@
+import {languageCodes} from "./config";
+
 export const parseSrt = (srtText) => {
-    const language = 'other_1'
+    const language = {code: 'xxXX', name: '기타 언어', counter: 1}
+    const languageKey = `${language.code}_${language.counter}`
     const normalizedSrtData = srtText.replace(/\r\n/g, '\n');
     const lines = normalizedSrtData.split('\n');
     const items = [];
 
     let o = {
-        [language]: ''
+        [languageKey]: ''
     };
 
     for (let i = 0; i < lines.length; i++) {
@@ -20,21 +23,21 @@ export const parseSrt = (srtText) => {
             o.end = times[1];
         } else if (line === '') { // reset
             items.push(o);
-            o = {[language]: ''};
+            o = {[languageKey]: ''};
         } else { // text
             if (lines[i + 1] === '') {
                 lineBreak = '';
             }
-            o[language] += line + lineBreak;
+            o[languageKey] += line + lineBreak;
         }
     }
-    return {languages: [language], data: items}
+    return {language: [language], subtitle: items}
 }
 
 export const parseFsp = (fspJson) => {
     const items = []
     const subtitle = fspJson.elements[0].elements[5].elements
-    const language = fspJson.elements[0].elements[4].elements.map((value) => (value.attributes.code))
+    const language = fspJson.elements[0].elements[4].elements.map((value) => languageCodes.hasOwnProperty(value.attributes.code) ? value.attributes.code : 'xxXX')
     const languageCounts = language.reduce((acc, v) => {
         if (v in acc) acc[v]++
         else acc[v] = 1
@@ -43,18 +46,19 @@ export const parseFsp = (fspJson) => {
     const languages = []
     for (let i = language.length - 1; i >= 0; i--) {
         const item = language[i];
-        languages.unshift(`${item}_${languageCounts[item]--}`);
+        const itemCounter = languageCounts[item]--
+        languages.unshift({code: item, name: languageCodes[item] + (itemCounter > 1 ? `(${itemCounter})` : ''), counter: itemCounter})
     }
     for (let i = 0; i < subtitle.length; i++) {
         const line = {}
         line.start = subtitle[i].attributes.i ? `0${subtitle[i].attributes.i}` : ''
         line.end = subtitle[i].attributes.o ? `0${subtitle[i].attributes.o}` : ''
         subtitle[i].elements.forEach((v, index) => {
-            line[languages[index]] = v.elements ? v.elements[0].text.replaceAll('|', '\n').split('\n').map(v => v.trim()).join('\n') : ''
+            line[`${languages[index].code}_${languages[index].counter}`] = v.elements ? v.elements[0].text.replaceAll('|', '\n').split('\n').map(v => v.trim()).join('\n') : ''
         })
         items.push(line)
     }
-    return {languages: languages, data: items}
+    return {language: languages, subtitle: items}
 }
 
 

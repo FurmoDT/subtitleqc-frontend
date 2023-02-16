@@ -3,14 +3,12 @@ import '../../css/Handsontable.css'
 import * as Grammarly from '@grammarly/editor-sdk'
 import {useEffect, useRef} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
-import {languageCodes} from "../../utils/config";
 import {tcToSec} from "../../utils/functions";
 
 const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
 
 const LanguageWindow = (props) => {
-    const setLanguages = props.setLanguages
     const containerMain = useRef(null);
 
     useEffect(() => {
@@ -78,17 +76,6 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.columnEnd = column2
         })
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef])
-
-    useEffect(() => {
-        if (props.languageFile) {
-            props.cellDataRef.current = props.languageFile.data
-            setLanguages(props.languageFile.languages.map((value) => {
-                const [code, counter] = value.split('_').map((value, index) => (!index ? (languageCodes.hasOwnProperty(value) ? value : 'other') : value))
-                return {code: code, name: languageCodes[code] + (counter > 1 ? `(${counter})` : ''), counter: counter}
-            }))
-            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-        }
-    }, [setLanguages, props.cellDataRef, props.languageFile, props.hotRef])
 
     return <div ref={containerMain}/>
 }

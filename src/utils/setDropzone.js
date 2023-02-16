@@ -44,7 +44,7 @@ export const setDropzone = (props) => {
             const fileFormat = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
             if (['.mp4', '.mov'].includes(fileFormat)) {
                 props.setMediaFile(URL.createObjectURL(file))
-            } else if (['.fsp', '.srt'].includes(fileFormat)) {
+            } else if (['.fsp', '.srt', '.fspx'].includes(fileFormat)) {
                 const reader = new FileReader()
                 reader.onload = () => {
                     let binaryStr = new ArrayBuffer(0)
@@ -56,6 +56,8 @@ export const setDropzone = (props) => {
                             props.setLanguageFile(parseFsp(JSON.parse(xml2json(str, {compact: false}))))
                         } else if (file.name.endsWith('.srt')) {
                             props.setLanguageFile(parseSrt(str))
+                        } else if (file.name.endsWith('.fspx')) {
+                            props.setLanguageFile(JSON.parse(str))
                         }
                     })
                 }

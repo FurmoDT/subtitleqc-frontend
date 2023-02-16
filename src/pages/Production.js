@@ -69,6 +69,14 @@ const Production = () => {
         localStorage.setItem('languages', JSON.stringify(languages))
     }, [languages])
     useEffect(() => {
+        if (languageFile) {
+            cellDataRef.current = languageFile.subtitle
+            localStorage.setItem('subtitle', JSON.stringify(cellDataRef.current))
+            setLanguages(languageFile.language)
+        }
+        localStorage.setItem('languages', JSON.stringify(languages))
+    }, [languageFile])
+    useEffect(() => {
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
                 const {width, height} = entry.contentRect;
@@ -107,7 +115,7 @@ const Production = () => {
                                       languages={languages} setLanguages={setLanguages}/>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} playerRef={playerRef}
                                         hotFontSize={hotFontSize} hotRef={hotRef} hotSelectionRef={hotSelectionRef}
-                                        languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
+                                        languages={languages}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}
                                         waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}

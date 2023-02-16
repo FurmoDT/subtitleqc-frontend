@@ -2,7 +2,7 @@ import {MDBBtn, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
 import LanguagesModal from "./modals/LanguagesModal";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
 import {FiSun, FiSunrise, FiSunset} from "react-icons/fi";
-import {secToTc} from "../../utils/functions";
+import {secToTc, tcToSec} from "../../utils/functions";
 
 const TransToolbar = (props) => {
     return <div style={{
@@ -44,8 +44,12 @@ const TransToolbar = (props) => {
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Split Line'>
             <MDBBtn color={'link'} size={'sm'} onClick={() => {
-                console.log('줄 나누기')
-            }} disabled><TbArrowsSplit2 color={'black'} size={20}/></MDBBtn>
+                const selection = props.hotSelectionRef.current
+                const selectedData = props.hotRef.current.getDataAtRow(selection.rowStart)
+                props.hotRef.current.alter('insert_row', selection.rowStart + 1, 1)
+                const mid = secToTc(tcToSec(selectedData[0]) + Number(((tcToSec(selectedData[1]) - tcToSec(selectedData[0])) / 2).toFixed(3)))
+                props.hotRef.current.setDataAtCell([[selection.rowStart, 1, mid], [selection.rowStart + 1, 0, mid], [selection.rowStart + 1, 1, selectedData[1]]])
+            }}><TbArrowsSplit2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Merge Line'>
             <MDBBtn color={'link'} size={'sm'} onClick={() => {

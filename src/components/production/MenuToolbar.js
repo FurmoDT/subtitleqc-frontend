@@ -8,6 +8,7 @@ import {
     MDBTooltip
 } from "mdb-react-ui-kit";
 import {toSrt} from "../../utils/fileParser";
+import {downloadFspx, downloadSrt} from "../../utils/fileDownload";
 
 const MenuToolbar = (props) => {
     return <div style={{
@@ -22,7 +23,8 @@ const MenuToolbar = (props) => {
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
                 props.setLanguages([{code: 'xxXX', name: '기타 언어', counter: 1}])
                 props.hotRef.current.clear()
-                localStorage.clear()
+                localStorage.removeItem('subtitle')
+                localStorage.removeItem('language')
             }}>
                 <MDBIcon far icon="file" size={'lg'}/>
             </MDBBtn>
@@ -34,21 +36,20 @@ const MenuToolbar = (props) => {
         </MDBTooltip>
         <MDBDropdown>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Download'>
-            <MDBDropdownToggle color={'link'}>
-                <MDBIcon fas icon='download' size={'lg'} color={'dark'}/>
-            </MDBDropdownToggle>
+                <MDBDropdownToggle color={'link'}>
+                    <MDBIcon fas icon='download' size={'lg'} color={'dark'}/>
+                </MDBDropdownToggle>
             </MDBTooltip>
             <MDBDropdownMenu>
-                <MDBDropdownItem disabled link>.fspx</MDBDropdownItem>
+                <MDBDropdownItem link onClick={() => {
+                    downloadFspx({name: 'sample', language: props.languages, subtitle: props.cellDataRef.current})
+                }}>.fspx</MDBDropdownItem>
                 <MDBDropdownItem link onClick={() => {
                     props.languages.forEach((value) => {
-                        const fileData = toSrt(props.cellDataRef.current, value)
-                        const blob = new Blob([fileData], {type: "text/plain"})
-                        const url = URL.createObjectURL(blob)
-                        const link = document.createElement("a")
-                        link.download = `${value.name}.srt`
-                        link.href = url;
-                        link.click();
+                        downloadSrt({
+                            name: value.name,
+                            subtitle: toSrt(props.cellDataRef.current, `${value.code}_${value.counter}`)
+                        })
                     })
                 }}>.srt</MDBDropdownItem>
             </MDBDropdownMenu>

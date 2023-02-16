@@ -65,7 +65,7 @@ export function toSrt(array, language) {
         if (s.start && s.end) {
             res += i + 1 + "\r\n";
             res += s.start + " --> " + s.end + "\r\n";
-            res += (s[`${language.code}_${language.counter}`]?.replace("\n", "\r\n") || '') + "\r\n\r\n"
+            res += (s[language]?.replace("\n", "\r\n") || '') + "\r\n\r\n"
         }
     }
     return res;

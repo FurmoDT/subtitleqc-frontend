@@ -74,7 +74,6 @@ const Production = () => {
             localStorage.setItem('subtitle', JSON.stringify(cellDataRef.current))
             setLanguages(languageFile.language)
         }
-        localStorage.setItem('languages', JSON.stringify(languages))
     }, [languageFile])
     useEffect(() => {
         const observer = new ResizeObserver((entries) => {

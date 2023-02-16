@@ -13,8 +13,7 @@ const MediaWindow = (props) => {
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
             const nextSubtitle = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
             if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
-        }
-        else subtitleLabelRef.current.innerText = ''
+        } else subtitleLabelRef.current.innerText = ''
     }, [props.cellDataRef])
     const onPlaybackRateChange = useCallback((event) => {
         if (props.waveformRef.current) {
@@ -24,6 +23,7 @@ const MediaWindow = (props) => {
     }, [props.waveformRef, props.playerRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndex = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
+        if (!props.hotRef.current.getActiveEditor()) props.hotRef.current.scrollViewportTo(subtitleIndex - 1, 0)
         if (tcToSec(props.cellDataRef.current[subtitleIndex].start) !== seconds) subtitleIndex = Math.max(subtitleIndex - 1, 0)
         setSubtitleLabel(seconds)
         if (props.isWaveSeeking.current) {

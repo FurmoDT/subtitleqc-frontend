@@ -21,6 +21,7 @@ export const textValidator = (r, c, v, td, fontSize) => {
     td.style.fontSize = fontSize
     const label = document.createElement('label');
     if (v) td.innerHTML = `<label>${v}</label>`
+    label.style.whiteSpace = 'pre'
     label.style.float = 'right'
     label.style.fontSize = '10px'
     label.style.paddingLeft = '5px'

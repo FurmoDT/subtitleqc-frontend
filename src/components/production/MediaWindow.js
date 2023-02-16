@@ -22,7 +22,7 @@ const MediaWindow = (props) => {
     }, [props.waveformRef, props.playerRef])
     const onSeek = useCallback((seconds) => {
         props.subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
-        if (!props.hotRef.current.getActiveEditor()) props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current - 1, 0)
+        if (!props.hotRef.current.getActiveEditor()._opened) props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current - 1, 0)
         if (tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].start) !== seconds) props.subtitleIndexRef.current = Math.max(props.subtitleIndexRef.current - 1, 0)
         setSubtitleLabel(seconds)
         if (props.isWaveSeeking.current) {

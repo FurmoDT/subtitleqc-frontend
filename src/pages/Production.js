@@ -49,6 +49,14 @@ const Production = () => {
             event.preventDefault();
             tcOutButtonRef.current.click()
         }
+        if (event.shiftKey && event.key === '<') {
+            const internalPlayer = playerRef.current.getInternalPlayer()
+            if (internalPlayer) internalPlayer.playbackRate = Math.max(internalPlayer.playbackRate - 0.25, 0.25)
+        }
+        if (event.shiftKey && event.key === '>') {
+            const internalPlayer = playerRef.current.getInternalPlayer()
+            if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
+        }
     }, [])
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);

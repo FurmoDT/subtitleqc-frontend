@@ -102,6 +102,7 @@ const TimelineWindow = (props) => {
             wavesurfer.setMute(true)
             props.waveformRef.current = wavesurfer
             props.playerRef.current.getInternalPlayer().pause()
+            wavesurfer.setPlaybackRate(props.playerRef.current.getInternalPlayer().playbackRate)
             wavesurfer.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
         });
         wavesurfer.on('seek', () => {

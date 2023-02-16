@@ -12,7 +12,7 @@ export const bisect = (arr, target) => {
 export const tcToSec = (tc) => {
     try {
         const t = tc.split(':')
-        return Number(t[0]) * 60 * 60 + Number(t[1]) * 60 + Number(t[2].replace(',', '.'))
+        return Number((Number(t[0]) * 60 * 60 + Number(t[1]) * 60 + Number(t[2].replace(',', '.'))).toFixed(3))
     } catch (error) {
         return NaN
     }

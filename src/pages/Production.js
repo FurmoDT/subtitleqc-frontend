@@ -13,20 +13,21 @@ const Production = () => {
     const dropzoneRef = useRef(null)
     const rightRef = useRef(null)
     const [rightRefSize, setRightRefSize] = useState({width: 0, height: 0})
-    const playerRef = useRef(null)
-    const waveformRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const [languages, setLanguages] = useState(localStorage.language ? JSON.parse(localStorage.language) : [{code: 'xxXX', name: '기타 언어', counter: 1}])
+    const playerRef = useRef(null)
+    const isVideoSeeking = useRef(false)
+    const waveformRef = useRef(null)
+    const isWaveSeeking = useRef(false)
     const cellDataRef = useRef(localStorage.subtitle ? JSON.parse(localStorage.subtitle) : Array.from({length: 100}, () => ({})))
+    const [languages, setLanguages] = useState(localStorage.language ? JSON.parse(localStorage.language) : [{code: 'xxXX', name: '기타 언어', counter: 1}])
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
+    const [hotFontSize, setHotFontSize] = useState('13px')
+    const subtitleIndexRef = useRef(0)
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
     const tcOutButtonRef = useRef(null)
-    const [hotFontSize, setHotFontSize] = useState('13px')
-    const isVideoSeeking = useRef(false)
-    const isWaveSeeking = useRef(false)
     const handleKeyDown = useCallback((event) => {
         if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO') || event.key === 'F6') {
             event.preventDefault();
@@ -107,6 +108,7 @@ const Production = () => {
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'}>
                             <MediaWindow cellDataRef={cellDataRef} languages={languages} hotRef={hotRef}
+                                         subtitleIndexRef={subtitleIndexRef}
                                          playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
                                          isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                             <InformationWindow/>

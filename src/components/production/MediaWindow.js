@@ -3,18 +3,17 @@ import {useCallback, useEffect, useRef} from "react";
 import {bisect, tcToSec} from "../../utils/functions";
 import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
 
-let subtitleIndex = 0
 let subtitleLanguage = null
 
 const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
     const setSubtitleLabel = useCallback((seconds) => {
-        const row = props.cellDataRef.current[subtitleIndex]
+        const row = props.cellDataRef.current[props.subtitleIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
-            const nextSubtitle = props.cellDataRef.current[subtitleIndex][subtitleLanguage] || ''
+            const nextSubtitle = props.cellDataRef.current[props.subtitleIndexRef.current][subtitleLanguage] || ''
             if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
         } else subtitleLabelRef.current.innerText = ''
-    }, [props.cellDataRef])
+    }, [props.cellDataRef, props.subtitleIndexRef])
     const onPlaybackRateChange = useCallback((event) => {
         if (props.waveformRef.current) {
             props.waveformRef.current.setPlaybackRate(event)
@@ -22,9 +21,9 @@ const MediaWindow = (props) => {
         }
     }, [props.waveformRef, props.playerRef])
     const onSeek = useCallback((seconds) => {
-        subtitleIndex = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
-        if (!props.hotRef.current.getActiveEditor()) props.hotRef.current.scrollViewportTo(subtitleIndex - 1, 0)
-        if (tcToSec(props.cellDataRef.current[subtitleIndex].start) !== seconds) subtitleIndex = Math.max(subtitleIndex - 1, 0)
+        props.subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
+        if (!props.hotRef.current.getActiveEditor()) props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current - 1, 0)
+        if (tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].start) !== seconds) props.subtitleIndexRef.current = Math.max(props.subtitleIndexRef.current - 1, 0)
         setSubtitleLabel(seconds)
         if (props.isWaveSeeking.current) {
             props.isWaveSeeking.current = false
@@ -32,7 +31,7 @@ const MediaWindow = (props) => {
         }
         props.isVideoSeeking.current = true
         props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
-    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef, setSubtitleLabel])
+    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef, props.hotRef, props.subtitleIndexRef, setSubtitleLabel])
     const onPause = useCallback(() => {
         props.waveformRef.current?.pause()
     }, [props.waveformRef])
@@ -41,8 +40,8 @@ const MediaWindow = (props) => {
     }, [props.waveformRef])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
-        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[subtitleIndex].end)) subtitleIndex += 1
-    }, [props.cellDataRef, setSubtitleLabel])
+        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].end)) props.subtitleIndexRef.current += 1
+    }, [props.cellDataRef, props.subtitleIndexRef, setSubtitleLabel])
     useEffect(() => {
         if (!subtitleLanguage || !props.languages.map((value) => `${value.code}_${value.counter}`).includes(subtitleLanguage)) {
             subtitleLanguage = props.languages[0] ? `${props.languages[0].code}_${props.languages[0].counter}` : null

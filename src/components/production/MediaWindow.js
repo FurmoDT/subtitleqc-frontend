@@ -4,25 +4,49 @@ import {bisect, tcToSec} from "../../utils/functions";
 import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
 
 let subtitleLanguage = null
+let curIndex = null
 
 const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
+    const setTdColor = useCallback((index, isShow) => {
+        props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
+            if (isShow) tdElement.style.backgroundColor = tdElement.style.backgroundColor || 'floralwhite'
+            else tdElement.style.backgroundColor = ''
+        });
+    }, [props.hotRef])
     const setSubtitleLabel = useCallback((seconds) => {
         const row = props.cellDataRef.current[props.subtitleIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
             const nextSubtitle = props.cellDataRef.current[props.subtitleIndexRef.current][subtitleLanguage] || ''
+            if (curIndex !== props.subtitleIndexRef.current) {
+                curIndex = props.subtitleIndexRef.current
+                setTdColor(props.subtitleIndexRef.current, true)
+            }
             if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
-        } else subtitleLabelRef.current.innerText = ''
-    }, [props.cellDataRef, props.subtitleIndexRef])
+        } else {
+            if (curIndex === props.subtitleIndexRef.current) {
+                subtitleLabelRef.current.innerText = ''
+                setTdColor(curIndex, false)
+            }
+        }
+    }, [props.cellDataRef, props.subtitleIndexRef, setTdColor])
     const onPlaybackRateChange = useCallback((event) => {
         if (props.waveformRef.current) {
             props.waveformRef.current.setPlaybackRate(event)
             props.waveformRef.current.seekTo(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
         }
     }, [props.waveformRef, props.playerRef])
-    const onSeek = useCallback((seconds) => {
+    const afterRenderPromise = useCallback(() => {
+        return new Promise(resolve => {
+            props.hotRef.current.addHook('afterRender', (isForced) => {
+                if (!isForced) resolve() // Resolve the promise when the afterRender callback is executed
+            })
+        })
+    }, [props.hotRef])
+    const onSeek = useCallback(async (seconds) => {
         props.subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
-        if (!props.hotRef.current.getActiveEditor()._opened) props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current - 1, 0)
+        if (!props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current - 1, 0)
+        await afterRenderPromise()
         if (tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].start) !== seconds) props.subtitleIndexRef.current = Math.max(props.subtitleIndexRef.current - 1, 0)
         setSubtitleLabel(seconds)
         if (props.isWaveSeeking.current) {
@@ -31,7 +55,7 @@ const MediaWindow = (props) => {
         }
         props.isVideoSeeking.current = true
         props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
-    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef, props.hotRef, props.subtitleIndexRef, setSubtitleLabel])
+    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef, props.hotRef, props.subtitleIndexRef, setSubtitleLabel, afterRenderPromise])
     const onPause = useCallback(() => {
         props.waveformRef.current?.pause()
     }, [props.waveformRef])

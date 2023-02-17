@@ -43,7 +43,7 @@ const TransToolbar = (props) => {
             }}><FiSunset color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Split Line'>
-            <MDBBtn color={'link'} size={'sm'} onClick={() => {
+            <MDBBtn ref={props.splitLineButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const selection = props.hotSelectionRef.current
                 const selectedData = props.hotRef.current.getDataAtRow(selection.rowStart)
                 props.hotRef.current.alter('insert_row', selection.rowStart + 1, 1)
@@ -53,7 +53,7 @@ const TransToolbar = (props) => {
             }}><TbArrowsSplit2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Merge Line'>
-            <MDBBtn color={'link'} size={'sm'} onClick={() => {
+            <MDBBtn ref={props.mergeLineButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const selection = props.hotSelectionRef.current
                 const selectedData = props.hotRef.current.getData(selection.rowStart, 0, selection.rowEnd, props.hotRef.current.countCols())
                 const result = [];

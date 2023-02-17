@@ -28,6 +28,8 @@ const Production = () => {
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
     const tcOutButtonRef = useRef(null)
+    const splitLineButtonRef = useRef(null)
+    const mergeLineButtonRef = useRef(null)
     const handleKeyDown = useCallback((event) => {
         if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO') || event.key === 'F6') {
             event.preventDefault();
@@ -49,6 +51,14 @@ const Production = () => {
         if (event.key === 'F11') {
             event.preventDefault();
             tcOutButtonRef.current.click()
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'D') {
+            event.preventDefault();
+            splitLineButtonRef.current.click()
+        }
+        if (event.shiftKey && event.key === 'F12') {
+            event.preventDefault();
+            mergeLineButtonRef.current.click()
         }
         if (event.shiftKey && event.key === '<') {
             const internalPlayer = playerRef.current.getInternalPlayer()
@@ -121,6 +131,7 @@ const Production = () => {
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
+                                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       languages={languages} setLanguages={setLanguages}/>
                         <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} playerRef={playerRef}
                                         hotFontSize={hotFontSize} hotRef={hotRef} hotSelectionRef={hotSelectionRef}

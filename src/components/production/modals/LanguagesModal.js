@@ -22,6 +22,9 @@ const LanguagesModal = (props) => {
     const [languages, setLanguages] = useState([])
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
+    const addLanguageItem = Object.entries(languageCodes).map(([key, value]) => (
+        <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value}</MDBDropdownItem>))
+    addLanguageItem.splice(addLanguageItem.length - 2, 0, <MDBDropdownItem key={'languageDivider'} divider/>)
     const languageCounter = (code) => {
         const counter = languages.filter(value => value.code === code).map(value => value.counter)
         return counter.length ? Math.max(...counter) + 1 : 1
@@ -52,10 +55,7 @@ const LanguagesModal = (props) => {
                         <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Add Languages</MDBDropdownToggle>
                             <MDBDropdownMenu>
-                                {Object.entries(languageCodes).map(([key, value]) => (
-                                    <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value}
-                                    </MDBDropdownItem>)
-                                )}
+                                {addLanguageItem}
                             </MDBDropdownMenu>
                         </MDBDropdown>
                         <ReactSortable animation={200} easing={"ease-out"} list={languages} setList={setLanguages}>

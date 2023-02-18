@@ -9,6 +9,7 @@ let curIndex = null
 const MediaWindow = (props) => {
     const [showFx, setShowFx] = useState(false)
     const subtitleLabelRef = useRef(null)
+    const fxLabelRef = useRef(null)
     const setTdColor = useCallback((index, isShow) => {
         props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
             if (isShow) tdElement.style.backgroundColor = tdElement.style.backgroundColor || 'floralwhite'
@@ -80,6 +81,8 @@ const MediaWindow = (props) => {
                      controls={true} progressInterval={1} url={props.mediaFile} onPause={onPause} onPlay={onPlay}
                      onPlaybackRateChange={onPlaybackRateChange} onSeek={onSeek} onProgress={onProgress}
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
+        <label ref={fxLabelRef}
+               style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre', top: 0}}/>
         <label ref={subtitleLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>
         <div style={{position: 'absolute', top: 0, right: 0}}>

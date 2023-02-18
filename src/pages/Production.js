@@ -25,6 +25,7 @@ const Production = () => {
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const [hotFontSize, setHotFontSize] = useState('13px')
     const subtitleIndexRef = useRef(0)
+    const [isScreenSubtitle, setIsScreenSubtitle] = useState(false)
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
     const tcOutButtonRef = useRef(null)
@@ -129,6 +130,7 @@ const Production = () => {
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
+                                      isScreenSubtitle={isScreenSubtitle} setIsScreenSubtitle={setIsScreenSubtitle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}

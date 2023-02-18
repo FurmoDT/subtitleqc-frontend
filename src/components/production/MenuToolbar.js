@@ -24,7 +24,7 @@ const MenuToolbar = (props) => {
                 <MDBIcon fas icon="info-circle" size={'2x'}/>
             </MDBBtn>
         </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New File'>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
                 props.setLanguages([{code: 'xxXX', name: '기타 언어', counter: 1}])
                 props.hotRef.current.clear()

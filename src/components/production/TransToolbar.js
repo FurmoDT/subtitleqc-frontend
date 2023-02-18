@@ -1,13 +1,36 @@
-import {MDBBtn, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
+import {MDBBtn, MDBBtnGroup, MDBIcon, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
 import LanguagesModal from "./modals/LanguagesModal";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
 import {FiSun, FiSunrise, FiSunset} from "react-icons/fi";
 import {secToTc, tcToSec} from "../../utils/functions";
+import {useRef} from "react";
+import {CgTranscript} from "react-icons/cg";
 
 const TransToolbar = (props) => {
+    const subtitleButtonRef = useRef(null)
+    const screenSubtitleButtonRef = useRef(null)
     return <div style={{
         flexDirection: 'row', display: 'flex', alignItems: 'center', height: '40px'
     }}>
+        <MDBBtnGroup style={{marginLeft: '5px'}}>
+            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='말자막'>
+                <MDBBtn ref={subtitleButtonRef} size={'sm'} color={'link'} outline onClick={() => {
+                    if (props.isScreenSubtitle) {
+                        subtitleButtonRef.current.className = subtitleButtonRef.current.className.replace('btn-link', 'btn-outline-link')
+                        screenSubtitleButtonRef.current.className = screenSubtitleButtonRef.current.className.replace('btn-outline-link', 'btn-link')
+                        props.setIsScreenSubtitle(!props.isScreenSubtitle)
+                    }
+                }}><MDBIcon fas icon="comments" color={'dark'}/></MDBBtn></MDBTooltip>
+            <div style={{margin: '1px'}}></div>
+            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='화면자막'>
+                <MDBBtn ref={screenSubtitleButtonRef} size={'sm'} color={'link'} onClick={() => {
+                    if (!props.isScreenSubtitle) {
+                        subtitleButtonRef.current.className = subtitleButtonRef.current.className.replace('btn-outline-link', 'btn-link')
+                        screenSubtitleButtonRef.current.className = screenSubtitleButtonRef.current.className.replace('btn-link', 'btn-outline-link')
+                        props.setIsScreenSubtitle(!props.isScreenSubtitle)
+                    }
+                }}><CgTranscript color={'black'} size={15}/></MDBBtn></MDBTooltip>
+        </MDBBtnGroup>
         <MDBInput wrapperStyle={{marginLeft: '5px'}} style={{width: '60px'}} size={'sm'}
                   label='Font Size' type='number' defaultValue={13} min={10} max={25}
                   onChange={(event) => {

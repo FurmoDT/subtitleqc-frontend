@@ -8,6 +8,7 @@ import {setDropzone} from "../utils/setDropzone";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
 import TransToolbar from "../components/production/TransToolbar";
+import {defaultLanguage, defaultSubtitle} from "../utils/config";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -19,13 +20,14 @@ const Production = () => {
     const isVideoSeeking = useRef(false)
     const waveformRef = useRef(null)
     const isWaveSeeking = useRef(false)
-    const cellDataRef = useRef(localStorage.subtitle ? JSON.parse(localStorage.subtitle) : Array.from({length: 100}, () => ({})))
-    const [languages, setLanguages] = useState(localStorage.language ? JSON.parse(localStorage.language) : [{code: 'xxXX', name: '기타 언어', counter: 1}])
+    const cellDataRef = useRef(localStorage.subtitle ? JSON.parse(localStorage.subtitle) : defaultSubtitle)
+    const fxRef = useRef(localStorage.fx ? JSON.parse(localStorage.fx) : defaultSubtitle)
+    const [languages, setLanguages] = useState(localStorage.language ? JSON.parse(localStorage.language) : defaultLanguage)
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const [hotFontSize, setHotFontSize] = useState('13px')
     const subtitleIndexRef = useRef(0)
-    const [isScreenSubtitle, setIsScreenSubtitle] = useState(false)
+    const [toggleFx, setToggleFx] = useState(false)
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
     const tcOutButtonRef = useRef(null)
@@ -130,14 +132,15 @@ const Production = () => {
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
-                                      isScreenSubtitle={isScreenSubtitle} setIsScreenSubtitle={setIsScreenSubtitle}
+                                      toggleFx={toggleFx} setToggleFx={setToggleFx}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       languages={languages} setLanguages={setLanguages}/>
-                        <LanguageWindow size={rightRefSize} cellDataRef={cellDataRef} playerRef={playerRef}
-                                        hotFontSize={hotFontSize} hotRef={hotRef} hotSelectionRef={hotSelectionRef}
-                                        languages={languages}/>
+                        <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
+                                        hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
+                                        cellDataRef={cellDataRef} languages={languages}
+                                        toggleFx={toggleFx} fxRef={fxRef}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}
                                         waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}

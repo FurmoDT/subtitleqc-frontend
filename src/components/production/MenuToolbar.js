@@ -9,6 +9,7 @@ import {
 } from "mdb-react-ui-kit";
 import {toSrt} from "../../utils/fileParser";
 import {downloadFspx, downloadSrt} from "../../utils/fileDownload";
+import {defaultLanguage, defaultSubtitle} from "../../utils/config";
 
 const MenuToolbar = (props) => {
     return <div style={{
@@ -26,7 +27,9 @@ const MenuToolbar = (props) => {
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
-                props.setLanguages([{code: 'xxXX', name: '기타 언어', counter: 1}])
+                props.setLanguages(defaultLanguage)
+                props.cellDataRef.current = defaultSubtitle
+                props.fxRef.current = defaultSubtitle
                 props.hotRef.current.clear()
                 localStorage.removeItem('subtitle')
                 localStorage.removeItem('language')

@@ -15,4 +15,8 @@ export const languageCodes = {
     memo: '메모',
 }
 
+export const defaultSubtitle = Array.from({length: 100}, () => ({}))
+// export const defaultLanguage = [{code: 'xxXX', name: '기타 언어', counter: 1}]
+export const defaultLanguage = []
+
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL

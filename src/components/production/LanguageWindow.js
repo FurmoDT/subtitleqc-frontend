@@ -30,26 +30,24 @@ const LanguageWindow = (props) => {
         }
 
         props.hotRef.current = new Handsontable(containerMain.current, {
-            data: props.cellDataRef.current,
+            data: !props.toggleFx ? props.cellDataRef.current : props.fxRef.current,
             columns: [
                 {data: 'start', type: 'text', renderer: tcInRenderer},
                 {data: 'end', type: 'text', renderer: tcOutRenderer},
-                ...props.languages.map((value) => {
+                ...(!props.toggleFx ? props.languages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
                         renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
                     }
-                }),
+                }) : [{data: 'fx', type: 'text', renderer: textRenderer}])
                 // {data: 'error', type: 'text'},
             ],
-            colHeaders: ['TC_IN', 'TC_OUT', ...props.languages.map((value) => value.name), 'error'],
+            colHeaders: ['TC_IN', 'TC_OUT', ...(!props.toggleFx ? props.languages.map((value) => value.name) : ['FX']), 'error'],
             rowHeaders: true,
-            stretchH: 'last',
             width: props.size.width,
             height: props.size.height - 190,
             minSpareRows: 2,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
-            manualColumnResize: true,
         })
         let grammarlyPlugin = null
         props.hotRef.current.addHook('afterBeginEditing', (row) => {
@@ -67,7 +65,7 @@ const LanguageWindow = (props) => {
         })
         props.hotRef.current.addHook('afterChange', (changes) => {
             grammarlyPlugin?.disconnect()
-            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+            !props.toggleFx ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             props.hotSelectionRef.current.rowStart = row
@@ -75,7 +73,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = row2
             props.hotSelectionRef.current.columnEnd = column2
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.toggleFx, props.fxRef])
 
     return <div ref={containerMain}/>
 }

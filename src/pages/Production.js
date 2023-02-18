@@ -93,7 +93,11 @@ const Production = () => {
     useEffect(() => {
         if (languageFile) {
             cellDataRef.current = languageFile.subtitle
-            localStorage.setItem('subtitle', JSON.stringify(cellDataRef.current))
+            if (languageFile.fx) {
+                fxRef.current = languageFile.fx
+                localStorage.setItem('fx', JSON.stringify(languageFile.fx))
+            }
+            localStorage.setItem('subtitle', JSON.stringify(languageFile.subtitle))
             setLanguages(languageFile.language)
         }
     }, [languageFile])
@@ -110,7 +114,7 @@ const Production = () => {
         };
     }, []);
     return <>
-        <MenuToolbar cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages} hotRef={hotRef}/>
+        <MenuToolbar cellDataRef={cellDataRef} fxRef={fxRef} languages={languages} setLanguages={setLanguages} hotRef={hotRef}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
             width: '100vw', height: 'calc(100vh - 100px)', position: 'relative'

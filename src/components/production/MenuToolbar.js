@@ -9,7 +9,7 @@ import {
 } from "mdb-react-ui-kit";
 import {toSrt} from "../../utils/fileParser";
 import {downloadFspx, downloadSrt} from "../../utils/fileDownload";
-import {defaultLanguage, defaultSubtitle} from "../../utils/config";
+import CheckModal from "./modals/CheckModal";
 
 const MenuToolbar = (props) => {
     return <div style={{
@@ -26,16 +26,8 @@ const MenuToolbar = (props) => {
             </MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
-            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
-                props.setLanguages(defaultLanguage)
-                props.cellDataRef.current = defaultSubtitle
-                props.fxRef.current = defaultSubtitle
-                props.hotRef.current.clear()
-                localStorage.removeItem('subtitle')
-                localStorage.removeItem('language')
-            }}>
-                <MDBIcon far icon="file" size={'2x'}/>
-            </MDBBtn>
+            <CheckModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef} fxRef={props.fxRef}
+                        hotRef={props.hotRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} disabled>
@@ -50,7 +42,12 @@ const MenuToolbar = (props) => {
             </MDBTooltip>
             <MDBDropdownMenu>
                 <MDBDropdownItem link onClick={() => {
-                    downloadFspx({name: 'sample', language: props.languages, subtitle: props.cellDataRef.current})
+                    downloadFspx({
+                        name: 'sample',
+                        language: props.languages,
+                        subtitle: props.cellDataRef.current,
+                        fx: props.fxRef.current
+                    })
                 }}>.fspx</MDBDropdownItem>
                 <MDBDropdownItem link onClick={() => {
                     props.languages.forEach((value) => {

@@ -56,7 +56,14 @@ const MenuToolbar = (props) => {
                             subtitle: toSrt(props.cellDataRef.current, `${value.code}_${value.counter}`)
                         })
                     })
+                    const fx = toSrt(props.fxRef.current, 'fx')
+                    if (fx) downloadSrt({name: 'fx', subtitle: fx})
                 }}>.srt</MDBDropdownItem>
+                <MDBDropdownItem link onClick={() => {
+                    props.languages.forEach((value) => {
+                        // downloadVtt
+                    })
+                }} disabled>.vtt</MDBDropdownItem>
             </MDBDropdownMenu>
         </MDBDropdown>
         <label style={{position: 'absolute', left: '50%'}}>MenuToolbar</label>

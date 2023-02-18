@@ -2,7 +2,6 @@ import ReactPlayer from "react-player";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {bisect, tcToSec} from "../../utils/functions";
 import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
-import {defaultSubtitle} from "../../utils/config";
 
 let subtitleLanguage = null
 let curIndex = null
@@ -101,11 +100,7 @@ const MediaWindow = (props) => {
                     }
                 </MDBDropdownMenu>
             </MDBDropdown>
-            <div className="form-check" style={{
-                display: (props.fxRef.current !== defaultSubtitle) ? 'flex' : 'none',
-                justifyContent: 'flex-end',
-                marginRight: '5px'
-            }}>
+            <div className="form-check" style={{display: 'flex', justifyContent: 'flex-end', marginRight: '5px'}}>
                 <input className="form-check-input" type="checkbox" id="fxSwitch" onChange={(event) => {
                     setShowFx(event.target.checked)
                 }}/>

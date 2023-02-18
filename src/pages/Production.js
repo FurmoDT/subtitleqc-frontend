@@ -109,9 +109,7 @@ const Production = () => {
             }
         });
         observer.observe(rightRef.current);
-        return () => {
-            observer.disconnect();
-        };
+        return () => observer.disconnect()
     }, []);
     return <>
         <MenuToolbar cellDataRef={cellDataRef} fxRef={fxRef} languages={languages} setLanguages={setLanguages} hotRef={hotRef}/>

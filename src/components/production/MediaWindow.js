@@ -1,12 +1,14 @@
 import ReactPlayer from "react-player";
-import {useCallback, useEffect, useRef} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {bisect, tcToSec} from "../../utils/functions";
 import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
+import {defaultSubtitle} from "../../utils/config";
 
 let subtitleLanguage = null
 let curIndex = null
 
 const MediaWindow = (props) => {
+    const [showFx, setShowFx] = useState(false)
     const subtitleLabelRef = useRef(null)
     const setTdColor = useCallback((index, isShow) => {
         props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
@@ -81,23 +83,35 @@ const MediaWindow = (props) => {
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
         <label ref={subtitleLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>
-        <MDBDropdown style={{position: 'absolute', top: 0, right: 0}}>
-            <MDBDropdownToggle color={'link'}>
-                <MDBBtn tag='a' color={'none'}>
-                    <MDBIcon fas icon='globe' color={'white'} size={'lg'}/>
-                </MDBBtn>
-            </MDBDropdownToggle>
-            <MDBDropdownMenu>
-                {
-                    props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
-                        return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
-                            subtitleLanguage = `${value.code}_${value.counter}`
-                            if (props.playerRef.current.getInternalPlayer()?.paused) setSubtitleLabel(props.playerRef.current.getCurrentTime())
-                        }}>{value.name}</MDBDropdownItem>
-                    })
-                }
-            </MDBDropdownMenu>
-        </MDBDropdown>
+        <div style={{position: 'absolute', top: 0, right: 0}}>
+            <MDBDropdown>
+                <MDBDropdownToggle color={'link'}>
+                    <MDBBtn tag='a' color={'none'}>
+                        <MDBIcon fas icon='globe' color={'white'} size={'lg'}/>
+                    </MDBBtn>
+                </MDBDropdownToggle>
+                <MDBDropdownMenu>
+                    {
+                        props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
+                            return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
+                                subtitleLanguage = `${value.code}_${value.counter}`
+                                if (props.playerRef.current.getInternalPlayer()?.paused) setSubtitleLabel(props.playerRef.current.getCurrentTime())
+                            }}>{value.name}</MDBDropdownItem>
+                        })
+                    }
+                </MDBDropdownMenu>
+            </MDBDropdown>
+            <div className="form-check" style={{
+                display: (props.fxRef.current !== defaultSubtitle) ? 'flex' : 'none',
+                justifyContent: 'flex-end',
+                marginRight: '5px'
+            }}>
+                <input className="form-check-input" type="checkbox" id="fxSwitch" onChange={(event) => {
+                    setShowFx(event.target.checked)
+                }}/>
+                <label className="form-check-label" style={{color: 'white'}} htmlFor="fxSwitch">FX</label>
+            </div>
+        </div>
     </div>
 };
 

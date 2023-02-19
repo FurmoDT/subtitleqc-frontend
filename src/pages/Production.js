@@ -26,7 +26,6 @@ const Production = () => {
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const [hotFontSize, setHotFontSize] = useState('13px')
-    const subtitleIndexRef = useRef(0)
     const [toggleFx, setToggleFx] = useState(false)
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
@@ -122,8 +121,8 @@ const Production = () => {
                           primaryPaneMaxWidth={'100%'} primaryPaneMinWidth={0}>
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'}>
-                            <MediaWindow cellDataRef={cellDataRef} fxRef={fxRef} languages={languages}
-                                         hotRef={hotRef} subtitleIndexRef={subtitleIndexRef}
+                            <MediaWindow cellDataRef={cellDataRef} fxRef={fxRef} languages={languages} hotRef={hotRef}
+                                         toggleFx={toggleFx}
                                          playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
                                          isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                             <InformationWindow/>

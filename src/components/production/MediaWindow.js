@@ -4,12 +4,15 @@ import {bisect, tcToSec} from "../../utils/functions";
 import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
 
 let subtitleLanguage = null
-let curIndex = null
+let curSubtitleIndex = null
+let curFxIndex = null
 
 const MediaWindow = (props) => {
     const [showFx, setShowFx] = useState(false)
     const subtitleLabelRef = useRef(null)
     const fxLabelRef = useRef(null)
+    const subtitleIndexRef = useRef(0)
+    const fxIndexRef = useRef(0)
     const setTdColor = useCallback((index, isShow) => {
         props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
             if (isShow) tdElement.style.backgroundColor = tdElement.style.backgroundColor || 'floralwhite'
@@ -17,21 +20,37 @@ const MediaWindow = (props) => {
         });
     }, [props.hotRef])
     const setSubtitleLabel = useCallback((seconds) => {
-        const row = props.cellDataRef.current[props.subtitleIndexRef.current]
+        const row = props.cellDataRef.current[subtitleIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
-            const nextSubtitle = props.cellDataRef.current[props.subtitleIndexRef.current][subtitleLanguage] || ''
-            if (curIndex !== props.subtitleIndexRef.current) {
-                curIndex = props.subtitleIndexRef.current
-                setTdColor(props.subtitleIndexRef.current, true)
+            const nextSubtitle = props.cellDataRef.current[subtitleIndexRef.current][subtitleLanguage] || ''
+            if (curSubtitleIndex !== subtitleIndexRef.current) {
+                curSubtitleIndex = subtitleIndexRef.current
+                if (!props.toggleFx) setTdColor(subtitleIndexRef.current, true)
             }
             if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
         } else {
-            if (curIndex === props.subtitleIndexRef.current) {
+            if (curSubtitleIndex === subtitleIndexRef.current) {
                 subtitleLabelRef.current.innerText = ''
-                setTdColor(curIndex, false)
+                if (!props.toggleFx) setTdColor(subtitleIndexRef.current, false)
             }
         }
-    }, [props.cellDataRef, props.subtitleIndexRef, setTdColor])
+    }, [props.cellDataRef, props.toggleFx, setTdColor])
+    const setFxLabel = useCallback((seconds) => {
+        const row = props.fxRef.current[fxIndexRef.current]
+        if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
+            const nextSubtitle = props.fxRef.current[fxIndexRef.current].fx || ''
+            if (curFxIndex !== fxIndexRef.current) {
+                curFxIndex = fxIndexRef.current
+                if (props.toggleFx) setTdColor(fxIndexRef.current, true)
+            }
+            if (fxLabelRef.current.innerText !== nextSubtitle) fxLabelRef.current.innerText = nextSubtitle
+        } else {
+            if (curFxIndex === fxIndexRef.current) {
+                fxLabelRef.current.innerText = ''
+                if (props.toggleFx) setTdColor(fxIndexRef.current, false)
+            }
+        }
+    }, [props.fxRef, props.toggleFx, setTdColor])
     const onPlaybackRateChange = useCallback((event) => {
         if (props.waveformRef.current) {
             props.waveformRef.current.setPlaybackRate(event)
@@ -45,19 +64,22 @@ const MediaWindow = (props) => {
             })
         })
     }, [props.hotRef])
-    const onSeek = useCallback(async (seconds) => {
-        props.subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
-        if (!props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current - 1, 0)
-        await afterRenderPromise()
-        if (tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].start) !== seconds) props.subtitleIndexRef.current = Math.max(props.subtitleIndexRef.current - 1, 0)
+    const onSeek = useCallback((seconds) => {
+        subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
+        fxIndexRef.current = bisect(props.fxRef.current.map((value) => tcToSec(value.start)), seconds)
+        if (!props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current - 1, 0)
+        afterRenderPromise().then()
+        if (tcToSec(props.cellDataRef.current[subtitleIndexRef.current].start) !== seconds) subtitleIndexRef.current = Math.max(subtitleIndexRef.current - 1, 0)
+        if (tcToSec(props.fxRef.current[fxIndexRef.current].start) !== seconds) fxIndexRef.current = Math.max(fxIndexRef.current - 1, 0)
         setSubtitleLabel(seconds)
+        setFxLabel(seconds)
         if (props.isWaveSeeking.current) {
             props.isWaveSeeking.current = false
             return
         }
         props.isVideoSeeking.current = true
         props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
-    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef, props.hotRef, props.subtitleIndexRef, setSubtitleLabel, afterRenderPromise])
+    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef, props.fxRef, props.hotRef, setSubtitleLabel, setFxLabel, afterRenderPromise])
     const onPause = useCallback(() => {
         props.waveformRef.current?.pause()
     }, [props.waveformRef])
@@ -66,8 +88,13 @@ const MediaWindow = (props) => {
     }, [props.waveformRef])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
-        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].end)) props.subtitleIndexRef.current += 1
-    }, [props.cellDataRef, props.subtitleIndexRef, setSubtitleLabel])
+        setFxLabel(state.playedSeconds)
+        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[subtitleIndexRef.current].end)) subtitleIndexRef.current += 1
+        if (state.playedSeconds >= tcToSec(props.fxRef.current[fxIndexRef.current].end)) fxIndexRef.current += 1
+    }, [props.cellDataRef, props.fxRef, setSubtitleLabel, setFxLabel])
+    useEffect(() => {
+        fxLabelRef.current.style.display = showFx ? '' : 'none'
+    }, [showFx])
     useEffect(() => {
         if (!subtitleLanguage || !props.languages.map((value) => `${value.code}_${value.counter}`).includes(subtitleLanguage)) {
             subtitleLanguage = props.languages[0] ? `${props.languages[0].code}_${props.languages[0].counter}` : null
@@ -103,7 +130,7 @@ const MediaWindow = (props) => {
                     }
                 </MDBDropdownMenu>
             </MDBDropdown>
-            <div className="form-check" style={{display: 'flex', justifyContent: 'flex-end', marginRight: '5px'}}>
+            <div className="form-check" style={{display: 'flex', justifyContent: 'center'}}>
                 <input className="form-check-input" type="checkbox" id="fxSwitch" onChange={(event) => {
                     setShowFx(event.target.checked)
                 }}/>

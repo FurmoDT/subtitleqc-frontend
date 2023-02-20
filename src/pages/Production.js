@@ -26,7 +26,7 @@ const Production = () => {
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const [hotFontSize, setHotFontSize] = useState('13px')
-    const [toggleFx, setToggleFx] = useState(false)
+    const [fxToggle, setFxToggle] = useState(false)
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
     const tcOutButtonRef = useRef(null)
@@ -91,11 +91,11 @@ const Production = () => {
     }, [languages])
     useEffect(() => {
         if (languageFile) {
-            cellDataRef.current = languageFile.subtitle
             if (languageFile.fx) {
                 fxRef.current = languageFile.fx
                 localStorage.setItem('fx', JSON.stringify(languageFile.fx))
             }
+            cellDataRef.current = languageFile.subtitle
             localStorage.setItem('subtitle', JSON.stringify(languageFile.subtitle))
             setLanguages(languageFile.language)
         }
@@ -122,7 +122,7 @@ const Production = () => {
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'}>
                             <MediaWindow cellDataRef={cellDataRef} fxRef={fxRef} languages={languages} hotRef={hotRef}
-                                         toggleFx={toggleFx}
+                                         fxToggle={fxToggle}
                                          playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
                                          isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
                             <InformationWindow/>
@@ -133,7 +133,7 @@ const Production = () => {
                         borderStyle: 'solid', borderWidth: 'thin'
                     }}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
-                                      toggleFx={toggleFx} setToggleFx={setToggleFx}
+                                      fxToggle={fxToggle} setFxToggle={setFxToggle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
@@ -141,7 +141,7 @@ const Production = () => {
                         <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
                                         hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
                                         cellDataRef={cellDataRef} languages={languages}
-                                        toggleFx={toggleFx} fxRef={fxRef}/>
+                                        fxToggle={fxToggle} fxRef={fxRef}/>
                         <div style={{width: '100%', borderTop: 'solid', borderWidth: 'thin'}}/>
                         <TimelineWindow size={rightRefSize}
                                         waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}

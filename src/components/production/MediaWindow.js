@@ -25,32 +25,32 @@ const MediaWindow = (props) => {
             const nextSubtitle = props.cellDataRef.current[subtitleIndexRef.current][subtitleLanguage] || ''
             if (curSubtitleIndex !== subtitleIndexRef.current) {
                 curSubtitleIndex = subtitleIndexRef.current
-                if (!props.toggleFx) setTdColor(subtitleIndexRef.current, true)
+                if (!props.fxToggle) setTdColor(subtitleIndexRef.current, true)
             }
             if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
         } else {
             if (curSubtitleIndex === subtitleIndexRef.current) {
                 subtitleLabelRef.current.innerText = ''
-                if (!props.toggleFx) setTdColor(subtitleIndexRef.current, false)
+                if (!props.fxToggle) setTdColor(subtitleIndexRef.current, false)
             }
         }
-    }, [props.cellDataRef, props.toggleFx, setTdColor])
+    }, [props.cellDataRef, props.fxToggle, setTdColor])
     const setFxLabel = useCallback((seconds) => {
         const row = props.fxRef.current[fxIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
             const nextSubtitle = props.fxRef.current[fxIndexRef.current].fx || ''
             if (curFxIndex !== fxIndexRef.current) {
                 curFxIndex = fxIndexRef.current
-                if (props.toggleFx) setTdColor(fxIndexRef.current, true)
+                if (props.fxToggle) setTdColor(fxIndexRef.current, true)
             }
             if (fxLabelRef.current.innerText !== nextSubtitle) fxLabelRef.current.innerText = nextSubtitle
         } else {
             if (curFxIndex === fxIndexRef.current) {
                 fxLabelRef.current.innerText = ''
-                if (props.toggleFx) setTdColor(fxIndexRef.current, false)
+                if (props.fxToggle) setTdColor(fxIndexRef.current, false)
             }
         }
-    }, [props.fxRef, props.toggleFx, setTdColor])
+    }, [props.fxRef, props.fxToggle, setTdColor])
     const onPlaybackRateChange = useCallback((event) => {
         if (props.waveformRef.current) {
             props.waveformRef.current.setPlaybackRate(event)

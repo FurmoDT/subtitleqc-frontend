@@ -30,11 +30,11 @@ const LanguageWindow = (props) => {
         }
 
         props.hotRef.current = new Handsontable(containerMain.current, {
-            data: !props.toggleFx ? props.cellDataRef.current : props.fxRef.current,
+            data: !props.fxToggle ? props.cellDataRef.current : props.fxRef.current,
             columns: [
                 {data: 'start', type: 'text', renderer: tcInRenderer},
                 {data: 'end', type: 'text', renderer: tcOutRenderer},
-                ...(!props.toggleFx ? props.languages.map((value) => {
+                ...(!props.fxToggle ? props.languages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
                         renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
@@ -42,7 +42,7 @@ const LanguageWindow = (props) => {
                 }) : [{data: 'fx', type: 'text', renderer: textRenderer}])
                 // {data: 'error', type: 'text'},
             ],
-            colHeaders: ['TC_IN', 'TC_OUT', ...(!props.toggleFx ? props.languages.map((value) => value.name) : ['FX']), 'error'],
+            colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fxToggle ? props.languages.map((value) => value.name) : ['FX']), 'error'],
             rowHeaders: true,
             width: props.size.width,
             height: props.size.height - 190,
@@ -65,7 +65,7 @@ const LanguageWindow = (props) => {
         })
         props.hotRef.current.addHook('afterChange', (changes) => {
             grammarlyPlugin?.disconnect()
-            !props.toggleFx ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
+            !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             props.hotSelectionRef.current.rowStart = row
@@ -73,7 +73,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = row2
             props.hotSelectionRef.current.columnEnd = column2
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.toggleFx, props.fxRef])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fxToggle, props.fxRef])
 
     return <div ref={containerMain}/>
 }

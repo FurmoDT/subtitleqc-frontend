@@ -15,19 +15,19 @@ const TransToolbar = (props) => {
         <MDBBtnGroup style={{marginLeft: '5px'}}>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='말자막'>
                 <MDBBtn ref={subtitleButtonRef} size={'sm'} color={'link'} outline onClick={() => {
-                    if (props.toggleFx) {
+                    if (props.fxToggle) {
                         subtitleButtonRef.current.className = subtitleButtonRef.current.className.replace('btn-link', 'btn-outline-link')
                         fxButtonRef.current.className = fxButtonRef.current.className.replace('btn-outline-link', 'btn-link')
-                        props.setToggleFx(!props.toggleFx)
+                        props.setFxToggle(!props.fxToggle)
                     }
                 }}><MDBIcon fas icon="comments" color={'dark'}/></MDBBtn></MDBTooltip>
             <div style={{margin: '1px'}}></div>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='화면자막'>
                 <MDBBtn ref={fxButtonRef} size={'sm'} color={'link'} onClick={() => {
-                    if (!props.toggleFx) {
+                    if (!props.fxToggle) {
                         subtitleButtonRef.current.className = subtitleButtonRef.current.className.replace('btn-outline-link', 'btn-link')
                         fxButtonRef.current.className = fxButtonRef.current.className.replace('btn-link', 'btn-outline-link')
-                        props.setToggleFx(!props.toggleFx)
+                        props.setFxToggle(!props.fxToggle)
                     }
                 }}><CgTranscript color={'black'} size={15}/></MDBBtn></MDBTooltip>
         </MDBBtnGroup>
@@ -50,7 +50,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN'>
             <MDBBtn ref={props.tcInButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const row = props.hotSelectionRef.current.rowStart
-                if (row) {
+                if (row != null) {
                     props.hotRef.current.setDataAtCell(row, 0, secToTc(props.playerRef.current?.getCurrentTime()))
                     props.hotRef.current.selectCell(row, 0)
                 }
@@ -59,7 +59,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC OUT'>
             <MDBBtn ref={props.tcOutButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const row = props.hotSelectionRef.current.rowStart
-                if (row) {
+                if (row != null) {
                     props.hotRef.current.setDataAtCell(row, 1, secToTc(props.playerRef.current?.getCurrentTime()))
                     props.hotRef.current.selectCell(row + 1, 0)
                 }

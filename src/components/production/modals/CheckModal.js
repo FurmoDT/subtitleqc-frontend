@@ -32,11 +32,13 @@ const CheckModal = (props) => {
                         <MDBBtn onClick={() => {
                             toggleShow()
                             props.setLanguages(defaultLanguage)
-                            props.cellDataRef.current = defaultSubtitle
-                            props.fxRef.current = defaultSubtitle
+                            props.cellDataRef.current = defaultSubtitle()
+                            props.setFxLanguages(defaultLanguage)
+                            props.fxRef.current = defaultSubtitle()
                             props.hotRef.current.clear()
-                            localStorage.removeItem('subtitle')
                             localStorage.removeItem('language')
+                            localStorage.removeItem('subtitle')
+                            localStorage.removeItem('fxLanguage')
                             localStorage.removeItem('fx')
                         }}>YES</MDBBtn>
                     </MDBModalFooter>

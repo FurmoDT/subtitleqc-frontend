@@ -39,10 +39,15 @@ const LanguageWindow = (props) => {
                         data: `${value.code}_${value.counter}`, type: 'text',
                         renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
                     }
-                }) : [{data: 'fx', type: 'text', renderer: textRenderer}])
+                }) : props.fxLanguages.map((value) => {
+                    return {
+                        data: `${value.code}_${value.counter}`, type: 'text',
+                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
+                    }
+                }))
                 // {data: 'error', type: 'text'},
             ],
-            colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fxToggle ? props.languages.map((value) => value.name) : ['FX']), 'error'],
+            colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fxToggle ? props.languages.map((value) => value.name) : props.fxLanguages.map((value) => value.name)), 'error'],
             rowHeaders: true,
             width: props.size.width,
             height: props.size.height - 190,
@@ -73,7 +78,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = row2
             props.hotSelectionRef.current.columnEnd = column2
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fxToggle, props.fxRef])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fxToggle, props.fxRef, props.fxLanguages])
 
     return <div ref={containerMain}/>
 }

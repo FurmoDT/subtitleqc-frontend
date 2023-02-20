@@ -4,6 +4,7 @@ import {bisect, tcToSec} from "../../utils/functions";
 import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
 
 let subtitleLanguage = null
+let fxLanguage = null
 let curSubtitleIndex = null
 let curFxIndex = null
 
@@ -38,7 +39,7 @@ const MediaWindow = (props) => {
     const setFxLabel = useCallback((seconds) => {
         const row = props.fxRef.current[fxIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
-            const nextSubtitle = props.fxRef.current[fxIndexRef.current].fx || ''
+            const nextSubtitle = props.fxRef.current[fxIndexRef.current][fxLanguage] || ''
             if (curFxIndex !== fxIndexRef.current) {
                 curFxIndex = fxIndexRef.current
                 if (props.fxToggle) setTdColor(fxIndexRef.current, true)
@@ -100,6 +101,11 @@ const MediaWindow = (props) => {
             subtitleLanguage = props.languages[0] ? `${props.languages[0].code}_${props.languages[0].counter}` : null
         }
     }, [props.languages])
+    useEffect(() => {
+        if (!fxLanguage || !props.fxLanguages.map((value) => `${value.code}_${value.counter}`).includes(fxLanguage)) {
+            fxLanguage = props.fxLanguages[0] ? `${props.fxLanguages[0].code}_${props.fxLanguages[0].counter}` : null
+        }
+    }, [props.fxLanguages])
     return <div style={{
         width: '100%', height: '100%', justifyContent: 'center', alignItems: 'end', display: 'flex',
         borderStyle: 'solid', borderWidth: 'thin'
@@ -113,7 +119,7 @@ const MediaWindow = (props) => {
         <label ref={subtitleLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>
         <div style={{position: 'absolute', top: 0, right: 0}}>
-            <MDBDropdown>
+            <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <MDBDropdownToggle color={'link'}>
                     <MDBBtn tag='a' color={'none'}>
                         <MDBIcon fas icon='globe' color={'white'} size={'lg'}/>
@@ -130,11 +136,28 @@ const MediaWindow = (props) => {
                     }
                 </MDBDropdownMenu>
             </MDBDropdown>
-            <div className="form-check" style={{display: 'flex', justifyContent: 'center'}}>
+            <div className="form-check" style={{display: 'flex', alignItems: 'center'}}>
                 <input className="form-check-input" type="checkbox" id="fxSwitch" onChange={(event) => {
                     setShowFx(event.target.checked)
                 }}/>
                 <label className="form-check-label" style={{color: 'white'}} htmlFor="fxSwitch">FX</label>
+                <MDBDropdown>
+                    <MDBDropdownToggle color={'link'}>
+                        <MDBBtn tag='a' color={'none'}>
+                            <MDBIcon fas icon='globe' color={'white'} size={'lg'}/>
+                        </MDBBtn>
+                    </MDBDropdownToggle>
+                    <MDBDropdownMenu>
+                        {
+                            props.fxLanguages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
+                                return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
+                                    fxLanguage = `${value.code}_${value.counter}`
+                                    if (props.playerRef.current.getInternalPlayer()?.paused) setFxLabel(props.playerRef.current.getCurrentTime())
+                                }}>{value.name}</MDBDropdownItem>
+                            })
+                        }
+                    </MDBDropdownMenu>
+                </MDBDropdown>
             </div>
         </div>
     </div>

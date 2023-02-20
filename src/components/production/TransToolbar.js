@@ -36,7 +36,8 @@ const TransToolbar = (props) => {
                   onChange={(event) => {
                       props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
                   }}/>
-        <LanguagesModal languages={props.languages} setLanguages={props.setLanguages}/>
+        <LanguagesModal fxToggle={props.fxToggle} languages={props.languages} setLanguages={props.setLanguages}
+                        fxLanguages={props.fxLanguages} setFxLanguages={props.setFxLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN&OUT'>
             <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const row = props.hotSelectionRef.current.rowStart

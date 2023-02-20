@@ -36,8 +36,9 @@ const LanguagesModal = (props) => {
         }])
     }
     useEffect(() => {
-        setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
-    }, [props.languages])
+        if (!props.fxToggle) setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
+        else setLanguages([...props.fxLanguages.map((value) => (Object.assign({}, value)))])
+    }, [props.languages, props.fxLanguages, props.fxToggle])
     return <>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='언어 설정'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
@@ -84,15 +85,24 @@ const LanguagesModal = (props) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={() => {
                             toggleShow()
-                            setLanguages([...props.languages])
+                            if (!props.fxToggle) setLanguages([...props.languages])
+                            else setLanguages([...props.fxLanguages])
                         }}>Close</MDBBtn>
                         <MDBBtn onClick={() => {
                             toggleShow()
-                            props.setLanguages([...languages.map((value) => ({
-                                code: value.code,
-                                name: value.name,
-                                counter: value.counter
-                            }))])
+                            if (!props.fxToggle) {
+                                props.setLanguages([...languages.map((value) => ({
+                                    code: value.code,
+                                    name: value.name,
+                                    counter: value.counter
+                                }))])
+                            } else {
+                                props.setFxLanguages([...languages.map((value) => ({
+                                    code: value.code,
+                                    name: value.name,
+                                    counter: value.counter
+                                }))])
+                            }
                         }}>Save changes</MDBBtn>
                     </MDBModalFooter>
                 </MDBModalContent>

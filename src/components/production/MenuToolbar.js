@@ -26,8 +26,8 @@ const MenuToolbar = (props) => {
             </MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
-            <CheckModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef} fxRef={props.fxRef}
-                        hotRef={props.hotRef}/>
+            <CheckModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
+                        setFxLanguages={props.setFxLanguages} fxRef={props.fxRef} hotRef={props.hotRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} disabled>
@@ -46,6 +46,7 @@ const MenuToolbar = (props) => {
                         name: 'sample',
                         language: props.languages,
                         subtitle: props.cellDataRef.current,
+                        fxLanguage: props.fxLanguages,
                         fx: props.fxRef.current
                     })
                 }}>.fspx</MDBDropdownItem>
@@ -56,8 +57,12 @@ const MenuToolbar = (props) => {
                             subtitle: toSrt(props.cellDataRef.current, `${value.code}_${value.counter}`)
                         })
                     })
-                    const fx = toSrt(props.fxRef.current, 'fx')
-                    if (fx) downloadSrt({name: 'fx', subtitle: fx})
+                    props.fxLanguages.forEach((value) => {
+                        downloadSrt({
+                            name: value.name,
+                            subtitle: toSrt(props.fxRef.current, `${value.code}_${value.counter}`)
+                        })
+                    })
                 }}>.srt</MDBDropdownItem>
                 <MDBDropdownItem link onClick={() => {
                     props.languages.forEach((value) => {

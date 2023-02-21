@@ -2,7 +2,8 @@ export const languageCodes = {
     koKR: '한국어',
     enUS: '영어',
     jaJP: '일어',
-    zhCN: '중국어',
+    zhCN: '중국어(간체)',
+    zhTW: '중국어(번체)',
     viVN: '베트남어',
     thTH: '태국어',
     idID: '인니어',
@@ -16,7 +17,6 @@ export const languageCodes = {
 }
 
 export const defaultSubtitle = () => (Array.from({length: 100}, () => ({})))
-// export const defaultLanguage = [{code: 'xxXX', name: '기타 언어', counter: 1}]
 export const defaultLanguage = []
 
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL

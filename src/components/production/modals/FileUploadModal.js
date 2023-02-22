@@ -8,10 +8,11 @@ import {
     MDBModalHeader,
     MDBModalTitle,
 } from 'mdb-react-ui-kit';
+import {useCallback} from "react";
 
 const FileUploadModal = (props) => {
     const toggleShow = () => props.setFileUploadModalShow(!props.fileUploadModalShow);
-    const setFile = (update) => {
+    const setFile = useCallback((update) => {
         const subtitle = [];
         const l1 = props.cellDataRef.current.length
         const l2 = props.languageFile.subtitle.length
@@ -32,7 +33,7 @@ const FileUploadModal = (props) => {
             localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
             props.setFxLanguages(props.languageFile.language)
         }
-    }
+    },[props])
     return <>
         <MDBModal staticBackdrop show={props.fileUploadModalShow} setShow={props.setFileUploadModalShow} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>

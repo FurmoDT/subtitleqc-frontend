@@ -1,5 +1,6 @@
+import {useCallback, useEffect} from 'react';
 import languageEncoding from "detect-file-encoding-and-language";
-import {parseFsp, parseSrt} from "./fileParser";
+import {parseFsp, parseSrt} from "../../utils/fileParser";
 import {xml2json} from "xml-js";
 
 const baseStyle = {
@@ -16,29 +17,29 @@ const dragStyle = {
     borderColor: '#2196f3',
 };
 
-export const setDropzone = (props) => {
-    let counter = 0
-    const handleDragEnter = (e) => {
+let counter = 0
+const Dropzone = (props) => {
+    const handleDragEnter = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
         counter++
-    }
-    const handleDragOver = (e) => {
+    }, [])
+    const handleDragOver = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
-        Object.assign(props.element.style, dragStyle);
-    };
-    const handleDragLeave = (e) => {
+        Object.assign(props.dropzoneRef.current.style, dragStyle);
+    },[props.dropzoneRef])
+    const handleDragLeave = useCallback((e) => {
         e.preventDefault()
         e.stopPropagation();
         counter--
-        if (!counter) Object.assign(props.element.style, baseStyle);
-    };
-    const handleDrop = (e) => {
+        if (!counter) Object.assign(props.dropzoneRef.current.style, baseStyle);
+    }, [props.dropzoneRef])
+    const handleDrop = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
         counter = 0
-        Object.assign(props.element.style, baseStyle);
+        Object.assign(props.dropzoneRef.current.style, baseStyle);
         const files = e.dataTransfer.files;
         Array.from(files).forEach((file) => {
             const fileFormat = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
@@ -64,10 +65,21 @@ export const setDropzone = (props) => {
                 reader.readAsArrayBuffer(file)
             }
         })
-    };
-    Object.assign(props.element.style, baseStyle);
-    props.element.addEventListener('dragenter', handleDragEnter)
-    props.element.addEventListener('dragover', handleDragOver)
-    props.element.addEventListener('dragleave', handleDragLeave)
-    props.element.addEventListener('drop', handleDrop)
+    }, [props])
+    useEffect(() => {
+        Object.assign(props.dropzoneRef.current.style, baseStyle);
+        props.dropzoneRef.current.addEventListener('dragenter', handleDragEnter)
+        props.dropzoneRef.current.addEventListener('dragover', handleDragOver)
+        props.dropzoneRef.current.addEventListener('dragleave', handleDragLeave)
+        props.dropzoneRef.current.addEventListener('drop', handleDrop)
+        return () => {
+            props.dropzoneRef.current.removeEventListener('dragenter', handleDragEnter)
+            props.dropzoneRef.current.removeEventListener('dragover', handleDragOver)
+            props.dropzoneRef.current.removeEventListener('dragleave', handleDragLeave)
+            props.dropzoneRef.current.removeEventListener('drop', handleDrop)
+        }
+    }, [props.dropzoneRef, handleDragEnter, handleDragOver, handleDragLeave, handleDrop]);
+    return null
 }
+
+export default Dropzone;

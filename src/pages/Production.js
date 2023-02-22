@@ -4,12 +4,12 @@ import MediaWindow from "../components/production/MediaWindow";
 import MenuToolbar from "../components/production/MenuToolbar";
 import TimelineWindow from "../components/production/TimelineWindow";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {setDropzone} from "../utils/setDropzone";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
 import TransToolbar from "../components/production/TransToolbar";
 import {defaultLanguage, defaultSubtitle} from "../utils/config";
 import FileUploadModal from "../components/production/modals/FileUploadModal";
+import Dropzone from "../components/production/Dropzone";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -82,15 +82,6 @@ const Production = () => {
         };
     }, [handleKeyDown]);
     useEffect(() => {
-        setDropzone({
-            element: dropzoneRef.current, setMediaFile: (value) => {
-                setMediaFile(value)
-            }, setLanguageFile: (value) => {
-                setLanguageFile(value)
-            }, languages
-        })
-    }, [dropzoneRef, languages])
-    useEffect(() => {
         localStorage.setItem('language', JSON.stringify(languages))
     }, [languages])
     useEffect(() => {
@@ -122,6 +113,8 @@ const Production = () => {
         return () => observer.disconnect()
     }, []);
     return <>
+        <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setLanguageFile={setLanguageFile}
+                  languages={languages}/>
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
                          fxToggleRef={fxToggleRef} cellDataRef={cellDataRef} fxRef={fxRef} languageFile={languageFile}
                          setLanguages={setLanguages} setFxLanguages={setFxLanguages}/>

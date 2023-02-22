@@ -17,6 +17,6 @@ export const languageCodes = {
 }
 
 export const defaultSubtitle = () => (Array.from({length: 100}, () => ({})))
-export const defaultLanguage = []
+export const defaultLanguage = () => []
 
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL

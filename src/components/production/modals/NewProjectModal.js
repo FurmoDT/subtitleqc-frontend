@@ -30,16 +30,21 @@ const NewProjectModal = (props) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleShow}>NO</MDBBtn>
                         <MDBBtn onClick={() => {
-                            toggleShow()
-                            props.setLanguages(defaultLanguage)
-                            props.cellDataRef.current = defaultSubtitle()
-                            props.setFxLanguages(defaultLanguage)
-                            props.fxRef.current = defaultSubtitle()
-                            props.hotRef.current.clear()
-                            localStorage.removeItem('language')
-                            localStorage.removeItem('subtitle')
-                            localStorage.removeItem('fxLanguage')
-                            localStorage.removeItem('fx')
+                            Promise.all([
+                                props.setLanguages(defaultLanguage()),
+                                props.setFxLanguages(defaultLanguage()),
+                                props.cellDataRef.current = defaultSubtitle(),
+                                props.fxRef.current = defaultSubtitle(),
+                                () => {
+                                    localStorage.removeItem('language')
+                                    localStorage.removeItem('subtitle')
+                                    localStorage.removeItem('fxLanguage')
+                                    localStorage.removeItem('fx')
+                                },
+                                props.hotRef.current.clear()
+                            ]).then(() => {
+                                toggleShow()
+                            })
                         }}>YES</MDBBtn>
                     </MDBModalFooter>
                 </MDBModalContent>

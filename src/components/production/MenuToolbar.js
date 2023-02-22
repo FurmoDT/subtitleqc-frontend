@@ -9,7 +9,7 @@ import {
 } from "mdb-react-ui-kit";
 import {toSrt} from "../../utils/fileParser";
 import {downloadFspx, downloadSrt} from "../../utils/fileDownload";
-import CheckModal from "./modals/CheckModal";
+import NewProjectModal from "./modals/NewProjectModal";
 
 const MenuToolbar = (props) => {
     return <div style={{
@@ -26,8 +26,8 @@ const MenuToolbar = (props) => {
             </MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
-            <CheckModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
-                        setFxLanguages={props.setFxLanguages} fxRef={props.fxRef} hotRef={props.hotRef}/>
+            <NewProjectModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
+                             setFxLanguages={props.setFxLanguages} fxRef={props.fxRef} hotRef={props.hotRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} disabled>

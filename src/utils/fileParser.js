@@ -1,8 +1,11 @@
 import {languageCodes} from "./config";
 
-export const parseSrt = (srtText) => {
-    const language = {code: 'xxXX', name: '기타 언어', counter: 1}
-    const languageKey = `${language.code}_${language.counter}`
+export const parseSrt = (srtText, languages) => {
+    const counter = Math.max(...languages.filter((v) => v.code === 'xxXX').map((v) => v.counter + 1), 1)
+    const language = [...languages, {
+        code: 'xxXX', name: '기타 언어' + (counter > 1 ? `(${counter})` : ''), counter: counter
+    }]
+    const languageKey = `xxXX_${counter}`
     const normalizedSrtData = srtText.replace(/\r\n/g, '\n');
     const lines = normalizedSrtData.split('\n');
     const items = [];
@@ -31,10 +34,10 @@ export const parseSrt = (srtText) => {
             o[languageKey] += line + lineBreak;
         }
     }
-    return {language: [language], subtitle: items}
+    return {language: language, subtitle: items}
 }
 
-export const parseFsp = (fspJson) => {
+export const parseFsp = (fspJson, languages) => {
     const items = []
     const subtitle = fspJson.elements[0].elements[5].elements
     const language = fspJson.elements[0].elements[4].elements.map((value) => languageCodes.hasOwnProperty(value.attributes.code) ? value.attributes.code : 'xxXX')
@@ -42,23 +45,31 @@ export const parseFsp = (fspJson) => {
         if (v in acc) acc[v]++
         else acc[v] = 1
         return acc
-    }, {})
-    const languages = []
+    }, languages.reduce((acc, v) => {
+        if (v.code in acc) acc[v.code] = Math.max(v.counter, acc[v.code])
+        else acc[v.code] = v.counter
+        return acc
+    }, {}))
+    const newLanguage = []
     for (let i = language.length - 1; i >= 0; i--) {
         const item = language[i];
         const itemCounter = languageCounts[item]--
-        languages.unshift({code: item, name: languageCodes[item] + (itemCounter > 1 ? `(${itemCounter})` : ''), counter: itemCounter})
+        newLanguage.unshift({
+            code: item,
+            name: languageCodes[item] + (itemCounter > 1 ? `(${itemCounter})` : ''),
+            counter: itemCounter
+        })
     }
     for (let i = 0; i < subtitle.length; i++) {
         const line = {}
         line.start = subtitle[i].attributes.i ? `0${subtitle[i].attributes.i}` : ''
         line.end = subtitle[i].attributes.o ? `0${subtitle[i].attributes.o}` : ''
         subtitle[i].elements.forEach((v, index) => {
-            line[`${languages[index].code}_${languages[index].counter}`] = v.elements ? v.elements[0].text.replaceAll('|', '\n').split('\n').map(v => v.trim()).join('\n') : ''
+            line[`${newLanguage[index].code}_${newLanguage[index].counter}`] = v.elements ? v.elements[0].text.replaceAll('|', '\n').split('\n').map(v => v.trim()).join('\n') : ''
         })
         items.push(line)
     }
-    return {language: languages, subtitle: items}
+    return {language: languages.concat(newLanguage), subtitle: items}
 }
 
 

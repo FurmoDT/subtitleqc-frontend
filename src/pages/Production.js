@@ -9,9 +9,11 @@ import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
 import TransToolbar from "../components/production/TransToolbar";
 import {defaultLanguage, defaultSubtitle} from "../utils/config";
+import FileUploadModal from "../components/production/modals/FileUploadModal";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
+    const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
     const rightRef = useRef(null)
     const [rightRefSize, setRightRefSize] = useState({width: 0, height: 0})
     const [mediaFile, setMediaFile] = useState(null)
@@ -85,9 +87,9 @@ const Production = () => {
                 setMediaFile(value)
             }, setLanguageFile: (value) => {
                 setLanguageFile(value)
-            }
+            }, languages
         })
-    }, [dropzoneRef])
+    }, [dropzoneRef, languages])
     useEffect(() => {
         localStorage.setItem('language', JSON.stringify(languages))
     }, [languages])
@@ -106,17 +108,7 @@ const Production = () => {
                 localStorage.setItem('fx', JSON.stringify(languageFile.fx))
                 setLanguages(languageFile.language)
                 setFxLanguages(languageFile.fxLanguage)
-            } else {
-                if (!fxToggleRef.current) {
-                    cellDataRef.current = languageFile.subtitle
-                    localStorage.setItem('subtitle', JSON.stringify(languageFile.subtitle))
-                    setLanguages(languageFile.language)
-                } else {
-                    fxRef.current = languageFile.subtitle
-                    localStorage.setItem('fx', JSON.stringify(languageFile.subtitle))
-                    setFxLanguages(languageFile.language)
-                }
-            }
+            } else setFileUploadModalShow(true)
         }
     }, [languageFile])
     useEffect(() => {
@@ -130,6 +122,9 @@ const Production = () => {
         return () => observer.disconnect()
     }, []);
     return <>
+        <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
+                         fxToggleRef={fxToggleRef} cellDataRef={cellDataRef} fxRef={fxRef} languageFile={languageFile}
+                         setLanguages={setLanguages} setFxLanguages={setFxLanguages}/>
         <MenuToolbar cellDataRef={cellDataRef} fxRef={fxRef} languages={languages} setLanguages={setLanguages}
                      fxLanguages={fxLanguages} setFxLanguages={setFxLanguages} hotRef={hotRef}/>
         <div ref={dropzoneRef} style={{

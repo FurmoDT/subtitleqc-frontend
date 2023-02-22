@@ -114,7 +114,7 @@ const Production = () => {
     }, []);
     return <>
         <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setLanguageFile={setLanguageFile}
-                  languages={languages}/>
+                  fxToggleRef={fxToggleRef} languages={languages} fxLanguages={fxLanguages}/>
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
                          fxToggleRef={fxToggleRef} cellDataRef={cellDataRef} fxRef={fxRef} languageFile={languageFile}
                          setLanguages={setLanguages} setFxLanguages={setFxLanguages}/>

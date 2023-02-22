@@ -14,11 +14,11 @@ const FileUploadModal = (props) => {
     const toggleShow = () => props.setFileUploadModalShow(!props.fileUploadModalShow);
     const setFile = useCallback((update) => {
         const subtitle = [];
-        const l1 = props.cellDataRef.current.length
+        const l1 = (!props.fxToggleRef.current ? props.cellDataRef.current.length : props.fxRef.current.length)
         const l2 = props.languageFile.subtitle.length
         const maxLength = Math.max(l1, l2)
         for (let i = 0; i < maxLength; i++) {
-            const {start: startA, end: endA, ...subtitleA} = props.cellDataRef.current[i] || {}
+            const {start: startA, end: endA, ...subtitleA} = (!props.fxToggleRef.current ? props.cellDataRef.current[i] : props.fxRef.current[i]) || {}
             const {start: startB, end: endB, ...subtitleB} = props.languageFile.subtitle[i] || {}
             const start = update ? startB : startA
             const end = update ? endB : endA

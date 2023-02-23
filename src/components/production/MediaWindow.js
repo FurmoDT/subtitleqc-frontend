@@ -16,7 +16,7 @@ const MediaWindow = (props) => {
     const fxIndexRef = useRef(0)
     const setTdColor = useCallback((index, isShow) => {
         props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
-            if (isShow) tdElement.style.backgroundColor = tdElement.style.backgroundColor || 'floralwhite'
+            if (isShow) tdElement.style.backgroundColor = tdElement.style.backgroundColor || 'beige'
             else tdElement.style.backgroundColor = ''
         });
     }, [props.hotRef])
@@ -52,12 +52,6 @@ const MediaWindow = (props) => {
             }
         }
     }, [props.fxRef, props.fxToggle, setTdColor])
-    const onPlaybackRateChange = useCallback((event) => {
-        if (props.waveformRef.current) {
-            props.waveformRef.current.setPlaybackRate(event)
-            props.waveformRef.current.seekTo(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
-        }
-    }, [props.waveformRef, props.playerRef])
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             props.hotRef.current.addHook('afterRender', (isForced) => {
@@ -74,19 +68,7 @@ const MediaWindow = (props) => {
         if (tcToSec(props.fxRef.current[fxIndexRef.current].start) !== seconds) fxIndexRef.current = Math.max(fxIndexRef.current - 1, 0)
         setSubtitleLabel(seconds)
         setFxLabel(seconds)
-        if (props.isWaveSeeking.current) {
-            props.isWaveSeeking.current = false
-            return
-        }
-        props.isVideoSeeking.current = true
-        props.waveformRef.current?.seekAndCenter(props.playerRef.current.getCurrentTime() / props.playerRef.current.getDuration())
-    }, [props.waveformRef, props.playerRef, props.isVideoSeeking, props.isWaveSeeking, props.cellDataRef, props.fxRef, props.hotRef, setSubtitleLabel, setFxLabel, afterRenderPromise])
-    const onPause = useCallback(() => {
-        props.waveformRef.current?.pause()
-    }, [props.waveformRef])
-    const onPlay = useCallback(() => {
-        props.waveformRef.current?.play()
-    }, [props.waveformRef])
+    }, [props.cellDataRef, props.fxRef, props.hotRef, setSubtitleLabel, setFxLabel, afterRenderPromise])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFxLabel(state.playedSeconds)
@@ -111,8 +93,7 @@ const MediaWindow = (props) => {
         borderStyle: 'solid', borderWidth: 'thin'
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
-                     controls={true} progressInterval={1} url={props.mediaFile} onPause={onPause} onPlay={onPlay}
-                     onPlaybackRateChange={onPlaybackRateChange} onSeek={onSeek} onProgress={onProgress}
+                     controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
         <label ref={fxLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre', top: 0}}/>

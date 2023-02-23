@@ -15,14 +15,12 @@ const Production = () => {
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
     const rightRef = useRef(null)
-    const [languageWindowSize, setLanguageWindowSize] = useState({width: 0, height: 0})
+    const [rightRefSize, setRightRefSize] = useState({width: 0, languageWindowHeight: 0, timelineWindowHeight: 0})
     const LanguageTimelineSplitterRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
     const playerRef = useRef(null)
-    const isVideoSeeking = useRef(false)
     const waveformRef = useRef(null)
-    const isWaveSeeking = useRef(false)
     const cellDataRef = useRef(localStorage.subtitle ? JSON.parse(localStorage.subtitle) : defaultSubtitle())
     const fxRef = useRef(localStorage.fx ? JSON.parse(localStorage.fx) : defaultSubtitle())
     const [languages, setLanguages] = useState(localStorage.language ? JSON.parse(localStorage.language) : defaultLanguage())
@@ -106,10 +104,11 @@ const Production = () => {
     useEffect(() => {
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
-                const {width, height} = entry.contentRect;
-                setLanguageWindowSize({
+                const {width} = entry.contentRect;
+                setRightRefSize({
                     width: width,
-                    height: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight
+                    languageWindowHeight: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight,
+                    timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight
                 })
             }
         });
@@ -135,8 +134,7 @@ const Production = () => {
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'} postPoned>
                             <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fxRef={fxRef} fxToggle={fxToggle}
                                          languages={languages} fxLanguages={fxLanguages}
-                                         playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile}
-                                         isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
+                                         playerRef={playerRef} mediaFile={mediaFile}/>
                             <InformationWindow/>
                         </Splitter>
                     </div>
@@ -153,18 +151,18 @@ const Production = () => {
                                       fxLanguages={fxLanguages} setFxLanguages={setFxLanguages}/>
                         <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'} primaryPaneHeight={'70%'}
                                   onDragFinished={() => {
-                                      setLanguageWindowSize({
-                                          ...languageWindowSize,
-                                          height: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight
+                                      setRightRefSize({
+                                          ...rightRefSize,
+                                          languageWindowHeight: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight,
+                                          timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight
                                       })
                                   }}>
-                            <LanguageWindow size={languageWindowSize} hotRef={hotRef} playerRef={playerRef}
+                            <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
                                             fxToggle={fxToggle}
                                             cellDataRef={cellDataRef} languages={languages}
                                             fxRef={fxRef} fxLanguages={fxLanguages}/>
-                            <TimelineWindow waveformRef={waveformRef} playerRef={playerRef} mediaFile={mediaFile}
-                                            isWaveSeeking={isWaveSeeking} isVideoSeeking={isVideoSeeking}/>
+                            <TimelineWindow size={rightRefSize} waveformRef={waveformRef} mediaFile={mediaFile}/>
                         </Splitter>
                     </div>
                 </Splitter>

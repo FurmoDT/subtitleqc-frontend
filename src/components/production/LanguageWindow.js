@@ -50,7 +50,7 @@ const LanguageWindow = (props) => {
             colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fxToggle ? props.languages.map((value) => value.name) : props.fxLanguages.map((value) => value.name)), 'error'],
             rowHeaders: true,
             width: props.size.width,
-            height: props.size.height,
+            height: props.size.languageWindowHeight,
             minSpareRows: 2,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
         })

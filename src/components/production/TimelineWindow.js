@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
+import {secToTc} from "../../utils/functions";
 
 
 const TimelineWindow = (props) => {
@@ -24,6 +25,13 @@ const TimelineWindow = (props) => {
             mediaElement: document.querySelector('video'),
             webAudio: {
                 audioContext: new AudioContext()
+            },
+            zoomview: {
+                waveformColor: 'steelblue',
+                playedWaveformColor: 'lightgreen',
+                showPlayheadTime: true,
+                formatPlayheadTime: (seconds) => secToTc(seconds),
+                formatAxisTime: (seconds) => secToTc(seconds)
             },
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
         }

@@ -6,12 +6,15 @@ import {secToTc} from "../../utils/functions";
 const TimelineWindow = (props) => {
     const waveformRef = useRef(null);
     const overviewRef = useRef(null);
-
     const onWheel = useCallback((e) => {
         if (e.ctrlKey) {
             e.preventDefault()
-            if (e.deltaY > 0) props.waveformRef.current?.zoom.zoomIn()
-            else props.waveformRef.current?.zoom.zoomOut()
+            if (e.deltaY > 0) props.waveformRef.current?.zoom.zoomOut()
+            else props.waveformRef.current?.zoom.zoomIn()
+        } else {
+            const player = props.waveformRef.current?.player
+            if (e.deltaY > 0) player?.seek(player.getCurrentTime() - 1)
+            else player?.seek(player.getCurrentTime() + 1)
         }
     }, [props.waveformRef])
 
@@ -31,7 +34,7 @@ const TimelineWindow = (props) => {
                 playedWaveformColor: 'lightgreen',
                 showPlayheadTime: true,
                 formatPlayheadTime: (seconds) => secToTc(seconds),
-                formatAxisTime: (seconds) => secToTc(seconds)
+                formatAxisTime: (seconds) => secToTc(seconds),
             },
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
         }
@@ -51,8 +54,9 @@ const TimelineWindow = (props) => {
     }, [props.size, props.waveformRef])
 
     return <>
-        <div style={{width: '100%', height: `${props.size.timelineWindowHeight - 130}px`}} ref={waveformRef}/>
-        <div style={{width: '100%', height: '80px'}} ref={overviewRef}/>
+        <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 130}px`}}
+             onClick={() => props.waveformRef.current?.player.pause()}/>
+        <div ref={overviewRef} style={{width: '100%', height: '80px'}}/>
     </>
 };
 

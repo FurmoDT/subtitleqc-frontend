@@ -40,7 +40,7 @@ const TimelineWindow = (props) => {
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()
-    }, [props.size])
+    }, [props.size, props.waveformRef])
 
     return <>
         <div style={{width: '100%', height: `${props.size.timelineWindowHeight - 130}px`}} ref={waveformRef}/>

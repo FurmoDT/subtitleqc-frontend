@@ -1,6 +1,5 @@
 import {Label, Tag} from 'konva/lib/shapes/Label';
 import {Line} from "konva/cmj/shapes/Line";
-import {Text} from "konva/cmj/shapes/Text";
 
 class CustomSegmentMarker {
     constructor(options) {
@@ -22,8 +21,8 @@ class CustomSegmentMarker {
             stroke: color,
             strokeWidth: 1,
             pointerDirection: 'down',
-            pointerWidth: 10,
-            pointerHeight: 10,
+            pointerWidth: 15,
+            pointerHeight: 15,
             lineJoin: 'round',
             shadowColor: 'black',
             shadowBlur: 10,
@@ -34,29 +33,12 @@ class CustomSegmentMarker {
 
         this._label.add(this._tag);
 
-        let labelText = this._options.segment.labelText;
-
-        if (labelText) {
-            labelText += ' ';
-        }
-
-        labelText += this._options.startMarker ? 'Start' : 'End';
-
-        this._text = new Text({
-            text: labelText,
-            fontFamily: 'Calibri',
-            fontSize: 14,
-            padding: 5,
-            fill: 'white'
-        });
-
-        this._label.add(this._text);
-
         this._line = new Line({
             x: 0,
             y: 0,
             stroke: color,
-            strokeWidth: 1
+            strokeWidth: 1,
+            dash: this._options.startMarker ? [] : [5, 5]
         });
 
         group.add(this._label);
@@ -80,13 +62,12 @@ class CustomSegmentMarker {
     fitToView() {
         const height = this._options.layer.getHeight();
 
-        const labelHeight = this._text.height() + 2 * this._text.padding();
         const offsetTop = 14;
         const offsetBottom = 26;
 
-        this._group.y(offsetTop + labelHeight + 0.5);
+        this._group.y(offsetTop + 0.5);
 
-        this._line.points([0.5, 0, 0.5, height - labelHeight - offsetTop - offsetBottom]);
+        this._line.points([0.5, 0, 0.5, height - offsetTop - offsetBottom]);
     }
 }
 

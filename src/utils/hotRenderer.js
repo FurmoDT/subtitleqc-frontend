@@ -7,14 +7,16 @@ const isTCValid = (timecode) => {
     return timecode?.match(`^(\\d{2}:\\d{2}:\\d{2}[\\.|,]\\d{3})`)
 }
 
-export const tcInValidator = (r, c, v, td, fontSize) => {
+export const tcInValidator = (r, c, v, td, fontSize, instance) => {
     td.style.fontSize = fontSize
     if (v && !isTCValid(v)) setTDColor(td, 'red')
+    if (instance.getDataAtCell(r - 1, c + 1) > v) setTDColor(td, 'red')
 }
 
-export const tcOutValidator = (r, c, v, td, fontSize) => {
+export const tcOutValidator = (r, c, v, td, fontSize, instance) => {
     td.style.fontSize = fontSize
     if (v && !isTCValid(v)) setTDColor(td, 'red')
+    if (instance.getDataAtCell(r, c - 1) > v) setTDColor(td, 'red')
 }
 
 export const textValidator = (r, c, v, td, fontSize) => {

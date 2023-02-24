@@ -16,12 +16,12 @@ const LanguageWindow = (props) => {
 
         function tcInRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            tcInValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
+            tcInValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance)
         }
 
         function tcOutRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            tcOutValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
+            tcOutValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance)
         }
 
         function textRenderer(instance, td) {

@@ -18,6 +18,7 @@ const Production = () => {
     const [rightRefSize, setRightRefSize] = useState({width: 0, languageWindowHeight: 0, timelineWindowHeight: 0})
     const LanguageTimelineSplitterRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
+    const [video, setVideo] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
@@ -133,8 +134,8 @@ const Production = () => {
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'} postPoned>
                             <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fxRef={fxRef} fxToggle={fxToggle}
-                                         languages={languages} fxLanguages={fxLanguages}
-                                         playerRef={playerRef} mediaFile={mediaFile}/>
+                                         languages={languages} fxLanguages={fxLanguages} playerRef={playerRef}
+                                         mediaFile={mediaFile} video={video} setVideo={setVideo}/>
                             <InformationWindow/>
                         </Splitter>
                     </div>
@@ -162,7 +163,8 @@ const Production = () => {
                                             fxToggle={fxToggle}
                                             cellDataRef={cellDataRef} languages={languages}
                                             fxRef={fxRef} fxLanguages={fxLanguages}/>
-                            <TimelineWindow size={rightRefSize} waveformRef={waveformRef} mediaFile={mediaFile}/>
+                            <TimelineWindow size={rightRefSize} waveformRef={waveformRef}
+                                            mediaFile={mediaFile} video={video}/>
                         </Splitter>
                     </div>
                 </Splitter>

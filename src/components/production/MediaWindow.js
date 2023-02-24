@@ -14,6 +14,7 @@ const MediaWindow = (props) => {
     const fxLabelRef = useRef(null)
     const subtitleIndexRef = useRef(0)
     const fxIndexRef = useRef(0)
+    const setVideo = props.setVideo
     const setTdColor = useCallback((index, isShow) => {
         props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
             if (isShow) tdElement.style.backgroundColor = tdElement.style.backgroundColor || 'beige'
@@ -75,6 +76,9 @@ const MediaWindow = (props) => {
         if (state.playedSeconds >= tcToSec(props.cellDataRef.current[subtitleIndexRef.current].end)) subtitleIndexRef.current += 1
         if (state.playedSeconds >= tcToSec(props.fxRef.current[fxIndexRef.current].end)) fxIndexRef.current += 1
     }, [props.cellDataRef, props.fxRef, setSubtitleLabel, setFxLabel])
+    const onReady = useCallback(() => {
+        if (props.video !== props.mediaFile) setVideo(props.mediaFile)
+    }, [props.mediaFile, props.video, setVideo])
     useEffect(() => {
         fxLabelRef.current.style.display = showFx ? '' : 'none'
     }, [showFx])
@@ -94,6 +98,7 @@ const MediaWindow = (props) => {
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
                      controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
+                     onReady={onReady}
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
         <label ref={fxLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre', top: 0}}/>

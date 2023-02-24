@@ -19,7 +19,7 @@ const TimelineWindow = (props) => {
     }, [props.waveformRef])
 
     useEffect(() => {
-        if (!props.mediaFile) return
+        if (!props.video) return
         const options = {
             containers: {
                 zoomview: waveformRef.current,
@@ -39,15 +39,14 @@ const TimelineWindow = (props) => {
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
         }
         Peaks.init(options, function (err, peaks) {
-            if (peaks) {
-                props.waveformRef.current = peaks
-            }
+            if (err) console.log(err)
+            if (peaks) props.waveformRef.current = peaks
         })
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})
         return () => {
             props.waveformRef.current?.destroy()
         }
-    }, [props.mediaFile, props.waveformRef, onWheel])
+    }, [props.video, props.waveformRef, onWheel])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

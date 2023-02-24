@@ -79,7 +79,7 @@ export function toSrt(array, language) {
         let s = array[i];
         if (s.start && s.end) {
             res += i + 1 + "\r\n";
-            res += s.start + " --> " + s.end + "\r\n";
+            res += s.start.replace('.', ',') + " --> " + s.end.replace('.', ',') + "\r\n";
             res += (s[language]?.replace("\n", "\r\n") || '') + "\r\n\r\n"
         }
     }

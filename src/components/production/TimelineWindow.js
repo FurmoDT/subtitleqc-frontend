@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
 import {secToTc} from "../../utils/functions";
+import {createSegmentMarker} from "../../utils/createSegmentMarker";
 
 
 const TimelineWindow = (props) => {
@@ -36,11 +37,24 @@ const TimelineWindow = (props) => {
                 formatPlayheadTime: (seconds) => secToTc(seconds),
                 formatAxisTime: (seconds) => secToTc(seconds),
             },
+            createSegmentMarker: createSegmentMarker,
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
+            segments: []
         }
         Peaks.init(options, function (err, peaks) {
             if (err) console.log(err)
-            if (peaks) props.waveformRef.current = peaks
+            if (peaks) {
+                props.waveformRef.current = peaks
+                peaks.on('zoomview.dblclick', (event) => {
+                    const time = peaks.player.getCurrentTime()
+                    peaks.segments.add({
+                        startTime: time,
+                        endTime: time + 1,
+                        color: 'darkgrey',
+                        editable: true,
+                    })
+                })
+            }
         })
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})
         return () => {

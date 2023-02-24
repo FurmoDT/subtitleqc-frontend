@@ -73,10 +73,10 @@ const LanguageWindow = (props) => {
             !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
-            props.hotSelectionRef.current.rowStart = row
-            props.hotSelectionRef.current.columnStart = column
-            props.hotSelectionRef.current.rowEnd = row2
-            props.hotSelectionRef.current.columnEnd = column2
+            props.hotSelectionRef.current.rowStart = Math.min(row, row2)
+            props.hotSelectionRef.current.columnStart = Math.min(column, column2)
+            props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
+            props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fxToggle, props.fxRef, props.fxLanguages])
 

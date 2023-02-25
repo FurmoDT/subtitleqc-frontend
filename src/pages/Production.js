@@ -120,8 +120,12 @@ const Production = () => {
                 setLanguages(languageFile.language)
                 setFxLanguages(languageFile.fxLanguage)
             } else setFileUploadModalShow(true)
+            if (waveformRef.current) {
+                waveformRef.current.segments.removeAll()
+                waveformRef.current.segments.add(resetSegments())
+            }
         }
-    }, [languageFile])
+    }, [languageFile, resetSegments])
     useEffect(() => {
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
@@ -143,7 +147,8 @@ const Production = () => {
                          fxToggleRef={fxToggleRef} cellDataRef={cellDataRef} fxRef={fxRef} languageFile={languageFile}
                          setLanguages={setLanguages} setFxLanguages={setFxLanguages}/>
         <MenuToolbar cellDataRef={cellDataRef} fxRef={fxRef} languages={languages} setLanguages={setLanguages}
-                     fxLanguages={fxLanguages} setFxLanguages={setFxLanguages} hotRef={hotRef}/>
+                     fxLanguages={fxLanguages} setFxLanguages={setFxLanguages} hotRef={hotRef}
+                     waveformRef={waveformRef}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
             width: '100vw', height: 'calc(100vh - 100px)', position: 'relative'

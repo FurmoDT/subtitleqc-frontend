@@ -27,7 +27,8 @@ const MenuToolbar = (props) => {
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
             <NewProjectModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
-                             setFxLanguages={props.setFxLanguages} fxRef={props.fxRef} hotRef={props.hotRef}/>
+                             setFxLanguages={props.setFxLanguages} fxRef={props.fxRef} hotRef={props.hotRef}
+                             waveformRef={props.waveformRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} disabled>

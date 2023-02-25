@@ -148,7 +148,7 @@ const Production = () => {
                          setLanguages={setLanguages} setFxLanguages={setFxLanguages}/>
         <MenuToolbar cellDataRef={cellDataRef} fxRef={fxRef} languages={languages} setLanguages={setLanguages}
                      fxLanguages={fxLanguages} setFxLanguages={setFxLanguages} hotRef={hotRef}
-                     waveformRef={waveformRef}/>
+                     setLanguageFile={setLanguageFile} waveformRef={waveformRef}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
             width: '100vw', height: 'calc(100vh - 100px)', position: 'relative'

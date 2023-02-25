@@ -41,6 +41,7 @@ const NewProjectModal = (props) => {
                                     localStorage.removeItem('fxLanguage')
                                     localStorage.removeItem('fx')
                                 },
+                                props.setLanguageFile(null),
                                 props.waveformRef.current?.segments.removeAll(),
                                 props.hotRef.current.clear()
                             ]).then(() => {

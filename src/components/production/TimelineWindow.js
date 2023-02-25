@@ -40,12 +40,13 @@ const TimelineWindow = (props) => {
             },
             createSegmentMarker: createSegmentMarker,
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
-            segments: resetSegment.current()
+            segments: []
         }
         Peaks.init(options, function (err, peaks) {
             if (err) console.log(err)
             if (peaks) {
                 props.waveformRef.current = peaks
+                peaks.segments.add(resetSegment.current())
                 peaks.on('zoomview.dblclick', (event) => {
                     const time = peaks.player.getCurrentTime()
                     // check if updatable

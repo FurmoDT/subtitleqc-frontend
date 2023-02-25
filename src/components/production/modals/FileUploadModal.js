@@ -8,17 +8,22 @@ import {
     MDBModalHeader,
     MDBModalTitle,
 } from 'mdb-react-ui-kit';
-import {useCallback} from "react";
+import {useCallback, useRef} from "react";
 
 const FileUploadModal = (props) => {
     const toggleShow = () => props.setFileUploadModalShow(!props.fileUploadModalShow);
+    const resetSegments = useRef(props.resetSegments)
     const setFile = useCallback((update) => {
         const subtitle = [];
         const l1 = (!props.fxToggleRef.current ? props.cellDataRef.current.length : props.fxRef.current.length)
         const l2 = props.languageFile.subtitle.length
         const maxLength = Math.max(l1, l2)
         for (let i = 0; i < maxLength; i++) {
-            const {start: startA, end: endA, ...subtitleA} = (!props.fxToggleRef.current ? props.cellDataRef.current[i] : props.fxRef.current[i]) || {}
+            const {
+                start: startA,
+                end: endA,
+                ...subtitleA
+            } = (!props.fxToggleRef.current ? props.cellDataRef.current[i] : props.fxRef.current[i]) || {}
             const {start: startB, end: endB, ...subtitleB} = props.languageFile.subtitle[i] || {}
             const start = update ? startB : startA
             const end = update ? endB : endA
@@ -33,7 +38,11 @@ const FileUploadModal = (props) => {
             localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
             props.setFxLanguages(props.languageFile.language)
         }
-    },[props])
+        if (props.waveformRef.current) {
+            props.waveformRef.current.segments.removeAll()
+            props.waveformRef.current.segments.add(resetSegments.current())
+        }
+    }, [props])
     return <>
         <MDBModal staticBackdrop show={props.fileUploadModalShow} setShow={props.setFileUploadModalShow} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>

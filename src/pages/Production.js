@@ -37,6 +37,7 @@ const Production = () => {
     const tcOutButtonRef = useRef(null)
     const splitLineButtonRef = useRef(null)
     const mergeLineButtonRef = useRef(null)
+    const resetSegmentsRef = useRef(null)
     const handleKeyDown = useCallback((event) => {
         if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO') || event.key === 'F6') {
             event.preventDefault();
@@ -92,6 +93,9 @@ const Production = () => {
         return segments
     }, [fxToggle])
     useEffect(() => {
+        resetSegmentsRef.current = resetSegments
+    }, [resetSegments])
+    useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
@@ -107,9 +111,9 @@ const Production = () => {
         fxToggleRef.current = fxToggle
         if (waveformRef.current) {
             waveformRef.current.segments.removeAll()
-            waveformRef.current.segments.add(resetSegments())
+            waveformRef.current.segments.add(resetSegmentsRef.current())
         }
-    }, [fxToggle, resetSegments])
+    }, [fxToggle])
     useEffect(() => {
         if (languageFile) {
             if (languageFile.fxLanguage && languageFile.fx) { // fspx
@@ -122,10 +126,10 @@ const Production = () => {
             } else setFileUploadModalShow(true)
             if (waveformRef.current) {
                 waveformRef.current.segments.removeAll()
-                waveformRef.current.segments.add(resetSegments())
+                waveformRef.current.segments.add(resetSegmentsRef.current())
             }
         }
-    }, [languageFile, resetSegments])
+    }, [languageFile])
     useEffect(() => {
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
@@ -145,7 +149,8 @@ const Production = () => {
                   fxToggleRef={fxToggleRef} languages={languages} fxLanguages={fxLanguages}/>
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
                          fxToggleRef={fxToggleRef} cellDataRef={cellDataRef} fxRef={fxRef} languageFile={languageFile}
-                         setLanguages={setLanguages} setFxLanguages={setFxLanguages}/>
+                         setLanguages={setLanguages} setFxLanguages={setFxLanguages} waveformRef={waveformRef}
+                         resetSegments={resetSegments}/>
         <MenuToolbar cellDataRef={cellDataRef} fxRef={fxRef} languages={languages} setLanguages={setLanguages}
                      fxLanguages={fxLanguages} setFxLanguages={setFxLanguages} hotRef={hotRef}
                      setLanguageFile={setLanguageFile} waveformRef={waveformRef}/>

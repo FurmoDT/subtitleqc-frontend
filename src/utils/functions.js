@@ -24,3 +24,12 @@ export const secToTc = (sec) => {
     const s = (sec % 60).toFixed(3).padStart(6, '0')
     return `${h}:${m}:${s}`
 }
+
+export const createSegment = (start, end) => {
+    return {
+        startTime: start,
+        endTime: end,
+        color: 'darkgrey',
+        editable: true,
+    }
+}

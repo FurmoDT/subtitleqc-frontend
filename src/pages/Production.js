@@ -10,6 +10,7 @@ import TransToolbar from "../components/production/TransToolbar";
 import {defaultLanguage, defaultSubtitle} from "../utils/config";
 import FileUploadModal from "../components/production/modals/FileUploadModal";
 import Dropzone from "../components/production/Dropzone";
+import {createSegment, tcToSec} from "../utils/functions";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -26,6 +27,7 @@ const Production = () => {
     const fxRef = useRef(localStorage.fx ? JSON.parse(localStorage.fx) : defaultSubtitle())
     const [languages, setLanguages] = useState(localStorage.language ? JSON.parse(localStorage.language) : defaultLanguage())
     const [fxLanguages, setFxLanguages] = useState(localStorage.fxLanguage ? JSON.parse(localStorage.fxLanguage) : defaultLanguage())
+    const subtitleSegments = useRef([])
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const [hotFontSize, setHotFontSize] = useState('13px')
@@ -89,6 +91,23 @@ const Production = () => {
     }, [fxLanguages])
     useEffect(() => {
         fxToggleRef.current = fxToggle
+        const segments = []
+        if (!fxToggle) {
+            cellDataRef.current.forEach((value) => {
+                const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
+                if (start && end) segments.push(createSegment(start, end))
+            })
+        } else {
+            fxRef.current.forEach((value) => {
+                const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
+                if (start && end) segments.push(createSegment(start, end))
+            })
+        }
+        subtitleSegments.current = segments
+        if (waveformRef.current) {
+            waveformRef.current.segments.removeAll()
+            waveformRef.current.segments.add(segments)
+        }
     }, [fxToggle])
     useEffect(() => {
         if (languageFile) {
@@ -163,8 +182,8 @@ const Production = () => {
                                             fxToggle={fxToggle}
                                             cellDataRef={cellDataRef} languages={languages}
                                             fxRef={fxRef} fxLanguages={fxLanguages}/>
-                            <TimelineWindow size={rightRefSize} waveformRef={waveformRef}
-                                            mediaFile={mediaFile} video={video}/>
+                            <TimelineWindow size={rightRefSize} subtitleSegments={subtitleSegments}
+                                            waveformRef={waveformRef} mediaFile={mediaFile} video={video}/>
                         </Splitter>
                     </div>
                 </Splitter>

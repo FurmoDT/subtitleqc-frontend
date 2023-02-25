@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
-import {secToTc} from "../../utils/functions";
+import {createSegment, secToTc} from "../../utils/functions";
 import {createSegmentMarker} from "../../utils/createSegmentMarker";
 
 
@@ -39,7 +39,7 @@ const TimelineWindow = (props) => {
             },
             createSegmentMarker: createSegmentMarker,
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
-            segments: []
+            segments: props.subtitleSegments.current
         }
         Peaks.init(options, function (err, peaks) {
             if (err) console.log(err)
@@ -47,12 +47,11 @@ const TimelineWindow = (props) => {
                 props.waveformRef.current = peaks
                 peaks.on('zoomview.dblclick', (event) => {
                     const time = peaks.player.getCurrentTime()
-                    peaks.segments.add({
-                        startTime: time,
-                        endTime: time + 1,
-                        color: 'darkgrey',
-                        editable: true,
-                    })
+                    // check if updatable
+                    peaks.segments.add(createSegment(time, time + 1))
+                })
+                peaks.on('segments.add', (segments) => {
+                    // languageWindow update
                 })
             }
         })
@@ -60,7 +59,7 @@ const TimelineWindow = (props) => {
         return () => {
             props.waveformRef.current?.destroy()
         }
-    }, [props.video, props.waveformRef, onWheel])
+    }, [props.video, props.waveformRef, onWheel, props.subtitleSegments])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

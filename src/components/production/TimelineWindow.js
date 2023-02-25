@@ -49,8 +49,7 @@ const TimelineWindow = (props) => {
                 peaks.segments.add(resetSegment.current())
                 peaks.on('zoomview.dblclick', (event) => {
                     const time = peaks.player.getCurrentTime()
-                    // check if updatable
-                    peaks.segments.add(createSegment(time, time + 1))
+                    if (!peaks.segments.find(time, time + 1).length) peaks.segments.add(createSegment(time, time + 1))
                 })
                 peaks.on('segments.add', (segments) => {
                     // languageWindow update

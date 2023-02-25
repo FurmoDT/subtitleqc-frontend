@@ -7,6 +7,7 @@ import {createSegmentMarker} from "../../utils/createSegmentMarker";
 const TimelineWindow = (props) => {
     const waveformRef = useRef(null);
     const overviewRef = useRef(null);
+    const resetSegment = useRef(props.resetSegments)
     const onWheel = useCallback((e) => {
         if (e.ctrlKey) {
             e.preventDefault()
@@ -39,7 +40,7 @@ const TimelineWindow = (props) => {
             },
             createSegmentMarker: createSegmentMarker,
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
-            segments: props.subtitleSegments.current
+            segments: resetSegment.current()
         }
         Peaks.init(options, function (err, peaks) {
             if (err) console.log(err)
@@ -59,7 +60,7 @@ const TimelineWindow = (props) => {
         return () => {
             props.waveformRef.current?.destroy()
         }
-    }, [props.video, props.waveformRef, onWheel, props.subtitleSegments])
+    }, [props.video, props.waveformRef, onWheel])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

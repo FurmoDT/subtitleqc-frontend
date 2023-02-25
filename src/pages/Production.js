@@ -27,7 +27,6 @@ const Production = () => {
     const fxRef = useRef(localStorage.fx ? JSON.parse(localStorage.fx) : defaultSubtitle())
     const [languages, setLanguages] = useState(localStorage.language ? JSON.parse(localStorage.language) : defaultLanguage())
     const [fxLanguages, setFxLanguages] = useState(localStorage.fxLanguage ? JSON.parse(localStorage.fxLanguage) : defaultLanguage())
-    const subtitleSegments = useRef([])
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const [hotFontSize, setHotFontSize] = useState('13px')
@@ -77,6 +76,21 @@ const Production = () => {
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
     }, [])
+    const resetSegments = useCallback(() => {
+        const segments = []
+        if (!fxToggle) {
+            cellDataRef.current.forEach((value) => {
+                const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
+                if (start && end) segments.push(createSegment(start, end))
+            })
+        } else {
+            fxRef.current.forEach((value) => {
+                const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
+                if (start && end) segments.push(createSegment(start, end))
+            })
+        }
+        return segments
+    }, [fxToggle])
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
         return () => {
@@ -91,24 +105,11 @@ const Production = () => {
     }, [fxLanguages])
     useEffect(() => {
         fxToggleRef.current = fxToggle
-        const segments = []
-        if (!fxToggle) {
-            cellDataRef.current.forEach((value) => {
-                const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end) segments.push(createSegment(start, end))
-            })
-        } else {
-            fxRef.current.forEach((value) => {
-                const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end) segments.push(createSegment(start, end))
-            })
-        }
-        subtitleSegments.current = segments
         if (waveformRef.current) {
             waveformRef.current.segments.removeAll()
-            waveformRef.current.segments.add(segments)
+            waveformRef.current.segments.add(resetSegments())
         }
-    }, [fxToggle])
+    }, [fxToggle, resetSegments])
     useEffect(() => {
         if (languageFile) {
             if (languageFile.fxLanguage && languageFile.fx) { // fspx
@@ -182,7 +183,7 @@ const Production = () => {
                                             fxToggle={fxToggle}
                                             cellDataRef={cellDataRef} languages={languages}
                                             fxRef={fxRef} fxLanguages={fxLanguages}/>
-                            <TimelineWindow size={rightRefSize} subtitleSegments={subtitleSegments}
+                            <TimelineWindow size={rightRefSize} resetSegments={resetSegments}
                                             waveformRef={waveformRef} mediaFile={mediaFile} video={video}/>
                         </Splitter>
                     </div>

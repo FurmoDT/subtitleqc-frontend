@@ -71,7 +71,6 @@ const MenuToolbar = (props) => {
                 }} disabled>.vtt</MDBDropdownItem>
             </MDBDropdownMenu>
         </MDBDropdown>
-        <label style={{position: 'absolute', left: '50%'}}>MenuToolbar</label>
     </div>
 };
 

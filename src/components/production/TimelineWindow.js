@@ -19,6 +19,13 @@ const TimelineWindow = (props) => {
             else player?.seek(player.getCurrentTime() + 1)
         }
     }, [props.waveformRef])
+    const afterSeekedPromise = useCallback(() => {
+        return new Promise(resolve => {
+            props.waveformRef.current.on('player.seeked', () => {
+                resolve()
+            })
+        })
+    }, [props.waveformRef])
 
     useEffect(() => {
         if (!props.video) return
@@ -47,12 +54,13 @@ const TimelineWindow = (props) => {
             if (peaks) {
                 props.waveformRef.current = peaks
                 peaks.segments.add(resetSegment.current())
-                peaks.on('zoomview.dblclick', (event) => {
-                    const time = peaks.player.getCurrentTime()
-                    if (!peaks.segments.find(time, time + 1).length) peaks.segments.add(createSegment(time, time + 1))
-                })
-                peaks.on('segments.add', (segments) => {
-                    // languageWindow update
+                peaks.on('zoomview.click', (event) => {
+                    afterSeekedPromise().then(() => {
+                        if (event.evt.ctrlKey) {
+                            const time = peaks.player.getCurrentTime()
+                            if (!peaks.segments.find(time, time + 1).length) peaks.segments.add(createSegment(time, time + 1))
+                        }
+                    })
                 })
             }
         })
@@ -60,7 +68,7 @@ const TimelineWindow = (props) => {
         return () => {
             props.waveformRef.current?.destroy()
         }
-    }, [props.video, props.waveformRef, onWheel])
+    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

@@ -73,6 +73,9 @@ const LanguageWindow = (props) => {
             !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
             // set waveform segment
         })
+        props.hotRef.current.addHook('afterRemoveRow', () => {
+            !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
+        })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             props.hotSelectionRef.current.rowStart = Math.min(row, row2)
             props.hotSelectionRef.current.columnStart = Math.min(column, column2)

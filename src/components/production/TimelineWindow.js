@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
-import {createSegment, secToTc} from "../../utils/functions";
+import {bisect, createSegment, secToTc, tcToSec} from "../../utils/functions";
 import {createSegmentMarker} from "../../utils/createSegmentMarker";
 
 
@@ -58,7 +58,12 @@ const TimelineWindow = (props) => {
                     afterSeekedPromise().then(() => {
                         if (event.evt.ctrlKey) {
                             const time = peaks.player.getCurrentTime()
-                            if (!peaks.segments.find(time, time + 1).length) peaks.segments.add(createSegment(time, time + 1))
+                            if (!peaks.segments.find(time, time + 1).length) {
+                                peaks.segments.add(createSegment(time, time + 1))
+                                const addIndex = bisect(props.hotRef.current.getData().map((value) => tcToSec(value[0])).filter(value => !isNaN(value)), time)
+                                props.hotRef.current.alter('insert_row', addIndex, 1)
+                                props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
+                            }
                         }
                     })
                 })
@@ -68,7 +73,7 @@ const TimelineWindow = (props) => {
         return () => {
             props.waveformRef.current?.destroy()
         }
-    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise])
+    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

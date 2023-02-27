@@ -24,6 +24,7 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance) => {
 }
 
 export const textValidator = (r, c, v, td, fontSize) => {
+    td.style.whiteSpace = 'pre'
     td.style.fontSize = fontSize
     const label = document.createElement('label');
     if (v) td.innerHTML = `<label>${v}</label>`

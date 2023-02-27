@@ -47,6 +47,7 @@ const LanguageWindow = (props) => {
                 }))
                 // {data: 'error', type: 'text'},
             ],
+            manualColumnResize: true,
             colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fxToggle ? props.languages.map((value) => value.name) : props.fxLanguages.map((value) => value.name)), 'error'],
             rowHeaders: true,
             width: props.size.width,

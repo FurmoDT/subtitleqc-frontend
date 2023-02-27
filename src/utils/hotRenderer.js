@@ -25,7 +25,7 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance) => {
 
 export const textValidator = (r, c, v, td, fontSize) => {
     td.style.position = 'relative'
-    td.style.paddingRight = '70px'
+    td.style.paddingRight = '75px'
     const label = document.createElement('label');
     if (v) td.innerHTML = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</label>`
     label.style.position = 'absolute'
@@ -33,7 +33,6 @@ export const textValidator = (r, c, v, td, fontSize) => {
     label.style.right = 0
     label.style.whiteSpace = 'pre'
     label.style.fontSize = '10px'
-    label.style.paddingLeft = '5px'
     label.style.paddingRight = '5px'
     label.style.textAlign = 'right'
     label.style.color = 'lightgray'

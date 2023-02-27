@@ -38,6 +38,7 @@ const Production = () => {
     const splitLineButtonRef = useRef(null)
     const mergeLineButtonRef = useRef(null)
     const resetSegmentsRef = useRef(null)
+    const isFromTimelineWindow = useRef(false)
     const handleKeyDown = useCallback((event) => {
         if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO') || event.key === 'F6') {
             event.preventDefault();
@@ -190,10 +191,12 @@ const Production = () => {
                                   }}>
                             <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
-                                            fxToggle={fxToggle}
+                                            waveformRef={waveformRef} fxToggle={fxToggle}
                                             cellDataRef={cellDataRef} languages={languages}
+                                            isFromTimelineWindow={isFromTimelineWindow}
                                             fxRef={fxRef} fxLanguages={fxLanguages}/>
-                            <TimelineWindow size={rightRefSize} resetSegments={resetSegments}
+                            <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}
+                                            isFromTimelineWindow={isFromTimelineWindow}
                                             waveformRef={waveformRef} mediaFile={mediaFile} video={video}/>
                         </Splitter>
                     </div>

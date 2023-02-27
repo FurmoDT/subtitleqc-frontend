@@ -67,6 +67,19 @@ const TimelineWindow = (props) => {
                         }
                     })
                 })
+                peaks.on("segments.dragend", (event) => {
+                    props.isFromTimelineWindow.current = true
+                    const [startTime, endTime] = [event.segment.startTime.toFixed(3), event.segment.endTime.toFixed(3)]
+                    if (!event.startMarker){
+                        const startTimeIndex = props.hotRef.current.getData().map((value) => tcToSec(value[0])).indexOf(Number(startTime))
+                        props.hotRef.current.setDataAtCell(startTimeIndex, 1, secToTc(Number(endTime)))
+                        props.hotRef.current.selectCell(startTimeIndex, 1)
+                    } else {
+                        const endTimeIndex = props.hotRef.current.getData().map((value) => tcToSec(value[1])).indexOf(Number(endTime))
+                        props.hotRef.current.setDataAtCell(endTimeIndex, 0, secToTc(Number(startTime)))
+                        props.hotRef.current.selectCell(endTimeIndex, 0)
+                    }
+                })
             }
         })
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})

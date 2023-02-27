@@ -19,11 +19,9 @@ const FileUploadModal = (props) => {
         const l2 = props.languageFile.subtitle.length
         const maxLength = Math.max(l1, l2)
         for (let i = 0; i < maxLength; i++) {
-            const {
-                start: startA,
-                end: endA,
-                ...subtitleA
-            } = (!props.fxToggleRef.current ? props.cellDataRef.current[i] : props.fxRef.current[i]) || {}
+            const {start: startA, end: endA, ...subtitleA} = (
+                !props.fxToggleRef.current ? props.cellDataRef.current[i] : props.fxRef.current[i]
+            ) || {}
             const {start: startB, end: endB, ...subtitleB} = props.languageFile.subtitle[i] || {}
             const start = update ? startB : startA
             const end = update ? endB : endA
@@ -51,7 +49,7 @@ const FileUploadModal = (props) => {
                         <MDBModalTitle>&#x26A0;&#xFE0F;</MDBModalTitle>
                         <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
                     </MDBModalHeader>
-                    <MDBModalBody>TIMECODE UPDATE</MDBModalBody>
+                    <MDBModalBody>TIMECODE</MDBModalBody>
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={() => {
                             toggleShow()

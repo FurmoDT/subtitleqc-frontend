@@ -71,8 +71,8 @@ const LanguageWindow = (props) => {
         props.hotRef.current.addHook('afterChange', (changes) => {
             grammarlyPlugin?.disconnect()
             !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
-            if (props.isFromTimelineWindow.current) {
-                props.isFromTimelineWindow.current = false
+            if (props.isFromTimelineWindowRef.current) {
+                props.isFromTimelineWindowRef.current = false
                 return
             }
         })
@@ -88,7 +88,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fxToggle, props.fxRef, props.fxLanguages, props.waveformRef, props.isFromTimelineWindow])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fxToggle, props.fxRef, props.fxLanguages, props.waveformRef, props.isFromTimelineWindowRef])
 
     return <div ref={containerMain}/>
 }

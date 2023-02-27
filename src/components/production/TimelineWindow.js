@@ -68,7 +68,7 @@ const TimelineWindow = (props) => {
                     })
                 })
                 peaks.on("segments.dragend", (event) => {
-                    props.isFromTimelineWindow.current = true
+                    props.isFromTimelineWindowRef.current = true
                     const [startTime, endTime] = [event.segment.startTime.toFixed(3), event.segment.endTime.toFixed(3)]
                     if (!event.startMarker){
                         const startTimeIndex = props.hotRef.current.getData().map((value) => tcToSec(value[0])).indexOf(Number(startTime))
@@ -86,7 +86,7 @@ const TimelineWindow = (props) => {
         return () => {
             props.waveformRef.current?.destroy()
         }
-    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef])
+    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

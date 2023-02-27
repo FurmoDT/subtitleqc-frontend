@@ -39,7 +39,7 @@ const TimelineWindow = (props) => {
                 audioContext: new AudioContext()
             },
             zoomview: {
-                waveformColor: 'steelblue',
+                waveformColor: 'lightgreen',
                 playedWaveformColor: 'lightgreen',
                 showPlayheadTime: true,
                 formatPlayheadTime: (seconds) => secToTc(seconds),

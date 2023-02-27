@@ -51,7 +51,7 @@ class CustomSegmentMarker {
 
     bindEventHandlers() {
         this._group.on('mouseenter', () => {
-            document.body.style.cursor = 'move';
+            document.body.style.cursor = 'w-resize';
         });
 
         this._group.on('mouseleave', () => {

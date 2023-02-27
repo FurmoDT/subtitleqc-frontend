@@ -79,15 +79,17 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Merge Line'>
             <MDBBtn ref={props.mergeLineButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const selection = props.hotSelectionRef.current
-                const selectedData = props.hotRef.current.getData(selection.rowStart, 0, selection.rowEnd, props.hotRef.current.countCols())
+                const countCols = props.hotRef.current.countCols()
+                const selectedData = props.hotRef.current.getData(selection.rowStart, 0, selection.rowEnd, countCols)
                 const result = [];
-                for (let i = 2; i < selectedData[0].length - 1; i++) {
+                for (let i = 2; i < countCols; i++) {
                     const colValues = selectedData.map(row => row[i]);
                     result.push(colValues.join('\n'));
                 }
-                props.hotRef.current.setDataAtCell([[selection.rowStart, 1, selectedData[selectedData.length - 1][1]], ...result.map((value, index) => {
-                    return [selection.rowStart, index + 2, value]
-                })])
+                props.hotRef.current.setDataAtCell([[selection.rowStart, 1, selectedData[selectedData.length - 1][1]],
+                    ...result.map((value, index) => [selection.rowStart, index + 2, value]),
+                    ...Array.from({length: selection.rowEnd - selection.rowStart}, (_, rowIndex) => Array.from({length: countCols}, (_, colIndex) => [selection.rowStart + 1 + rowIndex, colIndex, ''])).flat()
+                ])
                 props.hotRef.current.alter('remove_row', selection.rowStart + 1, selection.rowEnd - selection.rowStart)
                 props.hotRef.current.selectCell(selection.rowStart, selection.columnEnd)
             }}><TbArrowsJoin2 color={'black'} size={20}/></MDBBtn>

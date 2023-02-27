@@ -93,9 +93,9 @@ const TimelineWindow = (props) => {
     }, [props.size, props.waveformRef])
 
     return <>
-        <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 130}px`}}
+        <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 100}px`}}
              onClick={() => props.waveformRef.current?.player.pause()}/>
-        <div ref={overviewRef} style={{width: '100%', height: '80px'}}/>
+        <div ref={overviewRef} style={{width: '100%', height: '60px'}}/>
     </>
 };
 

@@ -55,9 +55,9 @@ const Dropzone = (props) => {
                         const str = decoder.decode(binaryStr)
                         const languages = !props.fxToggleRef.current ? props.languages : props.fxLanguages
                         if (file.name.endsWith('.fsp')) {
-                            props.setLanguageFile(parseFsp(JSON.parse(xml2json(str, {compact: false})), languages))
+                            props.setLanguageFile({prevLanguages: languages, ...parseFsp(JSON.parse(xml2json(str, {compact: false})), languages)})
                         } else if (file.name.endsWith('.srt')) {
-                            props.setLanguageFile(parseSrt(str, languages))
+                            props.setLanguageFile({prevLanguages: languages, ...parseSrt(str)})
                         } else if (file.name.endsWith('.fspx')) {
                             props.setLanguageFile(JSON.parse(str))
                         }

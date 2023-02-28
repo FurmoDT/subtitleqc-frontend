@@ -1,17 +1,12 @@
 import {languageCodes} from "./config";
 
-export const parseSrt = (srtText, languages) => {
-    const counter = Math.max(...languages.filter((v) => v.code === 'xxXX').map((v) => v.counter + 1), 1)
-    const language = [...languages, {
-        code: 'xxXX', name: '기타 언어' + (counter > 1 ? `(${counter})` : ''), counter: counter
-    }]
-    const languageKey = `xxXX_${counter}`
+export const parseSrt = (srtText) => {
     const normalizedSrtData = srtText.replace(/\r\n/g, '\n');
     const lines = normalizedSrtData.split('\n');
     const items = [];
 
     let o = {
-        [languageKey]: ''
+        srt: ''
     };
 
     for (let i = 0; i < lines.length; i++) {
@@ -26,15 +21,15 @@ export const parseSrt = (srtText, languages) => {
             o.end = times[1];
         } else if (line === '') { // reset
             items.push(o);
-            o = {[languageKey]: ''};
+            o = {srt: ''};
         } else { // text
             if (lines[i + 1] === '') {
                 lineBreak = '';
             }
-            o[languageKey] += line + lineBreak;
+            o.srt += line + lineBreak;
         }
     }
-    return {language: language, subtitle: items}
+    return {newLanguages: 'srt', subtitle: items}
 }
 
 export const parseFsp = (fspJson, languages) => {
@@ -50,11 +45,11 @@ export const parseFsp = (fspJson, languages) => {
         else acc[v.code] = v.counter
         return acc
     }, {}))
-    const newLanguage = []
+    const newLanguages = []
     for (let i = language.length - 1; i >= 0; i--) {
         const item = language[i];
         const itemCounter = languageCounts[item]--
-        newLanguage.unshift({
+        newLanguages.unshift({
             code: item,
             name: languageCodes[item] + (itemCounter > 1 ? `(${itemCounter})` : ''),
             counter: itemCounter
@@ -65,11 +60,11 @@ export const parseFsp = (fspJson, languages) => {
         line.start = subtitle[i].attributes.i ? `0${subtitle[i].attributes.i}` : ''
         line.end = subtitle[i].attributes.o ? `0${subtitle[i].attributes.o}` : ''
         subtitle[i].elements.forEach((v, index) => {
-            line[`${newLanguage[index].code}_${newLanguage[index].counter}`] = v.elements ? v.elements[0].text.replaceAll('|', '\n').split('\n').map(v => v.trim()).join('\n') : ''
+            line[`${newLanguages[index].code}_${newLanguages[index].counter}`] = v.elements ? v.elements[0].text.replaceAll('|', '\n').split('\n').map(v => v.trim()).join('\n') : ''
         })
         items.push(line)
     }
-    return {language: languages.concat(newLanguage), subtitle: items}
+    return {newLanguages: newLanguages, subtitle: items}
 }
 
 

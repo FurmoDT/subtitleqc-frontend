@@ -31,20 +31,17 @@ const NewProjectModal = (props) => {
                         <MDBBtn color='secondary' onClick={toggleShow}>NO</MDBBtn>
                         <MDBBtn onClick={() => {
                             Promise.all([
-                                props.setLanguages(defaultLanguage()),
-                                props.setFxLanguages(defaultLanguage()),
                                 props.cellDataRef.current = defaultSubtitle(),
                                 props.fxRef.current = defaultSubtitle(),
-                                () => {
-                                    localStorage.removeItem('language')
-                                    localStorage.removeItem('subtitle')
-                                    localStorage.removeItem('fxLanguage')
-                                    localStorage.removeItem('fx')
-                                },
+                                props.setLanguages(defaultLanguage()),
+                                props.setFxLanguages(defaultLanguage()),
                                 props.setLanguageFile(null),
                                 props.waveformRef.current?.segments.removeAll(),
-                                props.hotRef.current.clear()
                             ]).then(() => {
+                                localStorage.removeItem('language')
+                                localStorage.removeItem('subtitle')
+                                localStorage.removeItem('fxLanguage')
+                                localStorage.removeItem('fx')
                                 toggleShow()
                             })
                         }}>YES</MDBBtn>

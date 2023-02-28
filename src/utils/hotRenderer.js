@@ -4,7 +4,7 @@ const setTDColor = (td, backgroundColor) => {
 }
 
 const isTCValid = (timecode) => {
-    return timecode?.match(`^(\\d{2}:\\d{2}:\\d{2}[\\.|,]\\d{3})`)
+    return timecode?.match(`^(\\d{2}:\\d{2}:\\d{2}[\\.|,]\\d{3})$`)
 }
 
 export const tcInValidator = (r, c, v, td, fontSize, instance) => {

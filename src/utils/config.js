@@ -1,3 +1,5 @@
+import {v4} from "uuid";
+
 export const languageCodes = {
     koKR: '한국어',
     enUS: '영어',
@@ -16,7 +18,7 @@ export const languageCodes = {
     memo: '메모',
 }
 
-export const defaultSubtitle = () => (Array.from({length: 100}, () => ({})))
+export const defaultSubtitle = () => (Array.from({length: 100}, () => ({rowId: v4()})))
 export const defaultLanguage = () => []
 
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL

@@ -114,17 +114,19 @@ const FileUploadModal = (props) => {
                         <MDBBtn onClick={() => {
                             const remain = remainRadioRef.current?.checked
                             const update = updateRadioRef.current?.checked
-                            if (props.languageFile.newLanguages === 'srt') {
-                                props.languageFile.subtitle.map(v => {
-                                    v[`${newLanguages[0].code}_${newLanguages[0].counter}`] = v.srt
-                                    delete v.srt
-                                    return v
-                                })
-                            }
-                            if (newLanguages && (remain || update)) {
-                                toggleShow()
-                                if (remain) setFile(false)
-                                else if (update) setFile(true)
+                            if (newLanguages) {
+                                if ((remain || update)) {
+                                    if (props.languageFile.newLanguages === 'srt') {
+                                        props.languageFile.subtitle.map(v => {
+                                            v[`${newLanguages[0].code}_${newLanguages[0].counter}`] = v.srt
+                                            delete v.srt
+                                            return v
+                                        })
+                                    }
+                                    toggleShow()
+                                    if (remain) setFile(false)
+                                    else if (update) setFile(true)
+                                }
                             }
                         }}>YES</MDBBtn>
                     </MDBModalFooter>

@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
-import {bisect, createSegment, secToTc, tcToSec} from "../../utils/functions";
+import {bisect, secToTc, tcToSec} from "../../utils/functions";
 import {createSegmentMarker} from "../../utils/createSegmentMarker";
 
 

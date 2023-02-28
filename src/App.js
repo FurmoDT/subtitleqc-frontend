@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import MainPage from "./pages/MainPage";
 import Production from "./pages/Production";
 import QualityControl from "./pages/QualityControl";
+import Manual from "./pages/Manual";
 import {publicUrl} from "./utils/config";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
                     <Route index element={<MainPage/>}/>
                     <Route path={"/production"} element={<Production/>}/>
                     <Route path={"/qc"} element={<QualityControl/>}/>
+                    <Route path={"/manual"} element={<Manual/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -74,10 +74,10 @@ const Dropzone = (props) => {
         props.dropzoneRef.current.addEventListener('dragleave', handleDragLeave)
         props.dropzoneRef.current.addEventListener('drop', handleDrop)
         return () => {
-            props.dropzoneRef.current.removeEventListener('dragenter', handleDragEnter)
-            props.dropzoneRef.current.removeEventListener('dragover', handleDragOver)
-            props.dropzoneRef.current.removeEventListener('dragleave', handleDragLeave)
-            props.dropzoneRef.current.removeEventListener('drop', handleDrop)
+            props.dropzoneRef.current?.removeEventListener('dragenter', handleDragEnter)
+            props.dropzoneRef.current?.removeEventListener('dragover', handleDragOver)
+            props.dropzoneRef.current?.removeEventListener('dragleave', handleDragLeave)
+            props.dropzoneRef.current?.removeEventListener('drop', handleDrop)
         }
     }, [props.dropzoneRef, handleDragEnter, handleDragOver, handleDragLeave, handleDrop]);
     return null

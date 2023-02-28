@@ -28,6 +28,11 @@ export default function Navbar(props) {
                                 onClick={useCallback(() => navigate('/qc', {replace: true}),
                                     [navigate])}>QC</MDBNavbarLink>
                         </MDBNavbarItem>
+                        <MDBNavbarItem>
+                            <MDBNavbarLink
+                                onClick={useCallback(() => navigate('/manual', {replace: true}),
+                                    [navigate])}>Manual</MDBNavbarLink>
+                        </MDBNavbarItem>
                     </MDBNavbarNav>
                 </MDBCollapse>
             </MDBContainer>

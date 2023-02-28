@@ -17,6 +17,7 @@ import {
 } from 'mdb-react-ui-kit';
 import {useCallback, useEffect, useRef, useState} from "react";
 import {languageCodes} from "../../../utils/config";
+import {v4} from "uuid";
 
 const FileUploadModal = (props) => {
     const toggleShow = () => {
@@ -75,7 +76,7 @@ const FileUploadModal = (props) => {
             const {start: startB, end: endB, ...subtitleB} = props.languageFile.subtitle[i] || {}
             const start = update ? startB : startA
             const end = update ? endB : endA
-            subtitle.push(Object.assign({}, {...(start ? {start} : {}), ...(end ? {end} : {})}, subtitleA, subtitleB))
+            subtitle.push(Object.assign({}, {rowId: v4(), ...(start ? {start} : {}), ...(end ? {end} : {})}, subtitleA, subtitleB))
         }
         if (!props.fxToggleRef.current) {
             props.cellDataRef.current = subtitle

@@ -11,6 +11,7 @@ import {defaultLanguage, defaultSubtitle} from "../utils/config";
 import FileUploadModal from "../components/production/modals/FileUploadModal";
 import Dropzone from "../components/production/Dropzone";
 import {createSegment, tcToSec} from "../utils/functions";
+import {v4} from "uuid";
 
 const Production = () => {
     const dropzoneRef = useRef(null)
@@ -83,12 +84,12 @@ const Production = () => {
         if (!fxToggle) {
             cellDataRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end) segments.push(createSegment(start, end))
+                if (start && end) segments.push(createSegment(start, end, value.rowId))
             })
         } else {
             fxRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end) segments.push(createSegment(start, end))
+                if (start && end) segments.push(createSegment(start, end, value.rowId))
             })
         }
         return segments
@@ -118,10 +119,14 @@ const Production = () => {
     useEffect(() => {
         if (languageFile) {
             if (languageFile.fxLanguage && languageFile.fx) { // fspx
-                cellDataRef.current = languageFile.subtitle
-                fxRef.current = languageFile.fx
-                localStorage.setItem('subtitle', JSON.stringify(languageFile.subtitle))
-                localStorage.setItem('fx', JSON.stringify(languageFile.fx))
+                cellDataRef.current = languageFile.subtitle.map(v => {
+                    return {...v, rowId: v.rowId || v4()}
+                })
+                fxRef.current = languageFile.fx.map(v => {
+                    return {...v, rowId: v.rowId || v4()}
+                })
+                localStorage.setItem('subtitle', JSON.stringify(cellDataRef.current))
+                localStorage.setItem('fx', JSON.stringify(fxRef.current))
                 setLanguages(languageFile.language)
                 setFxLanguages(languageFile.fxLanguage)
             } else setFileUploadModalShow(true)
@@ -181,7 +186,8 @@ const Production = () => {
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       languages={languages} setLanguages={setLanguages}
                                       fxLanguages={fxLanguages} setFxLanguages={setFxLanguages}/>
-                        <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'} primaryPaneHeight={'calc(100% - 300px)'}
+                        <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'}
+                                  primaryPaneHeight={'calc(100% - 300px)'}
                                   onDragFinished={() => {
                                       setRightRefSize({
                                           ...rightRefSize,

@@ -3,7 +3,8 @@ import '../../css/Handsontable.css'
 import * as Grammarly from '@grammarly/editor-sdk'
 import {useEffect, useRef} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
-import {tcToSec} from "../../utils/functions";
+import {createSegment, tcToSec} from "../../utils/functions";
+import {v4} from "uuid";
 
 const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
@@ -76,9 +77,47 @@ const LanguageWindow = (props) => {
                 props.isFromTimelineWindowRef.current = false
                 return
             }
+            changes.forEach((change) => {
+                if (change[1] === 'start') {
+                    const rowId = props.hotRef.current.getDataAtRowProp(change[0], 'rowId')
+                    const start = tcToSec(change[3])
+                    if (start) {
+                        const segment = props.waveformRef.current.segments.getSegment(rowId)
+                        if (segment) segment.update({startTime: start})
+                        else {
+                            const end = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'end'))
+                            if (end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
+                        }
+                    } else props.waveformRef.current.segments.removeById(rowId)
+                } else if (change[1] === 'end') {
+                    const rowId = props.hotRef.current.getDataAtRowProp(change[0], 'rowId')
+                    const end = tcToSec(change[3])
+                    if (end) {
+                        const segment = props.waveformRef.current.segments.getSegment(rowId)
+                        if (segment) segment.update({endTime: end})
+                        else {
+                            const start = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'start'))
+                            if (start) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
+                        }
+                    } else props.waveformRef.current.segments.removeById(rowId)
+                }
+            })
         })
-        props.hotRef.current.addHook('afterCreateRow', () => {
-            !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
+        props.hotRef.current.addHook('afterCreateRow', (index) => {
+            if (!props.fxToggle) {
+                props.cellDataRef.current[index].rowId = v4()
+                localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+            } else {
+                props.fxRef.current[index].rowId = v4()
+                localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
+            }
+        })
+        props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
+            if (props.waveformRef.current) {
+                physicalRows.forEach((row) => {
+                    props.waveformRef.current.segments.removeById(props.hotRef.current.getDataAtRowProp(row, 'rowId'))
+                })
+            }
         })
         props.hotRef.current.addHook('afterRemoveRow', () => {
             !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))

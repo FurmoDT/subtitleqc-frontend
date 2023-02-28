@@ -59,8 +59,7 @@ const TimelineWindow = (props) => {
                         if (event.evt.ctrlKey) {
                             const time = peaks.player.getCurrentTime()
                             if (!peaks.segments.find(time, time + 1).length) {
-                                peaks.segments.add(createSegment(time, time + 1))
-                                const addIndex = bisect(props.hotRef.current.getData().map((value) => tcToSec(value[0])).filter(value => !isNaN(value)), time)
+                                const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), time)
                                 props.hotRef.current.alter('insert_row', addIndex, 1)
                                 props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
                             }
@@ -70,14 +69,13 @@ const TimelineWindow = (props) => {
                 peaks.on("segments.dragend", (event) => {
                     props.isFromTimelineWindowRef.current = true
                     const [startTime, endTime] = [event.segment.startTime.toFixed(3), event.segment.endTime.toFixed(3)]
-                    if (!event.startMarker){
-                        const startTimeIndex = props.hotRef.current.getData().map((value) => tcToSec(value[0])).indexOf(Number(startTime))
-                        props.hotRef.current.setDataAtCell(startTimeIndex, 1, secToTc(Number(endTime)))
-                        props.hotRef.current.selectCell(startTimeIndex, 1)
+                    const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id)
+                    if (!event.startMarker) {
+                        props.hotRef.current.setDataAtCell(row, 1, secToTc(Number(endTime)))
+                        props.hotRef.current.selectCell(row, 1)
                     } else {
-                        const endTimeIndex = props.hotRef.current.getData().map((value) => tcToSec(value[1])).indexOf(Number(endTime))
-                        props.hotRef.current.setDataAtCell(endTimeIndex, 0, secToTc(Number(startTime)))
-                        props.hotRef.current.selectCell(endTimeIndex, 0)
+                        props.hotRef.current.setDataAtCell(row, 0, secToTc(Number(startTime)))
+                        props.hotRef.current.selectCell(row, 0)
                     }
                 })
             }

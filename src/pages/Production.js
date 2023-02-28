@@ -181,7 +181,7 @@ const Production = () => {
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       languages={languages} setLanguages={setLanguages}
                                       fxLanguages={fxLanguages} setFxLanguages={setFxLanguages}/>
-                        <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'} primaryPaneHeight={'70%'}
+                        <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'} primaryPaneHeight={'calc(100% - 300px)'}
                                   onDragFinished={() => {
                                       setRightRefSize({
                                           ...rightRefSize,

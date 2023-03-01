@@ -84,12 +84,12 @@ const Production = () => {
         if (!fxToggle) {
             cellDataRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end) segments.push(createSegment(start, end, value.rowId))
+                if (start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
             })
         } else {
             fxRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end) segments.push(createSegment(start, end, value.rowId))
+                if (start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
             })
         }
         return segments

@@ -87,7 +87,7 @@ const LanguageWindow = (props) => {
                         if (segment) segment.update({startTime: start})
                         else {
                             const end = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'end'))
-                            if (end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
+                            if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
                 } else if (change[1] === 'end') {
@@ -98,7 +98,7 @@ const LanguageWindow = (props) => {
                         if (segment) segment.update({endTime: end})
                         else {
                             const start = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'start'))
-                            if (start) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
+                            if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
                 }

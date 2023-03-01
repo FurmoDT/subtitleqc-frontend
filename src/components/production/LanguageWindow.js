@@ -78,6 +78,7 @@ const LanguageWindow = (props) => {
                 return
             }
             changes.forEach((change) => {
+                if (!props.waveformRef.current) return
                 if (change[1] === 'start') {
                     const rowId = props.hotRef.current.getDataAtRowProp(change[0], 'rowId')
                     const start = tcToSec(change[3])
@@ -103,12 +104,16 @@ const LanguageWindow = (props) => {
                 }
             })
         })
-        props.hotRef.current.addHook('afterCreateRow', (index) => {
+        props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
             if (!props.fxToggle) {
-                props.cellDataRef.current[index].rowId = v4()
+                for (let i = index; i < index + amount; i++) {
+                    props.cellDataRef.current[i].rowId = v4()
+                }
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             } else {
-                props.fxRef.current[index].rowId = v4()
+                for (let i = index; i < index + amount; i++) {
+                    props.fxRef.current[i].rowId = v4()
+                }
                 localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
             }
         })

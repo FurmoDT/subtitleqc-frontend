@@ -1,3 +1,5 @@
+import {tcToSec} from "./functions";
+
 const setTDColor = (td, backgroundColor) => {
     td.style.backgroundColor = backgroundColor
     if (backgroundColor === 'red') td.style.color = 'white'
@@ -11,7 +13,7 @@ export const tcInValidator = (r, c, v, td, fontSize, instance) => {
     td.style.fontSize = fontSize
     if (v) {
         if (!isTCValid(v)) setTDColor(td, 'red')
-        if (instance.getDataAtCell(r - 1, c + 1) > v) setTDColor(td, 'red')
+        if (tcToSec(instance.getDataAtCell(r - 1, c + 1)) > tcToSec(v)) setTDColor(td, 'red')
     }
 }
 
@@ -19,7 +21,7 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance) => {
     td.style.fontSize = fontSize
     if (v) {
         if (!isTCValid(v)) setTDColor(td, 'red')
-        if (instance.getDataAtCell(r, c - 1) > v) setTDColor(td, 'red')
+        if (tcToSec(instance.getDataAtCell(r, c - 1)) > tcToSec(v)) setTDColor(td, 'red')
     }
 }
 

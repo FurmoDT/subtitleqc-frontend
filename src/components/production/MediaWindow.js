@@ -28,7 +28,7 @@ const MediaWindow = (props) => {
             if (curSubtitleIndex !== subtitleIndexRef.current) {
                 curSubtitleIndex = subtitleIndexRef.current
                 if (!props.fxToggle) setTdColor(subtitleIndexRef.current, true)
-            } else setTdColor(subtitleIndexRef.current, true)
+            }
             if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
         } else {
             if (curSubtitleIndex === subtitleIndexRef.current) {
@@ -44,7 +44,7 @@ const MediaWindow = (props) => {
             if (curFxIndex !== fxIndexRef.current) {
                 curFxIndex = fxIndexRef.current
                 if (props.fxToggle) setTdColor(fxIndexRef.current, true)
-            } else setTdColor(fxIndexRef.current, true)
+            }
             if (fxLabelRef.current.innerText !== nextSubtitle) fxLabelRef.current.innerText = nextSubtitle
         } else {
             if (curFxIndex === fxIndexRef.current) {
@@ -55,27 +55,29 @@ const MediaWindow = (props) => {
     }, [props.fxRef, props.fxToggle, setTdColor])
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
-            props.hotRef.current.addHook('afterRender', (isForced) => {
-                if (!isForced) resolve() // Resolve the promise when the afterRender callback is executed
-            })
+            const timeOut = setTimeout(() => {
+                props.hotRef.current.removeHook('afterRender', afterRenderCallback)
+                resolve()
+            }, 100)
+            const afterRenderCallback = (isForced) => {
+                clearTimeout(timeOut)
+                if (!isForced) resolve()
+            }
+            props.hotRef.current.addHookOnce('afterRender', afterRenderCallback)
         })
     }, [props.hotRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
         fxIndexRef.current = bisect(props.fxRef.current.map((value) => tcToSec(value.start)), seconds)
-        if (!props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current - 1, 0)
         if (tcToSec(props.cellDataRef.current[subtitleIndexRef.current].start) !== seconds) subtitleIndexRef.current = Math.max(subtitleIndexRef.current - 1, 0)
         if (tcToSec(props.fxRef.current[fxIndexRef.current].start) !== seconds) fxIndexRef.current = Math.max(fxIndexRef.current - 1, 0)
-        let rendered = false
+        if (!props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.scrollViewportTo(!props.fxToggle ? subtitleIndexRef.current : fxIndexRef.current, 0)
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFxLabel(seconds)
-            rendered = true
         })
-        if (rendered) return
-        setSubtitleLabel(seconds)
-        setFxLabel(seconds)
-    }, [props.cellDataRef, props.fxRef, props.hotRef, setSubtitleLabel, setFxLabel, afterRenderPromise])
+        props.hotRef.current.removeHook('afterRender')
+    }, [props.cellDataRef, props.fxRef, props.hotRef, props.fxToggle, setSubtitleLabel, setFxLabel, afterRenderPromise])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFxLabel(state.playedSeconds)

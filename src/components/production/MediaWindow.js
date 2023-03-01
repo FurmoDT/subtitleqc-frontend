@@ -5,8 +5,8 @@ import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle
 
 let subtitleLanguage = null
 let fxLanguage = null
-let curSubtitleIndex = null
-let curFxIndex = null
+let curSubtitleIndex = -1
+let curFxIndex = -1
 
 const MediaWindow = (props) => {
     const [showFx, setShowFx] = useState(false)
@@ -33,6 +33,7 @@ const MediaWindow = (props) => {
         } else {
             if (curSubtitleIndex === subtitleIndexRef.current) {
                 subtitleLabelRef.current.innerText = ''
+                curSubtitleIndex = -1
                 if (!props.fxToggle) setTdColor(subtitleIndexRef.current, false)
             }
         }
@@ -49,6 +50,7 @@ const MediaWindow = (props) => {
         } else {
             if (curFxIndex === fxIndexRef.current) {
                 fxLabelRef.current.innerText = ''
+                curFxIndex = -1
                 if (props.fxToggle) setTdColor(fxIndexRef.current, false)
             }
         }

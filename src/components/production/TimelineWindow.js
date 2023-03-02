@@ -46,6 +46,7 @@ const TimelineWindow = (props) => {
                 formatAxisTime: (seconds) => secToTc(seconds),
             },
             overview: {
+                waveformColor: 'lightgreen',
                 highlightColor: 'black',
                 highlightStrokeColor: 'black'
             },

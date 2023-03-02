@@ -1,7 +1,6 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
 import {bisect, secToTc, tcToSec} from "../../utils/functions";
-import {createSegmentMarker} from "../../utils/createSegmentMarker";
 
 
 const TimelineWindow = (props) => {
@@ -30,15 +29,12 @@ const TimelineWindow = (props) => {
     useEffect(() => {
         if (!props.video) return
         const options = {
-            containers: {
-                zoomview: waveformRef.current,
-                overview: overviewRef.current
-            },
             mediaElement: document.querySelector('video'),
             webAudio: {
                 audioContext: new AudioContext()
             },
             zoomview: {
+                container: waveformRef.current,
                 waveformColor: 'lightgreen',
                 playedWaveformColor: 'lightgreen',
                 showPlayheadTime: true,
@@ -46,11 +42,14 @@ const TimelineWindow = (props) => {
                 formatAxisTime: (seconds) => secToTc(seconds),
             },
             overview: {
+                container: overviewRef.current,
                 waveformColor: 'lightgreen',
                 highlightColor: 'black',
                 highlightStrokeColor: 'black'
             },
-            createSegmentMarker: createSegmentMarker,
+            segmentOptions: {
+                overlay: true
+            },
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
             segments: []
         }

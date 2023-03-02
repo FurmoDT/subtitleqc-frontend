@@ -45,6 +45,10 @@ const TimelineWindow = (props) => {
                 formatPlayheadTime: (seconds) => secToTc(seconds),
                 formatAxisTime: (seconds) => secToTc(seconds),
             },
+            overview: {
+                highlightColor: 'black',
+                highlightStrokeColor: 'black'
+            },
             createSegmentMarker: createSegmentMarker,
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
             segments: []

@@ -62,8 +62,8 @@ class CustomSegmentMarker {
     fitToView() {
         const height = this._options.layer.getHeight();
 
-        const offsetTop = 14;
-        const offsetBottom = 26;
+        const offsetTop = 30;
+        const offsetBottom = 20;
 
         this._group.y(offsetTop + 0.5);
 

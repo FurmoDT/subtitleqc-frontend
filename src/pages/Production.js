@@ -38,17 +38,18 @@ const Production = () => {
     const tcOutButtonRef = useRef(null)
     const splitLineButtonRef = useRef(null)
     const mergeLineButtonRef = useRef(null)
+    const findButtonRef = useRef(null)
     const resetSegmentsRef = useRef(null)
     const isFromTimelineWindowRef = useRef(false)
     const handleKeyDown = useCallback((event) => {
-        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO') || event.key === 'F6') {
+        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO' && event.target.tagName !== 'INPUT') || event.key === 'F6') {
             event.preventDefault();
             if (playerRef.current.getInternalPlayer()?.paused) playerRef.current.getInternalPlayer().play()
             else playerRef.current.getInternalPlayer()?.pause()
         }
         if (event.ctrlKey && event.key === 'f') {
             event.preventDefault();
-            console.log('find')
+            findButtonRef.current.click()
         }
         if (event.key === 'F9') {
             event.preventDefault();
@@ -184,6 +185,7 @@ const Production = () => {
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
+                                      findButtonRef={findButtonRef}
                                       languages={languages} setLanguages={setLanguages}
                                       fxLanguages={fxLanguages} setFxLanguages={setFxLanguages}/>
                         <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'}

@@ -1,10 +1,11 @@
 import {MDBBtn, MDBBtnGroup, MDBIcon, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
-import LanguagesModal from "./modals/LanguagesModal";
+import LanguagesModal from "./dialogs/LanguagesModal";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
 import {FiSun, FiSunrise, FiSunset} from "react-icons/fi";
 import {secToTc, tcToSec} from "../../utils/functions";
 import {useRef} from "react";
 import {CgTranscript} from "react-icons/cg";
+import FindPopover from "./dialogs/FindPopover";
 
 const TransToolbar = (props) => {
     const subtitleButtonRef = useRef(null)
@@ -93,6 +94,9 @@ const TransToolbar = (props) => {
                 props.hotRef.current.alter('remove_row', selection.rowStart + 1, selection.rowEnd - selection.rowStart)
                 props.hotRef.current.selectCell(selection.rowStart, selection.columnEnd)
             }}><TbArrowsJoin2 color={'black'} size={20}/></MDBBtn>
+        </MDBTooltip>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Find'>
+            <FindPopover findButtonRef={props.findButtonRef}/>
         </MDBTooltip>
     </div>
 };

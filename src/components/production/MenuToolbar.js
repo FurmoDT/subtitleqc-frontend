@@ -9,7 +9,8 @@ import {
 } from "mdb-react-ui-kit";
 import {toSrt} from "../../utils/fileParser";
 import {downloadFspx, downloadSrt} from "../../utils/fileDownload";
-import NewProjectModal from "./modals/NewProjectModal";
+import NewProjectModal from "./dialogs/NewProjectModal";
+import ShortcutModal from "./dialogs/ShorcutModal";
 
 const MenuToolbar = (props) => {
     return <div style={{
@@ -31,9 +32,7 @@ const MenuToolbar = (props) => {
                              setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
-            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} disabled>
-                <MDBIcon fas icon="keyboard" size={'2x'}/>
-            </MDBBtn>
+            <ShortcutModal />
         </MDBTooltip>
         <MDBDropdown>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Download'>

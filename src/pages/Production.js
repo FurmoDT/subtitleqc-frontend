@@ -8,7 +8,7 @@ import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
 import TransToolbar from "../components/production/TransToolbar";
 import {defaultLanguage, defaultSubtitle} from "../utils/config";
-import FileUploadModal from "../components/production/modals/FileUploadModal";
+import FileUploadModal from "../components/production/dialogs/FileUploadModal";
 import Dropzone from "../components/production/Dropzone";
 import {createSegment, tcToSec} from "../utils/functions";
 import {v4} from "uuid";

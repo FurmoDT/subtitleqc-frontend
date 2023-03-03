@@ -96,7 +96,7 @@ const TransToolbar = (props) => {
             }}><TbArrowsJoin2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Find'>
-            <FindPopover findButtonRef={props.findButtonRef}/>
+            <FindPopover findButtonRef={props.findButtonRef} hotRef={props.hotRef}/>
         </MDBTooltip>
     </div>
 };

@@ -15,6 +15,7 @@ const MediaWindow = (props) => {
     const subtitleIndexRef = useRef(0)
     const fxIndexRef = useRef(0)
     const setVideo = props.setVideo
+    const afterRenderPromise = props.afterRenderPromise
     const setTdColor = useCallback((index, isShow) => {
         props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
             if (isShow) tdElement.style.backgroundColor = tdElement.style.backgroundColor || 'beige'
@@ -55,19 +56,6 @@ const MediaWindow = (props) => {
             }
         }
     }, [props.fxRef, props.fxToggle, setTdColor])
-    const afterRenderPromise = useCallback(() => {
-        return new Promise(resolve => {
-            const timeOut = setTimeout(() => {
-                props.hotRef.current.removeHook('afterRender', afterRenderCallback)
-                resolve()
-            }, 100)
-            const afterRenderCallback = (isForced) => {
-                clearTimeout(timeOut)
-                if (!isForced) resolve()
-            }
-            props.hotRef.current.addHookOnce('afterRender', afterRenderCallback)
-        })
-    }, [props.hotRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
         fxIndexRef.current = bisect(props.fxRef.current.map((value) => tcToSec(value.start)), seconds)
@@ -78,7 +66,6 @@ const MediaWindow = (props) => {
             setSubtitleLabel(seconds)
             setFxLabel(seconds)
         })
-        props.hotRef.current.removeHook('afterRender')
     }, [props.cellDataRef, props.fxRef, props.hotRef, props.fxToggle, setSubtitleLabel, setFxLabel, afterRenderPromise])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)

@@ -5,6 +5,7 @@ const FindPopover = (props) => {
     const findPositionLabelRef = useRef(null)
     const [curFindPosition, setCurFindPosition] = useState(0)
     const [searched, setSearched] = useState([])
+    const afterRenderPromise = props.afterRenderPromise
     const handleOnChange = useCallback((event) => {
         const result = []
         if (event.target.value) {
@@ -33,7 +34,11 @@ const FindPopover = (props) => {
     }, [handleOnClick])
     useEffect(() => {
         props.hotRef.current?.scrollViewportTo(searched[curFindPosition - 1]?.row, searched[curFindPosition - 1]?.col)
-    }, [props.hotRef, searched, curFindPosition])
+        afterRenderPromise().then(() => {
+            const tdElement = props.hotRef.current.getCell(searched[curFindPosition - 1]?.row, searched[curFindPosition - 1]?.col)
+            if (tdElement) tdElement.style.backgroundColor = 'yellow'
+        })
+    }, [props.hotRef, searched, curFindPosition, afterRenderPromise])
     useEffect(() => {
         props.findButtonRef.current = document.getElementById('find-popover')
     }, [props.findButtonRef])

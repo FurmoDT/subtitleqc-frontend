@@ -80,6 +80,22 @@ const Production = () => {
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
     }, [])
+    const afterRenderPromise = useCallback(() => {
+        return new Promise(resolve => {
+            const timeOut = setTimeout(() => {
+                hotRef.current.removeHook('afterRender', afterRenderCallback)
+                resolve()
+            }, 100)
+            const afterRenderCallback = (isForced) => {
+                clearTimeout(timeOut)
+                if (!isForced) {
+                    hotRef.current.removeHook('afterRender', afterRenderCallback)
+                    resolve()
+                }
+            }
+            hotRef.current?.addHookOnce('afterRender', afterRenderCallback)
+        })
+    }, [])
     const resetSegments = useCallback(() => {
         const segments = []
         if (!fxToggle) {
@@ -172,7 +188,8 @@ const Production = () => {
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'} postPoned>
                             <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fxRef={fxRef} fxToggle={fxToggle}
                                          languages={languages} fxLanguages={fxLanguages} playerRef={playerRef}
-                                         mediaFile={mediaFile} video={video} setVideo={setVideo}/>
+                                         mediaFile={mediaFile} video={video} setVideo={setVideo}
+                                         afterRenderPromise={afterRenderPromise}/>
                             <InformationWindow/>
                         </Splitter>
                     </div>
@@ -185,7 +202,7 @@ const Production = () => {
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
-                                      findButtonRef={findButtonRef}
+                                      findButtonRef={findButtonRef} afterRenderPromise={afterRenderPromise}
                                       languages={languages} setLanguages={setLanguages}
                                       fxLanguages={fxLanguages} setFxLanguages={setFxLanguages}/>
                         <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'}

@@ -43,7 +43,7 @@ const FindPopover = (props) => {
         props.findButtonRef.current = document.getElementById('find-popover')
     }, [props.findButtonRef])
     return <>
-        <MDBPopover id={'find-popover'} size={'sm'} color={'link'} placement={'top'}
+        <MDBPopover id={'find-popover'} size={'sm'} color={'link'} placement={'right-end'}
                     btnChildren={<MDBIcon fas icon="search" color={'dark'}/>}>
             <MDBPopoverHeader>Find</MDBPopoverHeader>
             <MDBPopoverBody style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>

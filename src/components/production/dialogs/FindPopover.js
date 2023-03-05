@@ -11,7 +11,7 @@ const FindPopover = (props) => {
         if (event.target.value) {
             props.hotRef.current.getData().forEach((row, rowIndex) => {
                 row.forEach((value, colIndex) => {
-                    if (value?.includes(event.target.value)) {
+                    if (value?.toLowerCase().includes(event.target.value.toLowerCase())) {
                         result.push({row: rowIndex, col: colIndex, value: event.target.value})
                     }
                 })
@@ -33,11 +33,16 @@ const FindPopover = (props) => {
         if (event.key === 'Enter') handleOnClick(event)
     }, [handleOnClick])
     useEffect(() => {
-        props.hotRef.current?.scrollViewportTo(searched[curFindPosition - 1]?.row, searched[curFindPosition - 1]?.col)
-        afterRenderPromise().then(() => {
-            const tdElement = props.hotRef.current.getCell(searched[curFindPosition - 1]?.row, searched[curFindPosition - 1]?.col)
-            if (tdElement) tdElement.style.backgroundColor = 'yellow'
-        })
+        const row = searched[curFindPosition - 1]?.row
+        const col = searched[curFindPosition - 1]?.col
+        if (row && col){
+            props.hotRef.current.scrollViewportTo(row, col)
+            props.hotRef.current.render()
+            afterRenderPromise().then(() => {
+                const tdElement = props.hotRef.current.getCell(row, col)
+                if (tdElement) tdElement.style.backgroundColor = 'yellow'
+            })
+        }
     }, [props.hotRef, searched, curFindPosition, afterRenderPromise])
     useEffect(() => {
         props.findButtonRef.current = document.getElementById('find-popover')

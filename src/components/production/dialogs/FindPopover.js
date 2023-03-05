@@ -54,6 +54,7 @@ const FindPopover = (props) => {
                 const popover = document.querySelector('.popover')
                 if (popover) {
                     popover.querySelector('input').focus()
+                    props.hotRef.current.unlisten()
                     observer.disconnect();
                 }
             })

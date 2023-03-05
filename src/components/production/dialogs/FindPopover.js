@@ -35,7 +35,7 @@ const FindPopover = (props) => {
     useEffect(() => {
         const row = searched[curFindPosition - 1]?.row
         const col = searched[curFindPosition - 1]?.col
-        if (row && col){
+        if (row && col) {
             props.hotRef.current.scrollViewportTo(row, col)
             props.hotRef.current.render()
             afterRenderPromise().then(() => {
@@ -49,7 +49,16 @@ const FindPopover = (props) => {
     }, [props.findButtonRef])
     return <>
         <MDBPopover id={'find-popover'} size={'sm'} color={'link'} placement={'right-end'}
-                    btnChildren={<MDBIcon fas icon="search" color={'dark'}/>}>
+                    btnChildren={<MDBIcon fas icon="search" color={'dark'}/>} onShow={() => {
+            const observer = new MutationObserver(() => {
+                const popover = document.querySelector('.popover')
+                if (popover) {
+                    popover.querySelector('input').focus()
+                    observer.disconnect();
+                }
+            })
+            observer.observe(document.body, {childList: true, subtree: true})
+        }}>
             <MDBPopoverHeader>Find</MDBPopoverHeader>
             <MDBPopoverBody style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                 <MDBInput onChange={handleOnChange} onKeyDown={handleKeyDown} type='text'/>

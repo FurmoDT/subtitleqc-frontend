@@ -66,26 +66,26 @@ const FileUploadModal = (props) => {
     }, [props.languageFile])
     const setFile = useCallback((update) => {
         const subtitle = [];
-        const l1 = (!props.fxToggleRef.current ? props.cellDataRef.current.length : props.fxRef.current.length)
+        const l1 = (!props.fnToggleRef.current ? props.cellDataRef.current.length : props.fnRef.current.length)
         const l2 = props.languageFile.subtitle.length
         const maxLength = Math.max(l1, l2)
         for (let i = 0; i < maxLength; i++) {
             const {start: startA, end: endA, ...subtitleA} = (
-                !props.fxToggleRef.current ? props.cellDataRef.current[i] : props.fxRef.current[i]
+                !props.fnToggleRef.current ? props.cellDataRef.current[i] : props.fnRef.current[i]
             ) || {}
             const {start: startB, end: endB, ...subtitleB} = props.languageFile.subtitle[i] || {}
             const start = update ? startB : startA
             const end = update ? endB : endA
             subtitle.push(Object.assign({}, {rowId: v4(), ...(start ? {start} : {}), ...(end ? {end} : {})}, subtitleA, subtitleB))
         }
-        if (!props.fxToggleRef.current) {
+        if (!props.fnToggleRef.current) {
             props.cellDataRef.current = subtitle
             localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             props.setLanguages(props.languageFile.prevLanguages.concat(newLanguages))
         } else {
-            props.fxRef.current = subtitle
-            localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
-            props.setFxLanguages(props.languageFile.prevLanguages.concat(newLanguages))
+            props.fnRef.current = subtitle
+            localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
+            props.setFnLanguages(props.languageFile.prevLanguages.concat(newLanguages))
         }
         if (props.waveformRef.current) {
             props.waveformRef.current.segments.removeAll()

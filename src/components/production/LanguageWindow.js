@@ -31,16 +31,16 @@ const LanguageWindow = (props) => {
         }
 
         props.hotRef.current = new Handsontable(containerMain.current, {
-            data: !props.fxToggle ? props.cellDataRef.current : props.fxRef.current,
+            data: !props.fnToggle ? props.cellDataRef.current : props.fnRef.current,
             columns: [
                 {data: 'start', type: 'text', renderer: tcInRenderer},
                 {data: 'end', type: 'text', renderer: tcOutRenderer},
-                ...(!props.fxToggle ? props.languages.map((value) => {
+                ...(!props.fnToggle ? props.languages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
                         renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
                     }
-                }) : props.fxLanguages.map((value) => {
+                }) : props.fnLanguages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
                         renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
@@ -49,7 +49,7 @@ const LanguageWindow = (props) => {
                 // {data: 'error', type: 'text'},
             ],
             manualColumnResize: true,
-            colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fxToggle ? props.languages.map((value) => value.name) : props.fxLanguages.map((value) => value.name)), 'error'],
+            colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fnToggle ? props.languages.map((value) => value.name) : props.fnLanguages.map((value) => value.name)), 'error'],
             rowHeaders: true,
             width: props.size.width,
             height: props.size.languageWindowHeight,
@@ -72,7 +72,7 @@ const LanguageWindow = (props) => {
         })
         props.hotRef.current.addHook('afterChange', (changes) => {
             grammarlyPlugin?.disconnect()
-            !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
+            !props.fnToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
             if (props.isFromTimelineWindowRef.current) {
                 props.isFromTimelineWindowRef.current = false
                 return
@@ -105,16 +105,16 @@ const LanguageWindow = (props) => {
             })
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
-            if (!props.fxToggle) {
+            if (!props.fnToggle) {
                 for (let i = index; i < index + amount; i++) {
                     props.cellDataRef.current[i].rowId = v4()
                 }
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             } else {
                 for (let i = index; i < index + amount; i++) {
-                    props.fxRef.current[i].rowId = v4()
+                    props.fnRef.current[i].rowId = v4()
                 }
-                localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
+                localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
             }
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
@@ -125,7 +125,7 @@ const LanguageWindow = (props) => {
             }
         })
         props.hotRef.current.addHook('afterRemoveRow', () => {
-            !props.fxToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fx', JSON.stringify(props.fxRef.current))
+            !props.fnToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             props.hotSelectionRef.current.rowStart = Math.min(row, row2)
@@ -133,7 +133,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fxToggle, props.fxRef, props.fxLanguages, props.waveformRef, props.isFromTimelineWindowRef])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fnToggle, props.fxRef, props.fxLanguages, props.waveformRef, props.isFromTimelineWindowRef])
 
     return <div ref={containerMain}/>
 }

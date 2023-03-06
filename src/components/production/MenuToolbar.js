@@ -28,7 +28,7 @@ const MenuToolbar = (props) => {
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
             <NewProjectModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
-                             setFxLanguages={props.setFxLanguages} fxRef={props.fxRef} hotRef={props.hotRef}
+                             setFnLanguages={props.setFnLanguages} fnRef={props.fnRef} hotRef={props.hotRef}
                              setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
@@ -46,8 +46,8 @@ const MenuToolbar = (props) => {
                         name: 'sample',
                         language: props.languages,
                         subtitle: props.cellDataRef.current,
-                        fxLanguage: props.fxLanguages,
-                        fx: props.fxRef.current
+                        fnLanguage: props.fnLanguages,
+                        fn: props.fnRef.current
                     })
                 }}>.fspx</MDBDropdownItem>
                 <MDBDropdownItem link onClick={() => {
@@ -57,10 +57,10 @@ const MenuToolbar = (props) => {
                             subtitle: toSrt(props.cellDataRef.current, `${value.code}_${value.counter}`)
                         })
                     })
-                    props.fxLanguages.forEach((value) => {
+                    props.fnLanguages.forEach((value) => {
                         downloadSrt({
                             name: value.name,
-                            subtitle: toSrt(props.fxRef.current, `${value.code}_${value.counter}`)
+                            subtitle: toSrt(props.fnRef.current, `${value.code}_${value.counter}`)
                         })
                     })
                 }}>.srt</MDBDropdownItem>

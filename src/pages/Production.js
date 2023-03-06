@@ -41,45 +41,6 @@ const Production = () => {
     const findButtonRef = useRef(null)
     const resetSegmentsRef = useRef(null)
     const isFromTimelineWindowRef = useRef(false)
-    const handleKeyDown = useCallback((event) => {
-        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO' && event.target.tagName !== 'INPUT') || event.key === 'F6') {
-            event.preventDefault();
-            if (playerRef.current.getInternalPlayer()?.paused) playerRef.current.getInternalPlayer().play()
-            else playerRef.current.getInternalPlayer()?.pause()
-        }
-        if (event.ctrlKey && event.key === 'f') {
-            event.preventDefault();
-            findButtonRef.current.click()
-        }
-        if (event.key === 'F9') {
-            event.preventDefault();
-            tcIoButtonRef.current.click()
-        }
-        if (event.key === 'F10') {
-            event.preventDefault();
-            tcInButtonRef.current.click()
-        }
-        if (event.key === 'F11') {
-            event.preventDefault();
-            tcOutButtonRef.current.click()
-        }
-        if (event.ctrlKey && event.shiftKey && event.key === 'D') {
-            event.preventDefault();
-            splitLineButtonRef.current.click()
-        }
-        if (event.shiftKey && event.key === 'F12') {
-            event.preventDefault();
-            mergeLineButtonRef.current.click()
-        }
-        if (event.shiftKey && event.key === '<') {
-            const internalPlayer = playerRef.current.getInternalPlayer()
-            if (internalPlayer) internalPlayer.playbackRate = Math.max(internalPlayer.playbackRate - 0.25, 0.25)
-        }
-        if (event.shiftKey && event.key === '>') {
-            const internalPlayer = playerRef.current.getInternalPlayer()
-            if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
-        }
-    }, [])
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const timeOut = setTimeout(() => {
@@ -114,12 +75,6 @@ const Production = () => {
     useEffect(() => {
         resetSegmentsRef.current = resetSegments
     }, [resetSegments])
-    useEffect(() => {
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [handleKeyDown]);
     useEffect(() => {
         localStorage.setItem('language', JSON.stringify(languages))
     }, [languages])
@@ -176,7 +131,10 @@ const Production = () => {
                          resetSegments={resetSegments}/>
         <MenuToolbar cellDataRef={cellDataRef} fnRef={fnRef} languages={languages} setLanguages={setLanguages}
                      fnLanguages={fnLanguages} setFnLanguages={setFnLanguages} hotRef={hotRef}
-                     setLanguageFile={setLanguageFile} waveformRef={waveformRef}/>
+                     setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
+                     findButtonRef={findButtonRef} tcIoButtonRef={tcIoButtonRef} tcInButtonRef={tcInButtonRef}
+                     tcOutButtonRef={tcOutButtonRef}
+                     splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
             width: '100vw', height: 'calc(100vh - 100px)', position: 'relative'

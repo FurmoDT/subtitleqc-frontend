@@ -32,7 +32,10 @@ const MenuToolbar = (props) => {
                              setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
-            <ShortcutModal />
+            <ShortcutModal playerRef={props.playerRef} findButtonRef={props.findButtonRef}
+                           tcIoButtonRef={props.tcIoButtonRef} tcInButtonRef={props.tcInButtonRef}
+                           tcOutButtonRef={props.tcOutButtonRef}
+                           splitLineButtonRef={props.splitLineButtonRef} mergeLineButtonRef={props.mergeLineButtonRef}/>
         </MDBTooltip>
         <MDBDropdown>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Download'>

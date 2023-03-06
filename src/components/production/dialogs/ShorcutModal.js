@@ -120,7 +120,7 @@ const ShortcutModal = (props) => {
                         </MDBListGroup>
                         <h6 className='bg-light p-2 border-top border-bottom'>Subtitle</h6>
                         <MDBListGroup light small>
-                            <MDBRow style={{paddingBottom: 10}}>
+                            <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
@@ -134,7 +134,7 @@ const ShortcutModal = (props) => {
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>
-                            <MDBRow style={{paddingBottom: 10}}>
+                            <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
@@ -154,7 +154,7 @@ const ShortcutModal = (props) => {
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>
-                            <MDBRow style={{paddingBottom: 10}}>
+                            <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>

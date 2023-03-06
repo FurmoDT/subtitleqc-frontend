@@ -9,26 +9,26 @@ import FindPopover from "./dialogs/FindPopover";
 
 const TransToolbar = (props) => {
     const subtitleButtonRef = useRef(null)
-    const fxButtonRef = useRef(null)
+    const fnButtonRef = useRef(null)
     return <div style={{
         flexDirection: 'row', display: 'flex', alignItems: 'center', height: '40px'
     }}>
         <MDBBtnGroup style={{marginLeft: '5px'}}>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='말자막'>
                 <MDBBtn ref={subtitleButtonRef} size={'sm'} color={'link'} outline onClick={() => {
-                    if (props.fxToggle) {
+                    if (props.fnToggle) {
                         subtitleButtonRef.current.className = subtitleButtonRef.current.className.replace('btn-link', 'btn-outline-link')
-                        fxButtonRef.current.className = fxButtonRef.current.className.replace('btn-outline-link', 'btn-link')
-                        props.setFxToggle(!props.fxToggle)
+                        fnButtonRef.current.className = fnButtonRef.current.className.replace('btn-outline-link', 'btn-link')
+                        props.setFnToggle(!props.fnToggle)
                     }
                 }}><MDBIcon fas icon="comments" color={'dark'}/></MDBBtn></MDBTooltip>
             <div style={{margin: '1px'}}></div>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='화면자막'>
-                <MDBBtn ref={fxButtonRef} size={'sm'} color={'link'} onClick={() => {
-                    if (!props.fxToggle) {
+                <MDBBtn ref={fnButtonRef} size={'sm'} color={'link'} onClick={() => {
+                    if (!props.fnToggle) {
                         subtitleButtonRef.current.className = subtitleButtonRef.current.className.replace('btn-outline-link', 'btn-link')
-                        fxButtonRef.current.className = fxButtonRef.current.className.replace('btn-link', 'btn-outline-link')
-                        props.setFxToggle(!props.fxToggle)
+                        fnButtonRef.current.className = fnButtonRef.current.className.replace('btn-link', 'btn-outline-link')
+                        props.setFnToggle(!props.fnToggle)
                     }
                 }}><CgTranscript color={'black'} size={15}/></MDBBtn></MDBTooltip>
         </MDBBtnGroup>
@@ -37,8 +37,8 @@ const TransToolbar = (props) => {
                   onChange={(event) => {
                       props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
                   }}/>
-        <LanguagesModal fxToggle={props.fxToggle} languages={props.languages} setLanguages={props.setLanguages}
-                        fxLanguages={props.fxLanguages} setFxLanguages={props.setFxLanguages}/>
+        <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
+                        fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN&OUT'>
             <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const row = props.hotSelectionRef.current.rowStart

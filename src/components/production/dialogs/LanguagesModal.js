@@ -32,13 +32,13 @@ const LanguagesModal = (props) => {
     const handleAddClick = (code, name) => {
         const counter = languageCounter(code)
         setLanguages([...languages, {
-            code: code, name: name + (counter > 1 ? `(${counter})` : '') + (props.fxToggle ? 'FN': ''), counter: counter
+            code: code, name: name + (counter > 1 ? `(${counter})` : '') + (props.fnToggle ? 'FN': ''), counter: counter
         }])
     }
     useEffect(() => {
-        if (!props.fxToggle) setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
-        else setLanguages([...props.fxLanguages.map((value) => (Object.assign({}, value)))])
-    }, [props.languages, props.fxLanguages, props.fxToggle])
+        if (!props.fnToggle) setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
+        else setLanguages([...props.fnLanguages.map((value) => (Object.assign({}, value)))])
+    }, [props.languages, props.fnLanguages, props.fnToggle])
     return <>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='언어 설정'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
@@ -85,19 +85,19 @@ const LanguagesModal = (props) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={() => {
                             toggleShow()
-                            if (!props.fxToggle) setLanguages([...props.languages])
-                            else setLanguages([...props.fxLanguages])
+                            if (!props.fnToggle) setLanguages([...props.languages])
+                            else setLanguages([...props.fnLanguages])
                         }}>Close</MDBBtn>
                         <MDBBtn onClick={() => {
                             toggleShow()
-                            if (!props.fxToggle) {
+                            if (!props.fnToggle) {
                                 props.setLanguages([...languages.map((value) => ({
                                     code: value.code,
                                     name: value.name,
                                     counter: value.counter
                                 }))])
                             } else {
-                                props.setFxLanguages([...languages.map((value) => ({
+                                props.setFnLanguages([...languages.map((value) => ({
                                     code: value.code,
                                     name: value.name,
                                     counter: value.counter

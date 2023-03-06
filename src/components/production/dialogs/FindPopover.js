@@ -16,7 +16,7 @@ const FindPopover = (props) => {
                     }
                 })
             })
-        }
+        } else props.hotRef.current.render()
         setCurFindPosition(result.length ? 1 : 0)
         setSearched(result)
     }, [props.hotRef])

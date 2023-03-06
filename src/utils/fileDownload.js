@@ -1,5 +1,5 @@
 export const downloadSrt = (fileData) => {
-    const blob = new Blob([fileData.subtitle], {type: "text/plain"})
+    const blob = new Blob(['\ufeff',fileData.subtitle], {type: "text/plain"})
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.download = `${fileData.name}.srt`

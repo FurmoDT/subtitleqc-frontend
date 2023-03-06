@@ -47,6 +47,12 @@ const FindPopover = (props) => {
     useEffect(() => {
         props.findButtonRef.current = document.getElementById('find-popover')
     }, [props.findButtonRef])
+    const escHandler = (event) => {
+        if (event.key === 'Escape') {
+            props.findButtonRef.current.click()
+            props.hotRef.current.render()
+        }
+    }
     return <>
         <MDBPopover id={'find-popover'} size={'sm'} color={'link'} placement={'right-end'}
                     btnChildren={<MDBIcon fas icon="search" color={'dark'}/>} onShow={() => {
@@ -59,7 +65,8 @@ const FindPopover = (props) => {
                 }
             })
             observer.observe(document.body, {childList: true, subtree: true})
-        }}>
+            document.body.addEventListener('keydown', escHandler)
+        }} onHide={() => document.body.removeEventListener('keydown', escHandler)}>
             <MDBPopoverHeader>Find</MDBPopoverHeader>
             <MDBPopoverBody style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                 <MDBInput onChange={handleOnChange} onKeyDown={handleKeyDown} type='text'/>

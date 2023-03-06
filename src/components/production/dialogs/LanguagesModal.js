@@ -32,7 +32,7 @@ const LanguagesModal = (props) => {
     const handleAddClick = (code, name) => {
         const counter = languageCounter(code)
         setLanguages([...languages, {
-            code: code, name: name + (counter > 1 ? `(${counter})` : '') + (props.fxToggle ? 'FX': ''), counter: counter
+            code: code, name: name + (counter > 1 ? `(${counter})` : '') + (props.fxToggle ? 'FN': ''), counter: counter
         }])
     }
     useEffect(() => {

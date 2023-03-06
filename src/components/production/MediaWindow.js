@@ -123,7 +123,7 @@ const MediaWindow = (props) => {
                 <input className="form-check-input" type="checkbox" id="fxSwitch" onChange={(event) => {
                     setShowFx(event.target.checked)
                 }}/>
-                <label className="form-check-label" style={{color: 'white'}} htmlFor="fxSwitch">FX</label>
+                <label className="form-check-label" style={{color: 'white'}} htmlFor="fxSwitch">FN</label>
                 <MDBDropdown>
                     <MDBDropdownToggle color={'link'}>
                         <MDBBtn tag='a' color={'none'}>

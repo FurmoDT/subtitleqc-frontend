@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import {
     MDBBtn,
+    MDBCol,
     MDBIcon,
     MDBListGroup,
     MDBListGroupItem,
@@ -11,7 +12,10 @@ import {
     MDBModalFooter,
     MDBModalHeader,
     MDBModalTitle,
+    MDBRow,
 } from 'mdb-react-ui-kit';
+import {FiSun, FiSunrise, FiSunset} from "react-icons/fi";
+import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
 
 const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
@@ -75,21 +79,101 @@ const ShortcutModal = (props) => {
                     <MDBModalBody>
                         <h6 className='bg-light p-2 border-top border-bottom'>VIDEO</h6>
                         <MDBListGroup light small>
-                            <MDBListGroupItem>
-                                이동
-                            </MDBListGroupItem>
-                            <MDBListGroupItem>
-                                배속
-                            </MDBListGroupItem>
+                            <MDBRow>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <div>
+                                            <MDBIcon fas icon="play" color={'dark'}/> / <MDBIcon fas icon="pause"
+                                                                                                 color={'dark'}/>
+                                        </div>
+                                        SPACE , F6
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow style={{paddingBottom: 10}}>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MDBIcon fas icon="angle-double-left"/> ←
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MDBIcon fas icon="angle-double-right"/> →
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MDBIcon fas icon="angle-double-up"/> SHIFT >
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MDBIcon fas icon="angle-double-down"/> {'SHIFT <'}
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
                         </MDBListGroup>
                         <h6 className='bg-light p-2 border-top border-bottom'>Subtitle</h6>
                         <MDBListGroup light small>
-                            <MDBListGroupItem>
-                                실행 취소
-                            </MDBListGroupItem>
-                            <MDBListGroupItem>
-                                다시 실행
-                            </MDBListGroupItem>
+                            <MDBRow style={{paddingBottom: 10}}>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MDBIcon fas icon="undo"/> CTRL Z
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MDBIcon fas icon="redo"/> CTRL SHIFT Z
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow style={{paddingBottom: 10}}>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <FiSun color={'black'} size={20}/> F9
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <FiSunrise color={'black'} size={20}/> F10
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <FiSunset color={'black'} size={20}/> F11
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow style={{paddingBottom: 10}}>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <TbArrowsSplit2 color={'black'} size={20}/> CTRL SHIFT D
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <TbArrowsJoin2 color={'black'} size={20}/> SHIFT F12
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MDBIcon fas icon="search" color={'dark'}/> CTRL F
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
                         </MDBListGroup>
                     </MDBModalBody>
                     <MDBModalFooter>

@@ -118,7 +118,7 @@ const ShortcutModal = (props) => {
                                 </MDBCol>
                             </MDBRow>
                         </MDBListGroup>
-                        <h6 className='bg-light p-2 border-top border-bottom'>Subtitle</h6>
+                        <h6 className='bg-light p-2 border-top border-bottom'>SUBTITLE</h6>
                         <MDBListGroup light small>
                             <MDBRow>
                                 <MDBCol size={3}>
@@ -154,7 +154,7 @@ const ShortcutModal = (props) => {
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>
-                            <MDBRow>
+                            <MDBRow style={{paddingBottom: 10}}>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
@@ -171,6 +171,17 @@ const ShortcutModal = (props) => {
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
                                         <MDBIcon fas icon="search" color={'dark'}/> CTRL F
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
+                        </MDBListGroup>
+                        <h6 className='bg-light p-2 border-top border-bottom'>WAVEFORM</h6>
+                        <MDBListGroup light small>
+                            <MDBRow>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        Not Supported
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>

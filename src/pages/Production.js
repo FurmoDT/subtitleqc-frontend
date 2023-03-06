@@ -135,17 +135,17 @@ const Production = () => {
     }, [fnToggle])
     useEffect(() => {
         if (languageFile) {
-            if (languageFile.fnLanguage && languageFile.fn) { // fspx
+            if (languageFile.fn || languageFile.fx) { // fspx
                 cellDataRef.current = languageFile.subtitle.map(v => {
                     return {...v, rowId: v.rowId || v4()}
                 })
-                fnRef.current = languageFile.fn.map(v => {
+                fnRef.current = (languageFile.fn || languageFile.fx).map(v => {
                     return {...v, rowId: v.rowId || v4()}
                 })
                 localStorage.setItem('subtitle', JSON.stringify(cellDataRef.current))
                 localStorage.setItem('fn', JSON.stringify(fnRef.current))
                 setLanguages(languageFile.language)
-                setFnLanguages(languageFile.fnLanguage)
+                setFnLanguages(languageFile.fnLanguage || languageFile.fxLanguage)
             } else setFileUploadModalShow(true)
             if (waveformRef.current) {
                 waveformRef.current.segments.removeAll()

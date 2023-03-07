@@ -1,16 +1,9 @@
-import {
-    MDBBtn,
-    MDBDropdown,
-    MDBDropdownItem,
-    MDBDropdownMenu,
-    MDBDropdownToggle,
-    MDBIcon,
-    MDBTooltip
-} from "mdb-react-ui-kit";
+import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon, MDBTooltip} from "mdb-react-ui-kit";
 import {toSrt} from "../../utils/fileParser";
 import {downloadFspx, downloadSrt} from "../../utils/fileDownload";
 import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
+import ProjectSettingModal from "./dialogs/ProjectSettingModal";
 
 const MenuToolbar = (props) => {
     return <div style={{
@@ -22,9 +15,7 @@ const MenuToolbar = (props) => {
         backgroundColor: 'lightgray'
     }}>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Project Setting'>
-            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'}>
-                <MDBIcon fas icon="info-circle" size={'2x'}/>
-            </MDBBtn>
+            <ProjectSettingModal/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
             <NewProjectModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}

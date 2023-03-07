@@ -43,7 +43,11 @@ const FileUploadModal = (props) => {
     const setNewLanguagesElement = () => {
         const handleAddClick = (code, name) => {
             const counter = Math.max(...props.languageFile.prevLanguages.filter(v => v.code === code).map(v => v.counter + 1), 1)
-            setNewLanguages([{code: code, name: name + (counter > 1 ? `(${counter})` : ''), counter: counter}])
+            setNewLanguages([{
+                code: code,
+                name: name + (counter > 1 ? `(${counter})` : '') + (props.fnToggleRef.current ? 'FN' : ''),
+                counter: counter
+            }])
         }
         const addLanguageItem = Object.entries(languageCodes).map(([key, value]) => (
             <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value}</MDBDropdownItem>))
@@ -60,10 +64,13 @@ const FileUploadModal = (props) => {
             if (props.languageFile.newLanguages === 'srt') {
                 setSelectionActive(true)
             } else {
-                setNewLanguages(props.languageFile.newLanguages)
+                setNewLanguages(props.languageFile.newLanguages.map(v => {
+                    if (props.fnToggleRef.current) v.name += 'FN'
+                    return v
+                }))
             }
         }
-    }, [props.languageFile])
+    }, [props.languageFile, props.fnToggleRef])
     const setFile = useCallback((update) => {
         const subtitle = [];
         const l1 = (!props.fnToggleRef.current ? props.cellDataRef.current.length : props.fnRef.current.length)

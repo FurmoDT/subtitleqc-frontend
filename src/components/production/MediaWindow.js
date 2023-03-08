@@ -43,14 +43,19 @@ const MediaWindow = (props) => {
                 if (!props.fnToggle) setTdColor(subtitleIndexRef.current, false)
             }
         }
-    }, [props.cellDataRef, props.fnToggle, setTdColor])
+    }, [props.cellDataRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])
     const setFnLabel = useCallback((seconds) => {
         const row = props.fnRef.current[fnIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
             const nextSubtitle = props.fnRef.current[fnIndexRef.current][fnLanguage] || ''
             if (curFnIndex !== fnIndexRef.current) {
                 curFnIndex = fnIndexRef.current
-                if (props.fnToggle) setTdColor(fnIndexRef.current, true)
+                if (props.fnToggle) {
+                    if (document.getElementById('flexCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
+                    afterRenderPromise().then(() => {
+                        setTdColor(fnIndexRef.current, true)
+                    })
+                }
             }
             if (fnLabelRef.current.innerText !== nextSubtitle) fnLabelRef.current.innerText = nextSubtitle
         } else {
@@ -60,7 +65,7 @@ const MediaWindow = (props) => {
                 if (props.fnToggle) setTdColor(fnIndexRef.current, false)
             }
         }
-    }, [props.fnRef, props.fnToggle, setTdColor])
+    }, [props.fnRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
         fnIndexRef.current = bisect(props.fnRef.current.map((value) => tcToSec(value.start)), seconds)
@@ -95,8 +100,13 @@ const MediaWindow = (props) => {
         }
     }, [props.fnLanguages])
     return <div style={{
-        width: '100%', height: '100%', justifyContent: 'center', alignItems: 'end', display: 'flex',
-        borderStyle: 'solid', borderWidth: 'thin'
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'end',
+        display: 'flex',
+        borderStyle: 'solid',
+        borderWidth: 'thin'
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
                      controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
@@ -114,14 +124,12 @@ const MediaWindow = (props) => {
                     </MDBBtn>
                 </MDBDropdownToggle>
                 <MDBDropdownMenu>
-                    {
-                        props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
-                            return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
-                                subtitleLanguage = `${value.code}_${value.counter}`
-                                if (props.playerRef.current.getInternalPlayer()?.paused) setSubtitleLabel(props.playerRef.current.getCurrentTime())
-                            }}>{value.name}</MDBDropdownItem>
-                        })
-                    }
+                    {props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
+                        return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
+                            subtitleLanguage = `${value.code}_${value.counter}`
+                            if (props.playerRef.current.getInternalPlayer()?.paused) setSubtitleLabel(props.playerRef.current.getCurrentTime())
+                        }}>{value.name}</MDBDropdownItem>
+                    })}
                 </MDBDropdownMenu>
             </MDBDropdown>
             <div className="form-check" style={{display: 'flex', alignItems: 'center'}}>
@@ -136,14 +144,12 @@ const MediaWindow = (props) => {
                         </MDBBtn>
                     </MDBDropdownToggle>
                     <MDBDropdownMenu>
-                        {
-                            props.fnLanguages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
-                                return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
-                                    fnLanguage = `${value.code}_${value.counter}`
-                                    if (props.playerRef.current.getInternalPlayer()?.paused) setFnLabel(props.playerRef.current.getCurrentTime())
-                                }}>{value.name}</MDBDropdownItem>
-                            })
-                        }
+                        {props.fnLanguages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map((value) => {
+                            return <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
+                                fnLanguage = `${value.code}_${value.counter}`
+                                if (props.playerRef.current.getInternalPlayer()?.paused) setFnLabel(props.playerRef.current.getCurrentTime())
+                            }}>{value.name}</MDBDropdownItem>
+                        })}
                     </MDBDropdownMenu>
                 </MDBDropdown>
             </div>

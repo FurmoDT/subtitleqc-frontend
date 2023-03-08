@@ -57,16 +57,18 @@ const LanguageWindow = (props) => {
             contextMenu: ['row_above', 'row_below', 'remove_row'],
         })
         let grammarlyPlugin = null
-        props.hotRef.current.addHook('afterBeginEditing', (row) => {
-            grammarly.then(r => {
-                grammarlyPlugin = r.addPlugin(
-                    containerMain.current.querySelector('textarea'),
-                    {
-                        documentDialect: "american",
-                    },
-                )
-                containerMain.current.querySelector('grammarly-editor-plugin').querySelector('textarea').focus()
-            });
+        props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
+            if (props.hotRef.current.colToProp(column).startsWith('enUS')) {
+                grammarly.then(r => {
+                    grammarlyPlugin = r.addPlugin(
+                        containerMain.current.querySelector('textarea'),
+                        {
+                            documentDialect: "american",
+                        },
+                    )
+                    containerMain.current.querySelector('grammarly-editor-plugin').querySelector('textarea').focus()
+                });
+            }
             const tcIn = props.hotRef.current.getDataAtCell(row, 0)
             if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')
         })

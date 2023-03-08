@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
 import {bisect, secToTc, tcToSec} from "../../utils/functions";
+import {MDBCheckbox} from "mdb-react-ui-kit";
 
 
 const TimelineWindow = (props) => {
@@ -95,6 +96,9 @@ const TimelineWindow = (props) => {
     }, [props.size, props.waveformRef])
 
     return <>
+        <MDBCheckbox id='flexCheckBox' wrapperStyle={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}
+                     label='select current subtitle while playing'
+                     labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center'}}/>
         <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 100}px`}}
              onClick={() => props.waveformRef.current?.player.pause()}/>
         <div ref={overviewRef} style={{width: '100%', height: '60px'}}/>

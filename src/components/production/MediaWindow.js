@@ -28,7 +28,12 @@ const MediaWindow = (props) => {
             const nextSubtitle = props.cellDataRef.current[subtitleIndexRef.current][subtitleLanguage] || ''
             if (curSubtitleIndex !== subtitleIndexRef.current) {
                 curSubtitleIndex = subtitleIndexRef.current
-                if (!props.fnToggle) setTdColor(subtitleIndexRef.current, true)
+                if (!props.fnToggle) {
+                    if (document.getElementById('flexCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
+                    afterRenderPromise().then(() => {
+                        setTdColor(subtitleIndexRef.current, true)
+                    })
+                }
             }
             if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
         } else {

@@ -64,7 +64,7 @@ const FileUploadModal = (props) => {
             if (props.languageFile.newLanguages === 'srt') {
                 setSelectionActive(true)
             } else {
-                setNewLanguages(props.languageFile.newLanguages.map(v => {
+                setNewLanguages(props.languageFile.newLanguages?.map(v => {
                     if (props.fnToggleRef.current) v.name += 'FN'
                     return v
                 }))

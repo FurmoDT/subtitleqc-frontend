@@ -42,7 +42,7 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.tcOutButtonRef.current.click()
         }
-        if (event.ctrlKey && event.shiftKey && event.key === 'D') {
+        if (event.ctrlKey && event.shiftKey && event.code === 'KeyD') {
             event.preventDefault();
             props.splitLineButtonRef.current.click()
         }
@@ -58,7 +58,12 @@ const ShortcutModal = (props) => {
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
-    }, [props.playerRef, props.findButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+        if (event.ctrlKey && event.code === 'KeyZ') {
+            event.preventDefault()
+            if (event.shiftKey) props.hotRef.current.redo()
+            else props.hotRef.current.undo()
+        }
+    }, [props.hotRef, props.playerRef, props.findButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
         return () => {

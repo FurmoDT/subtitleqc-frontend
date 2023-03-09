@@ -40,6 +40,7 @@ const Production = () => {
     const mergeLineButtonRef = useRef(null)
     const findButtonRef = useRef(null)
     const resetSegmentsRef = useRef(null)
+    const [tcLock, setTcLock] = useState(false)
     const isFromTimelineWindowRef = useRef(false)
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
@@ -62,16 +63,16 @@ const Production = () => {
         if (!fnToggle) {
             cellDataRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
+                if (start && end && start <= end) segments.push(createSegment(start, end, value.rowId, tcLock))
             })
         } else {
             fnRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
+                if (start && end && start <= end) segments.push(createSegment(start, end, value.rowId, tcLock))
             })
         }
         return segments
-    }, [fnToggle])
+    }, [fnToggle, tcLock])
     useEffect(() => {
         resetSegmentsRef.current = resetSegments
     }, [resetSegments])
@@ -87,7 +88,7 @@ const Production = () => {
             waveformRef.current.segments.removeAll()
             waveformRef.current.segments.add(resetSegmentsRef.current())
         }
-    }, [fnToggle])
+    }, [fnToggle, tcLock])
     useEffect(() => {
         if (languageFile) {
             if (languageFile.fn || languageFile.fx) { // fspx
@@ -172,7 +173,7 @@ const Production = () => {
                                           timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight
                                       })
                                   }}>
-                            <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
+                            <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef} tcLock={tcLock}
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
                                             waveformRef={waveformRef} fnToggle={fnToggle}
                                             cellDataRef={cellDataRef} languages={languages}
@@ -180,7 +181,8 @@ const Production = () => {
                                             fnRef={fnRef} fnLanguages={fnLanguages}/>
                             <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}
-                                            waveformRef={waveformRef} mediaFile={mediaFile} video={video}/>
+                                            waveformRef={waveformRef} mediaFile={mediaFile} video={video}
+                                            setTcLock={setTcLock}/>
                         </Splitter>
                     </div>
                 </Splitter>

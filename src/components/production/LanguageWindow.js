@@ -33,8 +33,8 @@ const LanguageWindow = (props) => {
         props.hotRef.current = new Handsontable(containerMain.current, {
             data: !props.fnToggle ? props.cellDataRef.current : props.fnRef.current,
             columns: [
-                {data: 'start', type: 'text', renderer: tcInRenderer},
-                {data: 'end', type: 'text', renderer: tcOutRenderer},
+                {data: 'start', type: 'text', renderer: tcInRenderer, readOnly: props.tcLock},
+                {data: 'end', type: 'text', renderer: tcOutRenderer, readOnly: props.tcLock},
                 ...(!props.fnToggle ? props.languages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
@@ -54,7 +54,7 @@ const LanguageWindow = (props) => {
             width: props.size.width,
             height: props.size.languageWindowHeight,
             minSpareRows: 2,
-            contextMenu: ['row_above', 'row_below', 'remove_row'],
+            contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo', '---------', 'make_read_only', '---------', 'cut', 'copy'],
         })
         let grammarlyPlugin = null
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
@@ -89,7 +89,7 @@ const LanguageWindow = (props) => {
                         if (segment) segment.update({startTime: start})
                         else {
                             const end = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'end'))
-                            if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
+                            if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLock))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
                 } else if (change[1] === 'end') {
@@ -100,7 +100,7 @@ const LanguageWindow = (props) => {
                         if (segment) segment.update({endTime: end})
                         else {
                             const start = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'start'))
-                            if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
+                            if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLock))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
                 }
@@ -135,7 +135,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLock, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef])
 
     return <div ref={containerMain}/>
 }

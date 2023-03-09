@@ -29,7 +29,7 @@ const MediaWindow = (props) => {
             if (curSubtitleIndex !== subtitleIndexRef.current) {
                 curSubtitleIndex = subtitleIndexRef.current
                 if (!props.fnToggle) {
-                    if (document.getElementById('flexCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
+                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
                     afterRenderPromise().then(() => {
                         setTdColor(subtitleIndexRef.current, true)
                         props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'black'})
@@ -55,7 +55,7 @@ const MediaWindow = (props) => {
             if (curFnIndex !== fnIndexRef.current) {
                 curFnIndex = fnIndexRef.current
                 if (props.fnToggle) {
-                    if (document.getElementById('flexCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
+                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
                     afterRenderPromise().then(() => {
                         setTdColor(fnIndexRef.current, true)
                         props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'black'})

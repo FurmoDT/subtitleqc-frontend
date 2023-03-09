@@ -96,9 +96,15 @@ const TimelineWindow = (props) => {
     }, [props.size, props.waveformRef])
 
     return <>
-        <MDBCheckbox id='flexCheckBox' wrapperStyle={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}
-                     label='select current subtitle while playing'
-                     labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center'}}/>
+        <div style={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}>
+            <MDBCheckbox id='tcLockCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
+                         label='TC LOCK'
+                         labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center'}}
+                         onChange={(event) => props.setTcLock(event.target.checked)}/>
+            <MDBCheckbox id='scrollViewCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
+                         label='SELECT CURRENT SUBTITLE WHILE PLAYING'
+                         labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center'}}/>
+        </div>
         <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 100}px`}}
              onClick={() => props.waveformRef.current?.player.pause()}/>
         <div ref={overviewRef} style={{width: '100%', height: '60px'}}/>

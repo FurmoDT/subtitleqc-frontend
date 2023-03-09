@@ -73,7 +73,7 @@ const MediaWindow = (props) => {
                 }
             }
         }
-    }, [props.fnRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])
+    }, [props.fnRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef, props.waveformRef])
     const onSeek = useCallback((seconds) => {
         subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
         fnIndexRef.current = bisect(props.fnRef.current.map((value) => tcToSec(value.start)), seconds)

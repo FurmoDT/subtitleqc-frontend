@@ -32,6 +32,7 @@ const MediaWindow = (props) => {
                     if (document.getElementById('flexCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
                     afterRenderPromise().then(() => {
                         setTdColor(subtitleIndexRef.current, true)
+                        props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'black'})
                     })
                 }
             }
@@ -40,10 +41,13 @@ const MediaWindow = (props) => {
             if (curSubtitleIndex === subtitleIndexRef.current) {
                 subtitleLabelRef.current.innerText = ''
                 curSubtitleIndex = -1
-                if (!props.fnToggle) setTdColor(subtitleIndexRef.current, false)
+                if (!props.fnToggle) {
+                    setTdColor(subtitleIndexRef.current, false)
+                    props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'darkgrey'})
+                }
             }
         }
-    }, [props.cellDataRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])
+    }, [props.cellDataRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef, props.waveformRef])
     const setFnLabel = useCallback((seconds) => {
         const row = props.fnRef.current[fnIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
@@ -54,6 +58,7 @@ const MediaWindow = (props) => {
                     if (document.getElementById('flexCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
                     afterRenderPromise().then(() => {
                         setTdColor(fnIndexRef.current, true)
+                        props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'black'})
                     })
                 }
             }
@@ -62,7 +67,10 @@ const MediaWindow = (props) => {
             if (curFnIndex === fnIndexRef.current) {
                 fnLabelRef.current.innerText = ''
                 curFnIndex = -1
-                if (props.fnToggle) setTdColor(fnIndexRef.current, false)
+                if (props.fnToggle) {
+                    setTdColor(fnIndexRef.current, false)
+                    props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'darkgrey'})
+                }
             }
         }
     }, [props.fnRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])

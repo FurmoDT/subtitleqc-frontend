@@ -55,7 +55,7 @@ const ReplacePopover = (props) => {
             props.replaceButtonRef.current.click()
             props.hotRef.current.render()
         }
-    }, [])
+    }, [props.replaceButtonRef, props.hotRef])
     return <>
         <MDBPopover id={'replace-popover'} size={'sm'} color={'link'} placement={'right-end'}
                     btnChildren={<MdFindReplace color={'black'} size={20}/>} onShow={() => {

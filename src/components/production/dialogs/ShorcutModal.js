@@ -16,6 +16,7 @@ import {
 } from 'mdb-react-ui-kit';
 import {FiSun, FiSunrise, FiSunset} from "react-icons/fi";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
+import {MdFindReplace, MdSearch} from "react-icons/md";
 
 const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
@@ -29,6 +30,10 @@ const ShortcutModal = (props) => {
         if (event.ctrlKey && event.key === 'f') {
             event.preventDefault();
             props.findButtonRef.current.click()
+        }
+        if (event.ctrlKey && event.key === 'g') {
+            event.preventDefault();
+            props.replaceButtonRef.current.click()
         }
         if (event.key === 'F9') {
             event.preventDefault();
@@ -63,7 +68,7 @@ const ShortcutModal = (props) => {
             if (event.shiftKey) props.hotRef.current.redo()
             else props.hotRef.current.undo()
         }
-    }, [props.hotRef, props.playerRef, props.findButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+    }, [props.hotRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
         return () => {
@@ -175,7 +180,13 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <MDBIcon fas icon="search" color={'dark'}/> CTRL F
+                                        <MdSearch color={'black'} size={20}/> CTRL F
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MdFindReplace color={'black'} size={20}/> CTRL H
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>

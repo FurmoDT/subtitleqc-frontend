@@ -1,9 +1,11 @@
 import {MDBBtn, MDBIcon, MDBInput, MDBPopover, MDBPopoverBody, MDBPopoverHeader,} from 'mdb-react-ui-kit';
 import {useCallback, useEffect, useRef, useState} from "react";
-import {MdSearch} from "react-icons/md";
+import {MdFindReplace} from "react-icons/md";
 
-const FindPopover = (props) => {
+const ReplacePopover = (props) => {
     const findPositionLabelRef = useRef(null)
+    const findLabelRef = useRef(null)
+    const replaceLabelRef = useRef(null)
     const [curFindPosition, setCurFindPosition] = useState(0)
     const [searched, setSearched] = useState([])
     const afterRenderPromise = props.afterRenderPromise
@@ -46,17 +48,17 @@ const FindPopover = (props) => {
         }
     }, [props.hotRef, searched, curFindPosition, afterRenderPromise])
     useEffect(() => {
-        props.findButtonRef.current = document.getElementById('find-popover')
-    }, [props.findButtonRef])
+        props.replaceButtonRef.current = document.getElementById('replace-popover')
+    }, [props.replaceButtonRef])
     const escHandler = useCallback((event) => {
         if (event.key === 'Escape') {
-            props.findButtonRef.current.click()
+            props.replaceButtonRef.current.click()
             props.hotRef.current.render()
         }
-    }, [props.findButtonRef, props.hotRef])
+    }, [])
     return <>
-        <MDBPopover id={'find-popover'} size={'sm'} color={'link'} placement={'right-end'}
-                    btnChildren={<MdSearch color={'black'} size={20}/>} onShow={() => {
+        <MDBPopover id={'replace-popover'} size={'sm'} color={'link'} placement={'right-end'}
+                    btnChildren={<MdFindReplace color={'black'} size={20}/>} onShow={() => {
             const observer = new MutationObserver(() => {
                 const popover = document.querySelector('.popover')
                 if (popover) {
@@ -72,20 +74,36 @@ const FindPopover = (props) => {
             setCurFindPosition(0)
             setSearched([])
         }}>
-            <MDBPopoverHeader>Find</MDBPopoverHeader>
-            <MDBPopoverBody style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                <MDBInput onChange={handleOnChange} onKeyDown={handleKeyDown} type='text'/>
-                <label style={{marginLeft: '5px'}}
-                       ref={findPositionLabelRef}>{curFindPosition}/{searched.length}</label>
-                <MDBBtn size={'sm'} color={'link'} floating tag='a' onClick={handleOnClick}>
-                    <MDBIcon fas icon="chevron-left" color={'dark'}/>
-                </MDBBtn>
-                <MDBBtn size={'sm'} color={'link'} floating tag='a' onClick={handleOnClick}>
-                    <MDBIcon fas icon="chevron-right" color={'dark'}/>
-                </MDBBtn>
+            <MDBPopoverHeader>Replace</MDBPopoverHeader>
+            <MDBPopoverBody>
+                <div style={{display: 'flex', flexDirection: 'row'}}>
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                        <MDBInput ref={findLabelRef} onChange={handleOnChange} onKeyDown={handleKeyDown} type={'text'}/>
+                        <MDBInput ref={replaceLabelRef} type={'text'}/>
+                    </div>
+                    <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'end', marginLeft: '5px'}}>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                            <label style={{display: 'flex', alignItems: 'center'}}
+                                   ref={findPositionLabelRef}>{curFindPosition}/{searched.length}</label>
+                            <MDBBtn size={'sm'} color={'link'} floating tag='a' onClick={handleOnClick}>
+                                <MDBIcon fas icon="chevron-left" color={'dark'}/>
+                            </MDBBtn>
+                            <MDBBtn size={'sm'} color={'link'} floating tag='a' onClick={handleOnClick}>
+                                <MDBIcon fas icon="chevron-right" color={'dark'}/>
+                            </MDBBtn>
+                        </div>
+                        <MDBBtn color={'secondary'} onClick={() => {
+                            if (replaceLabelRef.current.value) {
+                                const row = searched[curFindPosition - 1]?.row
+                                const col = searched[curFindPosition - 1]?.col
+                                props.hotRef.current.setDataAtCell(row, col, props.hotRef.current.getDataAtCell(row, col).replace(findLabelRef.current.value, replaceLabelRef.current.value))
+                            }
+                        }}>replace</MDBBtn>
+                    </div>
+                </div>
             </MDBPopoverBody>
         </MDBPopover>
     </>
 }
 
-export default FindPopover
+export default ReplacePopover

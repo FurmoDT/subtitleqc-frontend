@@ -6,6 +6,7 @@ import {secToTc, tcToSec} from "../../utils/functions";
 import {useRef} from "react";
 import {CgTranscript} from "react-icons/cg";
 import FindPopover from "./dialogs/FindPopover";
+import ReplacePopover from "./dialogs/ReplacePopover";
 
 const TransToolbar = (props) => {
     const subtitleButtonRef = useRef(null)
@@ -98,6 +99,10 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Find'>
             <FindPopover findButtonRef={props.findButtonRef} hotRef={props.hotRef}
                          afterRenderPromise={props.afterRenderPromise}/>
+        </MDBTooltip>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Replace'>
+            <ReplacePopover replaceButtonRef={props.replaceButtonRef} hotRef={props.hotRef}
+                            afterRenderPromise={props.afterRenderPromise}/>
         </MDBTooltip>
     </div>
 };

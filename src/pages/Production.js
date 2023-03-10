@@ -39,6 +39,7 @@ const Production = () => {
     const splitLineButtonRef = useRef(null)
     const mergeLineButtonRef = useRef(null)
     const findButtonRef = useRef(null)
+    const replaceButtonRef = useRef(null)
     const resetSegmentsRef = useRef(null)
     const [tcLock, setTcLock] = useState(false)
     const isFromTimelineWindowRef = useRef(false)
@@ -133,8 +134,8 @@ const Production = () => {
         <MenuToolbar cellDataRef={cellDataRef} fnRef={fnRef} languages={languages} setLanguages={setLanguages}
                      fnLanguages={fnLanguages} setFnLanguages={setFnLanguages} hotRef={hotRef}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
-                     findButtonRef={findButtonRef} tcIoButtonRef={tcIoButtonRef} tcInButtonRef={tcInButtonRef}
-                     tcOutButtonRef={tcOutButtonRef}
+                     findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
+                     tcIoButtonRef={tcIoButtonRef} tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
@@ -161,7 +162,8 @@ const Production = () => {
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
-                                      findButtonRef={findButtonRef} afterRenderPromise={afterRenderPromise}
+                                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
+                                      afterRenderPromise={afterRenderPromise}
                                       languages={languages} setLanguages={setLanguages}
                                       fnLanguages={fnLanguages} setFnLanguages={setFnLanguages}/>
                         <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'}

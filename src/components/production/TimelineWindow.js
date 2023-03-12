@@ -37,7 +37,7 @@ const TimelineWindow = (props) => {
             zoomview: {
                 container: waveformRef.current,
                 waveformColor: 'lightgreen',
-                playedWaveformColor: 'lightgreen',
+                playedWaveformColor: 'green',
                 showPlayheadTime: true,
                 formatPlayheadTime: (seconds) => secToTc(seconds),
                 formatAxisTime: (seconds) => secToTc(seconds),

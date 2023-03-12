@@ -32,7 +32,6 @@ const MediaWindow = (props) => {
                     if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
                     afterRenderPromise().then(() => {
                         setTdColor(subtitleIndexRef.current, true)
-                        // props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'black'})
                     })
                 }
             }
@@ -43,7 +42,6 @@ const MediaWindow = (props) => {
                 curSubtitleIndex = -1
                 if (!props.fnToggle) {
                     setTdColor(subtitleIndexRef.current, false)
-                    // props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'darkgrey'})
                 }
             }
         }
@@ -58,7 +56,6 @@ const MediaWindow = (props) => {
                     if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
                     afterRenderPromise().then(() => {
                         setTdColor(fnIndexRef.current, true)
-                        props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'black'})
                     })
                 }
             }
@@ -69,7 +66,6 @@ const MediaWindow = (props) => {
                 curFnIndex = -1
                 if (props.fnToggle) {
                     setTdColor(fnIndexRef.current, false)
-                    props.waveformRef.current.segments.getSegment(row.rowId).update({color: 'darkgrey'})
                 }
             }
         }

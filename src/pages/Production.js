@@ -149,7 +149,7 @@ const Production = () => {
                             <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
                                          languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
                                          mediaFile={mediaFile} video={video} setVideo={setVideo}
-                                         waveformRef={waveformRef} afterRenderPromise={afterRenderPromise}/>
+                                         afterRenderPromise={afterRenderPromise}/>
                             <InformationWindow/>
                         </Splitter>
                     </div>

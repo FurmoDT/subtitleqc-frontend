@@ -15,11 +15,12 @@ const MenuToolbar = (props) => {
         backgroundColor: 'lightgray'
     }}>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Project Setting'>
-            <ProjectSettingModal/>
+            <ProjectSettingModal projectDetail={props.projectDetail} setProjectDetail={props.setProjectDetail}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
-            <NewProjectModal setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
-                             setFnLanguages={props.setFnLanguages} fnRef={props.fnRef} hotRef={props.hotRef}
+            <NewProjectModal setProjectDetail={props.setProjectDetail} hotRef={props.hotRef}
+                             setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
+                             setFnLanguages={props.setFnLanguages} fnRef={props.fnRef}
                              setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
@@ -38,7 +39,7 @@ const MenuToolbar = (props) => {
             <MDBDropdownMenu>
                 <MDBDropdownItem link onClick={() => {
                     downloadFspx({
-                        name: 'sample',
+                        projectDetail: props.projectDetail,
                         language: props.languages,
                         subtitle: props.cellDataRef.current,
                         fnLanguage: props.fnLanguages,

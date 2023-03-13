@@ -22,6 +22,7 @@ const Production = () => {
     const [mediaFile, setMediaFile] = useState(null)
     const [video, setVideo] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
+    const [projectDetail, setProjectDetail] = useState(localStorage.projectDetail ? localStorage.projectDetail : {})
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
     const cellDataRef = useRef(localStorage.subtitle ? JSON.parse(localStorage.subtitle) : defaultSubtitle())
@@ -133,6 +134,7 @@ const Production = () => {
                          resetSegments={resetSegments}/>
         <MenuToolbar cellDataRef={cellDataRef} fnRef={fnRef} languages={languages} setLanguages={setLanguages}
                      fnLanguages={fnLanguages} setFnLanguages={setFnLanguages} hotRef={hotRef}
+                     projectDetail={projectDetail} setProjectDetail={setProjectDetail}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcIoButtonRef={tcIoButtonRef} tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}

@@ -76,11 +76,14 @@ const MediaWindow = (props) => {
         if (tcToSec(props.cellDataRef.current[subtitleIndexRef.current].start) !== seconds) subtitleIndexRef.current = Math.max(subtitleIndexRef.current - 1, 0)
         if (tcToSec(props.fnRef.current[fnIndexRef.current].start) !== seconds) fnIndexRef.current = Math.max(fnIndexRef.current - 1, 0)
         if (!props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.scrollViewportTo(!props.fnToggle ? subtitleIndexRef.current : fnIndexRef.current, 0)
+        const targetIndex = !props.fnToggle ? subtitleIndexRef.current : fnIndexRef.current
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFnLabel(seconds)
+            props.hotRef.current.render()
+            setTdColor(targetIndex, true)
         })
-    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, setSubtitleLabel, setFnLabel, afterRenderPromise])
+    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, setSubtitleLabel, setFnLabel, afterRenderPromise, setTdColor])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFnLabel(state.playedSeconds)

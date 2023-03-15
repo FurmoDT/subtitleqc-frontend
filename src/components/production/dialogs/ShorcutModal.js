@@ -88,7 +88,7 @@ const ShortcutModal = (props) => {
                     </MDBModalHeader>
                     <MDBModalBody>
                         <h6 className='bg-light p-2 border-top border-bottom'>VIDEO</h6>
-                        <MDBListGroup light small>
+                        <MDBListGroup className={'mb-4'} light small>
                             <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
@@ -101,7 +101,7 @@ const ShortcutModal = (props) => {
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>
-                            <MDBRow style={{paddingBottom: 10}}>
+                            <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
@@ -129,7 +129,7 @@ const ShortcutModal = (props) => {
                             </MDBRow>
                         </MDBListGroup>
                         <h6 className='bg-light p-2 border-top border-bottom'>SUBTITLE</h6>
-                        <MDBListGroup light small>
+                        <MDBListGroup className={'mb-4'} light small>
                             <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
@@ -164,7 +164,7 @@ const ShortcutModal = (props) => {
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>
-                            <MDBRow style={{paddingBottom: 10}}>
+                            <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
@@ -192,7 +192,7 @@ const ShortcutModal = (props) => {
                             </MDBRow>
                         </MDBListGroup>
                         <h6 className='bg-light p-2 border-top border-bottom'>WAVEFORM</h6>
-                        <MDBListGroup light small>
+                        <MDBListGroup className={'mb-4'} light small>
                             <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'

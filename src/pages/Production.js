@@ -22,7 +22,7 @@ const Production = () => {
     const [mediaFile, setMediaFile] = useState(null)
     const [video, setVideo] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const [projectDetail, setProjectDetail] = useState(localStorage.projectDetail ? localStorage.projectDetail : {})
+    const [projectDetail, setProjectDetail] = useState(localStorage.projectDetail ? JSON.parse(localStorage.projectDetail) : {})
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
     const cellDataRef = useRef(localStorage.subtitle ? JSON.parse(localStorage.subtitle) : defaultSubtitle())

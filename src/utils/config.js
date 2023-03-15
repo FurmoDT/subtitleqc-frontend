@@ -18,6 +18,12 @@ export const languageCodes = {
     memo: '메모',
 }
 
+export const clients = {
+    kw: {name: 'KBS WORLD'},
+    kcp: {name: 'KCP'},
+    hybe: {name: 'HYBE'}
+}
+
 export const defaultSubtitle = () => (Array.from({length: 100}, () => ({rowId: v4()})))
 export const defaultLanguage = () => []
 

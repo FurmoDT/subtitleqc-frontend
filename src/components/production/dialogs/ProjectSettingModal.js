@@ -68,7 +68,8 @@ const ProjectSettingModal = (props) => {
                                 </MDBInputGroup>
                             </MDBCol>
                         </MDBRow>
-                        <h6 className='bg-light p-2 border-top border-bottom'>MECHANICAL ERROR</h6>
+                        <h6 className='bg-light p-2 border-top border-bottom'>MECHANICAL RULE</h6>
+                        <h6 className='bg-light p-2 border-top border-bottom'>LANGUAGE TAB</h6>
                     </MDBModalBody>
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleShow}>NO</MDBBtn>

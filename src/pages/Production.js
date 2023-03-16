@@ -7,7 +7,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import Splitter from "m-react-splitters";
 import "../css/Splitter.css"
 import TransToolbar from "../components/production/TransToolbar";
-import {defaultLanguage, defaultSubtitle} from "../utils/config";
+import {defaultLanguage, defaultProjectDetail, defaultSubtitle} from "../utils/config";
 import FileUploadModal from "../components/production/dialogs/FileUploadModal";
 import Dropzone from "../components/production/Dropzone";
 import {createSegment, tcToSec} from "../utils/functions";
@@ -22,7 +22,7 @@ const Production = () => {
     const [mediaFile, setMediaFile] = useState(null)
     const [video, setVideo] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const [projectDetail, setProjectDetail] = useState(localStorage.projectDetail ? JSON.parse(localStorage.projectDetail) : {})
+    const [projectDetail, setProjectDetail] = useState(localStorage.projectDetail ? JSON.parse(localStorage.projectDetail) : defaultProjectDetail())
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
     const cellDataRef = useRef(localStorage.subtitle ? JSON.parse(localStorage.subtitle) : defaultSubtitle())

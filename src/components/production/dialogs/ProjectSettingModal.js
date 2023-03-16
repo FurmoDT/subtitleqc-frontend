@@ -16,6 +16,11 @@ import {
     MDBModalHeader,
     MDBModalTitle,
     MDBRow,
+    MDBTabs,
+    MDBTabsContent,
+    MDBTabsItem,
+    MDBTabsLink,
+    MDBTabsPane,
 } from 'mdb-react-ui-kit';
 import {useEffect, useRef, useState} from "react";
 import {clients} from "../../../utils/config";
@@ -23,26 +28,33 @@ import {clients} from "../../../utils/config";
 const ProjectSettingModal = (props) => {
     const projectNameRef = useRef(null)
     const clientRef = useRef(null)
+    const [projectDetail, setProjectDetail] = useState(props.projectDetail)
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
-    const clientDropdowns = Object.entries(clients).map(([key, value]) => (
-        <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value.name}</MDBDropdownItem>))
-    const handleAddClick = (key, value) => {
-        clientRef.current.value = value.name
+    const [fillActive, setFillActive] = useState(null);
+    const handleFillClick = (value) => {
+        if (value === fillActive) return
+        setFillActive(value)
     }
+    const clientDropdowns = Object.entries(clients).map(([key, value]) => (
+        <MDBDropdownItem link key={key} onClick={() => setProjectDetail({
+            ...projectDetail,
+            guideline: value
+        })}>{value.client}</MDBDropdownItem>))
     useEffect(() => {
         localStorage.setItem('projectDetail', JSON.stringify(props.projectDetail))
     }, [props.projectDetail])
+    useEffect(() => {
+        clientRef.current.value = projectDetail.guideline.client
+    }, [projectDetail])
     return <>
-        <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
-            toggleShow()
-        }}>
+        <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
             <MDBIcon fas icon="info-circle" size={'2x'}/>
         </MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1' staticBackdrop onShow={() => {
-            projectNameRef.current.value = props.projectDetail.name || ''
-            clientRef.current.value = props.projectDetail.client || ''
-        }}>
+            projectNameRef.current.value = projectDetail.name
+            clientRef.current.value = projectDetail.guideline.client
+        }} onHide={() => setProjectDetail(props.projectDetail)}>
             <MDBModalDialog size={'lg'}>
                 <MDBModalContent>
                     <MDBModalHeader>
@@ -53,7 +65,9 @@ const ProjectSettingModal = (props) => {
                         <MDBRow>
                             <MDBCol>
                                 <h6 className='bg-light p-2 border-top border-bottom'>PROJECT NAME</h6>
-                                <MDBInput ref={projectNameRef} type='text'/>
+                                <MDBInput onInput={() => {
+                                    setProjectDetail({...projectDetail, name: projectNameRef.current.value})
+                                }} ref={projectNameRef} type='text'/>
                             </MDBCol>
                             <MDBCol>
                                 <h6 className='bg-light p-2 border-top border-bottom'>CLIENT</h6>
@@ -61,7 +75,7 @@ const ProjectSettingModal = (props) => {
                                     <input ref={clientRef} className='form-control' type='text' disabled/>
                                     <MDBDropdown>
                                         <MDBDropdownToggle color={'link'} style={{height: '100%'}}/>
-                                        <MDBDropdownMenu>
+                                        <MDBDropdownMenu responsive={'end'}>
                                             {clientDropdowns}
                                         </MDBDropdownMenu>
                                     </MDBDropdown>
@@ -69,16 +83,26 @@ const ProjectSettingModal = (props) => {
                             </MDBCol>
                         </MDBRow>
                         <h6 className='bg-light p-2 border-top border-bottom'>MECHANICAL RULE</h6>
-                        <h6 className='bg-light p-2 border-top border-bottom'>LANGUAGE TAB</h6>
+                        <MDBTabs fill className='mb-3'>
+                            {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
+                                return <MDBTabsItem key={key}><MDBTabsLink onClick={() => handleFillClick(key)}
+                                                                           active={fillActive === key}>{value.name}
+                                </MDBTabsLink></MDBTabsItem>
+                            })}
+                        </MDBTabs>
+                        <MDBTabsContent>
+                            {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
+                                return <MDBTabsPane key={key} show={fillActive === key}>{value.name}</MDBTabsPane>
+                            })}
+                        </MDBTabsContent>
                     </MDBModalBody>
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleShow}>NO</MDBBtn>
                         <MDBBtn onClick={() => {
                             props.setProjectDetail({
                                 ...props.projectDetail,
-                                name: projectNameRef.current.value,
-                                client: clientRef.current.value,
-                                guideline: {}
+                                name: projectDetail.name,
+                                guideline: projectDetail.guideline
                             })
                             toggleShow()
                         }}>YES</MDBBtn>

@@ -10,7 +10,7 @@ import {
     MDBModalHeader,
     MDBModalTitle,
 } from 'mdb-react-ui-kit';
-import {defaultLanguage, defaultSubtitle} from "../../../utils/config";
+import {defaultLanguage, defaultProjectDetail, defaultSubtitle} from "../../../utils/config";
 
 const NewProjectModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
@@ -31,7 +31,7 @@ const NewProjectModal = (props) => {
                         <MDBBtn color='secondary' onClick={toggleShow}>NO</MDBBtn>
                         <MDBBtn onClick={() => {
                             Promise.all([
-                                props.setProjectDetail({}),
+                                props.setProjectDetail(defaultProjectDetail()),
                                 props.cellDataRef.current = defaultSubtitle(),
                                 props.fnRef.current = defaultSubtitle(),
                                 props.setLanguages(defaultLanguage()),

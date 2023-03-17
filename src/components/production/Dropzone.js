@@ -50,8 +50,8 @@ const Dropzone = (props) => {
                 reader.onload = () => {
                     let binaryStr = new ArrayBuffer(0)
                     binaryStr = reader.result
-                    languageEncoding(file).then((fileInfo) => {
-                        const decoder = new TextDecoder(fileInfo.encoding);
+                    languageEncoding(file, {fallbackEncoding: null}).then((fileInfo) => {
+                        const decoder = new TextDecoder(fileInfo.encoding || 'UTF-8');
                         const str = decoder.decode(binaryStr)
                         const languages = !props.fnToggleRef.current ? props.languages : props.fnLanguages
                         if (file.name.endsWith('.fsp')) {

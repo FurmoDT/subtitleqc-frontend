@@ -46,6 +46,7 @@ const ProjectSettingModal = (props) => {
     }, [props.projectDetail])
     useEffect(() => {
         clientRef.current.value = projectDetail.guideline.client
+        setFillActive(Object.keys(projectDetail.guideline.language)[0])
     }, [projectDetail])
     return <>
         <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>

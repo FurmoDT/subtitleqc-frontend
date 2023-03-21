@@ -93,13 +93,13 @@ const ProjectSettingModal = (props) => {
                     <MDBModalBody>
                         <MDBRow>
                             <MDBCol>
-                                <h6 className='bg-light p-2 border-top border-bottom'>PROJECT NAME</h6>
+                                <h6 className='bg-light p-2 border-top border-bottom'>Project Name</h6>
                                 <MDBInput onInput={() => {
                                     setProjectDetail({...projectDetail, name: projectNameRef.current.value})
                                 }} ref={projectNameRef} type='text'/>
                             </MDBCol>
                             <MDBCol>
-                                <h6 className='bg-light p-2 border-top border-bottom'>CLIENT</h6>
+                                <h6 className='bg-light p-2 border-top border-bottom'>Client</h6>
                                 <MDBInputGroup className='mb-3'>
                                     <input ref={clientRef} className='form-control' type='text' disabled/>
                                     <MDBDropdown>
@@ -111,7 +111,8 @@ const ProjectSettingModal = (props) => {
                                 </MDBInputGroup>
                             </MDBCol>
                         </MDBRow>
-                        <h6 className='bg-light p-2 border-top border-bottom'>MECHANICAL RULE</h6>
+                        <h6 className='bg-light p-2 border-top border-bottom'>Mechanical Rule{<span
+                            style={{float: "right"}}>None&emsp;-&emsp;Optional&emsp;-&emsp;Required</span>}</h6>
                         <MDBTabs fill className='mb-3'>
                             {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
                                 return <MDBTabsItem key={key}><MDBTabsLink onClick={() => handleFillClick(key)}

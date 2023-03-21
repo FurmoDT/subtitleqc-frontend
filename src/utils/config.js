@@ -22,33 +22,43 @@ export const guidelines = [
     {
         client: 'KBS WORLD',
         language: {
-            en: {name: '영어', maxLine: 1, maxCharacter: 55, cps: 30},
-            zh: {name: '중국어', maxLine: 1, maxCharacter: 18, cps: 30}
+            en: {
+                name: '영어',
+                maxLine: {value: 1, level: 'required'},
+                maxCharacter: {value: 55, level: 'required'},
+                cps: {value: 30, level: 'optional'}
+            },
+            zh: {
+                name: '중국어',
+                maxLine: {value: 1, level: 'required'},
+                maxCharacter: {value: 18, level: 'required'},
+                cps: {value: 30, level: 'optional'}
+            }
         }
     },
     {
         client: 'KCP',
         language: {
-            en: {name: '영어', maxLine: 2, maxCharacter: 42}
+            en: {name: '영어', maxLine: {value: 2, level: 'required'}, maxCharacter: {value: 42, level: 'required'}}
         }
     },
     {
         client: 'HYBE',
         language: {
-            en: {name: '영어', maxLine: 4},
-            zh: {name: '중국어', maxLine: 4, maxCharacter: 20},
-            jp: {name: '일어', maxLine: 4, maxCharacter: 16},
-            es: {name: '스페인어', maxLine: 4, maxCharacter: 42}
+            en: {name: '영어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 42, level: 'required'}},
+            zh: {name: '중국어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 20, level: 'required'}},
+            jp: {name: '일어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 16, level: 'required'}},
+            es: {name: '스페인어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 42, level: 'required'}}
         }
     },
     {
         client: 'YG',
         language: {
-            zh: {name: '중국어', maxLine: 4, maxCharacter: 18},
-            jp: {name: '일어', maxLine: 4, maxCharacter: 24},
-            es: {name: '스페인어', maxLine: 4, maxCharacter: 45},
-            th: {name: '태국어', maxLine: 4, maxCharacter: 45},
-            id: {name: '인니어', maxLine: 4, maxCharacter: 45}
+            zh: {name: '중국어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 18, level: 'required'}},
+            jp: {name: '일어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 24, level: 'required'}},
+            es: {name: '스페인어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}},
+            th: {name: '태국어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}},
+            id: {name: '인니어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}}
         }
     },
     {

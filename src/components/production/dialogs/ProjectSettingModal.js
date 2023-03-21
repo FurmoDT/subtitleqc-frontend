@@ -23,7 +23,7 @@ import {
     MDBTabsPane,
 } from 'mdb-react-ui-kit';
 import {useEffect, useRef, useState} from "react";
-import {clients} from "../../../utils/config";
+import {guidelines} from "../../../utils/config";
 
 const ProjectSettingModal = (props) => {
     const projectNameRef = useRef(null)
@@ -36,26 +36,54 @@ const ProjectSettingModal = (props) => {
         if (value === fillActive) return
         setFillActive(value)
     }
-    const clientDropdowns = Object.entries(clients).map(([key, value]) => (
-        <MDBDropdownItem link key={key} onClick={() => setProjectDetail({
+    const clientDropdowns = Object.entries(guidelines).map(([key, value]) => (
+        <MDBDropdownItem link key={key} onClick={() => {
+            setFillActive(null)
+            setProjectDetail({
+                ...projectDetail,
+                guideline: value
+            })
+        }}>{value.client}</MDBDropdownItem>))
+    const handleSettingChange = (language, key, value) => {
+        setProjectDetail({
             ...projectDetail,
-            guideline: value
-        })}>{value.client}</MDBDropdownItem>))
+            guideline: {
+                ...projectDetail.guideline,
+                language: {
+                    ...projectDetail.guideline.language,
+                    [language]: {
+                        ...projectDetail.guideline.language[language],
+                        [key]: value
+                    }
+                }
+            }
+        })
+    }
     useEffect(() => {
+        setProjectDetail(props.projectDetail)
         localStorage.setItem('projectDetail', JSON.stringify(props.projectDetail))
     }, [props.projectDetail])
     useEffect(() => {
+        projectNameRef.current.value = projectDetail.name
         clientRef.current.value = projectDetail.guideline.client
-        setFillActive(Object.keys(projectDetail.guideline.language)[0])
-    }, [projectDetail])
+        if (basicModal) {
+            if (fillActive === null) setFillActive(Object.keys(projectDetail.guideline.language)[0])
+            if (fillActive) {
+                document.getElementById('maxLineInput').value = projectDetail.guideline.language[fillActive].maxLine
+                document.getElementById('maxCharacterInput').value = projectDetail.guideline.language[fillActive].maxCharacter
+                document.getElementById('cpsInput').value = projectDetail.guideline.language[fillActive].cps
+            }
+        }
+    }, [projectDetail, basicModal, fillActive])
     return <>
         <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
             <MDBIcon fas icon="info-circle" size={'2x'}/>
         </MDBBtn>
-        <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1' staticBackdrop onShow={() => {
-            projectNameRef.current.value = projectDetail.name
-            clientRef.current.value = projectDetail.guideline.client
-        }} onHide={() => setProjectDetail(props.projectDetail)}>
+        <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1' staticBackdrop
+                  onHide={() => {
+                      setFillActive(null)
+                      setProjectDetail(props.projectDetail)
+                  }}>
             <MDBModalDialog size={'lg'}>
                 <MDBModalContent>
                     <MDBModalHeader>
@@ -92,9 +120,31 @@ const ProjectSettingModal = (props) => {
                             })}
                         </MDBTabs>
                         <MDBTabsContent>
-                            {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
-                                return <MDBTabsPane key={key} show={fillActive === key}>{value.name}</MDBTabsPane>
-                            })}
+                            {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => (
+                                <MDBTabsPane key={key} show={fillActive === key}>
+                                    <div>
+                                        <MDBRow className={'mb-4'}>
+                                            <MDBCol>
+                                                <MDBInput id={'maxLineInput'} label='MaxLine' type='number'
+                                                          defaultValue={value.maxLine}
+                                                          onChange={(event) => handleSettingChange(key, 'maxLine', parseInt(event.target.value))}/>
+                                            </MDBCol>
+                                            <MDBCol>
+                                                <MDBInput id={'maxCharacterInput'} label='MaxCharacter' type='number'
+                                                          defaultValue={value.maxCharacter}
+                                                          onChange={(event) => handleSettingChange(key, 'maxCharacter', parseInt(event.target.value))}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow className={'mb-4'}>
+                                            <MDBCol size={3}>
+                                                <MDBInput id={'cpsInput'} label='CPS' type='number'
+                                                          defaultValue={value.cps}
+                                                          onChange={(event) => handleSettingChange(key, 'cps', parseInt(event.target.value))}/>
+                                            </MDBCol>
+                                        </MDBRow>
+                                    </div>
+                                </MDBTabsPane>
+                            ))}
                         </MDBTabsContent>
                     </MDBModalBody>
                     <MDBModalFooter>

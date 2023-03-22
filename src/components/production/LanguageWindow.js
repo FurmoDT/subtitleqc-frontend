@@ -11,6 +11,16 @@ const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98
 
 const LanguageWindow = (props) => {
     const containerMain = useRef(null);
+    const getSelectedPairs = (rangeArray) => {
+        const allPairs = []
+        for (const range of rangeArray) {
+            const [startRow, startCol, endRow, endCol] = range
+            for (let row = startRow; row <= endRow; row++) {
+                for (let col = startCol; col <= endCol; col++) allPairs.push([row, col])
+            }
+        }
+        return allPairs
+    }
 
     useEffect(() => {
         props.hotRef.current?.destroy()
@@ -54,7 +64,33 @@ const LanguageWindow = (props) => {
             width: props.size.width,
             height: props.size.languageWindowHeight,
             minSpareRows: 2,
-            contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo', '---------', 'make_read_only', '---------', 'cut', 'copy'],
+            contextMenu: {
+                items: {
+                    row_above: {},
+                    row_below: {},
+                    remove_row: {},
+                    separator: Handsontable.plugins.ContextMenu.SEPARATOR,
+                    undo: {},
+                    redo: {},
+                    separator2: Handsontable.plugins.ContextMenu.SEPARATOR,
+                    make_read_only: {},
+                    italic: {
+                        name: 'Italic', callback: () => {
+                            const newData = getSelectedPairs(props.hotRef.current.getSelected()).map(value => [...value, `<i>${props.hotRef.current.getDataAtCell(...value)}</i>`])
+                            props.hotRef.current.setDataAtCell(newData)
+                        },
+                    },
+                    music_note: {
+                        name: 'Music Note', callback: () => {
+                            const newData = getSelectedPairs(props.hotRef.current.getSelected()).map(value => [...value, `♪ ${props.hotRef.current.getDataAtCell(...value)} ♪`])
+                            props.hotRef.current.setDataAtCell(newData)
+                        }
+                    },
+                    separator3: Handsontable.plugins.ContextMenu.SEPARATOR,
+                    cut: {},
+                    copy: {}
+                }
+            },
         })
         let grammarlyPlugin = null
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {

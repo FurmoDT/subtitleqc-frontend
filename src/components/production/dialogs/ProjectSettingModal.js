@@ -128,7 +128,8 @@ const ProjectSettingModal = (props) => {
                                     <input id={'tcRangeMinInput'} className='form-control'
                                            type='text' placeholder={'Min'} style={{textAlign: 'center'}}
                                            onChange={(event) => handleGuidelineChange('tcRange', {min: parseInt(event.target.value)}, null)}/>
-                                    <span className='input-group-text mx-n1'>TC</span>
+                                    <span style={{alignItems: 'center', fontSize: '15px'}}
+                                          className='input-group-text mx-n1'>TC</span>
                                     <input id={'tcRangeMaxInput'} className='form-control'
                                            type='text' placeholder={'Max'} style={{textAlign: 'center'}}
                                            onChange={(event) => handleGuidelineChange('tcRange', {max: parseInt(event.target.value)}, null)}/>
@@ -139,6 +140,7 @@ const ProjectSettingModal = (props) => {
                                           onChange={(event) => handleGuidelineChange('tcRange', null, parseInt(event.target.value))}/>
                             </MDBCol>
                         </MDBRow>
+                        <h6 className='border-1 border'></h6>
                         <MDBTabs fill className='mb-3'>
                             {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
                                 return <MDBTabsItem key={key}><MDBTabsLink onClick={() => handleFillClick(key)}

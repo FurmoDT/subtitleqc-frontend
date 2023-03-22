@@ -82,6 +82,14 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                 }
             })
         }
+        if (v.includes('  ')) { // multiple spaces
+            setTDColor(td, 'red')
+            error.add('Multiple Spaces')
+        }
+        if (/(^|[^.])\.{2}(?!\.)/.test(v) || /(^|[^.])\.{4,}(?!\.)/.test(v)) { // 2 or 4+ dots
+            setTDColor(td, 'red')
+            error.add('2 Or 4+ Dots')
+        }
         if (error.size) td.setAttribute('title', [...error].join('\n'))
     }
     label.style.position = 'absolute'

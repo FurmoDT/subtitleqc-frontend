@@ -13,13 +13,15 @@ export const tcInValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.fontSize = fontSize
     if (v) {
         const error = new Set()
-        if (tcToSec(instance.getDataAtCell(r, c + 1)) - tcToSec(v) < guideline.tcRange?.min) {
-            setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
-            error.add('TC Range Under 1 Second')
-        }
-        if (tcToSec(instance.getDataAtCell(r, c + 1)) - tcToSec(v) > guideline.tcRange?.max) {
-            setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
-            error.add('TC Range Over 7 Seconds')
+        if (guideline.tcRange?.level !== 'none') {
+            if (tcToSec(instance.getDataAtCell(r, c + 1)) - tcToSec(v) < guideline.tcRange?.min) {
+                setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
+                error.add('TC Range Under 1 Second')
+            }
+            if (tcToSec(instance.getDataAtCell(r, c + 1)) - tcToSec(v) > guideline.tcRange?.max) {
+                setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
+                error.add('TC Range Over 7 Seconds')
+            }
         }
         if (!isTCValid(v)) {
             setTDColor(td, 'red')
@@ -37,13 +39,15 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.fontSize = fontSize
     if (v) {
         const error = new Set()
-        if (tcToSec(v) - tcToSec(instance.getDataAtCell(r, c - 1)) < guideline.tcRange?.min) {
-            setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
-            error.add('TC Range Under 1 Second')
-        }
-        if (tcToSec(v) - tcToSec(instance.getDataAtCell(r, c - 1)) > guideline.tcRange?.max) {
-            setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
-            error.add('TC Range Over 7 Seconds')
+        if (guideline.tcRange?.level !== 'none') {
+            if (tcToSec(v) - tcToSec(instance.getDataAtCell(r, c - 1)) < guideline.tcRange?.min) {
+                setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
+                error.add('TC Range Under 1 Second')
+            }
+            if (tcToSec(v) - tcToSec(instance.getDataAtCell(r, c - 1)) > guideline.tcRange?.max) {
+                setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
+                error.add('TC Range Over 7 Seconds')
+            }
         }
         if (!isTCValid(v)) {
             setTDColor(td, 'red')

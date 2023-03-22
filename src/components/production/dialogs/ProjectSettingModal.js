@@ -50,7 +50,7 @@ const ProjectSettingModal = (props) => {
     const handleSettingChange = (language, key, value, level) => {
         const newProjectDetail = JSON.parse(JSON.stringify(projectDetail))
         if (!newProjectDetail.guideline.language[language][key]) newProjectDetail.guideline.language[language][key] = {}
-        if (value) newProjectDetail.guideline.language[language][key].value = value
+        if (value) Object.assign(newProjectDetail.guideline.language[language][key], value)
         if (level !== null) newProjectDetail.guideline.language[language][key].level = LEVEL[level]
         setProjectDetail(newProjectDetail)
     }
@@ -70,6 +70,9 @@ const ProjectSettingModal = (props) => {
                 document.getElementById(`${fillActive}-maxCharacterRange`).value = LEVEL[projectDetail.guideline.language[fillActive].maxCharacter?.level]
                 document.getElementById(`${fillActive}-cpsInput`).value = projectDetail.guideline.language[fillActive].cps?.value || 0
                 document.getElementById(`${fillActive}-cpsRange`).value = LEVEL[projectDetail.guideline.language[fillActive].cps?.level]
+                document.getElementById(`${fillActive}-tcRangeMinInput`).value = projectDetail.guideline.language[fillActive].tcRange?.min || null
+                document.getElementById(`${fillActive}-tcRangeMaxInput`).value = projectDetail.guideline.language[fillActive].tcRange?.max || null
+                document.getElementById(`${fillActive}-tcRangeRange`).value = LEVEL[projectDetail.guideline.language[fillActive].tcRange?.level]
             }
         }
     }, [projectDetail, basicModal, fillActive])
@@ -126,9 +129,9 @@ const ProjectSettingModal = (props) => {
                                             <MDBInput id={`${key}-maxLineInput`} label='MaxLine' type='number'
                                                       disabled={projectDetail.guideline.client !== 'CUSTOM'}
                                                       defaultValue={0}
-                                                      onChange={(event) => handleSettingChange(key, 'maxLine', parseInt(event.target.value), null)}/>
+                                                      onChange={(event) => handleSettingChange(key, 'maxLine', {value: parseInt(event.target.value)}, null)}/>
                                             <MDBRange id={`${key}-maxLineRange`} className={'mx-sm-2'}
-                                                      style={{display: 'flex', alignItems: 'center'}}
+                                                      style={{display: 'flex'}}
                                                       disabled={projectDetail.guideline.client !== 'CUSTOM'}
                                                       disableTooltip={true} min={0} max={2} step={1}
                                                       onChange={(event) => handleSettingChange(key, 'maxLine', null, parseInt(event.target.value))}/>
@@ -137,9 +140,9 @@ const ProjectSettingModal = (props) => {
                                             <MDBInput id={`${key}-maxCharacterInput`} label='MaxCharacter' type='number'
                                                       disabled={projectDetail.guideline.client !== 'CUSTOM'}
                                                       defaultValue={0}
-                                                      onChange={(event) => handleSettingChange(key, 'maxCharacter', parseInt(event.target.value), null)}/>
+                                                      onChange={(event) => handleSettingChange(key, 'maxCharacter', {value: parseInt(event.target.value)}, null)}/>
                                             <MDBRange id={`${key}-maxCharacterRange`} className={'mx-sm-2'}
-                                                      style={{display: 'flex', alignItems: 'center'}}
+                                                      style={{display: 'flex'}}
                                                       disabled={projectDetail.guideline.client !== 'CUSTOM'}
                                                       disableTooltip={true} min={0} max={2} step={1}
                                                       onChange={(event) => handleSettingChange(key, 'maxCharacter', null, parseInt(event.target.value))}/>
@@ -147,14 +150,30 @@ const ProjectSettingModal = (props) => {
                                         <MDBCol style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                                             <MDBInput id={`${key}-cpsInput`} label='CPS' type='number'
                                                       defaultValue={0}
-                                                      onChange={(event) => handleSettingChange(key, 'cps', parseInt(event.target.value), null)}/>
+                                                      onChange={(event) => handleSettingChange(key, 'cps', {value: parseInt(event.target.value)}, null)}/>
                                             <MDBRange id={`${key}-cpsRange`} className={'mx-sm-2'}
-                                                      style={{display: 'flex', alignItems: 'center'}}
+                                                      style={{display: 'flex'}}
                                                       disableTooltip={true} min={0} max={2} step={1}
                                                       onChange={(event) => handleSettingChange(key, 'cps', null, parseInt(event.target.value))}/>
                                         </MDBCol>
                                     </MDBRow>
                                     <MDBRow className={'mb-4'}>
+                                        <MDBCol style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}
+                                                size={4}>
+                                            <MDBInputGroup>
+                                                <input id={`${key}-tcRangeMinInput`} className='form-control'
+                                                       type='text' placeholder={'Min'} style={{textAlign: 'center'}}
+                                                       onChange={(event) => handleSettingChange(key, 'tcRange', {min: parseInt(event.target.value)}, null)}/>
+                                                <span className='input-group-text mx-n1'>TC</span>
+                                                <input id={`${key}-tcRangeMaxInput`} className='form-control'
+                                                       type='text' placeholder={'Max'} style={{textAlign: 'center'}}
+                                                       onChange={(event) => handleSettingChange(key, 'tcRange', {max: parseInt(event.target.value)}, null)}/>
+                                            </MDBInputGroup>
+                                            <MDBRange id={`${key}-tcRangeRange`} className={'mx-sm-2'}
+                                                      style={{display: 'flex'}}
+                                                      disableTooltip={true} min={0} max={2} step={1}
+                                                      onChange={(event) => handleSettingChange(key, 'tcRange', null, parseInt(event.target.value))}/>
+                                        </MDBCol>
                                     </MDBRow>
                                 </MDBTabsPane>
                             ))}

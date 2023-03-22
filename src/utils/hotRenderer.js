@@ -61,11 +61,29 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
     }
 }
 
-export const textValidator = (r, c, v, td, fontSize, guideline) => {
+export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.position = 'relative'
     td.style.paddingRight = '75px'
     const label = document.createElement('label');
-    if (v) td.innerHTML = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</label>`
+    if (v) {
+        td.innerHTML = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</label>`
+        v = v.replaceAll(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '').replaceAll(/{(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+}/g, '')
+        const error = new Set()
+        const language = guideline.language[instance.colToProp(c).slice(0, 2)]
+        if (language) {
+            if (language.maxLine && v.split('\n').length > language.maxLine.value) {
+                setTDColor(td, language.maxLine.level === 'required' ? 'red' : 'yellow')
+                error.add('Max Lines Exceeded')
+            }
+            v.split('\n').forEach((value) => {
+                if (language.maxCharacter && value.length > language.maxCharacter.value) {
+                    setTDColor(td, language.maxCharacter.level === 'required' ? 'red' : 'yellow')
+                    error.add('Max Characters Exceeded')
+                }
+            })
+        }
+        if (error.size) td.setAttribute('title', [...error].join('\n'))
+    }
     label.style.position = 'absolute'
     label.style.top = 0
     label.style.right = 0

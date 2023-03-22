@@ -27,7 +27,7 @@ const LanguageWindow = (props) => {
 
         function textRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, props.guideline)
+            textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
         props.hotRef.current = new Handsontable(containerMain.current, {

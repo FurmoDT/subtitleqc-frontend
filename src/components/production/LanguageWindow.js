@@ -17,17 +17,17 @@ const LanguageWindow = (props) => {
 
         function tcInRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            tcInValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance)
+            tcInValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
         function tcOutRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            tcOutValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance)
+            tcOutValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
         function textRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize)
+            textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, props.guideline)
         }
 
         props.hotRef.current = new Handsontable(containerMain.current, {
@@ -135,7 +135,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLock, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLock, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.guideline])
 
     return <div ref={containerMain}/>
 }

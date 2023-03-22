@@ -181,6 +181,7 @@ const Production = () => {
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
                                             waveformRef={waveformRef} fnToggle={fnToggle}
                                             cellDataRef={cellDataRef} languages={languages}
+                                            guideline={projectDetail.guideline}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}
                                             fnRef={fnRef} fnLanguages={fnLanguages}/>
                             <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}

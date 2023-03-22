@@ -38,12 +38,12 @@ export const guidelines = [
     },
     {
         client: 'KCP',
+        tcRange: {min: 1, max: 7, level: 'optional'},
         language: {
             en: {
                 name: '영어',
                 maxLine: {value: 2, level: 'required'},
-                maxCharacter: {value: 42, level: 'required'},
-                tcRange: {min: 1, max: 7, level: 'optional'}
+                maxCharacter: {value: 42, level: 'required'}
             }
         }
     },

@@ -26,13 +26,15 @@ export const guidelines = [
                 name: '영어',
                 maxLine: {value: 1, level: 'required'},
                 maxCharacter: {value: 55, level: 'required'},
-                cps: {value: 30, level: 'optional'}
+                cps: {value: 30, level: 'optional'},
+                parenthesis: {regex: '^\\([^()]*\\)$'}
             },
             zh: {
                 name: '중국어',
                 maxLine: {value: 1, level: 'required'},
                 maxCharacter: {value: 18, level: 'required'},
-                cps: {value: 30, level: 'optional'}
+                cps: {value: 30, level: 'optional'},
+                parenthesis: {regex: '^（[^（）]*）$'}
             }
         },
         musicNote: '♪'
@@ -43,7 +45,8 @@ export const guidelines = [
             en: {
                 name: '영어',
                 maxLine: {value: 2, level: 'required'},
-                maxCharacter: {value: 42, level: 'required'}
+                maxCharacter: {value: 42, level: 'required'},
+                parenthesis: {regex: '^\\([^()]*\\)$'}
             }
         },
         tcRange: {min: 1, max: 7, level: 'optional'},
@@ -52,21 +55,66 @@ export const guidelines = [
     {
         client: 'HYBE',
         language: {
-            en: {name: '영어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 42, level: 'required'}},
-            zh: {name: '중국어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 20, level: 'required'}},
-            jp: {name: '일어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 16, level: 'required'}},
-            es: {name: '스페인어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 42, level: 'required'}}
+            en: {
+                name: '영어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 42, level: 'required'},
+                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
+            },
+            zh: {
+                name: '중국어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 20, level: 'required'},
+                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
+            },
+            jp: {
+                name: '일어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 16, level: 'required'},
+                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
+            },
+            es: {
+                name: '스페인어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 42, level: 'required'},
+                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
+            }
         },
         musicNote: '♪'
     },
     {
         client: 'YG',
         language: {
-            zh: {name: '중국어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 18, level: 'required'}},
-            jp: {name: '일어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 24, level: 'required'}},
-            es: {name: '스페인어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}},
-            th: {name: '태국어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}},
-            id: {name: '인니어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}}
+            zh: {
+                name: '중국어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 18, level: 'required'},
+                parenthesis: {regex: '^（[^（）]*）$'}
+            },
+            jp: {
+                name: '일어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 24, level: 'required'},
+                parenthesis: {regex: '^\\([^()]*\\)$'}
+            },
+            es: {
+                name: '스페인어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 45, level: 'required'},
+                parenthesis: {regex: '^\\([^()]*\\)$'}
+            },
+            th: {
+                name: '태국어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 45, level: 'required'},
+                parenthesis: {regex: '^\\([^()]*\\)$'}
+            },
+            id: {
+                name: '인니어',
+                maxLine: {value: 4, level: 'required'},
+                maxCharacter: {value: 45, level: 'required'},
+                parenthesis: {regex: '^\\([^()]*\\)$'}
+            }
         },
         musicNote: '♪'
     },

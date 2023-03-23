@@ -66,7 +66,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
         const error = new Set()
         if (guideline.musicNote && (v.includes('♪') || v.includes('<') || v.includes('>'))) {
             let valid = true
-            if (v.match(/^♪ \S+(?:\s+\S+)* ♪$/)) {
+            if (v.match(/^♪ [^♪\s]+(?:\s+[^♪\s]+)* ♪$/)) {
                 if (guideline.musicNote === 'italic') valid = false
             } else if (v.match(/^<i>\S+(?:\s+\S+)*<\/i>$/)) {
                 if (guideline.musicNote === '♪') valid = false
@@ -89,6 +89,12 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     error.add('Max Characters Exceeded')
                 }
             })
+            if (language.parenthesis && /[()\[\]（）]/.test(v)) {
+                if (!v.match(language.parenthesis.regex)) {
+                    setTDColor(td, 'red')
+                    error.add('Parenthesis Error')
+                }
+            }
         }
         // if (v.includes('  ')) { // multiple spaces
         //     setTDColor(td, 'red')

@@ -1,4 +1,5 @@
 import {
+    MDBBadge,
     MDBBtn,
     MDBCol,
     MDBDropdown,
@@ -121,9 +122,8 @@ const ProjectSettingModal = (props) => {
                         </MDBRow>
                         <h6 className='bg-light p-2 border-top border-bottom'>Mechanical Rule{<span
                             style={{float: "right"}}>None&emsp;-&emsp;Optional&emsp;-&emsp;Required</span>}</h6>
-                        <MDBRow className={'mb-4'}>
-                            <MDBCol style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}
-                                    size={4}>
+                        <MDBRow className={'mb-2'}>
+                            <MDBCol style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}} size={4}>
                                 <MDBInputGroup>
                                     <input id={'tcRangeMinInput'} className='form-control'
                                            type='text' placeholder={'Min'} style={{textAlign: 'center'}}
@@ -139,8 +139,16 @@ const ProjectSettingModal = (props) => {
                                           disableTooltip={true} min={0} max={2} step={1}
                                           onChange={(event) => handleGuidelineChange('tcRange', null, parseInt(event.target.value))}/>
                             </MDBCol>
+                            <MDBCol style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}} size={8}>
+                                <div className={'px-2 py-1 bg-info bg-opacity-25 rounded'}
+                                     style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                    <h5 style={{margin: 0}}><MDBBadge color={'info'}>Music</MDBBadge></h5>
+                                    <h6 className='mx-2' style={{margin: 0}}><b>{projectDetail.guideline.musicNote}</b>
+                                    </h6>
+                                </div>
+                            </MDBCol>
                         </MDBRow>
-                        <h6 className='border-1 border'></h6>
+                        <p className='border-1 border' />
                         <MDBTabs fill className='mb-3'>
                             {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
                                 return <MDBTabsItem key={key}><MDBTabsLink onClick={() => handleFillClick(key)}
@@ -182,6 +190,17 @@ const ProjectSettingModal = (props) => {
                                                       style={{display: 'flex'}}
                                                       disableTooltip={true} min={0} max={2} step={1}
                                                       onChange={(event) => handleLanguageGuidelineChange(key, 'cps', null, parseInt(event.target.value))}/>
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBRow className={'mb-2'}>
+                                        <MDBCol style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}} size={4}>
+                                            <div className={'px-2 py-1 bg-info bg-opacity-25 rounded'}
+                                                 style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                                <h5 style={{margin: 0}}><MDBBadge color={'info'}>Parenthesis</MDBBadge></h5>
+                                                <h6 className='mx-2' style={{margin: 0}}><b>{
+                                                    ['()', '[]', '（）'].filter(value => value.match(projectDetail.guideline.language[key].parenthesis?.regex))
+                                                }</b></h6>
+                                            </div>
                                         </MDBCol>
                                     </MDBRow>
                                 </MDBTabsPane>

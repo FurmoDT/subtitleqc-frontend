@@ -1,5 +1,7 @@
 import {tcToSec} from "./functions";
 
+const LEVEL = {required: 'red', optional: 'yellow', none: null}
+
 const setTDColor = (td, backgroundColor) => {
     td.style.backgroundColor = backgroundColor
     if (backgroundColor === 'red') td.style.color = 'white'
@@ -13,21 +15,17 @@ export const tcInValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.fontSize = fontSize
     if (v) {
         const error = new Set()
-        if (guideline.tcRange?.level !== 'none') {
+        if (LEVEL[guideline.tcRange?.level]) {
             if (tcToSec(instance.getDataAtCell(r, c + 1)) - tcToSec(v) < guideline.tcRange?.min) {
-                setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
+                setTDColor(td, LEVEL[guideline.tcRange.level])
                 error.add('TC Range Under 1 Second')
             }
             if (tcToSec(instance.getDataAtCell(r, c + 1)) - tcToSec(v) > guideline.tcRange?.max) {
-                setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
+                setTDColor(td, LEVEL[guideline.tcRange.level])
                 error.add('TC Range Over 7 Seconds')
             }
         }
-        if (!isTCValid(v)) {
-            setTDColor(td, 'red')
-            error.add('Invalid TC')
-        }
-        if (tcToSec(instance.getDataAtCell(r - 1, c + 1)) > tcToSec(v)) {
+        if (!isTCValid(v) || tcToSec(instance.getDataAtCell(r - 1, c + 1)) > tcToSec(v)) {
             setTDColor(td, 'red')
             error.add('Invalid TC')
         }
@@ -39,21 +37,17 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.fontSize = fontSize
     if (v) {
         const error = new Set()
-        if (guideline.tcRange?.level !== 'none') {
+        if (LEVEL[guideline.tcRange?.level]) {
             if (tcToSec(v) - tcToSec(instance.getDataAtCell(r, c - 1)) < guideline.tcRange?.min) {
-                setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
+                setTDColor(td, LEVEL[guideline.tcRange.level])
                 error.add('TC Range Under 1 Second')
             }
             if (tcToSec(v) - tcToSec(instance.getDataAtCell(r, c - 1)) > guideline.tcRange?.max) {
-                setTDColor(td, guideline.tcRange.level === 'required' ? 'red' : 'yellow')
+                setTDColor(td, LEVEL[guideline.tcRange.level])
                 error.add('TC Range Over 7 Seconds')
             }
         }
-        if (!isTCValid(v)) {
-            setTDColor(td, 'red')
-            error.add('Invalid TC')
-        }
-        if (tcToSec(instance.getDataAtCell(r, c - 1)) > tcToSec(v)) {
+        if (!isTCValid(v) || tcToSec(instance.getDataAtCell(r, c - 1)) > tcToSec(v)) {
             setTDColor(td, 'red')
             error.add('Invalid TC')
         }
@@ -81,15 +75,16 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     error.add('Max Characters Exceeded')
                 }
             })
+            console.log(language)
         }
-        if (v.includes('  ')) { // multiple spaces
-            setTDColor(td, 'red')
-            error.add('Multiple Spaces')
-        }
-        if (/(^|[^.])\.{2}(?!\.)/.test(v) || /(^|[^.])\.{4,}(?!\.)/.test(v)) { // 2 or 4+ dots
-            setTDColor(td, 'red')
-            error.add('2 Or 4+ Dots')
-        }
+        // if (v.includes('  ')) { // multiple spaces
+        //     setTDColor(td, 'red')
+        //     error.add('Multiple Spaces')
+        // }
+        // if (/(^|[^.])\.{2}(?!\.)/.test(v) || /(^|[^.])\.{4,}(?!\.)/.test(v)) { // 2 or 4+ dots
+        //     setTDColor(td, 'red')
+        //     error.add('2 Or 4+ Dots')
+        // }
         if (error.size) td.setAttribute('title', [...error].join('\n'))
     }
     label.style.position = 'absolute'

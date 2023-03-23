@@ -30,6 +30,7 @@ export const tcInValidator = (r, c, v, td, fontSize, instance, guideline) => {
             error.add('Invalid TC')
         }
         if (error.size) td.setAttribute('title', [...error].join('\n'))
+        else td.removeAttribute('title')
     }
 }
 
@@ -52,6 +53,7 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
             error.add('Invalid TC')
         }
         if (error.size) td.setAttribute('title', [...error].join('\n'))
+        else td.removeAttribute('title')
     }
 }
 
@@ -61,21 +63,32 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     const label = document.createElement('label');
     if (v) {
         td.innerHTML = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</label>`
-        v = v.replaceAll(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '').replaceAll(/{(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+}/g, '')
         const error = new Set()
+        if (guideline.musicNote && (v.includes('♪') || v.includes('<') || v.includes('>'))) {
+            let valid = true
+            if (v.match(/^♪ \S+(?:\s+\S+)* ♪$/)) {
+                if (guideline.musicNote === 'italic') valid = false
+            } else if (v.match(/^<i>\S+(?:\s+\S+)*<\/i>$/)) {
+                if (guideline.musicNote === '♪') valid = false
+            } else valid = false
+            if (!valid) {
+                setTDColor(td, 'red')
+                error.add('Music Note Error')
+            }
+        }
+        v = v.replaceAll(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '').replaceAll(/{(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+}/g, '')
         const language = guideline.language[instance.colToProp(c).slice(0, 2)]
         if (language) {
             if (language.maxLine && v.split('\n').length > language.maxLine.value) {
-                setTDColor(td, language.maxLine.level === 'required' ? 'red' : 'yellow')
+                setTDColor(td, LEVEL[language.maxLine.level])
                 error.add('Max Lines Exceeded')
             }
             v.split('\n').forEach((value) => {
                 if (language.maxCharacter && value.length > language.maxCharacter.value) {
-                    setTDColor(td, language.maxCharacter.level === 'required' ? 'red' : 'yellow')
+                    setTDColor(td, LEVEL[language.maxCharacter.level])
                     error.add('Max Characters Exceeded')
                 }
             })
-            console.log(language)
         }
         // if (v.includes('  ')) { // multiple spaces
         //     setTDColor(td, 'red')
@@ -86,6 +99,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
         //     error.add('2 Or 4+ Dots')
         // }
         if (error.size) td.setAttribute('title', [...error].join('\n'))
+        else td.removeAttribute('title')
     }
     label.style.position = 'absolute'
     label.style.top = 0

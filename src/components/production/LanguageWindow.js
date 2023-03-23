@@ -76,13 +76,13 @@ const LanguageWindow = (props) => {
                     make_read_only: {},
                     italic: {
                         name: 'Italic', callback: () => {
-                            const newData = getSelectedPairs(props.hotRef.current.getSelected()).map(value => [...value, `<i>${props.hotRef.current.getDataAtCell(...value)}</i>`])
+                            const newData = getSelectedPairs(props.hotRef.current.getSelected()).map(value => [...value, `<i>${props.hotRef.current.getDataAtCell(...value).replace(/<\/?i>/g, '')}</i>`])
                             props.hotRef.current.setDataAtCell(newData)
                         },
                     },
                     music_note: {
                         name: 'Music Note', callback: () => {
-                            const newData = getSelectedPairs(props.hotRef.current.getSelected()).map(value => [...value, `♪ ${props.hotRef.current.getDataAtCell(...value)} ♪`])
+                            const newData = getSelectedPairs(props.hotRef.current.getSelected()).map(value => [...value, `♪ ${props.hotRef.current.getDataAtCell(...value).replace(/^♪+|♪+$/g, '').trim()} ♪`])
                             props.hotRef.current.setDataAtCell(newData)
                         }
                     },

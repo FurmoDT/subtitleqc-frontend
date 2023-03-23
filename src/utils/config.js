@@ -34,18 +34,20 @@ export const guidelines = [
                 maxCharacter: {value: 18, level: 'required'},
                 cps: {value: 30, level: 'optional'}
             }
-        }
+        },
+        musicNote: '♪'
     },
     {
         client: 'KCP',
-        tcRange: {min: 1, max: 7, level: 'optional'},
         language: {
             en: {
                 name: '영어',
                 maxLine: {value: 2, level: 'required'},
                 maxCharacter: {value: 42, level: 'required'}
             }
-        }
+        },
+        tcRange: {min: 1, max: 7, level: 'optional'},
+        musicNote: 'italic'
     },
     {
         client: 'HYBE',
@@ -54,7 +56,8 @@ export const guidelines = [
             zh: {name: '중국어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 20, level: 'required'}},
             jp: {name: '일어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 16, level: 'required'}},
             es: {name: '스페인어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 42, level: 'required'}}
-        }
+        },
+        musicNote: '♪'
     },
     {
         client: 'YG',
@@ -64,7 +67,8 @@ export const guidelines = [
             es: {name: '스페인어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}},
             th: {name: '태국어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}},
             id: {name: '인니어', maxLine: {value: 4, level: 'required'}, maxCharacter: {value: 45, level: 'required'}}
-        }
+        },
+        musicNote: '♪'
     },
     {
         client: 'CUSTOM',

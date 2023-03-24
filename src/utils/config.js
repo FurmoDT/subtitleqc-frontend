@@ -27,14 +27,15 @@ export const guidelines = [
                 maxLine: {value: 1, level: 'required'},
                 maxCharacter: {value: 55, level: 'required'},
                 cps: {value: 30, level: 'optional'},
-                parenthesis: {regex: '^\\([^()]*\\)$'}
+                parenthesis: {regex: '^\\([^()]*\\)$'},
             },
             zh: {
                 name: '중국어',
                 maxLine: {value: 1, level: 'required'},
                 maxCharacter: {value: 18, level: 'required'},
                 cps: {value: 30, level: 'optional'},
-                parenthesis: {regex: '^（[^（）]*）$'}
+                parenthesis: {regex: '^（[^（）]*）$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             }
         },
         musicNote: '♪'
@@ -59,25 +60,29 @@ export const guidelines = [
                 name: '영어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 42, level: 'required'},
-                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
+                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             zh: {
                 name: '중국어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 20, level: 'required'},
-                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
+                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             ja: {
                 name: '일어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 16, level: 'required'},
-                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
+                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             es: {
                 name: '스페인어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 42, level: 'required'},
-                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
+                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             }
         },
         musicNote: '♪'
@@ -89,31 +94,36 @@ export const guidelines = [
                 name: '중국어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 18, level: 'required'},
-                parenthesis: {regex: '^（[^（）]*）$'}
+                parenthesis: {regex: '^（[^（）]*）$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             ja: {
                 name: '일어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 24, level: 'required'},
-                parenthesis: {regex: '^\\([^()]*\\)$'}
+                parenthesis: {regex: '^\\([^()]*\\)$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             es: {
                 name: '스페인어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'required'},
-                parenthesis: {regex: '^\\([^()]*\\)$'}
+                parenthesis: {regex: '^\\([^()]*\\)$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             th: {
                 name: '태국어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'required'},
-                parenthesis: {regex: '^\\([^()]*\\)$'}
+                parenthesis: {regex: '^\\([^()]*\\)$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             id: {
                 name: '인니어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'required'},
-                parenthesis: {regex: '^\\([^()]*\\)$'}
+                parenthesis: {regex: '^\\([^()]*\\)$'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)'}
             }
         },
         musicNote: '♪'

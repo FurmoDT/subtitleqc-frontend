@@ -97,6 +97,10 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     }
                 })
             }
+            if (language.period && v.match(language.period.regex)) {
+                setTDColor(td, 'red')
+                error.add('Period Not Allowed')
+            }
         }
         // if (v.includes('  ')) { // multiple spaces
         //     setTDColor(td, 'red')

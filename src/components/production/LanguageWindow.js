@@ -82,7 +82,7 @@ const LanguageWindow = (props) => {
                     },
                     music_note: {
                         name: 'Music Note', callback: () => {
-                            const newData = getSelectedPairs(props.hotRef.current.getSelected()).map(value => [...value, `♪ ${props.hotRef.current.getDataAtCell(...value).replace(/^♪+|♪+$/g, '').trim()} ♪`])
+                            const newData = getSelectedPairs(props.hotRef.current.getSelected()).map(value => [...value, `♪ ${props.hotRef.current.getDataAtCell(...value).replace(/^♪+|♪+$/g, '').trim().replace(/[^\w\s]$/g, '')} ♪`])
                             props.hotRef.current.setDataAtCell(newData)
                         }
                     },

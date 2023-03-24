@@ -89,7 +89,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     error.add('Max Characters Exceeded')
                 }
             })
-            if (language.parenthesis && /[()\[\]（）]/.test(v)) {
+            if (language.parenthesis && /[()[\]（）]/.test(v)) {
                 if (!v.match(language.parenthesis.regex)) {
                     setTDColor(td, 'red')
                     error.add('Parenthesis Error')
@@ -100,10 +100,10 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
         //     setTDColor(td, 'red')
         //     error.add('Multiple Spaces')
         // }
-        // if (/(^|[^.])\.{2}(?!\.)/.test(v) || /(^|[^.])\.{4,}(?!\.)/.test(v)) { // 2 or 4+ dots
-        //     setTDColor(td, 'red')
-        //     error.add('2 Or 4+ Dots')
-        // }
+        if (/(^|[^.])\.{2}(?!\.)/.test(v) || /(^|[^.])\.{4,}(?!\.)/.test(v)) { // 2 or 4+ dots
+            setTDColor(td, 'red')
+            error.add('2 Or 4+ Dots')
+        }
         if (error.size) td.setAttribute('title', [...error].join('\n'))
         else td.removeAttribute('title')
     }

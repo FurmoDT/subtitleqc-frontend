@@ -67,7 +67,7 @@ export const guidelines = [
                 maxCharacter: {value: 20, level: 'required'},
                 parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'}
             },
-            jp: {
+            ja: {
                 name: '일어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 16, level: 'required'},
@@ -91,7 +91,7 @@ export const guidelines = [
                 maxCharacter: {value: 18, level: 'required'},
                 parenthesis: {regex: '^（[^（）]*）$'}
             },
-            jp: {
+            ja: {
                 name: '일어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 24, level: 'required'},
@@ -123,7 +123,7 @@ export const guidelines = [
         language: {
             ko: {name: '한국어'},
             en: {name: '영어'},
-            jp: {name: '일어'},
+            ja: {name: '일어'},
             zh: {name: '중국어'},
             vi: {name: '베트남어'},
             th: {name: '태국어'},

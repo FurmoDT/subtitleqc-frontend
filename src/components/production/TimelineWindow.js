@@ -88,6 +88,7 @@ const TimelineWindow = (props) => {
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})
         return () => {
             props.waveformRef.current?.destroy()
+            props.waveformRef.current = null
         }
     }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef])
 

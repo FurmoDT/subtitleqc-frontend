@@ -211,9 +211,9 @@ const ProjectSettingModal = (props) => {
                                                  style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                                                 <h5 style={{margin: 0}}><MDBBadge color={'info'}>Dialog</MDBBadge>
                                                 </h5>
-                                                <h6 className='mx-2' style={{margin: 0}}><b>{
-                                                    projectDetail.guideline.language[key].dialog?.regex
-                                                }</b></h6>
+                                                <h6 className='mx-2' style={{margin: 0, whiteSpace: 'pre-wrap'}}>{
+                                                    projectDetail.guideline.language[key].dialog?.sample?.replace(/ /g, '\u00a0')
+                                                }</h6>
                                             </div>
                                         </MDBCol>
                                     </MDBRow>

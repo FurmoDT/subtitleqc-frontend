@@ -16,11 +16,8 @@ const MediaWindow = (props) => {
     const fnIndexRef = useRef(0)
     const setVideo = props.setVideo
     const afterRenderPromise = props.afterRenderPromise
-    const setTdColor = useCallback((index, isShow) => {
-        props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
-            if (isShow) tdElement.style.backgroundColor = tdElement.style.backgroundColor || 'beige'
-            else tdElement.style.backgroundColor = ''
-        });
+    const setTdColor = useCallback((index) => {
+        props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => tdElement.style.backgroundColor = 'beige');
     }, [props.hotRef])
     const setSubtitleLabel = useCallback((seconds) => {
         const row = props.cellDataRef.current[subtitleIndexRef.current]
@@ -31,7 +28,7 @@ const MediaWindow = (props) => {
                 if (!props.fnToggle) {
                     if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
                     afterRenderPromise().then(() => {
-                        setTdColor(subtitleIndexRef.current, true)
+                        setTdColor(subtitleIndexRef.current)
                     })
                 }
             }
@@ -40,9 +37,7 @@ const MediaWindow = (props) => {
             if (curSubtitleIndex === subtitleIndexRef.current) {
                 subtitleLabelRef.current.innerText = ''
                 curSubtitleIndex = -1
-                if (!props.fnToggle) {
-                    setTdColor(subtitleIndexRef.current, false)
-                }
+                if (!props.fnToggle) props.hotRef.current.render()
             }
         }
     }, [props.cellDataRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])
@@ -55,7 +50,7 @@ const MediaWindow = (props) => {
                 if (props.fnToggle) {
                     if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
                     afterRenderPromise().then(() => {
-                        setTdColor(fnIndexRef.current, true)
+                        setTdColor(fnIndexRef.current)
                     })
                 }
             }
@@ -64,9 +59,7 @@ const MediaWindow = (props) => {
             if (curFnIndex === fnIndexRef.current) {
                 fnLabelRef.current.innerText = ''
                 curFnIndex = -1
-                if (props.fnToggle) {
-                    setTdColor(fnIndexRef.current, false)
-                }
+                if (props.fnToggle) props.hotRef.current.render()
             }
         }
     }, [props.fnRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])
@@ -76,14 +69,11 @@ const MediaWindow = (props) => {
         if (tcToSec(props.cellDataRef.current[subtitleIndexRef.current].start) !== seconds) subtitleIndexRef.current = Math.max(subtitleIndexRef.current - 1, 0)
         if (tcToSec(props.fnRef.current[fnIndexRef.current].start) !== seconds) fnIndexRef.current = Math.max(fnIndexRef.current - 1, 0)
         if (!props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.scrollViewportTo(!props.fnToggle ? subtitleIndexRef.current : fnIndexRef.current, 0)
-        const targetIndex = !props.fnToggle ? subtitleIndexRef.current : fnIndexRef.current
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFnLabel(seconds)
-            props.hotRef.current.render()
-            setTdColor(targetIndex, true)
         })
-    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, setSubtitleLabel, setFnLabel, afterRenderPromise, setTdColor])
+    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, setSubtitleLabel, setFnLabel, afterRenderPromise])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFnLabel(state.playedSeconds)

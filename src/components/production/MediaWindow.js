@@ -27,9 +27,7 @@ const MediaWindow = (props) => {
                 curSubtitleIndex = subtitleIndexRef.current
                 if (!props.fnToggle) {
                     if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
-                    afterRenderPromise().then(() => {
-                        setTdColor(subtitleIndexRef.current)
-                    })
+                    afterRenderPromise().then(() => setTdColor(subtitleIndexRef.current))
                 }
             }
             if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
@@ -49,9 +47,7 @@ const MediaWindow = (props) => {
                 curFnIndex = fnIndexRef.current
                 if (props.fnToggle) {
                     if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
-                    afterRenderPromise().then(() => {
-                        setTdColor(fnIndexRef.current)
-                    })
+                    afterRenderPromise().then(() => setTdColor(fnIndexRef.current))
                 }
             }
             if (fnLabelRef.current.innerText !== nextSubtitle) fnLabelRef.current.innerText = nextSubtitle

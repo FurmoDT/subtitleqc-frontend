@@ -115,12 +115,13 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     setTDColor(td, 'red')
                     error.add('Dialog Format Error')
                 }
+                v = v.replace(/\s+/g, " ")
             }
         }
-        // if (v.includes('  ')) { // multiple spaces
-        //     setTDColor(td, 'red')
-        //     error.add('Multiple Spaces')
-        // }
+        if (v.includes('  ')) { // multiple spaces
+            setTDColor(td, 'red')
+            error.add('Multiple Spaces')
+        }
         if (/(^|[^.])\.{2}(?!\.)/.test(v) || /(^|[^.])\.{4,}(?!\.)/.test(v)) { // 2 or 4+ dots
             setTDColor(td, 'red')
             error.add('2 Or 4+ Dots')

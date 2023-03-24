@@ -107,7 +107,11 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                 error.add('Period Not Allowed')
             }
             if (language.dialog && v.match(/^-/)) {
-                if (!v.match(language.dialog.regex)) {
+                let dialog = true
+                v.split('\n').forEach((value) => {
+                    if (!value.match(language.dialog.regex)) dialog = false
+                })
+                if (!dialog) {
                     setTDColor(td, 'red')
                     error.add('Dialog Format Error')
                 }

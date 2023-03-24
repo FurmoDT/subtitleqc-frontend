@@ -90,12 +90,17 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                 }
             })
             if (language.parenthesis) {
+                let line = ''
                 v.split('\n').forEach((value) => {
-                    if (/[()[\]（）]/.test(value) && !value.match(language.parenthesis.regex)) {
-                        setTDColor(td, 'red')
-                        error.add('Parenthesis Error')
+                    if (/[()[\]（）]/.test(value)) {
+                        line += value
+                        if (line.match(language.parenthesis.regex)) line = ''
                     }
                 })
+                if (line) {
+                    setTDColor(td, 'red')
+                    error.add('Parenthesis Error')
+                }
             }
             if (language.period && v.match(language.period.regex)) {
                 setTDColor(td, 'red')

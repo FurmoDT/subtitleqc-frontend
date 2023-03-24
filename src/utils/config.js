@@ -59,28 +59,28 @@ export const guidelines = [
             en: {
                 name: '영어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 42, level: 'required'},
+                maxCharacter: {value: 42, level: 'optional'},
                 parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             zh: {
                 name: '중국어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 20, level: 'required'},
+                maxCharacter: {value: 20, level: 'optional'},
                 parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             ja: {
                 name: '일어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 16, level: 'required'},
+                maxCharacter: {value: 16, level: 'optional'},
                 parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             es: {
                 name: '스페인어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 42, level: 'required'},
+                maxCharacter: {value: 42, level: 'optional'},
                 parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             }
@@ -93,35 +93,35 @@ export const guidelines = [
             zh: {
                 name: '중국어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 18, level: 'required'},
+                maxCharacter: {value: 18, level: 'optional'},
                 parenthesis: {regex: '^（[^（）]*）$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             ja: {
                 name: '일어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 24, level: 'required'},
+                maxCharacter: {value: 24, level: 'optional'},
                 parenthesis: {regex: '^\\([^()]*\\)$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             es: {
                 name: '스페인어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 45, level: 'required'},
+                maxCharacter: {value: 45, level: 'optional'},
                 parenthesis: {regex: '^\\([^()]*\\)$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             th: {
                 name: '태국어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 45, level: 'required'},
+                maxCharacter: {value: 45, level: 'optional'},
                 parenthesis: {regex: '^\\([^()]*\\)$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             },
             id: {
                 name: '인니어',
                 maxLine: {value: 4, level: 'required'},
-                maxCharacter: {value: 45, level: 'required'},
+                maxCharacter: {value: 45, level: 'optional'},
                 parenthesis: {regex: '^\\([^()]*\\)$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'}
             }

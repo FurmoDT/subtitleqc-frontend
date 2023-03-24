@@ -90,12 +90,14 @@ const MediaWindow = (props) => {
         if (state.playedSeconds >= tcToSec(props.cellDataRef.current[subtitleIndexRef.current].end)) subtitleIndexRef.current += 1
         if (state.playedSeconds >= tcToSec(props.fnRef.current[fnIndexRef.current].end)) fnIndexRef.current += 1
     }, [props.cellDataRef, props.fnRef, setSubtitleLabel, setFnLabel])
-    const onReady = useCallback(() => {
-        if (props.video !== props.mediaFile) setVideo(props.mediaFile) // generate waveform after video is loaded
-        curSubtitleIndex = -1
-        curFnIndex = -1
-        subtitleIndexRef.current = 0
-        fnIndexRef.current = 0
+    const onReady = useCallback((w) => {
+        if (props.video !== props.mediaFile) {
+            setVideo(props.mediaFile) // generate waveform after video is loaded
+            curSubtitleIndex = -1
+            curFnIndex = -1
+            subtitleIndexRef.current = 0
+            fnIndexRef.current = 0
+        }
     }, [props.mediaFile, props.video, setVideo])
     useEffect(() => {
         fnLabelRef.current.style.display = showFn ? '' : 'none'

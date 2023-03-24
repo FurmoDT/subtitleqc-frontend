@@ -89,11 +89,13 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     error.add('Max Characters Exceeded')
                 }
             })
-            if (language.parenthesis && /[()[\]（）]/.test(v)) {
-                if (!v.match(language.parenthesis.regex)) {
-                    setTDColor(td, 'red')
-                    error.add('Parenthesis Error')
-                }
+            if (language.parenthesis) {
+                v.split('\n').forEach((value) => {
+                    if (/[()[\]（）]/.test(value) && !value.match(language.parenthesis.regex)) {
+                        setTDColor(td, 'red')
+                        error.add('Parenthesis Error')
+                    }
+                })
             }
         }
         // if (v.includes('  ')) { // multiple spaces

@@ -28,6 +28,7 @@ export const guidelines = [
                 maxCharacter: {value: 55, level: 'required'},
                 cps: {value: 30, level: 'optional'},
                 parenthesis: {regex: '^\\([^()]*\\)$'},
+                dialog: {regex: '-\\s[^\\s](.*\\S)*\\s/\\s-\\s[^\\s].*'}
             },
             zh: {
                 name: '중국어',
@@ -35,7 +36,8 @@ export const guidelines = [
                 maxCharacter: {value: 18, level: 'required'},
                 cps: {value: 30, level: 'optional'},
                 parenthesis: {regex: '^（[^（）]*）$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'}
+                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                dialog: {regex: '-[^\\s](.*\\S)*\\s\\s-[^\\s].*'}
             }
         },
         musicNote: '♪'

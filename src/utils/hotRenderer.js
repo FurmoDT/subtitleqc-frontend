@@ -106,6 +106,12 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                 setTDColor(td, 'red')
                 error.add('Period Not Allowed')
             }
+            if (language.dialog && v.match(/^-/)) {
+                if (!v.match(language.dialog.regex)) {
+                    setTDColor(td, 'red')
+                    error.add('Dialog Format Error')
+                }
+            }
         }
         // if (v.includes('  ')) { // multiple spaces
         //     setTDColor(td, 'red')

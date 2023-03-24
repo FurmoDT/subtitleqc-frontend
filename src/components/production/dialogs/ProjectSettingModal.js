@@ -148,7 +148,7 @@ const ProjectSettingModal = (props) => {
                                 </div>
                             </MDBCol>
                         </MDBRow>
-                        <p className='border-1 border' />
+                        <p className='border-1 border'/>
                         <MDBTabs fill className='mb-3'>
                             {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
                                 return <MDBTabsItem key={key}><MDBTabsLink onClick={() => handleFillClick(key)}
@@ -196,9 +196,23 @@ const ProjectSettingModal = (props) => {
                                         <MDBCol style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}} size={4}>
                                             <div className={'px-2 py-1 bg-info bg-opacity-25 rounded'}
                                                  style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                                                <h5 style={{margin: 0}}><MDBBadge color={'info'}>Parenthesis</MDBBadge></h5>
+                                                <h5 style={{margin: 0}}>
+                                                    <MDBBadge color={'info'}>Parenthesis</MDBBadge>
+                                                </h5>
                                                 <h6 className='mx-2' style={{margin: 0}}><b>{
                                                     ['()', '[]', '（）'].filter(value => value.match(projectDetail.guideline.language[key].parenthesis?.regex))
+                                                }</b></h6>
+                                            </div>
+                                        </MDBCol>
+                                        <MDBCol
+                                            style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                                            size={4}>
+                                            <div className={'px-2 py-1 bg-info bg-opacity-25 rounded'}
+                                                 style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                                <h5 style={{margin: 0}}><MDBBadge color={'info'}>Dialog</MDBBadge>
+                                                </h5>
+                                                <h6 className='mx-2' style={{margin: 0}}><b>{
+                                                    projectDetail.guideline.language[key].dialog?.regex
                                                 }</b></h6>
                                             </div>
                                         </MDBCol>

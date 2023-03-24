@@ -28,7 +28,7 @@ export const guidelines = [
                 maxCharacter: {value: 55, level: 'required'},
                 cps: {value: 30, level: 'optional'},
                 parenthesis: {regex: '^\\([^()]*\\)$'},
-                dialog: {regex: '-\\s[^\\s](.*\\S)\\s/\\s-\\s[^\\s].*', sample: '- Hi / - Hello'}
+                dialog: {regex: '-\\s(?!\\s)(.*\\S)?(?<!\\s)\\s/\\s-\\s[^\\s].*', sample: '- Hi / - Hello'}
             },
             zh: {
                 name: '중국어',
@@ -37,7 +37,7 @@ export const guidelines = [
                 cps: {value: 30, level: 'optional'},
                 parenthesis: {regex: '^（[^（）]*）$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
-                dialog: {regex: '-[^\\s](.*\\S)\\s\\s-[^\\s].*', sample: '-你好  -你好'}
+                dialog: {regex: '-(?!\\s)(.*\\S)?(?<!\\s)\\s\\s-[^\\s].*', sample: '-你好  -你好'}
             }
         },
         musicNote: '♪'

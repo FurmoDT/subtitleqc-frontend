@@ -135,6 +135,7 @@ const Production = () => {
         <MenuToolbar cellDataRef={cellDataRef} fnRef={fnRef} languages={languages} setLanguages={setLanguages}
                      fnLanguages={fnLanguages} setFnLanguages={setFnLanguages} hotRef={hotRef}
                      projectDetail={projectDetail} setProjectDetail={setProjectDetail}
+                     setMediaFile={setMediaFile}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcIoButtonRef={tcIoButtonRef} tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
@@ -185,7 +186,7 @@ const Production = () => {
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}
                                             fnRef={fnRef} fnLanguages={fnLanguages}/>
                             <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}
-                                            isFromTimelineWindowRef={isFromTimelineWindowRef}
+                                            isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                             waveformRef={waveformRef} mediaFile={mediaFile} video={video}
                                             setTcLock={setTcLock}/>
                         </Splitter>

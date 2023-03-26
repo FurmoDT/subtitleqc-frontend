@@ -79,7 +79,7 @@ const MediaWindow = (props) => {
         if (state.playedSeconds >= tcToSec(props.cellDataRef.current[subtitleIndexRef.current].end)) subtitleIndexRef.current += 1
         if (state.playedSeconds >= tcToSec(props.fnRef.current[fnIndexRef.current].end)) fnIndexRef.current += 1
     }, [props.cellDataRef, props.fnRef, setSubtitleLabel, setFnLabel])
-    const onReady = useCallback((w) => {
+    const onReady = useCallback(() => {
         if (props.video !== props.mediaFile) {
             setVideo(props.mediaFile) // generate waveform after video is loaded
             curSubtitleIndex = -1
@@ -101,6 +101,10 @@ const MediaWindow = (props) => {
             fnLanguage = props.fnLanguages[0] ? `${props.fnLanguages[0].code}_${props.fnLanguages[0].counter}` : null
         }
     }, [props.fnLanguages])
+    useEffect(() => {
+        subtitleLabelRef.current.innerHTML = ''
+        fnLabelRef.current.innerHTML = ''
+    }, [props.mediaFile])
     return <div style={{
         width: '100%',
         height: '100%',

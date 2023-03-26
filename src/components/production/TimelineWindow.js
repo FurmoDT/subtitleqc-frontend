@@ -83,6 +83,12 @@ const TimelineWindow = (props) => {
                         props.hotRef.current.selectCell(row, 0)
                     }
                 })
+                peaks.on('peaks.ready', () => {
+                    if (props.playerRef.current.getInternalPlayer()?.src !== props.video) {
+                        props.waveformRef.current?.destroy()
+                        props.waveformRef.current = null
+                    }
+                })
             }
         })
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})
@@ -90,11 +96,18 @@ const TimelineWindow = (props) => {
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
         }
-    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef])
+    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()
     }, [props.size, props.waveformRef])
+
+    useEffect(() => {
+        if (!props.mediaFile) {
+            props.waveformRef.current?.destroy()
+            props.waveformRef.current = null
+        }
+    }, [props.mediaFile, props.waveformRef])
 
     return <>
         <div style={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}>

@@ -37,6 +37,7 @@ const NewProjectModal = (props) => {
                                 props.setLanguages(defaultLanguage()),
                                 props.setFnLanguages(defaultLanguage()),
                                 props.setLanguageFile(null),
+                                props.setMediaFile(null),
                                 props.waveformRef.current?.segments.removeAll(),
                             ]).then(() => {
                                 localStorage.removeItem('projectDetail')

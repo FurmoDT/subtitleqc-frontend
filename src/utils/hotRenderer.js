@@ -3,7 +3,7 @@ import {tcToSec} from "./functions";
 const LEVEL = {required: 'red', optional: 'yellow', none: null}
 
 const setTDColor = (td, backgroundColor) => {
-    td.style.backgroundColor = backgroundColor
+    if (td.style.backgroundColor !== 'red') td.style.backgroundColor = backgroundColor
     if (backgroundColor === 'red') td.style.color = 'white'
 }
 
@@ -64,7 +64,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     if (v) {
         td.innerHTML = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</label>`
         const error = new Set()
-        if (guideline.musicNote && (v.includes('♪') || v.includes('<') || v.includes('>'))) {
+        if (guideline.musicNote && (v.includes('♪') || v.includes('<i>') || v.includes('</i>'))) {
             let valid = true
             if (v.match(/^♪ [^♪\s]+(?:\s+[^♪\s]+)* ♪$/)) {
                 if (guideline.musicNote === 'italic') valid = false
@@ -106,10 +106,10 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                 setTDColor(td, 'red')
                 error.add('Period Not Allowed')
             }
-            if (language.dialog && v.match(/^-/)) {
+            if (language.dialog && v.startsWith('-')) {
                 let dialog = true
                 v.split('\n').forEach((value) => {
-                    if (!value.match(language.dialog.regex)) dialog = false
+                    if (value.startsWith('-') && !value.match(language.dialog.regex)) dialog = false
                 })
                 if (!dialog) {
                     setTDColor(td, 'red')

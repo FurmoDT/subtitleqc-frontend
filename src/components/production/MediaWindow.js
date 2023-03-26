@@ -30,10 +30,10 @@ const MediaWindow = (props) => {
                     afterRenderPromise().then(() => setTdColor(subtitleIndexRef.current))
                 }
             }
-            if (subtitleLabelRef.current.innerText !== nextSubtitle) subtitleLabelRef.current.innerText = nextSubtitle
+            if (subtitleLabelRef.current.innerHTML !== nextSubtitle) subtitleLabelRef.current.innerHTML = nextSubtitle
         } else {
             if (curSubtitleIndex === subtitleIndexRef.current) {
-                subtitleLabelRef.current.innerText = ''
+                subtitleLabelRef.current.innerHTML = ''
                 curSubtitleIndex = -1
                 if (!props.fnToggle) props.hotRef.current.render()
             }
@@ -50,10 +50,10 @@ const MediaWindow = (props) => {
                     afterRenderPromise().then(() => setTdColor(fnIndexRef.current))
                 }
             }
-            if (fnLabelRef.current.innerText !== nextSubtitle) fnLabelRef.current.innerText = nextSubtitle
+            if (fnLabelRef.current.innerHTML !== nextSubtitle) fnLabelRef.current.innerHTML = nextSubtitle
         } else {
             if (curFnIndex === fnIndexRef.current) {
-                fnLabelRef.current.innerText = ''
+                fnLabelRef.current.innerHTML = ''
                 curFnIndex = -1
                 if (props.fnToggle) props.hotRef.current.render()
             }

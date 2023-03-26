@@ -141,6 +141,7 @@ const LanguageWindow = (props) => {
                     } else props.waveformRef.current.segments.removeById(rowId)
                 }
             })
+            props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
             if (!props.fnToggle) {

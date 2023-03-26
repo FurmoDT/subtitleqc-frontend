@@ -17,7 +17,10 @@ const MediaWindow = (props) => {
     const setVideo = props.setVideo
     const afterRenderPromise = props.afterRenderPromise
     const setTdColor = useCallback((index) => {
-        props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => tdElement.style.backgroundColor = 'beige');
+        props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
+            tdElement.style.backgroundColor = 'beige'
+            tdElement.style.color = 'black'
+        });
     }, [props.hotRef])
     const setSubtitleLabel = useCallback((seconds) => {
         const row = props.cellDataRef.current[subtitleIndexRef.current]

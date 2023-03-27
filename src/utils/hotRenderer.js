@@ -67,7 +67,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
         const error = new Set()
         if (guideline.musicNote && (v.includes('♪') || v.includes('<i>') || v.includes('</i>'))) {
             let valid = true
-            if (v.match(/^♪ [^♪\s]+(?:\s+[^♪\s]+)* ♪$/)) {
+            if (v.match(/♪ [^♪\s]+(?:\s+[^♪\s]+)* ♪/)) {
                 if (guideline.musicNote === 'italic') valid = false
             } else if (v.match(/<i>\S+(?:\s+\S+)*<\/i>/)) {
                 if (guideline.musicNote === '♪') valid = false

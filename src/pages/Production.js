@@ -65,12 +65,12 @@ const Production = () => {
         if (!fnToggle) {
             cellDataRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end && start <= end) segments.push(createSegment(start, end, value.rowId, tcLock))
+                if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId, tcLock))
             })
         } else {
             fnRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (start && end && start <= end) segments.push(createSegment(start, end, value.rowId, tcLock))
+                if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId, tcLock))
             })
         }
         return segments

@@ -63,7 +63,7 @@ export const guidelines = [
                 name: '영어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 42, level: 'optional'},
-                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
+                // parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-[^\\s].*', sample: '-Hi\n-Hello'}
             },
@@ -71,7 +71,7 @@ export const guidelines = [
                 name: '중국어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 20, level: 'optional'},
-                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
+                // parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- 你好\n- 你好'}
             },
@@ -79,7 +79,7 @@ export const guidelines = [
                 name: '일어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 16, level: 'optional'},
-                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
+                // parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- こんにちは\n- こんにちは'}
             },
@@ -87,7 +87,7 @@ export const guidelines = [
                 name: '스페인어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 42, level: 'optional'},
-                parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
+                // parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- Hola\n- Hola'}
             }
@@ -101,7 +101,7 @@ export const guidelines = [
                 name: '중국어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 18, level: 'optional'},
-                parenthesis: {regex: '^（[^（）]*）$'},
+                // parenthesis: {regex: '^（[^（）]*）$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- 你好\n- 你好'}
             },
@@ -109,7 +109,7 @@ export const guidelines = [
                 name: '일어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 24, level: 'optional'},
-                parenthesis: {regex: '^\\([^()]*\\)$'},
+                // parenthesis: {regex: '^\\([^()]*\\)$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- こんにちは\n- こんにちは'}
             },
@@ -117,7 +117,7 @@ export const guidelines = [
                 name: '스페인어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'optional'},
-                parenthesis: {regex: '^\\([^()]*\\)$'},
+                // parenthesis: {regex: '^\\([^()]*\\)$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- Hola\n- Hola'}
             },
@@ -125,7 +125,7 @@ export const guidelines = [
                 name: '태국어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'optional'},
-                parenthesis: {regex: '^\\([^()]*\\)$'},
+                // parenthesis: {regex: '^\\([^()]*\\)$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- สวัสดี\n- สวัสดี'}
             },
@@ -133,7 +133,7 @@ export const guidelines = [
                 name: '인니어',
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'optional'},
-                parenthesis: {regex: '^\\([^()]*\\)$'},
+                // parenthesis: {regex: '^\\([^()]*\\)$'},
                 period: {regex: '(?<!\\.)\\.(?!\\.)'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- Halo\n- Halo'}
             }

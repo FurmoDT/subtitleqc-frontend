@@ -44,6 +44,7 @@ const Production = () => {
     const resetSegmentsRef = useRef(null)
     const [tcLock, setTcLock] = useState(false)
     const isFromTimelineWindowRef = useRef(false)
+    const isFromLanguageWindowRef = useRef(false)
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const timeOut = setTimeout(() => {
@@ -152,6 +153,7 @@ const Production = () => {
                             <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
                                          languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
                                          mediaFile={mediaFile} video={video} setVideo={setVideo}
+                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
                                          afterRenderPromise={afterRenderPromise}/>
                             <InformationWindow/>
                         </Splitter>
@@ -184,6 +186,7 @@ const Production = () => {
                                             cellDataRef={cellDataRef} languages={languages}
                                             guideline={projectDetail.guideline}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}
+                                            isFromLanguageWindowRef={isFromLanguageWindowRef}
                                             fnRef={fnRef} fnLanguages={fnLanguages}/>
                             <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}

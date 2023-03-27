@@ -141,6 +141,7 @@ const LanguageWindow = (props) => {
                     } else props.waveformRef.current.segments.removeById(rowId)
                 }
             })
+            props.isFromLanguageWindowRef.current = true
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
@@ -172,7 +173,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLock, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.guideline])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLock, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline])
 
     return <div ref={containerMain}/>
 }

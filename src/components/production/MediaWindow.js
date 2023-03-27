@@ -67,12 +67,13 @@ const MediaWindow = (props) => {
         fnIndexRef.current = bisect(props.fnRef.current.map((value) => tcToSec(value.start)), seconds)
         if (tcToSec(props.cellDataRef.current[subtitleIndexRef.current].start) !== seconds) subtitleIndexRef.current = Math.max(subtitleIndexRef.current - 1, 0)
         if (tcToSec(props.fnRef.current[fnIndexRef.current].start) !== seconds) fnIndexRef.current = Math.max(fnIndexRef.current - 1, 0)
-        if (!props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.scrollViewportTo(!props.fnToggle ? subtitleIndexRef.current : fnIndexRef.current, 0)
+        if (!props.hotRef.current.getActiveEditor()?._opened && !props.isFromLanguageWindowRef.current) props.hotRef.current.scrollViewportTo(!props.fnToggle ? subtitleIndexRef.current : fnIndexRef.current, 0)
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFnLabel(seconds)
         })
-    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, setSubtitleLabel, setFnLabel, afterRenderPromise])
+        props.isFromLanguageWindowRef.current = false
+    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, afterRenderPromise])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFnLabel(state.playedSeconds)

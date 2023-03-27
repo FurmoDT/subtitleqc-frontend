@@ -33,7 +33,7 @@ const MediaWindow = (props) => {
                     afterRenderPromise().then(() => setTdColor(subtitleIndexRef.current))
                 }
             }
-            if (subtitleLabelRef.current.innerHTML !== nextSubtitle) subtitleLabelRef.current.innerHTML = nextSubtitle
+            if (subtitleLabelRef.current.innerHTML !== nextSubtitle) subtitleLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
             if (curSubtitleIndex === subtitleIndexRef.current) {
                 subtitleLabelRef.current.innerHTML = ''
@@ -53,7 +53,7 @@ const MediaWindow = (props) => {
                     afterRenderPromise().then(() => setTdColor(fnIndexRef.current))
                 }
             }
-            if (fnLabelRef.current.innerHTML !== nextSubtitle) fnLabelRef.current.innerHTML = nextSubtitle
+            if (fnLabelRef.current.innerHTML !== nextSubtitle) fnLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
             if (curFnIndex === fnIndexRef.current) {
                 fnLabelRef.current.innerHTML = ''

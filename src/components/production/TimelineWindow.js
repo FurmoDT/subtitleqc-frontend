@@ -91,6 +91,7 @@ const TimelineWindow = (props) => {
                         props.waveformRef.current = null
                     }
                 })
+                peaks.views.getView('zoomview')?.setAmplitudeScale(2)
             }
         })
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})

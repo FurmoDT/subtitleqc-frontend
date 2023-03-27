@@ -62,9 +62,8 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.paddingRight = '75px'
     const label = document.createElement('label');
     if (v) {
-        const valueLabel = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}"/>`
-        td.innerHTML = valueLabel
-        td.querySelector('label').textContent = v
+        v = v.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
+        td.innerHTML = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</label>`
         const error = new Set()
         if (guideline.musicNote && (v.includes('♪') || v.includes('<i>') || v.includes('</i>'))) {
             let valid = true

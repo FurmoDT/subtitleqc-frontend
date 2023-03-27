@@ -62,13 +62,15 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.paddingRight = '75px'
     const label = document.createElement('label');
     if (v) {
-        td.innerHTML = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</label>`
+        const valueLabel = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}"/>`
+        td.innerHTML = valueLabel
+        td.querySelector('label').textContent = v
         const error = new Set()
         if (guideline.musicNote && (v.includes('♪') || v.includes('<i>') || v.includes('</i>'))) {
             let valid = true
             if (v.match(/^♪ [^♪\s]+(?:\s+[^♪\s]+)* ♪$/)) {
                 if (guideline.musicNote === 'italic') valid = false
-            } else if (v.match(/^<i>\S+(?:\s+\S+)*<\/i>$/)) {
+            } else if (v.match(/<i>\S+(?:\s+\S+)*<\/i>/)) {
                 if (guideline.musicNote === '♪') valid = false
             } else valid = false
             if (!valid) {
@@ -89,19 +91,19 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     error.add('Max Characters Exceeded')
                 }
             })
-            if (language.parenthesis) {
-                let line = ''
-                v.split('\n').forEach((value) => {
-                    if (/[()[\]（）]/.test(value)) {
-                        line += value
-                        if (line.match(language.parenthesis.regex)) line = ''
-                    }
-                })
-                if (line) {
-                    setTDColor(td, 'red')
-                    error.add('Parenthesis Error')
-                }
-            }
+            // if (language.parenthesis) {
+            //     let line = ''
+            //     v.split('\n').forEach((value) => {
+            //         if (/[()[\]（）]/.test(value)) {
+            //             line += value
+            //             if (line.match(language.parenthesis.regex)) line = ''
+            //         }
+            //     })
+            //     if (line) {
+            //         setTDColor(td, 'red')
+            //         error.add('Parenthesis Error')
+            //     }
+            // }
             if (language.period && v.match(language.period.regex)) {
                 setTDColor(td, 'red')
                 error.add('Period Not Allowed')

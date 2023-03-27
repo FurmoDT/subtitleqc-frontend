@@ -36,7 +36,7 @@ export const guidelines = [
                 maxCharacter: {value: 18, level: 'required'},
                 cps: {value: 30, level: 'optional'},
                 parenthesis: {regex: '（[^（）]*）'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-(?!\\s)(.*\\S)?(?<!\\s)\\s\\s-[^\\s].*', sample: '-你好  -你好'}
             }
         },
@@ -64,7 +64,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 42, level: 'optional'},
                 // parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-[^\\s].*', sample: '-Hi\n-Hello'}
             },
             zh: {
@@ -72,7 +72,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 20, level: 'optional'},
                 // parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- 你好\n- 你好'}
             },
             ja: {
@@ -80,7 +80,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 16, level: 'optional'},
                 // parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- こんにちは\n- こんにちは'}
             },
             es: {
@@ -88,7 +88,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 42, level: 'optional'},
                 // parenthesis: {regex: '^\\[[^\\[\\]]*\\]$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- Hola\n- Hola'}
             }
         },
@@ -102,7 +102,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 18, level: 'optional'},
                 // parenthesis: {regex: '^（[^（）]*）$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- 你好\n- 你好'}
             },
             ja: {
@@ -110,7 +110,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 24, level: 'optional'},
                 // parenthesis: {regex: '^\\([^()]*\\)$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- こんにちは\n- こんにちは'}
             },
             es: {
@@ -118,7 +118,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'optional'},
                 // parenthesis: {regex: '^\\([^()]*\\)$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- Hola\n- Hola'}
             },
             th: {
@@ -126,7 +126,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'optional'},
                 // parenthesis: {regex: '^\\([^()]*\\)$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- สวัสดี\n- สวัสดี'}
             },
             id: {
@@ -134,7 +134,7 @@ export const guidelines = [
                 maxLine: {value: 4, level: 'required'},
                 maxCharacter: {value: 45, level: 'optional'},
                 // parenthesis: {regex: '^\\([^()]*\\)$'},
-                period: {regex: '(?<!\\.)\\.(?!\\.)'},
+                period: {regex: '(?<!\\.)\\.(?!\\.)$'},
                 dialog: {regex: '-\\s[^\\s].*', sample: '- Halo\n- Halo'}
             }
         },

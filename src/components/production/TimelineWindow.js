@@ -36,20 +36,22 @@ const TimelineWindow = (props) => {
             },
             zoomview: {
                 container: waveformRef.current,
-                waveformColor: 'lightgreen',
-                playedWaveformColor: 'green',
+                waveformColor: 'yellow',
                 showPlayheadTime: true,
+                playheadColor: 'white',
                 formatPlayheadTime: (seconds) => secToTc(seconds),
                 formatAxisTime: (seconds) => secToTc(seconds),
             },
             overview: {
                 container: overviewRef.current,
-                waveformColor: 'lightgreen',
+                waveformColor: 'yellow',
+                playheadColor: 'white',
                 highlightColor: 'black',
                 highlightStrokeColor: 'black'
             },
             segmentOptions: {
-                overlay: true
+                overlay: true,
+                overlayOpacity: 0.4
             },
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
             segments: []
@@ -113,15 +115,17 @@ const TimelineWindow = (props) => {
         <div style={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}>
             <MDBCheckbox id='tcLockCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
                          label='TC LOCK'
-                         labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center'}}
+                         labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center', color: 'white'}}
                          onChange={(event) => props.setTcLock(event.target.checked)}/>
             <MDBCheckbox id='scrollViewCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
                          label='SELECT CURRENT SUBTITLE WHILE PLAYING'
-                         labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center'}}/>
+                         labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center', color: 'white'}}/>
         </div>
-        <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 100}px`}}
-             onClick={() => props.waveformRef.current?.player.pause()}/>
-        <div ref={overviewRef} style={{width: '100%', height: '60px'}}/>
+        <div style={{backgroundColor: 'black'}}>
+            <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 100}px`}}
+                 onClick={() => props.waveformRef.current?.player.pause()}/>
+            <div ref={overviewRef} style={{width: '100%', height: '60px'}}/>
+        </div>
     </>
 };
 

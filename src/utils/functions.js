@@ -29,7 +29,7 @@ export const createSegment = (start, end, id, editable) => {
     return {
         startTime: start,
         endTime: end,
-        color: 'darkgrey',
+        color: 'white',
         editable: !editable,
         id: id
     }

@@ -104,6 +104,8 @@ const LanguageWindow = (props) => {
                     )
                     containerMain.current.querySelector('grammarly-editor-plugin').querySelector('textarea').focus()
                 });
+            } else if (props.hotRef.current.colToProp(column).startsWith('arAE')) {
+                containerMain.current.querySelector('textarea').dir = 'rtl'
             }
             const tcIn = props.hotRef.current.getDataAtCell(row, 0)
             if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')

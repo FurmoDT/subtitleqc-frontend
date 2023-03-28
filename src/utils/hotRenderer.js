@@ -59,7 +59,6 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
 
 export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.position = 'relative'
-    td.style.paddingRight = '75px'
     const label = document.createElement('label');
     if (v) {
         v = v.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
@@ -130,14 +129,21 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
         if (error.size) td.setAttribute('title', [...error].join('\n'))
         else td.removeAttribute('title')
     }
+    label.textContent = `cps: ${v?.length || 0} ${v?.split('\n').map(val => `len: ${val.length}`).join('\n') || 'len: 0'}`;
     label.style.position = 'absolute'
     label.style.top = 0
-    label.style.right = 0
     label.style.whiteSpace = 'pre'
     label.style.fontSize = '10px'
-    label.style.paddingRight = '5px'
-    label.style.textAlign = 'right'
     label.style.color = 'lightgray'
-    label.textContent = `cps: ${v?.length || 0} ${v?.split('\n').map(val => `len: ${val.length}`).join('\n') || 'len: 0'}`;
+    label.style.textAlign = 'right'
+    label.style.paddingRight = '5px'
+    if (instance.colToProp(c).startsWith('arAE')) {
+        td.setAttribute('dir', "rtl")
+        label.style.left = 0
+        td.style.paddingLeft = '75px'
+    } else {
+        label.style.right = 0
+        td.style.paddingRight = '75px'
+    }
     td.appendChild(label);
 }

@@ -1,4 +1,5 @@
 import {tcToSec} from "./functions";
+import "../css/CustomCss.css"
 
 const LEVEL = {required: 'red', optional: 'yellow', none: null}
 
@@ -83,12 +84,6 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                 setTDColor(td, LEVEL[language.maxLine.level])
                 error.add('Max Lines Exceeded')
             }
-            v.split('\n').forEach((value) => {
-                if (language.maxCharacter && value.length > language.maxCharacter.value) {
-                    setTDColor(td, LEVEL[language.maxCharacter.level])
-                    error.add('Max Characters Exceeded')
-                }
-            })
             if (language.parenthesis) {
                 let line = ''
                 v.split('\n').forEach((value) => {
@@ -126,10 +121,19 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
             setTDColor(td, 'red')
             error.add('2 Or 4+ Dots')
         }
+        const [start, end] = instance.getDataAtRow(r).slice(0, 2)
+        const cps = Math.ceil(v.length / (tcToSec(end) - tcToSec(start))) || 0
+        label.innerHTML = `<span class=${cps > language?.cps?.value ? LEVEL[language.cps.level] : ''}>cps: ${cps}</span>`
+        label.innerHTML += `&nbsp;`
+        label.innerHTML += v.split('\n').map(val => {
+            const characters = val.length
+            return `<span class=${characters > language?.maxCharacter?.value ? LEVEL[language.maxCharacter.level] : ''}>len: ${String(val.length).padStart(2, ' ')}<br/></span>`
+        }) || '<span>len: 0</span>'
         if (error.size) td.setAttribute('title', [...error].join('\n'))
         else td.removeAttribute('title')
+    } else {
+        label.innerHTML = '<span>cps: 0&nbsp;len: 0</span>'
     }
-    label.textContent = `cps: ${v?.length || 0} ${v?.split('\n').map(val => `len: ${val.length}`).join('\n') || 'len: 0'}`;
     label.style.position = 'absolute'
     label.style.top = 0
     label.style.whiteSpace = 'pre'

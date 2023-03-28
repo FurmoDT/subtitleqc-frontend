@@ -29,11 +29,14 @@ const FileUploadModal = (props) => {
             updateRadioRef.current.checked = false
         }
     };
-    const resetSegments = useRef(props.resetSegments)
+    const resetSegments = useRef(null)
     const [selectionActive, setSelectionActive] = useState(false)
     const [newLanguages, setNewLanguages] = useState(null)
     const remainRadioRef = useRef(null)
     const updateRadioRef = useRef(null)
+    useEffect(() => {
+        resetSegments.current = props.resetSegments
+    }, [props.resetSegments])
     const tcRadioElement = () => {
         return <>
             <MDBRadio inputRef={remainRadioRef} name='inlineRadio' id='remainRadio' label='REMAIN' inline/>

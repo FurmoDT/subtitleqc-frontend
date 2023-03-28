@@ -7,7 +7,7 @@ import {MDBCheckbox} from "mdb-react-ui-kit";
 const TimelineWindow = (props) => {
     const waveformRef = useRef(null);
     const overviewRef = useRef(null);
-    const resetSegment = useRef(props.resetSegments)
+    const resetSegments = useRef(null)
     const onWheel = useCallback((e) => {
         if (e.ctrlKey) {
             e.preventDefault()
@@ -26,6 +26,10 @@ const TimelineWindow = (props) => {
             })
         })
     }, [props.waveformRef])
+
+    useEffect(() => {
+        resetSegments.current = props.resetSegments
+    }, [props.resetSegments])
 
     useEffect(() => {
         if (!props.video) return
@@ -60,7 +64,7 @@ const TimelineWindow = (props) => {
             if (err) console.log(err)
             if (peaks) {
                 props.waveformRef.current = peaks
-                peaks.segments.add(resetSegment.current())
+                peaks.segments.add(resetSegments.current())
                 peaks.on('zoomview.click', (event) => {
                     afterSeekedPromise().then(() => {
                         if (event.evt.ctrlKey) {

@@ -19,7 +19,7 @@ const LanguageWindow = (props) => {
             }
             props.hotRef.current?.addHookOnce('afterRender', afterRenderCallback)
         })
-    }, [])
+    }, [props.hotRef])
     const getSelectedPairs = (rangeArray) => {
         const allPairs = []
         for (const range of rangeArray) {
@@ -190,7 +190,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, afterRenderPromise])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

@@ -121,7 +121,7 @@ const Production = () => {
                 setRightRefSize({
                     width: width,
                     languageWindowHeight: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight,
-                    timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight
+                    timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight + 10
                 })
             }
         });
@@ -179,7 +179,7 @@ const Production = () => {
                                       setRightRefSize({
                                           ...rightRefSize,
                                           languageWindowHeight: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight,
-                                          timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight
+                                          timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight + 10
                                       })
                                   }}>
                             <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}

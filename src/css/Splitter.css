@@ -53,7 +53,7 @@
     align-items: center;
     position: relative;
     z-index: 20;
-    background-color: turquoise;
+    background-color: darkgray;
     cursor: col-resize;
     font-size: 14px;
 }

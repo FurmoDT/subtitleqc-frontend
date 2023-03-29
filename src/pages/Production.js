@@ -43,6 +43,7 @@ const Production = () => {
     const replaceButtonRef = useRef(null)
     const resetSegmentsRef = useRef(null)
     const [tcLock, setTcLock] = useState(false)
+    const tcLockRef = useRef(false)
     const isFromTimelineWindowRef = useRef(false)
     const isFromLanguageWindowRef = useRef(false)
     const afterRenderPromise = useCallback(() => {
@@ -91,6 +92,7 @@ const Production = () => {
             waveformRef.current.segments.removeAll()
             waveformRef.current.segments.add(resetSegmentsRef.current())
         }
+        tcLockRef.current = tcLock
     }, [fnToggle, tcLock])
     useEffect(() => {
         if (languageFile) {
@@ -180,9 +182,10 @@ const Production = () => {
                                           timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight
                                       })
                                   }}>
-                            <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef} tcLock={tcLock}
+                            <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
                                             waveformRef={waveformRef} fnToggle={fnToggle}
+                                            tcLock={tcLock} tcLockRef={tcLockRef}
                                             cellDataRef={cellDataRef} languages={languages}
                                             guideline={projectDetail.guideline}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}

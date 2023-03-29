@@ -1,7 +1,7 @@
 import Handsontable from 'handsontable';
 import '../../css/Handsontable.css'
 import * as Grammarly from '@grammarly/editor-sdk'
-import {useEffect, useRef} from "react";
+import {useCallback, useEffect, useRef} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
 import {createSegment, tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
@@ -11,6 +11,15 @@ const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98
 
 const LanguageWindow = (props) => {
     const containerMain = useRef(null);
+    const afterRenderPromise = useCallback(() => {
+        return new Promise(resolve => {
+            const afterRenderCallback = () => {
+                props.hotRef.current.removeHook('afterRender', afterRenderCallback)
+                resolve()
+            }
+            props.hotRef.current?.addHookOnce('afterRender', afterRenderCallback)
+        })
+    }, [])
     const getSelectedPairs = (rangeArray) => {
         const allPairs = []
         for (const range of rangeArray) {
@@ -43,8 +52,8 @@ const LanguageWindow = (props) => {
         props.hotRef.current = new Handsontable(containerMain.current, {
             data: !props.fnToggle ? props.cellDataRef.current : props.fnRef.current,
             columns: [
-                {data: 'start', type: 'text', renderer: tcInRenderer, readOnly: props.tcLock},
-                {data: 'end', type: 'text', renderer: tcOutRenderer, readOnly: props.tcLock},
+                {data: 'start', type: 'text', renderer: tcInRenderer, readOnly: props.tcLockRef.current},
+                {data: 'end', type: 'text', renderer: tcOutRenderer, readOnly: props.tcLockRef.current},
                 ...(!props.fnToggle ? props.languages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
@@ -127,7 +136,7 @@ const LanguageWindow = (props) => {
                         if (segment) segment.update({startTime: start})
                         else {
                             const end = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'end'))
-                            if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLock))
+                            if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLockRef.current))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
                 } else if (change[1] === 'end') {
@@ -138,7 +147,7 @@ const LanguageWindow = (props) => {
                         if (segment) segment.update({endTime: end})
                         else {
                             const start = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'start'))
-                            if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLock))
+                            if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLockRef.current))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
                 }
@@ -158,6 +167,12 @@ const LanguageWindow = (props) => {
                 }
                 localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
             }
+            props.hotRef.current.render()
+            afterRenderPromise().then(() => {
+                for (let i = 0; i < 2; i++) {
+                    for (let j = index; j < index + amount; j++) props.hotRef.current.getCellMeta(j, i).readOnly = props.tcLockRef.current
+                }
+            })
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
             if (props.waveformRef.current) {
@@ -175,7 +190,14 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLock, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline])
+
+    useEffect(() => {
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < props.hotRef.current.countRows(); j++) props.hotRef.current.getCellMeta(j, i).readOnly = props.tcLock
+        }
+        props.hotRef.current.render()
+    }, [props.tcLock, props.hotRef])
 
     return <div ref={containerMain}/>
 }

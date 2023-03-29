@@ -199,7 +199,7 @@ const LanguageWindow = (props) => {
         props.hotRef.current.render()
     }, [props.tcLock, props.hotRef])
 
-    return <div ref={containerMain}/>
+    return <div style={{zIndex: 0}} ref={containerMain}/>
 }
 
 export default LanguageWindow

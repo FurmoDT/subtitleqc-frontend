@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/subtitleqc-frontend/static/css/main.01583700.css",
-    "main.js": "/subtitleqc-frontend/static/js/main.a0c0fa8a.js",
+    "main.css": "/subtitleqc-frontend/static/css/main.8abbe9ab.css",
+    "main.js": "/subtitleqc-frontend/static/js/main.6c798d68.js",
     "static/js/522.051a2179.chunk.js": "/subtitleqc-frontend/static/js/522.051a2179.chunk.js",
     "static/media/fa-solid-900.ttf": "/subtitleqc-frontend/static/media/fa-solid-900.2877d54f94f30c5d563c.ttf",
     "static/media/fa-brands-400.ttf": "/subtitleqc-frontend/static/media/fa-brands-400.13e40630e5866f777de8.ttf",
@@ -14,7 +14,7 @@
     "index.html": "/subtitleqc-frontend/index.html"
   },
   "entrypoints": [
-    "static/css/main.01583700.css",
-    "static/js/main.a0c0fa8a.js"
+    "static/css/main.8abbe9ab.css",
+    "static/js/main.6c798d68.js"
   ]
 }

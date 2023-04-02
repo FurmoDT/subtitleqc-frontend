@@ -15,3 +15,13 @@ export const downloadFspx = (fileData) => {
     link.href = url;
     link.click();
 }
+
+export const downloadCsv = (fileData) => {
+    const csvData = `번호,TC IN,TC OUT,${fileData.language}\n`
+    const blob = new Blob(['\ufeff' + csvData + fileData.subtitle], {type: 'text/csv;charset=utf-8'})
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.download = `${fileData.name}.csv`
+    link.href = url;
+    link.click();
+}

@@ -1,6 +1,6 @@
 import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon, MDBTooltip} from "mdb-react-ui-kit";
 import {toSrt} from "../../utils/fileParser";
-import {downloadFspx, downloadSrt} from "../../utils/fileDownload";
+import {downloadCsv, downloadFspx, downloadSrt} from "../../utils/fileDownload";
 import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
 import ProjectSettingModal from "./dialogs/ProjectSettingModal";
@@ -50,13 +50,13 @@ const MenuToolbar = (props) => {
                 <MDBDropdownItem link onClick={() => {
                     props.languages.forEach((value) => {
                         downloadSrt({
-                            name: value.name,
+                            name: `${props.projectDetail.name}(${value.name})`,
                             subtitle: toSrt(props.cellDataRef.current, `${value.code}_${value.counter}`)
                         })
                     })
                     props.fnLanguages.forEach((value) => {
                         downloadSrt({
-                            name: value.name,
+                            name: `${props.projectDetail.name}(${value.name})`,
                             subtitle: toSrt(props.fnRef.current, `${value.code}_${value.counter}`)
                         })
                     })
@@ -66,6 +66,23 @@ const MenuToolbar = (props) => {
                         // downloadVtt
                     })
                 }} disabled>.vtt</MDBDropdownItem>
+                <MDBDropdownItem link onClick={() => {
+                    // downloadXlsx()
+                }} disabled>.xlsx</MDBDropdownItem>
+                <MDBDropdownItem link onClick={() => {
+                    const language = props.languages.map(value => `${value.code}_${value.counter}`)
+                    downloadCsv({
+                        name: props.projectDetail.name || '-',
+                        language: language,
+                        subtitle: props.cellDataRef.current.map(obj => (['start', 'end'].concat(language)).map(key => `"${obj[key]?.replaceAll('"', '""')}"`).join(',')).join('\n')
+                    })
+                    const fnLanguage = props.fnLanguages.map(value => `${value.code}_${value.counter}`)
+                    downloadCsv({
+                        name: `${props.projectDetail.name}FN`,
+                        language: fnLanguage,
+                        subtitle: props.fnRef.current.map(obj => (['start', 'end'].concat(fnLanguage)).map(key => `"${obj[key]?.replaceAll('"', '""')}"`).join(',')).join('\n')
+                    })
+                }}>.csv</MDBDropdownItem>
             </MDBDropdownMenu>
         </MDBDropdown>
     </div>

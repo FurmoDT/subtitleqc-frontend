@@ -2,6 +2,7 @@ import {useCallback, useEffect} from 'react';
 import languageEncoding from "detect-file-encoding-and-language";
 import {parseFsp, parseSrt} from "../../utils/fileParser";
 import {xml2json} from "xml-js";
+import {getInfo} from 'react-mediainfo'
 
 const baseStyle = {
     backgroundColor: '#fafafa',
@@ -28,7 +29,7 @@ const Dropzone = (props) => {
         e.preventDefault();
         e.stopPropagation();
         Object.assign(props.dropzoneRef.current.style, dragStyle);
-    },[props.dropzoneRef])
+    }, [props.dropzoneRef])
     const handleDragLeave = useCallback((e) => {
         e.preventDefault()
         e.stopPropagation();
@@ -44,6 +45,7 @@ const Dropzone = (props) => {
         Array.from(files).forEach((file) => {
             const fileFormat = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
             if (['.mp4', '.mov'].includes(fileFormat)) {
+                getInfo(file).then(info => props.setMediaInfo(info))
                 props.setMediaFile(URL.createObjectURL(file))
             } else if (['.fsp', '.srt', '.fspx'].includes(fileFormat)) {
                 const reader = new FileReader()

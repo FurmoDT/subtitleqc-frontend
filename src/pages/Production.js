@@ -20,6 +20,7 @@ const Production = () => {
     const [rightRefSize, setRightRefSize] = useState({width: 0, languageWindowHeight: 0, timelineWindowHeight: 0})
     const LanguageTimelineSplitterRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
+    const [mediaInfo, setMediaInfo] = useState(null)
     const [video, setVideo] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
     const [projectDetail, setProjectDetail] = useState(localStorage.projectDetail ? JSON.parse(localStorage.projectDetail) : defaultProjectDetail())
@@ -129,8 +130,9 @@ const Production = () => {
         return () => observer.disconnect()
     }, []);
     return <>
-        <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setLanguageFile={setLanguageFile}
-                  fnToggleRef={fnToggleRef} languages={languages} fnLanguages={fnLanguages}/>
+        <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
+                  fnToggleRef={fnToggleRef} setLanguageFile={setLanguageFile}
+                  languages={languages} fnLanguages={fnLanguages}/>
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
                          fnToggleRef={fnToggleRef} cellDataRef={cellDataRef} fnRef={fnRef} languageFile={languageFile}
                          setLanguages={setLanguages} setFnLanguages={setFnLanguages} waveformRef={waveformRef}
@@ -154,7 +156,7 @@ const Production = () => {
                         <Splitter position={'horizontal'} primaryPaneHeight={'30%'} postPoned>
                             <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
                                          languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
-                                         mediaFile={mediaFile} video={video} setVideo={setVideo}
+                                         mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
                                          isFromLanguageWindowRef={isFromLanguageWindowRef}
                                          afterRenderPromise={afterRenderPromise}/>
                             <InformationWindow/>

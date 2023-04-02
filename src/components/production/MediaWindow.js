@@ -119,6 +119,10 @@ const MediaWindow = (props) => {
                      controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
                      onReady={onReady}
                      config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
+        <label style={{
+            position: 'absolute', color: 'white', pointerEvents: 'none', top: 0, left: 0, fontSize: 13,
+            marginLeft: 5
+        }}>{props.mediaInfo?.media?.track?.filter((value) => value['@type'] === 'General')[0]?.FrameRate}{'fps'}</label>
         <label ref={fnLabelRef}
                style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre', top: 0}}/>
         <label ref={subtitleLabelRef}

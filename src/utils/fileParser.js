@@ -67,7 +67,6 @@ export const parseFsp = (fspJson, languages) => {
     return {newLanguages: newLanguages, subtitle: items}
 }
 
-
 export function toSrt(array, language) {
     let res = "";
     for (let i = 0; i < array.length; i++) {

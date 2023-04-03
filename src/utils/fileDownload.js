@@ -1,5 +1,7 @@
+import XLSX from "xlsx-js-style";
+
 export const downloadSrt = (fileData) => {
-    const blob = new Blob(['\ufeff',fileData.subtitle], {type: "text/plain"})
+    const blob = new Blob(['\ufeff', fileData.subtitle], {type: "text/plain"})
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.download = `${fileData.name}.srt`
@@ -14,6 +16,15 @@ export const downloadFspx = (fileData) => {
     link.download = `${fileData.projectDetail.name || '-'}.fspx`
     link.href = url;
     link.click();
+}
+
+export const downloadXlsx = (fileData) => {
+    const wb = XLSX.utils.book_new();
+    const wsSubtitle = XLSX.utils.aoa_to_sheet([['TC_IN', 'TC_OUT'].concat(fileData.language), ...fileData.subtitle])
+    const wsFn = XLSX.utils.aoa_to_sheet([['TC_IN', 'TC_OUT'].concat(fileData.fnLanguage), ...fileData.fn])
+    XLSX.utils.book_append_sheet(wb, wsSubtitle, "말자막")
+    XLSX.utils.book_append_sheet(wb, wsFn, "화면자막")
+    XLSX.writeFile(wb, `${fileData.name}.xlsx`)
 }
 
 export const downloadCsv = (fileData) => {

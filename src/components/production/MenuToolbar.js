@@ -1,6 +1,6 @@
 import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon, MDBTooltip} from "mdb-react-ui-kit";
 import {toSrt} from "../../utils/fileParser";
-import {downloadCsv, downloadFspx, downloadSrt} from "../../utils/fileDownload";
+import {downloadCsv, downloadFspx, downloadSrt, downloadXlsx} from "../../utils/fileDownload";
 import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
 import ProjectSettingModal from "./dialogs/ProjectSettingModal";
@@ -67,8 +67,16 @@ const MenuToolbar = (props) => {
                     })
                 }} disabled>.vtt</MDBDropdownItem>
                 <MDBDropdownItem link onClick={() => {
-                    // downloadXlsx()
-                }} disabled>.xlsx</MDBDropdownItem>
+                    const language = props.languages.map(value => `${value.code}_${value.counter}`)
+                    const fnLanguage = props.fnLanguages.map(value => `${value.code}_${value.counter}`)
+                    downloadXlsx({
+                        name: props.projectDetail.name || '-',
+                        language: language,
+                        subtitle: props.cellDataRef.current.map(obj => (['start', 'end'].concat(language)).map(key => obj[key])),
+                        fnLanguage: fnLanguage,
+                        fn: props.fnRef.current.map(obj => (['start', 'end'].concat(language)).map(key => obj[key]))
+                    })
+                }}>.xlsx</MDBDropdownItem>
                 <MDBDropdownItem link onClick={() => {
                     const language = props.languages.map(value => `${value.code}_${value.counter}`)
                     downloadCsv({

@@ -71,6 +71,7 @@ const MediaWindow = (props) => {
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFnLabel(seconds)
+            setTdColor(props.fnToggle ? fnIndexRef.current:subtitleIndexRef.current)
         })
         props.isFromLanguageWindowRef.current = false
     }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, afterRenderPromise])

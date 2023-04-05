@@ -114,6 +114,7 @@ const LanguageWindow = (props) => {
         props.hotRef.current.addHook('afterScrollVertically', setTdColorCallback)
         props.hotRef.current.addHook('afterScrollHorizontally', setTdColorCallback)
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
+            props.hotRef.current.render()
             if (props.hotRef.current.colToProp(column).startsWith('enUS')) {
                 grammarly.then(r => {
                     grammarlyPlugin = r.addPlugin(

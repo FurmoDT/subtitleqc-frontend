@@ -110,7 +110,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     setTDColor(td, 'red')
                     error.add('Dialog Format Error')
                 }
-                v = v.replace(/\s+/g, " ")
+                v = v.replace(/[ \t]+/g, " ")
             }
         }
         if (v.includes('  ')) { // multiple spaces

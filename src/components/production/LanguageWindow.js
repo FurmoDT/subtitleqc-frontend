@@ -11,6 +11,7 @@ const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98
 
 const LanguageWindow = (props) => {
     const containerMain = useRef(null);
+    const setTdColor = props.setTdColor
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const afterRenderCallback = () => {
@@ -102,6 +103,16 @@ const LanguageWindow = (props) => {
             },
         })
         let grammarlyPlugin = null
+        const setTdColorCallback = () => {
+            if (props.playerRef.current.getInternalPlayer()) {
+                const row = !props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current
+                const [start, end] = props.hotRef.current.getDataAtRow(row).slice(0, 2)
+                const currentTime = props.playerRef.current.getCurrentTime()
+                if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end)) setTdColor(row)
+            }
+        }
+        props.hotRef.current.addHook('afterScrollVertically', setTdColorCallback)
+        props.hotRef.current.addHook('afterScrollHorizontally', setTdColorCallback)
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
             if (props.hotRef.current.colToProp(column).startsWith('enUS')) {
                 grammarly.then(r => {
@@ -154,6 +165,7 @@ const LanguageWindow = (props) => {
             })
             props.isFromLanguageWindowRef.current = true
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
+            setTdColorCallback()
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
             if (!props.fnToggle) {
@@ -190,7 +202,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, afterRenderPromise])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, afterRenderPromise, props.subtitleIndexRef, props.fnIndexRef, setTdColor])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

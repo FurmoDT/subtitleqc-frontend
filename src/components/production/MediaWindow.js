@@ -12,83 +12,76 @@ const MediaWindow = (props) => {
     const [showFn, setShowFn] = useState(false)
     const subtitleLabelRef = useRef(null)
     const fnLabelRef = useRef(null)
-    const subtitleIndexRef = useRef(0)
-    const fnIndexRef = useRef(0)
     const setVideo = props.setVideo
     const afterRenderPromise = props.afterRenderPromise
-    const setTdColor = useCallback((index) => {
-        props.hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
-            tdElement.style.backgroundColor = 'beige'
-            tdElement.style.color = 'black'
-        });
-    }, [props.hotRef])
+    const setTdColor = props.setTdColor
     const setSubtitleLabel = useCallback((seconds) => {
-        const row = props.cellDataRef.current[subtitleIndexRef.current]
+        const row = props.cellDataRef.current[props.subtitleIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
-            const nextSubtitle = props.cellDataRef.current[subtitleIndexRef.current][subtitleLanguage] || ''
-            if (curSubtitleIndex !== subtitleIndexRef.current) {
-                curSubtitleIndex = subtitleIndexRef.current
+            const nextSubtitle = props.cellDataRef.current[props.subtitleIndexRef.current][subtitleLanguage] || ''
+            if (curSubtitleIndex !== props.subtitleIndexRef.current) {
+                curSubtitleIndex = props.subtitleIndexRef.current
                 if (!props.fnToggle) {
-                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
-                    afterRenderPromise().then(() => setTdColor(subtitleIndexRef.current))
+                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current)
+                    afterRenderPromise().then(() => setTdColor(props.subtitleIndexRef.current))
                 }
-            } else setTdColor(subtitleIndexRef.current)
+            }
             if (subtitleLabelRef.current.innerHTML !== nextSubtitle) subtitleLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
-            if (curSubtitleIndex === subtitleIndexRef.current) {
+            if (curSubtitleIndex === props.subtitleIndexRef.current) {
                 subtitleLabelRef.current.innerHTML = ''
                 curSubtitleIndex = -1
                 if (!props.fnToggle) props.hotRef.current.render()
             }
         }
-    }, [props.cellDataRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])
+    }, [props.cellDataRef, props.fnToggle, setTdColor, afterRenderPromise, props.subtitleIndexRef, props.hotRef])
     const setFnLabel = useCallback((seconds) => {
-        const row = props.fnRef.current[fnIndexRef.current]
+        const row = props.fnRef.current[props.fnIndexRef.current]
         if (seconds >= tcToSec(row.start) && seconds <= tcToSec(row.end)) {
-            const nextSubtitle = props.fnRef.current[fnIndexRef.current][fnLanguage] || ''
-            if (curFnIndex !== fnIndexRef.current) {
-                curFnIndex = fnIndexRef.current
+            const nextSubtitle = props.fnRef.current[props.fnIndexRef.current][fnLanguage] || ''
+            if (curFnIndex !== props.fnIndexRef.current) {
+                curFnIndex = props.fnIndexRef.current
                 if (props.fnToggle) {
-                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
-                    afterRenderPromise().then(() => setTdColor(fnIndexRef.current))
+                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(props.fnIndexRef.current)
+                    afterRenderPromise().then(() => setTdColor(props.fnIndexRef.current))
                 }
-            } else setTdColor(fnIndexRef.current)
+            }
             if (fnLabelRef.current.innerHTML !== nextSubtitle) fnLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
-            if (curFnIndex === fnIndexRef.current) {
+            if (curFnIndex === props.fnIndexRef.current) {
                 fnLabelRef.current.innerHTML = ''
                 curFnIndex = -1
                 if (props.fnToggle) props.hotRef.current.render()
             }
         }
-    }, [props.fnRef, props.fnToggle, setTdColor, afterRenderPromise, props.hotRef])
+    }, [props.fnRef, props.fnToggle, setTdColor, afterRenderPromise, props.fnIndexRef, props.hotRef])
     const onSeek = useCallback((seconds) => {
-        subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
-        fnIndexRef.current = bisect(props.fnRef.current.map((value) => tcToSec(value.start)), seconds)
-        if (tcToSec(props.cellDataRef.current[subtitleIndexRef.current].start) !== seconds) subtitleIndexRef.current = Math.max(subtitleIndexRef.current - 1, 0)
-        if (tcToSec(props.fnRef.current[fnIndexRef.current].start) !== seconds) fnIndexRef.current = Math.max(fnIndexRef.current - 1, 0)
-        if (!props.hotRef.current.getActiveEditor()?._opened && !props.isFromLanguageWindowRef.current) props.hotRef.current.scrollViewportTo(!props.fnToggle ? subtitleIndexRef.current : fnIndexRef.current, 0)
+        props.subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
+        props.fnIndexRef.current = bisect(props.fnRef.current.map((value) => tcToSec(value.start)), seconds)
+        if (tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].start) !== seconds) props.subtitleIndexRef.current = Math.max(props.subtitleIndexRef.current - 1, 0)
+        if (tcToSec(props.fnRef.current[props.fnIndexRef.current].start) !== seconds) props.fnIndexRef.current = Math.max(props.fnIndexRef.current - 1, 0)
+        if (!props.hotRef.current.getActiveEditor()?._opened && !props.isFromLanguageWindowRef.current) props.hotRef.current.scrollViewportTo(!props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current, 0)
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFnLabel(seconds)
         })
         props.isFromLanguageWindowRef.current = false
-    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, afterRenderPromise])
+    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, props.subtitleIndexRef, props.fnIndexRef, afterRenderPromise])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFnLabel(state.playedSeconds)
-        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[subtitleIndexRef.current].end)) subtitleIndexRef.current += 1
-        if (state.playedSeconds >= tcToSec(props.fnRef.current[fnIndexRef.current].end)) fnIndexRef.current += 1
-    }, [props.cellDataRef, props.fnRef, setSubtitleLabel, setFnLabel])
+        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].end)) props.subtitleIndexRef.current += 1
+        if (state.playedSeconds >= tcToSec(props.fnRef.current[props.fnIndexRef.current].end)) props.fnIndexRef.current += 1
+    }, [props.cellDataRef, props.fnRef, setSubtitleLabel, setFnLabel, props.subtitleIndexRef, props.fnIndexRef])
     const onReady = useCallback(() => {
         if (props.video !== props.mediaFile) {
             setVideo(props.mediaFile) // generate waveform after video is loaded
             curSubtitleIndex = -1
             curFnIndex = -1
-            subtitleIndexRef.current = 0
-            fnIndexRef.current = 0
+            props.subtitleIndexRef.current = 0
+            props.fnIndexRef.current = 0
         }
-    }, [props.mediaFile, props.video, setVideo])
+    }, [props.mediaFile, props.video, setVideo, props.subtitleIndexRef, props.fnIndexRef])
     useEffect(() => {
         fnLabelRef.current.style.display = showFn ? '' : 'none'
     }, [showFn])

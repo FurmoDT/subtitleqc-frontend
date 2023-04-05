@@ -47,6 +47,14 @@ const Production = () => {
     const tcLockRef = useRef(false)
     const isFromTimelineWindowRef = useRef(false)
     const isFromLanguageWindowRef = useRef(false)
+    const subtitleIndexRef = useRef(0)
+    const fnIndexRef = useRef(0)
+    const setTdColor = useCallback((index) => {
+        hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
+            tdElement.style.backgroundColor = 'beige'
+            tdElement.style.color = 'black'
+        });
+    }, [])
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const timeOut = setTimeout(() => {
@@ -158,7 +166,8 @@ const Production = () => {
                                          languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
                                          mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
                                          isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                         afterRenderPromise={afterRenderPromise}/>
+                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}
+                                         afterRenderPromise={afterRenderPromise} setTdColor={setTdColor}/>
                             <InformationWindow/>
                         </Splitter>
                     </div>
@@ -187,11 +196,12 @@ const Production = () => {
                             <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
                                             waveformRef={waveformRef} fnToggle={fnToggle}
-                                            tcLock={tcLock} tcLockRef={tcLockRef}
+                                            tcLock={tcLock} tcLockRef={tcLockRef} setTdColor={setTdColor}
                                             cellDataRef={cellDataRef} languages={languages}
                                             guideline={projectDetail.guideline}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}
                                             isFromLanguageWindowRef={isFromLanguageWindowRef}
+                                            subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}
                                             fnRef={fnRef} fnLanguages={fnLanguages}/>
                             <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}

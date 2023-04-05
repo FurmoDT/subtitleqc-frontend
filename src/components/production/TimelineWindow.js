@@ -77,16 +77,25 @@ const TimelineWindow = (props) => {
                         }
                     })
                 })
+                peaks.on("segments.dragged", (event) => {
+                    const [startTime, endTime] = [event.segment.startTime.toFixed(3), event.segment.endTime.toFixed(3)]
+                    const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id)
+                    if (!event.startMarker) {
+                        props.hotRef.current.selectCell(row, 1)
+                        props.hotRef.current.getCell(row, 1).innerHTML = secToTc(Number(endTime))
+                    } else {
+                        props.hotRef.current.selectCell(row, 0)
+                        props.hotRef.current.getCell(row, 0).innerHTML = secToTc(Number(startTime))
+                    }
+                })
                 peaks.on("segments.dragend", (event) => {
                     props.isFromTimelineWindowRef.current = true
                     const [startTime, endTime] = [event.segment.startTime.toFixed(3), event.segment.endTime.toFixed(3)]
                     const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id)
                     if (!event.startMarker) {
                         props.hotRef.current.setDataAtCell(row, 1, secToTc(Number(endTime)))
-                        props.hotRef.current.selectCell(row, 1)
                     } else {
                         props.hotRef.current.setDataAtCell(row, 0, secToTc(Number(startTime)))
-                        props.hotRef.current.selectCell(row, 0)
                     }
                 })
                 peaks.on('peaks.ready', () => {
@@ -120,11 +129,23 @@ const TimelineWindow = (props) => {
         <div style={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}>
             <MDBCheckbox id='tcLockCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
                          label='TC LOCK'
-                         labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center', color: 'white'}}
+                         labelStyle={{
+                             fontSize: 12,
+                             userSelect: 'none',
+                             display: 'flex',
+                             alignItems: 'center',
+                             color: 'white'
+                         }}
                          onChange={(event) => props.setTcLock(event.target.checked)}/>
             <MDBCheckbox id='scrollViewCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
                          label='SELECT CURRENT SUBTITLE WHILE PLAYING'
-                         labelStyle={{fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center', color: 'white'}}/>
+                         labelStyle={{
+                             fontSize: 12,
+                             userSelect: 'none',
+                             display: 'flex',
+                             alignItems: 'center',
+                             color: 'white'
+                         }}/>
         </div>
         <div style={{backgroundColor: 'black'}}>
             <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 100}px`}}

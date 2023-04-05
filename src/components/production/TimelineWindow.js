@@ -104,7 +104,8 @@ const TimelineWindow = (props) => {
                         props.waveformRef.current = null
                     }
                 })
-                peaks.views.getView('zoomview')?.setAmplitudeScale(2)
+                peaks.views.getView('zoomview')?.setAmplitudeScale(2.5)
+                peaks.views.getView('zoomview')?.setSegmentDragMode('no-overlap')
             }
         })
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})

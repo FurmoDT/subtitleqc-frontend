@@ -143,7 +143,7 @@ const LanguageWindow = (props) => {
                 if (change[1] === 'start') {
                     const rowId = props.hotRef.current.getDataAtRowProp(change[0], 'rowId')
                     const start = tcToSec(change[3])
-                    if (start) {
+                    if (start >= 0) {
                         const segment = props.waveformRef.current.segments.getSegment(rowId)
                         if (segment) segment.update({startTime: start})
                         else {

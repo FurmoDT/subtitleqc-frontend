@@ -49,7 +49,7 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
                 error.add('TC Range Over 7 Seconds')
             }
         }
-        if (!isTCValid(v) || tcToSec(instance.getDataAtCell(r, c - 1)) > tcToSec(v)) {
+        if (!isTCValid(v) || tcToSec(instance.getDataAtCell(r, c - 1)) >= tcToSec(v)) {
             setTDColor(td, 'red')
             error.add('Invalid TC')
         }

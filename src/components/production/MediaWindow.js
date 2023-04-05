@@ -74,7 +74,7 @@ const MediaWindow = (props) => {
             setTdColor(props.fnToggle ? fnIndexRef.current:subtitleIndexRef.current)
         })
         props.isFromLanguageWindowRef.current = false
-    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, afterRenderPromise])
+    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, afterRenderPromise, setTdColor])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFnLabel(state.playedSeconds)

@@ -77,26 +77,40 @@ const TimelineWindow = (props) => {
                         }
                     })
                 })
+                peaks.on("segments.mouseenter", (event) => {
+                    event.evt.target.style.cursor = 'move'
+                })
+                peaks.on("segments.mouseleave", (event) => {
+                    event.evt.target.style.cursor = 'default'
+                })
+                peaks.on("segments.dragstart", (event) => {
+                    props.hotRef.current.scrollViewportTo(props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id))
+                })
                 peaks.on("segments.dragged", (event) => {
-                    const [startTime, endTime] = [event.segment.startTime.toFixed(3), event.segment.endTime.toFixed(3)]
+                    const [start, end] = [secToTc(Number(event.segment.startTime.toFixed(3))), secToTc(Number(event.segment.endTime.toFixed(3)))]
                     const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id)
-                    if (!event.startMarker) {
-                        props.hotRef.current.selectCell(row, 1)
-                        props.hotRef.current.getCell(row, 1).innerHTML = secToTc(Number(endTime))
-                    } else {
-                        props.hotRef.current.selectCell(row, 0)
-                        props.hotRef.current.getCell(row, 0).innerHTML = secToTc(Number(startTime))
+                    const startElement = props.hotRef.current.getCell(row, 0)
+                    const endElement = props.hotRef.current.getCell(row, 1)
+                    const cells = []
+                    if (startElement && start !== startElement.innerHTML) {
+                        cells.push([row, 0])
+                        startElement.innerHTML = start
                     }
+                    if (endElement && end !== endElement.innerHTML) {
+                        cells.push([row, 1])
+                        endElement.innerHTML = end
+                    }
+                    props.hotRef.current.selectCells(cells)
                 })
                 peaks.on("segments.dragend", (event) => {
                     props.isFromTimelineWindowRef.current = true
-                    const [startTime, endTime] = [event.segment.startTime.toFixed(3), event.segment.endTime.toFixed(3)]
+                    const [start, end] = [secToTc(Number(event.segment.startTime.toFixed(3))), secToTc(Number(event.segment.endTime.toFixed(3)))]
                     const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id)
-                    if (!event.startMarker) {
-                        props.hotRef.current.setDataAtCell(row, 1, secToTc(Number(endTime)))
-                    } else {
-                        props.hotRef.current.setDataAtCell(row, 0, secToTc(Number(startTime)))
-                    }
+                    const cells = []
+                    if (props.hotRef.current.getDataAtCell(row, 0) !== start) cells.push([row, 0, start])
+                    if (props.hotRef.current.getDataAtCell(row, 1) !== end) cells.push([row, 1, end])
+                    props.hotRef.current.setDataAtCell(cells)
+                    event.segment.update()
                 })
                 peaks.on('peaks.ready', () => {
                     if (props.playerRef.current.getInternalPlayer()?.src !== props.video) {
@@ -105,6 +119,7 @@ const TimelineWindow = (props) => {
                     }
                 })
                 peaks.views.getView('zoomview')?.setAmplitudeScale(2.5)
+                peaks.views.getView('zoomview')?.enableSegmentDragging(true)
                 peaks.views.getView('zoomview')?.setSegmentDragMode('no-overlap')
             }
         })

@@ -138,6 +138,7 @@ const LanguageWindow = (props) => {
                 props.isFromTimelineWindowRef.current = false
                 return
             }
+            const updatableSegments = {}
             changes.forEach((change) => {
                 if (!props.waveformRef.current) return
                 if (change[1] === 'start') {
@@ -145,7 +146,7 @@ const LanguageWindow = (props) => {
                     const start = tcToSec(change[3])
                     if (start >= 0) {
                         const segment = props.waveformRef.current.segments.getSegment(rowId)
-                        if (segment) segment.update({startTime: start})
+                        if (segment) updatableSegments[rowId] = Object.assign(updatableSegments[rowId] || {segment: segment}, {startTime: start})
                         else {
                             const end = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'end'))
                             if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLockRef.current))
@@ -156,7 +157,7 @@ const LanguageWindow = (props) => {
                     const end = tcToSec(change[3])
                     if (end) {
                         const segment = props.waveformRef.current.segments.getSegment(rowId)
-                        if (segment) segment.update({endTime: end})
+                        if (segment) updatableSegments[rowId] = Object.assign(updatableSegments[rowId] || {segment: segment}, {endTime: end})
                         else {
                             const start = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'start'))
                             if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLockRef.current))
@@ -164,6 +165,7 @@ const LanguageWindow = (props) => {
                     } else props.waveformRef.current.segments.removeById(rowId)
                 }
             })
+            for (let key in updatableSegments) updatableSegments[key].segment.update(updatableSegments[key])
             props.isFromLanguageWindowRef.current = true
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
             setTdColorCallback()

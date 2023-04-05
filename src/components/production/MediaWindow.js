@@ -32,7 +32,7 @@ const MediaWindow = (props) => {
                     if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
                     afterRenderPromise().then(() => setTdColor(subtitleIndexRef.current))
                 }
-            }
+            } else setTdColor(subtitleIndexRef.current)
             if (subtitleLabelRef.current.innerHTML !== nextSubtitle) subtitleLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
             if (curSubtitleIndex === subtitleIndexRef.current) {
@@ -52,7 +52,7 @@ const MediaWindow = (props) => {
                     if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(fnIndexRef.current)
                     afterRenderPromise().then(() => setTdColor(fnIndexRef.current))
                 }
-            }
+            } else setTdColor(fnIndexRef.current)
             if (fnLabelRef.current.innerHTML !== nextSubtitle) fnLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
             if (curFnIndex === fnIndexRef.current) {
@@ -71,10 +71,9 @@ const MediaWindow = (props) => {
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFnLabel(seconds)
-            setTdColor(props.fnToggle ? fnIndexRef.current:subtitleIndexRef.current)
         })
         props.isFromLanguageWindowRef.current = false
-    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, afterRenderPromise, setTdColor])
+    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, afterRenderPromise])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFnLabel(state.playedSeconds)

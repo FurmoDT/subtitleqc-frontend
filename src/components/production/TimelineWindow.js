@@ -8,11 +8,17 @@ const TimelineWindow = (props) => {
     const waveformRef = useRef(null);
     const overviewRef = useRef(null);
     const resetSegments = useRef(null)
+    const amplitudeScale = useRef(2)
     const onWheel = useCallback((e) => {
         if (e.ctrlKey) {
             e.preventDefault()
             if (e.deltaY > 0) props.waveformRef.current?.zoom.zoomOut()
             else props.waveformRef.current?.zoom.zoomIn()
+        } else if (e.shiftKey) {
+            e.preventDefault()
+            if (e.deltaY > 0) amplitudeScale.current = Math.max(amplitudeScale.current - 0.5, 0.5)
+            else amplitudeScale.current = Math.min(amplitudeScale.current + 0.5, 5)
+            props.waveformRef.current.views.getView('zoomview')?.setAmplitudeScale(amplitudeScale.current)
         } else {
             const player = props.waveformRef.current?.player
             if (e.deltaY > 0) player?.seek(player.getCurrentTime() - 1)
@@ -118,7 +124,7 @@ const TimelineWindow = (props) => {
                         props.waveformRef.current = null
                     }
                 })
-                peaks.views.getView('zoomview')?.setAmplitudeScale(2.5)
+                peaks.views.getView('zoomview')?.setAmplitudeScale(amplitudeScale.current)
                 peaks.views.getView('zoomview')?.enableSegmentDragging(true)
                 peaks.views.getView('zoomview')?.setSegmentDragMode('no-overlap')
             }

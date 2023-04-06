@@ -124,6 +124,7 @@ const TimelineWindow = (props) => {
                         props.waveformRef.current = null
                     }
                 })
+                amplitudeScale.current = 2
                 peaks.views.getView('zoomview')?.setAmplitudeScale(amplitudeScale.current)
                 peaks.views.getView('zoomview')?.enableSegmentDragging(true)
                 peaks.views.getView('zoomview')?.setSegmentDragMode('no-overlap')

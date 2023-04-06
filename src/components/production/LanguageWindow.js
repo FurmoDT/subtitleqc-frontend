@@ -131,6 +131,12 @@ const LanguageWindow = (props) => {
             const tcIn = props.hotRef.current.getDataAtCell(row, 0)
             if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')
         })
+        props.hotRef.current.addHook('beforeChange', () => {
+            if (props.hotRef.current.getActiveEditor()?._opened) {
+                props.isFromLanguageWindowRef.current = true
+                props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
+            }
+        })
         props.hotRef.current.addHook('afterChange', (changes) => {
             grammarlyPlugin?.disconnect()
             !props.fnToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
@@ -166,8 +172,6 @@ const LanguageWindow = (props) => {
                 }
             })
             for (let key in updatableSegments) updatableSegments[key].segment.update(updatableSegments[key])
-            props.isFromLanguageWindowRef.current = true
-            props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
             setTdColorCallback()
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {

@@ -2,7 +2,7 @@
   "name": "subtitleqc-frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://furmo-dt.github.io/subtitleqc-frontend",
+  "homepage": "https://test.furmo.co.kr",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.3.0",
     "@grammarly/editor-sdk": "^2.3.12",
@@ -35,7 +35,7 @@
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build && cp build/index.html build/404.html",
+    "predeploy": "npm run build && cp CNAME ./build && cp build/index.html build/404.html",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {

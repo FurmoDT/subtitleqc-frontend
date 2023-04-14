@@ -1,4 +1,5 @@
 import {
+    MDBBtn,
     MDBCollapse,
     MDBContainer,
     MDBIcon,
@@ -26,20 +27,26 @@ export default function Navbar(props) {
                     <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/production'),
-                                    [navigate])}>Production</MDBNavbarLink>
+                                onClick={useCallback(() => navigate('/production'), [navigate])}>Production</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/qc'),
-                                    [navigate])}>QC</MDBNavbarLink>
+                                onClick={useCallback(() => navigate('/qc'), [navigate])}>QC</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/manual'),
-                                    [navigate])}>Manual</MDBNavbarLink>
+                                onClick={useCallback(() => navigate('/manual'), [navigate])}>Manual</MDBNavbarLink>
                         </MDBNavbarItem>
                     </MDBNavbarNav>
+                    <MDBBtn outline color={'link'} className={'text-nowrap'}
+                            style={{display: props.userAuth.accessToken ? 'none' : ''}}
+                            onClick={useCallback(() => navigate('/login'), [navigate])}>Login</MDBBtn>
+                    <MDBBtn outline color={'link'} className={'text-nowrap'}
+                            style={{display: props.userAuth.accessToken ? '' : 'none'}}
+                            onClick={useCallback(() => {
+                                navigate('/')
+                                props.userAuth.accessToken = null
+                            }, [navigate, props.userAuth])}>Logout</MDBBtn>
                 </MDBCollapse>
             </MDBContainer>
         </MDBNavbar>

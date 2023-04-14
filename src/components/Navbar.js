@@ -26,17 +26,17 @@ export default function Navbar(props) {
                     <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/production', {replace: true}),
+                                onClick={useCallback(() => navigate('/production'),
                                     [navigate])}>Production</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/qc', {replace: true}),
+                                onClick={useCallback(() => navigate('/qc'),
                                     [navigate])}>QC</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/manual', {replace: true}),
+                                onClick={useCallback(() => navigate('/manual'),
                                     [navigate])}>Manual</MDBNavbarLink>
                         </MDBNavbarItem>
                     </MDBNavbarNav>

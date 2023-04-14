@@ -111,7 +111,7 @@ const MediaWindow = (props) => {
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
                      controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
                      onReady={onReady}
-                     config={{file: {attributes: {controlsList: 'nodownload'}}}}/>
+                     config={{file: {attributes: {controlsList: 'nodownload nofullscreen', disablePictureInPicture: true}}}}/>
         <label style={{
             position: 'absolute', color: 'white', pointerEvents: 'none', top: 0, left: 0, fontSize: 13,
             marginLeft: 5

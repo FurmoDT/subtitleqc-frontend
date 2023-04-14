@@ -6,6 +6,7 @@ export const bisect = (arr, target) => {
         if (arr[middle] < target) left = middle + 1
         else right = middle
     }
+    if (arr[left] < target) return arr.length
     return left
 };
 

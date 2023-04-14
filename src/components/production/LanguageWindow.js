@@ -107,7 +107,7 @@ const LanguageWindow = (props) => {
             if (props.playerRef.current.getInternalPlayer()) {
                 const row = !props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current
                 const [start, end] = props.hotRef.current.getDataAtRow(row).slice(0, 2)
-                const currentTime = props.playerRef.current.getCurrentTime()
+                const currentTime = props.playerRef.current.getCurrentTime().toFixed(3)
                 if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end)) setTdColor(row)
             }
         }
@@ -145,7 +145,7 @@ const LanguageWindow = (props) => {
                 return
             }
             const updatableSegments = {}
-            changes.forEach((change) => {
+            changes.forEach((change, index) => {
                 if (!props.waveformRef.current) return
                 if (change[1] === 'start') {
                     const rowId = props.hotRef.current.getDataAtRowProp(change[0], 'rowId')
@@ -169,6 +169,10 @@ const LanguageWindow = (props) => {
                             if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLockRef.current))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
+                }
+                if (index === changes.length - 1) {
+                    if (!props.fnToggle) props.subtitleIndexRef.current = change[0]
+                    else props.fnIndexRef.current = change[0]
                 }
             })
             for (let key in updatableSegments) updatableSegments[key].segment.update(updatableSegments[key])

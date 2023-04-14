@@ -99,14 +99,14 @@ const TimelineWindow = (props) => {
                     const endElement = props.hotRef.current.getCell(row, 1)
                     const cells = []
                     if (startElement && start !== startElement.innerHTML) {
-                        cells.push([row, 0])
+                        cells.push([row, 0, row, 0])
                         startElement.innerHTML = start
                     }
                     if (endElement && end !== endElement.innerHTML) {
-                        cells.push([row, 1])
+                        cells.push([row, 1, row, 1])
                         endElement.innerHTML = end
                     }
-                    props.hotRef.current.selectCells(cells)
+                    if (JSON.stringify(props.hotRef.current.getSelected()) !== JSON.stringify(cells)) props.hotRef.current.selectCells(cells)
                 })
                 peaks.on("segments.dragend", (event) => {
                     props.isFromTimelineWindowRef.current = true

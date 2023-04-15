@@ -164,3 +164,4 @@ export const defaultLanguage = () => []
 export const defaultProjectDetail = () => ({name: '', guideline: {client: '', language: {}}})
 
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL
+export const apiUrl = process.env.REACT_APP_API_URL

@@ -1,8 +1,17 @@
 import {MDBBtn, MDBInput} from "mdb-react-ui-kit";
+import axios from "../utils/axios";
+import {HttpStatusCode} from "axios";
+import {useNavigate} from "react-router-dom";
 
 const LoginPage = (props) => {
+    const navigate = useNavigate()
     const authenticate = () => {
-        props.userAuth.accessToken = true
+        axios.post(`/v1/auth/login`, {}).then((response) => {
+            if (response.status === HttpStatusCode.Ok) {
+                props.userAuth.accessToken = `${response.data.token_type} ${response.data.access_token}`
+                navigate('/')
+            }
+        })
     }
     return <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <div style={{width: '300px', display: 'flex', flexDirection: 'column'}}>

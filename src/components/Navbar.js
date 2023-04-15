@@ -12,6 +12,8 @@ import {
 } from 'mdb-react-ui-kit';
 import {Outlet, useNavigate} from "react-router-dom";
 import {useCallback, useState} from "react";
+import axios from "../utils/axios";
+import {HttpStatusCode} from "axios";
 
 export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
@@ -44,8 +46,12 @@ export default function Navbar(props) {
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
                             style={{display: props.userAuth.accessToken ? '' : 'none'}}
                             onClick={useCallback(() => {
-                                navigate('/')
-                                props.userAuth.accessToken = null
+                                axios.post(`/v1/auth/logout`, {}).then((response) => {
+                                    if (response.status === HttpStatusCode.Ok) {
+                                        props.userAuth.accessToken = null
+                                        navigate('/')
+                                    }
+                                })
                             }, [navigate, props.userAuth])}>Logout</MDBBtn>
                 </MDBCollapse>
             </MDBContainer>

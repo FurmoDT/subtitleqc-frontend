@@ -46,7 +46,9 @@ export default function Navbar(props) {
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
                             style={{display: props.userAuth.accessToken ? '' : 'none'}}
                             onClick={useCallback(() => {
-                                axios.post(`/v1/auth/logout`, {}).then((response) => {
+                                axios.post(`/v1/auth/logout`, {}, {
+                                    headers: {Authorization: props.userAuth.accessToken},
+                                }).then((response) => {
                                     if (response.status === HttpStatusCode.Ok) {
                                         props.userAuth.accessToken = null
                                         navigate('/')

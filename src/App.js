@@ -16,7 +16,7 @@ function App() {
     useEffect(() => {
         axios.post('/v1/auth/refresh').then((response) => {
             setAccessToken(response.data.access_token)
-        }).catch(() => null)
+        }).catch(() => console.clear())
     }, [])
     return <div style={{overflow: 'hidden', width: '100vw', height: '100vh'}}>
         <AxiosInterceptor setAccessToken={setAccessToken}>

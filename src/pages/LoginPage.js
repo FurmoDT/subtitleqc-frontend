@@ -8,7 +8,7 @@ const LoginPage = (props) => {
     const authenticate = () => {
         axios.post(`/v1/auth/login`, {}).then((response) => {
             if (response.status === HttpStatusCode.Ok) {
-                props.userAuth.accessToken = `${response.data.token_type} ${response.data.access_token}`
+                props.userAuth.accessToken = response.data.access_token
                 navigate('/')
             }
         })

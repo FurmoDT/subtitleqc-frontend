@@ -107,11 +107,21 @@ const MediaWindow = (props) => {
         display: 'flex',
         borderStyle: 'solid',
         borderWidth: 'thin'
+    }} onClick={() => {
+        const video = props.playerRef.current?.getInternalPlayer()
+        if (video) video.paused ? video.play() : video.pause()
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
                      controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
                      onReady={onReady}
-                     config={{file: {attributes: {controlsList: 'nodownload nofullscreen', disablePictureInPicture: true}}}}/>
+                     config={{
+                         file: {
+                             attributes: {
+                                 controlsList: 'nodownload nofullscreen',
+                                 disablePictureInPicture: true
+                             }
+                         }
+                     }}/>
         <label style={{
             position: 'absolute', color: 'white', pointerEvents: 'none', top: 0, left: 0, fontSize: 13,
             marginLeft: 5

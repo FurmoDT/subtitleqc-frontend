@@ -54,7 +54,7 @@ const TransToolbar = (props) => {
             <MDBBtn ref={props.tcInButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const row = props.hotSelectionRef.current.rowStart
                 if (row != null) {
-                    props.hotRef.current.setDataAtCell(row, 0, secToTc(props.playerRef.current?.getCurrentTime()))
+                    props.hotRef.current.setDataAtCell([[row, 0, secToTc(props.playerRef.current?.getCurrentTime())], [row, 1, secToTc(props.playerRef.current?.getCurrentTime() + 1)]])
                     props.hotRef.current.selectCell(row, 0)
                 }
             }}><FiSunrise color={'black'} size={20}/></MDBBtn>

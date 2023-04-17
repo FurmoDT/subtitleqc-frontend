@@ -48,7 +48,7 @@ export default function Navbar(props) {
                             style={{display: props.accessToken ? '' : 'none'}}
                             onClick={useCallback(() => {
                                 axios.post(`/v1/auth/logout`, {}, {
-                                    headers: {Authorization: `Bearer ${props.accessToken}`},
+                                    headers: {Authorization: `Bearer ${props.accessToken}`}
                                 }).then((response) => {
                                     if (response.status === HttpStatusCode.Ok) {
                                         setAccessToken(null)

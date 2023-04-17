@@ -206,7 +206,7 @@ const Production = () => {
                             <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                             waveformRef={waveformRef} mediaFile={mediaFile} video={video}
-                                            setTcLock={setTcLock}/>
+                                            tcLockRef={tcLockRef} setTcLock={setTcLock}/>
                         </Splitter>
                     </div>
                 </Splitter>

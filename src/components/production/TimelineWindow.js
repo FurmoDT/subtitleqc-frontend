@@ -131,11 +131,21 @@ const TimelineWindow = (props) => {
             }
         })
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})
+        waveformRef.current.addEventListener('keydown', (event) => {
+            if (!props.tcLockRef.current && event.key === 'Delete') {
+                const curSegment = props.waveformRef.current.segments.find(props.waveformRef.current.player.getCurrentTime(), props.waveformRef.current.player.getCurrentTime()).pop()
+                if (curSegment){
+                    const curRow = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(curSegment.id)
+                    props.hotRef.current.setDataAtCell([[curRow, 0, ''], [curRow, 1, '']])
+                }
+            }
+        })
+        waveformRef.current.setAttribute('tabindex', 0)
         return () => {
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
         }
-    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef])
+    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

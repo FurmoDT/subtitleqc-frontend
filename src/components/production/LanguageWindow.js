@@ -50,23 +50,47 @@ const LanguageWindow = (props) => {
             textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
+        const customTextEditor = Handsontable.editors.TextEditor.prototype.extend();
+        customTextEditor.prototype.init = function () {
+            Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
+            this.TEXTAREA_PARENT.addEventListener('keydown', (event) => {
+                if (event.code === 'Space' && !this.isOpened()) {
+                    event.stopPropagation()
+                    if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.getInternalPlayer().play()
+                    else props.playerRef.current.getInternalPlayer()?.pause()
+                }
+            })
+        }
         props.hotRef.current = new Handsontable(containerMain.current, {
             data: !props.fnToggle ? props.cellDataRef.current : props.fnRef.current,
             columns: [
-                {data: 'start', type: 'text', renderer: tcInRenderer, readOnly: props.tcLockRef.current},
-                {data: 'end', type: 'text', renderer: tcOutRenderer, readOnly: props.tcLockRef.current},
+                {
+                    data: 'start',
+                    type: 'text',
+                    renderer: tcInRenderer,
+                    readOnly: props.tcLockRef.current,
+                    editor: customTextEditor
+                },
+                {
+                    data: 'end',
+                    type: 'text',
+                    renderer: tcOutRenderer,
+                    readOnly: props.tcLockRef.current,
+                    editor: customTextEditor
+                },
                 ...(!props.fnToggle ? props.languages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
-                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
+                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text',
+                        editor: customTextEditor
                     }
                 }) : props.fnLanguages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
-                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text'
+                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text',
+                        editor: customTextEditor
                     }
                 }))
-                // {data: 'error', type: 'text'},
             ],
             manualColumnResize: true,
             colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fnToggle ? props.languages.map((value) => value.name) : props.fnLanguages.map((value) => value.name)), 'error'],

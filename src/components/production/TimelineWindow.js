@@ -1,13 +1,16 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
 import {bisect, secToTc, tcToSec} from "../../utils/functions";
-import {MDBCheckbox} from "mdb-react-ui-kit";
+import {MDBBtn, MDBCheckbox, MDBIcon, MDBSpinner} from "mdb-react-ui-kit";
 
 
 const TimelineWindow = (props) => {
     const waveformRef = useRef(null);
     const overviewRef = useRef(null);
     const resetSegments = useRef(null)
+    const statusRef = useRef(null);
+    const spinnerRef = useRef(null);
+    const warningRef = useRef(null);
     const amplitudeScale = useRef(2)
     const onWheel = useCallback((e) => {
         if (e.ctrlKey) {
@@ -32,13 +35,28 @@ const TimelineWindow = (props) => {
             })
         })
     }, [props.waveformRef])
-
+    const setStatusDisplay = (status) => {
+        if (status === 'isLoading') {
+            spinnerRef.current.style.display = ''
+            warningRef.current.style.display = 'none'
+        } else if (status === 'error') {
+            spinnerRef.current.style.display = 'none'
+            warningRef.current.style.display = ''
+        } else if (status === 'default' || status === 'loaded') {
+            spinnerRef.current.style.display = 'none'
+            warningRef.current.style.display = 'none'
+        }
+    }
     useEffect(() => {
         resetSegments.current = props.resetSegments
     }, [props.resetSegments])
 
     useEffect(() => {
         if (!props.video) return
+        setStatusDisplay('isLoading')
+        window.addEventListener('error', (ev) => {
+            if (ev.error.name === 'TypeError') setStatusDisplay('error')
+        })
         const options = {
             mediaElement: document.querySelector('video'),
             webAudio: {
@@ -67,7 +85,10 @@ const TimelineWindow = (props) => {
             segments: []
         }
         Peaks.init(options, function (err, peaks) {
-            if (err) console.log(err)
+            if (err) {
+                setStatusDisplay('error')
+                console.log(err)
+            }
             if (peaks) {
                 props.waveformRef.current = peaks
                 peaks.segments.add(resetSegments.current())
@@ -122,6 +143,8 @@ const TimelineWindow = (props) => {
                     if (props.playerRef.current.getInternalPlayer()?.src !== props.video) {
                         props.waveformRef.current?.destroy()
                         props.waveformRef.current = null
+                    } else {
+                        setStatusDisplay('loaded')
                     }
                 })
                 amplitudeScale.current = 2
@@ -134,7 +157,7 @@ const TimelineWindow = (props) => {
         waveformRef.current.addEventListener('keydown', (event) => {
             if (!props.tcLockRef.current && event.key === 'Delete') {
                 const curSegment = props.waveformRef.current.segments.find(props.waveformRef.current.player.getCurrentTime(), props.waveformRef.current.player.getCurrentTime()).pop()
-                if (curSegment){
+                if (curSegment) {
                     const curRow = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(curSegment.id)
                     props.hotRef.current.setDataAtCell([[curRow, 0, ''], [curRow, 1, '']])
                 }
@@ -144,6 +167,9 @@ const TimelineWindow = (props) => {
         return () => {
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
+            window.removeEventListener('error', (ev) => {
+                if (ev.error.name === 'TypeError') setStatusDisplay('error')
+            })
         }
     }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef])
 
@@ -152,10 +178,12 @@ const TimelineWindow = (props) => {
     }, [props.size, props.waveformRef])
 
     useEffect(() => {
+        setStatusDisplay('default')
         if (!props.mediaFile) {
+            statusRef.current.style.display = 'none'
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
-        }
+        } else statusRef.current.style.display = ''
     }, [props.mediaFile, props.waveformRef])
 
     return <>
@@ -181,6 +209,16 @@ const TimelineWindow = (props) => {
                          }}/>
         </div>
         <div style={{backgroundColor: 'black'}}>
+            <div ref={statusRef} className={'text-center'}>
+                <MDBSpinner ref={spinnerRef} style={{
+                    width: `${props.size.timelineWindowHeight / 3}px`,
+                    height: `${props.size.timelineWindowHeight / 3}px`,
+                    marginTop: '10px'
+                }}/>
+                <MDBBtn ref={warningRef} style={{marginTop: '10px'}} size={'sm'} color={'link'} disabled>
+                    <MDBIcon fas icon="exclamation-circle" size={'3x'} color={'white'}/>
+                </MDBBtn>
+            </div>
             <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 100}px`}}
                  onClick={() => props.waveformRef.current?.player.pause()}/>
             <div ref={overviewRef} style={{width: '100%', height: '60px'}}/>

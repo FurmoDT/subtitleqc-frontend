@@ -151,7 +151,7 @@ const TimelineWindow = (props) => {
     return <>
         <div style={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}>
             <MDBCheckbox id='tcLockCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
-                         label='TC LOCK'
+                         label='TC LOCK' defaultChecked={true}
                          labelStyle={{
                              fontSize: 12,
                              userSelect: 'none',

@@ -22,7 +22,7 @@ const MediaWindow = (props) => {
             if (curSubtitleIndex !== props.subtitleIndexRef.current) {
                 curSubtitleIndex = props.subtitleIndexRef.current
                 if (!props.fnToggle) {
-                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(Math.max(props.subtitleIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0))
+                    if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(Math.max(props.subtitleIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0))
                     afterRenderPromise().then(() => setTdColor(props.subtitleIndexRef.current))
                 }
             }
@@ -42,7 +42,7 @@ const MediaWindow = (props) => {
             if (curFnIndex !== props.fnIndexRef.current) {
                 curFnIndex = props.fnIndexRef.current
                 if (props.fnToggle) {
-                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(Math.max(props.fnIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0))
+                    if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(Math.max(props.fnIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0))
                     afterRenderPromise().then(() => setTdColor(props.fnIndexRef.current))
                 }
             }
@@ -64,14 +64,14 @@ const MediaWindow = (props) => {
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFnLabel(seconds)
-            if (document.getElementById('fixCenterCheckBox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
+            if (document.getElementById('fixCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
         })
         props.isFromLanguageWindowRef.current = false
     }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, props.subtitleIndexRef, props.fnIndexRef, afterRenderPromise, props.waveformRef])
     const onProgress = useCallback((state) => {
         setSubtitleLabel(state.playedSeconds)
         setFnLabel(state.playedSeconds)
-        if (document.getElementById('fixCenterCheckBox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
+        if (document.getElementById('fixCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
         if (state.playedSeconds >= tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].end)) props.subtitleIndexRef.current += 1
         if (state.playedSeconds >= tcToSec(props.fnRef.current[props.fnIndexRef.current].end)) props.fnIndexRef.current += 1
     }, [props.cellDataRef, props.fnRef, setSubtitleLabel, setFnLabel, props.subtitleIndexRef, props.fnIndexRef, props.waveformRef])

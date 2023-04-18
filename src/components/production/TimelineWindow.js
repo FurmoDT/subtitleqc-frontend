@@ -111,7 +111,7 @@ const TimelineWindow = (props) => {
                     event.evt.target.style.cursor = 'default'
                 })
                 peaks.on("segments.dragstart", (event) => {
-                    props.hotRef.current.scrollViewportTo(props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id))
+                    props.hotRef.current.scrollViewportTo(props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id) - Math.round(props.hotRef.current.countVisibleRows() / 2))
                 })
                 peaks.on("segments.dragged", (event) => {
                     const [start, end] = [secToTc(Number(event.segment.startTime.toFixed(3))), secToTc(Number(event.segment.endTime.toFixed(3)))]

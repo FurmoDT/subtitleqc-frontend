@@ -22,7 +22,7 @@ const MediaWindow = (props) => {
             if (curSubtitleIndex !== props.subtitleIndexRef.current) {
                 curSubtitleIndex = props.subtitleIndexRef.current
                 if (!props.fnToggle) {
-                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current)
+                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(Math.max(props.subtitleIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0))
                     afterRenderPromise().then(() => setTdColor(props.subtitleIndexRef.current))
                 }
             }
@@ -42,7 +42,7 @@ const MediaWindow = (props) => {
             if (curFnIndex !== props.fnIndexRef.current) {
                 curFnIndex = props.fnIndexRef.current
                 if (props.fnToggle) {
-                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(props.fnIndexRef.current)
+                    if (document.getElementById('scrollViewCheckBox').checked) props.hotRef.current.scrollViewportTo(Math.max(props.fnIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0))
                     afterRenderPromise().then(() => setTdColor(props.fnIndexRef.current))
                 }
             }
@@ -60,7 +60,7 @@ const MediaWindow = (props) => {
         props.fnIndexRef.current = bisect(props.fnRef.current.map((value) => tcToSec(value.start)), seconds)
         if (tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].start) !== seconds) props.subtitleIndexRef.current = Math.max(props.subtitleIndexRef.current - 1, 0)
         if (tcToSec(props.fnRef.current[props.fnIndexRef.current].start) !== seconds) props.fnIndexRef.current = Math.max(props.fnIndexRef.current - 1, 0)
-        if (!props.hotRef.current.getActiveEditor()?._opened && !props.isFromLanguageWindowRef.current) props.hotRef.current.scrollViewportTo(!props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current, 0)
+        if (!props.hotRef.current.getActiveEditor()?._opened && !props.isFromLanguageWindowRef.current) props.hotRef.current.scrollViewportTo((!props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current) - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
         afterRenderPromise().then(() => {
             setSubtitleLabel(seconds)
             setFnLabel(seconds)

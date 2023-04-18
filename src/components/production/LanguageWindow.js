@@ -1,10 +1,11 @@
 import Handsontable from 'handsontable';
 import '../../css/Handsontable.css'
 import * as Grammarly from '@grammarly/editor-sdk'
-import {useCallback, useEffect, useRef} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
 import {createSegment, tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
+import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 
 const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
@@ -12,6 +13,7 @@ const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98
 const LanguageWindow = (props) => {
     const containerMain = useRef(null);
     const setTdColor = props.setTdColor
+    const [totalLines, setTotalLines] = useState(0)
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const afterRenderCallback = () => {
@@ -126,6 +128,18 @@ const LanguageWindow = (props) => {
                 }
             },
         })
+        const getTotalLines = () => {
+            const sourceDataArray = props.hotRef.current.getSourceData()
+            let totalLines = 0
+            for (let i = sourceDataArray.length - 1; i >= 0; i--) {
+                if (Object.keys(sourceDataArray[i]).length > 1) {
+                    totalLines = i
+                    break
+                }
+            }
+            return Math.max(totalLines - 1, 0)
+        }
+        setTotalLines(getTotalLines())
         let grammarlyPlugin = null
         const setTdColorCallback = () => {
             if (props.playerRef.current.getInternalPlayer()) {
@@ -220,6 +234,7 @@ const LanguageWindow = (props) => {
                     for (let j = index; j < index + amount; j++) props.hotRef.current.getCellMeta(j, i).readOnly = props.tcLockRef.current
                 }
             })
+            setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
             if (props.waveformRef.current) {
@@ -229,6 +244,7 @@ const LanguageWindow = (props) => {
             }
         })
         props.hotRef.current.addHook('afterRemoveRow', () => {
+            setTotalLines(getTotalLines())
             !props.fnToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
@@ -246,7 +262,13 @@ const LanguageWindow = (props) => {
         props.hotRef.current.render()
     }, [props.tcLock, props.hotRef])
 
-    return <div style={{zIndex: 0}} ref={containerMain}/>
+    return <>
+        <div style={{zIndex: 0}} ref={containerMain}/>
+        <MDBBtn style={{position: 'absolute', top: props.size.languageWindowHeight - 60, right: 25, padding: 10}}
+                color={'info'} rounded onClick={() => props.hotRef.current.scrollViewportTo(totalLines)}>
+            <MDBIcon fas icon="arrow-down"/>&nbsp;{totalLines}
+        </MDBBtn>
+    </>
 }
 
 export default LanguageWindow

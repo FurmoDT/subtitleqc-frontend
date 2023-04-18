@@ -165,7 +165,7 @@ const Production = () => {
                             <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
                                          languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
                                          mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
-                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
+                                         waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
                                          subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}
                                          afterRenderPromise={afterRenderPromise} setTdColor={setTdColor}/>
                             <InformationWindow/>

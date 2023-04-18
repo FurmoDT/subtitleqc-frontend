@@ -188,24 +188,36 @@ const TimelineWindow = (props) => {
 
     return <>
         <div style={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}>
-            <MDBCheckbox id='tcLockCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
+            <MDBCheckbox id='tcLockCheckBox' wrapperStyle={{display: 'flex', marginRight: 10}}
                          label='TC LOCK' defaultChecked={true}
                          labelStyle={{
                              fontSize: 12,
                              userSelect: 'none',
                              display: 'flex',
                              alignItems: 'center',
-                             color: 'white'
+                             color: 'white',
+                             marginLeft: -5
                          }}
                          onChange={(event) => props.setTcLock(event.target.checked)}/>
-            <MDBCheckbox id='scrollViewCheckBox' wrapperStyle={{display: 'flex', paddingRight: 10}}
+            <MDBCheckbox id='fixCenterCheckBox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
+                         label='FIX CENTER'
+                         labelStyle={{
+                             fontSize: 12,
+                             userSelect: 'none',
+                             display: 'flex',
+                             alignItems: 'center',
+                             color: 'white',
+                             marginLeft: -5
+                         }}/>
+            <MDBCheckbox id='scrollViewCheckBox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
                          label='SELECT CURRENT SUBTITLE WHILE PLAYING'
                          labelStyle={{
                              fontSize: 12,
                              userSelect: 'none',
                              display: 'flex',
                              alignItems: 'center',
-                             color: 'white'
+                             color: 'white',
+                             marginLeft: -5
                          }}/>
         </div>
         <div style={{backgroundColor: 'black'}}>

@@ -129,15 +129,15 @@ const LanguageWindow = (props) => {
             },
         })
         const getTotalLines = () => {
-            const sourceDataArray = props.hotRef.current.getSourceData()
-            let totalLines = 0
-            for (let i = sourceDataArray.length - 1; i >= 0; i--) {
-                if (Object.keys(sourceDataArray[i]).length > 1) {
+            const data = props.hotRef.current.getData()
+            let totalLines = -1
+            for (let i = data.length - 1; i >= 0; i--) {
+                if (data[i].filter(v => v).length > 0) {
                     totalLines = i
                     break
                 }
             }
-            return Math.max(totalLines - 1, 0)
+            return Math.max(totalLines + 1, 0)
         }
         setTotalLines(getTotalLines())
         let grammarlyPlugin = null
@@ -215,6 +215,7 @@ const LanguageWindow = (props) => {
             })
             for (let key in updatableSegments) updatableSegments[key].segment.update(updatableSegments[key])
             setTdColorCallback()
+            setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
             if (!props.fnToggle) {
@@ -265,7 +266,7 @@ const LanguageWindow = (props) => {
     return <>
         <div style={{zIndex: 0}} ref={containerMain}/>
         <MDBBtn style={{position: 'absolute', top: props.size.languageWindowHeight - 60, right: 25, padding: 10}}
-                color={'info'} rounded onClick={() => props.hotRef.current.scrollViewportTo(totalLines)}>
+                color={'info'} rounded onClick={() => props.hotRef.current.scrollViewportTo(totalLines - 1)}>
             <MDBIcon fas icon="arrow-down"/>&nbsp;{totalLines}
         </MDBBtn>
     </>

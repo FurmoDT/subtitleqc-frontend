@@ -147,7 +147,7 @@ const Production = () => {
                          resetSegments={resetSegments}/>
         <MenuToolbar cellDataRef={cellDataRef} fnRef={fnRef} languages={languages} setLanguages={setLanguages}
                      fnLanguages={fnLanguages} setFnLanguages={setFnLanguages} hotRef={hotRef}
-                     projectDetail={projectDetail} setProjectDetail={setProjectDetail}
+                     projectDetail={projectDetail} setProjectDetail={setProjectDetail} setTcLock={setTcLock}
                      setMediaFile={setMediaFile}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}

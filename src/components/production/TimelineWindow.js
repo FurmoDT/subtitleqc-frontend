@@ -189,7 +189,7 @@ const TimelineWindow = (props) => {
     return <>
         <div style={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}>
             <MDBCheckbox id='tcLock-checkbox' wrapperStyle={{display: 'flex', marginRight: 10}}
-                         label='TC LOCK' defaultChecked={true}
+                         label='TC Lock' defaultChecked={true}
                          labelStyle={{
                              fontSize: 12,
                              userSelect: 'none',
@@ -199,8 +199,8 @@ const TimelineWindow = (props) => {
                              marginLeft: -5
                          }}
                          onChange={(event) => props.setTcLock(event.target.checked)}/>
-            <MDBCheckbox id='fixCenter-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
-                         label='FIX CENTER'
+            <MDBCheckbox id='playheadCenter-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
+                         label='Playhead Center'
                          labelStyle={{
                              fontSize: 12,
                              userSelect: 'none',
@@ -210,7 +210,7 @@ const TimelineWindow = (props) => {
                              marginLeft: -5
                          }}/>
             <MDBCheckbox id='scrollView-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
-                         label='SELECT CURRENT SUBTITLE WHILE PLAYING'
+                         label='Select Current Subtitle While Playing'
                          labelStyle={{
                              fontSize: 12,
                              userSelect: 'none',

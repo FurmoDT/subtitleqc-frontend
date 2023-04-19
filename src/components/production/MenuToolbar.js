@@ -18,8 +18,8 @@ const MenuToolbar = (props) => {
             <ProjectSettingModal projectDetail={props.projectDetail} setProjectDetail={props.setProjectDetail}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
-            <NewProjectModal setProjectDetail={props.setProjectDetail} hotRef={props.hotRef}
-                             setMediaFile={props.setMediaFile} setTcLock={props.setTcLock}
+            <NewProjectModal setProjectDetail={props.setProjectDetail} hotRef={props.hotRef} setTcLock={props.setTcLock}
+                             setMediaFile={props.setMediaFile} setMediaInfo={props.setMediaInfo}
                              setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
                              setFnLanguages={props.setFnLanguages} fnRef={props.fnRef}
                              setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>

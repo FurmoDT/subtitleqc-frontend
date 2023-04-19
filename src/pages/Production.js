@@ -148,7 +148,7 @@ const Production = () => {
         <MenuToolbar cellDataRef={cellDataRef} fnRef={fnRef} languages={languages} setLanguages={setLanguages}
                      fnLanguages={fnLanguages} setFnLanguages={setFnLanguages} hotRef={hotRef}
                      projectDetail={projectDetail} setProjectDetail={setProjectDetail} setTcLock={setTcLock}
-                     setMediaFile={setMediaFile}
+                     setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcIoButtonRef={tcIoButtonRef} tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}

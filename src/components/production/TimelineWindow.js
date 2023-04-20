@@ -210,7 +210,7 @@ const TimelineWindow = (props) => {
                              marginLeft: -5
                          }}/>
             <MDBCheckbox id='scrollView-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
-                         label='Select Current Subtitle While Playing'
+                         label='Current Subtitle Center'
                          labelStyle={{
                              fontSize: 12,
                              userSelect: 'none',

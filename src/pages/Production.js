@@ -49,12 +49,6 @@ const Production = () => {
     const isFromLanguageWindowRef = useRef(false)
     const subtitleIndexRef = useRef(0)
     const fnIndexRef = useRef(0)
-    const setTdColor = useCallback((index) => {
-        hotRef.current.getCell(index, 0)?.parentElement.querySelectorAll('td').forEach(tdElement => {
-            tdElement.style.backgroundColor = 'beige'
-            tdElement.style.color = 'black'
-        });
-    }, [])
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const timeOut = setTimeout(() => {
@@ -167,7 +161,7 @@ const Production = () => {
                                          mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
                                          waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
                                          subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}
-                                         afterRenderPromise={afterRenderPromise} setTdColor={setTdColor}/>
+                                         afterRenderPromise={afterRenderPromise}/>
                             <InformationWindow/>
                         </Splitter>
                     </div>
@@ -196,7 +190,7 @@ const Production = () => {
                             <LanguageWindow size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
                                             waveformRef={waveformRef} fnToggle={fnToggle}
-                                            tcLock={tcLock} tcLockRef={tcLockRef} setTdColor={setTdColor}
+                                            tcLock={tcLock} tcLockRef={tcLockRef}
                                             cellDataRef={cellDataRef} languages={languages}
                                             guideline={projectDetail.guideline}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}

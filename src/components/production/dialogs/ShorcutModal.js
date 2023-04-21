@@ -35,15 +35,15 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.replaceButtonRef.current.click()
         }
-        if (event.key === 'F9') {
+        if (event.key === 'F10') {
             event.preventDefault();
             props.tcIoButtonRef.current.click()
         }
-        if (event.key === 'F10') {
+        if (event.key === 'F11') {
             event.preventDefault();
             props.tcInButtonRef.current.click()
         }
-        if (event.key === 'F11') {
+        if (event.key === 'F12') {
             event.preventDefault();
             props.tcOutButtonRef.current.click()
         }
@@ -148,19 +148,19 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <FiSun color={'black'} size={20}/> F9
+                                        <FiSun color={'black'} size={20}/> F10
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <FiSunrise color={'black'} size={20}/> F10
+                                        <FiSunrise color={'black'} size={20}/> F11
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <FiSunset color={'black'} size={20}/> F11
+                                        <FiSunset color={'black'} size={20}/> F12
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>

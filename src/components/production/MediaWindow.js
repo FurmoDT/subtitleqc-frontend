@@ -13,8 +13,7 @@ const MediaWindow = (props) => {
     const subtitleLabelRef = useRef(null)
     const fnLabelRef = useRef(null)
     const setVideo = props.setVideo
-    const afterRenderPromise = props.afterRenderPromise
-    const setSubtitleLabel = useCallback((seconds, start, end, select) => {
+    const setSubtitleLabel = useCallback((seconds, start, end, select, isSeek) => {
         if (seconds >= start && seconds <= end) {
             const nextSubtitle = props.cellDataRef.current[props.subtitleIndexRef.current][subtitleLanguage] || ''
             if (curSubtitleIndex !== props.subtitleIndexRef.current) {
@@ -22,6 +21,11 @@ const MediaWindow = (props) => {
                 if (!props.fnToggle && select) {
                     props.hotRef.current.selectRows(props.subtitleIndexRef.current)
                     if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(Math.max(props.subtitleIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0))
+                }
+            } else {
+                if (isSeek) {
+                    props.hotRef.current.selectRows(props.subtitleIndexRef.current)
+                    props.hotRef.current.scrollViewportTo(props.subtitleIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
                 }
             }
             if (subtitleLabelRef.current.innerHTML !== nextSubtitle) subtitleLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
@@ -32,7 +36,7 @@ const MediaWindow = (props) => {
             }
         }
     }, [props.cellDataRef, props.fnToggle, props.subtitleIndexRef, props.hotRef])
-    const setFnLabel = useCallback((seconds, start, end, select) => {
+    const setFnLabel = useCallback((seconds, start, end, select, isSeek) => {
         if (seconds >= start && seconds <= end) {
             const nextSubtitle = props.fnRef.current[props.fnIndexRef.current][fnLanguage] || ''
             if (curFnIndex !== props.fnIndexRef.current) {
@@ -41,7 +45,11 @@ const MediaWindow = (props) => {
                     props.hotRef.current.selectRows(props.fnIndexRef.current)
                     if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(Math.max(props.fnIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0))
                 }
-            }
+            } else {
+                if (isSeek) {
+                    props.hotRef.current.selectRows(props.fnIndexRef.current)
+                    props.hotRef.current.scrollViewportTo(props.fnIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
+            }}
             if (fnLabelRef.current.innerHTML !== nextSubtitle) fnLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
             if (curFnIndex === props.fnIndexRef.current) {
@@ -55,17 +63,14 @@ const MediaWindow = (props) => {
         props.fnIndexRef.current = bisect(props.fnRef.current.map((value) => tcToSec(value.start)), seconds)
         if (tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].start) !== seconds) props.subtitleIndexRef.current = Math.max(props.subtitleIndexRef.current - 1, 0)
         if (tcToSec(props.fnRef.current[props.fnIndexRef.current].start) !== seconds) props.fnIndexRef.current = Math.max(props.fnIndexRef.current - 1, 0)
-        if (!props.hotRef.current.getActiveEditor()?._opened && !props.isFromLanguageWindowRef.current) props.hotRef.current.scrollViewportTo((!props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current) - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
         const select = !props.isFromLanguageWindowRef.current
-        afterRenderPromise().then(() => {
-            const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[props.subtitleIndexRef.current]
-            const {start: fnStart, end: fnEnd} = props.fnRef.current[props.fnIndexRef.current]
-            setSubtitleLabel(seconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), select)
-            setFnLabel(seconds, tcToSec(fnStart), tcToSec(fnEnd), select)
-            if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
-        })
+        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[props.subtitleIndexRef.current]
+        const {start: fnStart, end: fnEnd} = props.fnRef.current[props.fnIndexRef.current]
+        setSubtitleLabel(seconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), select, true)
+        setFnLabel(seconds, tcToSec(fnStart), tcToSec(fnEnd), select, true)
+        if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
         props.isFromLanguageWindowRef.current = false
-    }, [props.cellDataRef, props.fnRef, props.hotRef, props.fnToggle, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, props.subtitleIndexRef, props.fnIndexRef, afterRenderPromise, props.waveformRef])
+    }, [props.cellDataRef, props.fnRef, props.isFromLanguageWindowRef, setSubtitleLabel, setFnLabel, props.subtitleIndexRef, props.fnIndexRef, props.waveformRef])
     const onProgress = useCallback((state) => {
             const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[props.subtitleIndexRef.current]
             const {start: fnStart, end: fnEnd} = props.fnRef.current[props.fnIndexRef.current]
@@ -76,6 +81,12 @@ const MediaWindow = (props) => {
             if (state.playedSeconds >= tcToSec(props.fnRef.current[props.fnIndexRef.current].end)) props.fnIndexRef.current += 1
         }, [props.cellDataRef, props.fnRef, setSubtitleLabel, setFnLabel, props.subtitleIndexRef, props.fnIndexRef, props.waveformRef]
     )
+    const onPlayPause = useCallback(() => {
+        const curIndex = !props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current
+        const [start, end] = props.hotRef.current.getDataAtRow(curIndex).slice(0, 2)
+        const currentTime = props.playerRef.current.getCurrentTime().toFixed(3)
+        if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end)) props.hotRef.current.selectRows(curIndex)
+    }, [props.hotRef, props.fnToggle, props.subtitleIndexRef, props.fnIndexRef, props.playerRef])
     const onReady = useCallback(() => {
         if (props.video !== props.mediaFile) {
             setVideo(props.mediaFile) // generate waveform after video is loaded
@@ -116,7 +127,7 @@ const MediaWindow = (props) => {
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
                      controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
-                     onReady={onReady}
+                     onReady={onReady} onPlay={onPlayPause} onPause={onPlayPause}
                      config={{
                          file: {
                              attributes: {

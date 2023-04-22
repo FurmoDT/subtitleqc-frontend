@@ -1,7 +1,6 @@
 import {MDBBtn, MDBBtnGroup, MDBIcon, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
 import LanguagesModal from "./dialogs/LanguagesModal";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
-import {FiSun, FiSunrise, FiSunset} from "react-icons/fi";
 import {secToTc, tcToSec} from "../../utils/functions";
 import {useRef} from "react";
 import {CgTranscript} from "react-icons/cg";
@@ -40,34 +39,6 @@ const TransToolbar = (props) => {
                   }}/>
         <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN&OUT'>
-            <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {
-                const row = props.hotSelectionRef.current.rowStart
-                const tc = secToTc(props.playerRef.current?.getCurrentTime())
-                if (row != null) {
-                    props.hotRef.current.setDataAtCell([[row, 0, tc], ...(row - 1 < 0 ? [] : [[row - 1, 1, tc]])])
-                    props.hotRef.current.selectCell(row + 1, 0)
-                }
-            }}><FiSun color={'black'} size={20}/></MDBBtn>
-        </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN'>
-            <MDBBtn ref={props.tcInButtonRef} color={'link'} size={'sm'} onClick={() => {
-                const row = props.hotSelectionRef.current.rowStart
-                if (row != null) {
-                    props.hotRef.current.setDataAtCell([[row, 0, secToTc(props.playerRef.current?.getCurrentTime())], [row, 1, secToTc(props.playerRef.current?.getCurrentTime() + 1)]])
-                    props.hotRef.current.selectCell(row, 0)
-                }
-            }}><FiSunrise color={'black'} size={20}/></MDBBtn>
-        </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC OUT'>
-            <MDBBtn ref={props.tcOutButtonRef} color={'link'} size={'sm'} onClick={() => {
-                const row = props.hotSelectionRef.current.rowStart
-                if (row != null) {
-                    props.hotRef.current.setDataAtCell(row, 1, secToTc(props.playerRef.current?.getCurrentTime()))
-                    props.hotRef.current.selectCell(row + 1, 0)
-                }
-            }}><FiSunset color={'black'} size={20}/></MDBBtn>
-        </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Split Line'>
             <MDBBtn ref={props.splitLineButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const selection = props.hotSelectionRef.current

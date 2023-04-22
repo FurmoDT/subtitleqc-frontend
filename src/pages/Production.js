@@ -35,6 +35,7 @@ const Production = () => {
     const [hotFontSize, setHotFontSize] = useState('13px')
     const [fnToggle, setFnToggle] = useState(false)
     const fnToggleRef = useRef(fnToggle)
+    const tcOffsetButtonRef = useRef(null)
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
     const tcOutButtonRef = useRef(null)
@@ -145,7 +146,8 @@ const Production = () => {
                      setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
-                     tcIoButtonRef={tcIoButtonRef} tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
+                     tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
+                     tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef} style={{
             flexDirection: "row", display: 'flex', justifyContent: 'center', padding: '20px',
@@ -160,8 +162,7 @@ const Production = () => {
                                          languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
                                          mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
                                          waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}
-                                         afterRenderPromise={afterRenderPromise}/>
+                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                             <InformationWindow/>
                         </Splitter>
                     </div>
@@ -171,8 +172,7 @@ const Production = () => {
                     }}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       fnToggle={fnToggle} setFnToggle={setFnToggle}
-                                      hotRef={hotRef} hotSelectionRef={hotSelectionRef} tcIoButtonRef={tcIoButtonRef}
-                                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
+                                      hotRef={hotRef} hotSelectionRef={hotSelectionRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                                       afterRenderPromise={afterRenderPromise}
@@ -200,7 +200,10 @@ const Production = () => {
                             <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                             waveformRef={waveformRef} mediaFile={mediaFile} video={video}
-                                            tcLockRef={tcLockRef} setTcLock={setTcLock}/>
+                                            hotSelectionRef={hotSelectionRef}
+                                            tcLockRef={tcLockRef} setTcLock={setTcLock}
+                                            tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
+                                            tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}/>
                         </Splitter>
                     </div>
                 </Splitter>

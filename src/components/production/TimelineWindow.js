@@ -1,8 +1,12 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
 import {bisect, secToTc, tcToSec} from "../../utils/functions";
-import {MDBBtn, MDBCheckbox, MDBIcon, MDBSpinner} from "mdb-react-ui-kit";
+import {MDBBtn, MDBCheckbox, MDBIcon, MDBSpinner, MDBTooltip} from "mdb-react-ui-kit";
+import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 
+const checkboxLabelStyle = {
+    fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center', color: 'white', marginLeft: -5
+}
 
 const TimelineWindow = (props) => {
     const waveformRef = useRef(null);
@@ -187,38 +191,56 @@ const TimelineWindow = (props) => {
     }, [props.mediaFile, props.waveformRef])
 
     return <>
-        <div style={{display: 'flex', position: 'absolute', right: 0, zIndex: 1}}>
-            <MDBCheckbox id='tcLock-checkbox' wrapperStyle={{display: 'flex', marginRight: 10}}
-                         label='TC Lock' defaultChecked={true}
-                         labelStyle={{
-                             fontSize: 12,
-                             userSelect: 'none',
-                             display: 'flex',
-                             alignItems: 'center',
-                             color: 'white',
-                             marginLeft: -5
-                         }}
-                         onChange={(event) => props.setTcLock(event.target.checked)}/>
-            <MDBCheckbox id='playheadCenter-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
-                         label='Playhead Center'
-                         labelStyle={{
-                             fontSize: 12,
-                             userSelect: 'none',
-                             display: 'flex',
-                             alignItems: 'center',
-                             color: 'white',
-                             marginLeft: -5
-                         }}/>
-            <MDBCheckbox id='scrollView-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
-                         label='Current Subtitle Center'
-                         labelStyle={{
-                             fontSize: 12,
-                             userSelect: 'none',
-                             display: 'flex',
-                             alignItems: 'center',
-                             color: 'white',
-                             marginLeft: -5
-                         }}/>
+        <div style={{display: 'flex', width: '100%', position: 'absolute', alignItems: 'center', zIndex: 1}}>
+            <div style={{display: 'flex', marginRight: 'auto'}}>
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset rest'>
+                    <MDBBtn ref={props.tcOffsetButtonRef} color={'link'} size={'sm'} onClick={() => {
+                        if (props.tcLockRef.current) return
+                        // TODO set start and offset rest
+                    }}><BsFillSunriseFill color={'white'} size={25}/></MDBBtn>
+                </MDBTooltip>
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In & Out'>
+                    <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {
+                        if (props.tcLockRef.current) return
+                        const row = props.hotSelectionRef.current.rowStart
+                        const tc = secToTc(props.playerRef.current?.getCurrentTime())
+                        if (row != null) {
+                            props.hotRef.current.setDataAtCell([[row, 0, tc], ...(row - 1 < 0 ? [] : [[row - 1, 1, tc]])])
+                            props.hotRef.current.selectCell(row + 1, 0)
+                        }
+                    }}><BsSun color={'white'} size={25}/></MDBBtn>
+                </MDBTooltip>
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In'>
+                    <MDBBtn ref={props.tcInButtonRef} color={'link'} size={'sm'} onClick={() => {
+                        if (props.tcLockRef.current) return
+                        const row = props.hotSelectionRef.current.rowStart
+                        if (row != null) {
+                            props.hotRef.current.setDataAtCell([[row, 0, secToTc(props.playerRef.current?.getCurrentTime())], [row, 1, secToTc(props.playerRef.current?.getCurrentTime() + 1)]])
+                            props.hotRef.current.selectCell(row, 0)
+                        }
+                    }}><BsSunrise color={'white'} size={25}/></MDBBtn>
+                </MDBTooltip>
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Out'>
+                    <MDBBtn ref={props.tcOutButtonRef} color={'link'} size={'sm'} onClick={() => {
+                        if (props.tcLockRef.current) return
+                        const row = props.hotSelectionRef.current.rowStart
+                        if (row != null) {
+                            props.hotRef.current.setDataAtCell(row, 1, secToTc(props.playerRef.current?.getCurrentTime()))
+                            props.hotRef.current.selectCell(row + 1, 0)
+                        }
+                    }}><BsSunset color={'white'} size={25}/></MDBBtn>
+                </MDBTooltip>
+            </div>
+            <div style={{display: 'flex', marginLeft: 'auto'}}>
+                <MDBCheckbox id='tcLock-checkbox' wrapperStyle={{display: 'flex', marginRight: 10}}
+                             label='TC Lock' labelStyle={checkboxLabelStyle} defaultChecked={true}
+                             onChange={(event) => props.setTcLock(event.target.checked)}/>
+                <MDBCheckbox id='playheadCenter-checkbox'
+                             wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
+                             label='Playhead Center' labelStyle={checkboxLabelStyle}/>
+                <MDBCheckbox id='scrollView-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
+                             label='Current Subtitle Center' labelStyle={checkboxLabelStyle}/>
+            </div>
         </div>
         <div style={{backgroundColor: 'black'}}>
             <div ref={statusRef} className={'text-center'}>

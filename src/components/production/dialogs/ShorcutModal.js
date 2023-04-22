@@ -14,7 +14,7 @@ import {
     MDBModalTitle,
     MDBRow,
 } from 'mdb-react-ui-kit';
-import {FiSun, FiSunrise, FiSunset} from "react-icons/fi";
+import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
 import {MdFindReplace, MdSearch} from "react-icons/md";
 
@@ -34,6 +34,10 @@ const ShortcutModal = (props) => {
         if (event.ctrlKey && event.key === 'g') {
             event.preventDefault();
             props.replaceButtonRef.current.click()
+        }
+        if (event.key === 'F9') {
+            event.preventDefault();
+            props.tcOffsetButtonRef.current.click()
         }
         if (event.key === 'F10') {
             event.preventDefault();
@@ -68,7 +72,7 @@ const ShortcutModal = (props) => {
             if (event.shiftKey) props.hotRef.current.redo()
             else props.hotRef.current.undo()
         }
-    }, [props.hotRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+    }, [props.hotRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
         return () => {
@@ -148,26 +152,6 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <FiSun color={'black'} size={20}/> F10
-                                    </MDBListGroupItem>
-                                </MDBCol>
-                                <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <FiSunrise color={'black'} size={20}/> F11
-                                    </MDBListGroupItem>
-                                </MDBCol>
-                                <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <FiSunset color={'black'} size={20}/> F12
-                                    </MDBListGroupItem>
-                                </MDBCol>
-                            </MDBRow>
-                            <MDBRow>
-                                <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
                                         <TbArrowsSplit2 color={'black'} size={20}/> CTRL SHIFT D
                                     </MDBListGroupItem>
                                 </MDBCol>
@@ -197,7 +181,25 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        Not Supported
+                                        <BsFillSunriseFill color={'black'} size={20}/> F9
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <BsSun color={'black'} size={20}/> F10
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <BsSunrise color={'black'} size={20}/> F11
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <BsSunset color={'black'} size={20}/> F12
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>

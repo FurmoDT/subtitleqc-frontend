@@ -9,6 +9,7 @@ const checkboxLabelStyle = {
 }
 
 const TimelineWindow = (props) => {
+    const selectedSegment = useRef(null);
     const waveformRef = useRef(null);
     const overviewRef = useRef(null);
     const resetSegments = useRef(null)
@@ -143,6 +144,16 @@ const TimelineWindow = (props) => {
                     props.hotRef.current.setDataAtCell(cells)
                     event.segment.update()
                 })
+                peaks.on("segments.click", (event) => {
+                    if (selectedSegment.current === event.segment) {
+                        selectedSegment.current.update({color: 'white'})
+                        selectedSegment.current = null
+                        return
+                    }
+                    selectedSegment.current?.update({color: 'white'})
+                    selectedSegment.current = event.segment
+                    selectedSegment.current.update({color: 'red'})
+                })
                 peaks.on('peaks.ready', () => {
                     if (props.playerRef.current.getInternalPlayer()?.src !== props.video) {
                         props.waveformRef.current?.destroy()
@@ -171,6 +182,7 @@ const TimelineWindow = (props) => {
         return () => {
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
+            selectedSegment.current = null
             window.removeEventListener('error', (ev) => {
                 if (ev.error.name === 'TypeError') setStatusDisplay('error')
             })

@@ -35,7 +35,7 @@ const MediaWindow = (props) => {
                     if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(viewPortToIndex)
                 }
             } else {
-                if (isSeek) {
+                if (isSeek && props.fnToggle ^ isSubtitle) {
                     props.hotRef.current.selectRows(targetIndex)
                     props.hotRef.current.scrollViewportTo(viewPortToIndex)
                 }

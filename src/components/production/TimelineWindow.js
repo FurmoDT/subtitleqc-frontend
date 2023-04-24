@@ -205,12 +205,17 @@ const TimelineWindow = (props) => {
             <div style={{display: 'flex', marginLeft: 'auto'}}>
                 <MDBCheckbox id='tcLock-checkbox' wrapperStyle={{display: 'flex', marginRight: 10}}
                              label='TC Lock' labelStyle={checkboxLabelStyle} defaultChecked={true}
-                             onChange={(event) => props.setTcLock(event.target.checked)}/>
+                             onChange={(event) => {
+                                 props.setTcLock(event.target.checked)
+                                 event.target.blur()
+                             }}/>
                 <MDBCheckbox id='playheadCenter-checkbox'
                              wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
-                             label='Playhead Center' labelStyle={checkboxLabelStyle}/>
+                             label='Playhead Center' labelStyle={checkboxLabelStyle}
+                             onChange={(event) => event.target.blur()}/>
                 <MDBCheckbox id='scrollView-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
-                             label='Current Subtitle Center' labelStyle={checkboxLabelStyle}/>
+                             label='Current Subtitle Center' labelStyle={checkboxLabelStyle}
+                             onChange={(event) => event.target.blur()}/>
             </div>
         </div>
         <div style={{backgroundColor: 'black'}}>

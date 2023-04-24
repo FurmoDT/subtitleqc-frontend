@@ -114,6 +114,7 @@ const Production = () => {
                 localStorage.setItem('fn', JSON.stringify(fnRef.current))
                 setLanguages(languageFile.language)
                 setFnLanguages(languageFile.fnLanguage || languageFile.fxLanguage)
+                setProjectDetail(languageFile.projectDetail)
             } else setFileUploadModalShow(true)
             if (waveformRef.current) {
                 waveformRef.current.segments.removeAll()

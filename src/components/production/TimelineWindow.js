@@ -171,10 +171,11 @@ const TimelineWindow = (props) => {
         waveformRef.current.addEventListener('wheel', onWheel, {passive: false})
         waveformRef.current.addEventListener('keydown', (event) => {
             if (!props.tcLockRef.current && event.key === 'Delete') {
-                const curSegment = props.waveformRef.current.segments.find(props.waveformRef.current.player.getCurrentTime(), props.waveformRef.current.player.getCurrentTime()).pop()
+                const curSegment = props.selectedSegment.current
                 if (curSegment) {
                     const curRow = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(curSegment.id)
                     props.hotRef.current.setDataAtCell([[curRow, 0, ''], [curRow, 1, '']])
+                    props.selectedSegment.current = null
                 }
             }
         })
@@ -220,7 +221,9 @@ const TimelineWindow = (props) => {
                              onChange={(event) => event.target.blur()}/>
             </div>
         </div>
-        <div style={{backgroundColor: 'black'}}>
+        <div style={{backgroundColor: 'black'}} onClick={() => {
+            props.focusedRef.current = props.waveformRef.current
+        }}>
             <div ref={statusRef} className={'text-center'}>
                 <MDBSpinner ref={spinnerRef} style={{
                     width: `${props.size.timelineWindowHeight / 3}px`,

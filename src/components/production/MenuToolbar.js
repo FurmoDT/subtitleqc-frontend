@@ -25,7 +25,8 @@ const MenuToolbar = (props) => {
                              setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
-            <ShortcutModal hotRef={props.hotRef} playerRef={props.playerRef}
+            <ShortcutModal focusedRef={props.focusedRef} hotRef={props.hotRef} playerRef={props.playerRef}
+                           waveformRef={props.waveformRef}
                            findButtonRef={props.findButtonRef} replaceButtonRef={props.replaceButtonRef}
                            tcOffsetButtonRef={props.tcOffsetButtonRef} tcIoButtonRef={props.tcIoButtonRef}
                            tcInButtonRef={props.tcInButtonRef} tcOutButtonRef={props.tcOutButtonRef}

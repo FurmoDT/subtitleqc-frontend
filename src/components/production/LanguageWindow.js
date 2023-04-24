@@ -261,7 +261,9 @@ const LanguageWindow = (props) => {
     }, [props.tcLock, props.hotRef])
 
     return <>
-        <div style={{zIndex: 0}} ref={containerMain}/>
+        <div style={{zIndex: 0}} ref={containerMain} onClick={(event) => {
+            props.focusedRef.current = props.hotRef.current
+        }}/>
         <MDBBtn style={{position: 'absolute', top: props.size.languageWindowHeight - 60, right: 25, padding: 10}}
                 color={'info'} rounded onClick={() => props.hotRef.current.scrollViewportTo(totalLines - 1)}>
             <MDBIcon fas icon="arrow-down"/>&nbsp;{totalLines}

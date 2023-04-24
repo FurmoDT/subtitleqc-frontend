@@ -72,7 +72,12 @@ const ShortcutModal = (props) => {
             if (event.shiftKey) props.hotRef.current.redo()
             else props.hotRef.current.undo()
         }
-    }, [props.hotRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+        if (event.key === 'Delete') {
+            if (props.focusedRef.current === props.waveformRef.current) {
+                props.waveformRef.current.options.zoomview.container.dispatchEvent(new KeyboardEvent('keydown', {key: event.key}))
+            }
+        }
+    }, [props.hotRef, props.waveformRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
         return () => {

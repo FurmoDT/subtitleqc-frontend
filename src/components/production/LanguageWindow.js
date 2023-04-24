@@ -195,7 +195,7 @@ const LanguageWindow = (props) => {
                         if (segment) updatableSegments[rowId] = Object.assign(updatableSegments[rowId] || {segment: segment}, {startTime: start})
                         else {
                             const end = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'end'))
-                            if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLockRef.current))
+                            if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
                 } else if (change[1] === 'end') {
@@ -206,7 +206,7 @@ const LanguageWindow = (props) => {
                         if (segment) updatableSegments[rowId] = Object.assign(updatableSegments[rowId] || {segment: segment}, {endTime: end})
                         else {
                             const start = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'start'))
-                            if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId, props.tcLockRef.current))
+                            if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
                         }
                     } else props.waveformRef.current.segments.removeById(rowId)
                 }

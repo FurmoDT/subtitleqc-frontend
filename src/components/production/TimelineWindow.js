@@ -72,6 +72,7 @@ const TimelineWindow = (props) => {
                 playheadColor: 'white',
                 formatPlayheadTime: (seconds) => secToTc(seconds),
                 formatAxisTime: (seconds) => secToTc(seconds),
+                playheadClickTolerance: -1
             },
             overview: {
                 container: overviewRef.current,
@@ -108,7 +109,7 @@ const TimelineWindow = (props) => {
                     })
                 })
                 peaks.on("segments.mouseenter", (event) => {
-                    event.evt.target.style.cursor = 'move'
+                    if (event.segment.editable) event.evt.target.style.cursor = 'move'
                 })
                 peaks.on("segments.mouseleave", (event) => {
                     event.evt.target.style.cursor = 'default'
@@ -144,13 +145,14 @@ const TimelineWindow = (props) => {
                 })
                 peaks.on("segments.click", (event) => {
                     if (props.selectedSegment.current === event.segment) {
-                        props.selectedSegment.current.update({color: 'white'})
+                        event.evt.target.style.cursor = 'default'
+                        props.selectedSegment.current.update({color: 'white', editable: false})
                         props.selectedSegment.current = null
                         return
                     }
-                    props.selectedSegment.current?.update({color: 'white'})
+                    props.selectedSegment.current?.update({color: 'white', editable: false})
                     props.selectedSegment.current = event.segment
-                    props.selectedSegment.current.update({color: 'red'})
+                    props.selectedSegment.current.update({color: 'red', editable: !props.tcLockRef.current})
                 })
                 peaks.on('peaks.ready', () => {
                     if (props.playerRef.current.getInternalPlayer()?.src !== props.video) {

@@ -72,16 +72,16 @@ const Production = () => {
         if (!fnToggle) {
             cellDataRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId, tcLock))
+                if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
             })
         } else {
             fnRef.current.forEach((value) => {
                 const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId, tcLock))
+                if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
             })
         }
         return segments
-    }, [fnToggle, tcLock])
+    }, [fnToggle])
     useEffect(() => {
         resetSegmentsRef.current = resetSegments
     }, [resetSegments])
@@ -98,6 +98,7 @@ const Production = () => {
             waveformRef.current.segments.add(resetSegmentsRef.current())
         }
         tcLockRef.current = tcLock
+        selectedSegment.current = null
     }, [fnToggle, tcLock])
     useEffect(() => {
         if (languageFile) {

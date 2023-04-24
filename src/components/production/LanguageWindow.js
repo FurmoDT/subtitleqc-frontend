@@ -13,6 +13,12 @@ const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98
 const LanguageWindow = (props) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
+
+    const resetSegments = useRef(null)
+    useEffect(() => {
+        resetSegments.current = props.resetSegments
+    }, [props.resetSegments])
+
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const afterRenderCallback = () => {
@@ -177,11 +183,16 @@ const LanguageWindow = (props) => {
                 props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
             }
         })
-        props.hotRef.current.addHook('afterChange', (changes) => {
+        props.hotRef.current.addHook('afterChange', (changes, source) => {
             grammarlyPlugin?.disconnect()
             !props.fnToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
             if (props.isFromTimelineWindowRef.current) {
                 props.isFromTimelineWindowRef.current = false
+                return
+            }
+            if (source === 'offset') {
+                props.waveformRef.current.segments.removeAll()
+                props.waveformRef.current.segments.add(resetSegments.current())
                 return
             }
             const updatableSegments = {}

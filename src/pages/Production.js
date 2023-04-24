@@ -199,7 +199,7 @@ const Production = () => {
                                             waveformRef={waveformRef} fnToggle={fnToggle}
                                             tcLock={tcLock} tcLockRef={tcLockRef}
                                             cellDataRef={cellDataRef} languages={languages}
-                                            guideline={projectDetail.guideline}
+                                            guideline={projectDetail.guideline} resetSegments={resetSegments}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}
                                             isFromLanguageWindowRef={isFromLanguageWindowRef}
                                             subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}

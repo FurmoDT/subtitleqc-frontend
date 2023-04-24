@@ -40,10 +40,21 @@ const TransToolbar = (props) => {
                   }}/>
         <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset rest'>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset Rest'>
             <MDBBtn ref={props.tcOffsetButtonRef} color={'link'} size={'sm'} onClick={() => {
                 if (props.tcLockRef.current || !props.selectedSegment.current) return
-            }}><BsFillSunriseFill color={'black'} size={25}/></MDBBtn>
+                const start = props.playerRef.current.getCurrentTime()
+                const offsetStart = props.selectedSegment.current.startTime
+                const diff = start - offsetStart
+                const oldArray = props.hotRef.current.getData(0, 0, props.hotRef.current.countRows() - 3, 1)
+                const newArray = []
+                oldArray.forEach((value, index) => {
+                    const tcIn = tcToSec(value[0])
+                    const tcOut = tcToSec(value[1])
+                    if (tcIn >= offsetStart) newArray.push(...[[index, 0, secToTc(tcIn + diff)], [index, 1, secToTc(tcOut + diff)]])
+                })
+                props.hotRef.current.setDataAtCell(newArray, null, null, 'offset')
+            }}><BsFillSunriseFill color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In & Out'>
             <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {

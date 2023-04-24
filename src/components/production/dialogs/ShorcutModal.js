@@ -77,7 +77,7 @@ const ShortcutModal = (props) => {
                 props.waveformRef.current.options.zoomview.container.dispatchEvent(new KeyboardEvent('keydown', {key: event.key}))
             }
         }
-    }, [props.hotRef, props.waveformRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+    }, [props.hotRef, props.waveformRef, props.playerRef, props.focusedRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
         return () => {

@@ -1,15 +1,13 @@
 import {useCallback, useEffect, useRef} from "react";
 import Peaks from 'peaks.js';
 import {bisect, secToTc, tcToSec} from "../../utils/functions";
-import {MDBBtn, MDBCheckbox, MDBIcon, MDBSpinner, MDBTooltip} from "mdb-react-ui-kit";
-import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
+import {MDBBtn, MDBCheckbox, MDBIcon, MDBSpinner} from "mdb-react-ui-kit";
 
 const checkboxLabelStyle = {
     fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center', color: 'white', marginLeft: -5
 }
 
 const TimelineWindow = (props) => {
-    const selectedSegment = useRef(null);
     const waveformRef = useRef(null);
     const overviewRef = useRef(null);
     const resetSegments = useRef(null)
@@ -145,14 +143,14 @@ const TimelineWindow = (props) => {
                     event.segment.update()
                 })
                 peaks.on("segments.click", (event) => {
-                    if (selectedSegment.current === event.segment) {
-                        selectedSegment.current.update({color: 'white'})
-                        selectedSegment.current = null
+                    if (props.selectedSegment.current === event.segment) {
+                        props.selectedSegment.current.update({color: 'white'})
+                        props.selectedSegment.current = null
                         return
                     }
-                    selectedSegment.current?.update({color: 'white'})
-                    selectedSegment.current = event.segment
-                    selectedSegment.current.update({color: 'red'})
+                    props.selectedSegment.current?.update({color: 'white'})
+                    props.selectedSegment.current = event.segment
+                    props.selectedSegment.current.update({color: 'red'})
                 })
                 peaks.on('peaks.ready', () => {
                     if (props.playerRef.current.getInternalPlayer()?.src !== props.video) {
@@ -182,12 +180,12 @@ const TimelineWindow = (props) => {
         return () => {
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
-            selectedSegment.current = null
+            props.selectedSegment.current = null
             window.removeEventListener('error', (ev) => {
                 if (ev.error.name === 'TypeError') setStatusDisplay('error')
             })
         }
-    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef])
+    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef, props.selectedSegment])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()
@@ -204,45 +202,6 @@ const TimelineWindow = (props) => {
 
     return <>
         <div style={{display: 'flex', width: '100%', position: 'absolute', alignItems: 'center', zIndex: 1}}>
-            <div style={{display: 'flex', marginRight: 'auto'}}>
-                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset rest'>
-                    <MDBBtn ref={props.tcOffsetButtonRef} color={'link'} size={'sm'} onClick={() => {
-                        if (props.tcLockRef.current) return
-                        // TODO set start and offset rest
-                    }}><BsFillSunriseFill color={'white'} size={25}/></MDBBtn>
-                </MDBTooltip>
-                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In & Out'>
-                    <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {
-                        if (props.tcLockRef.current) return
-                        const row = props.hotSelectionRef.current.rowStart
-                        const tc = secToTc(props.playerRef.current?.getCurrentTime())
-                        if (row != null) {
-                            props.hotRef.current.setDataAtCell([[row, 0, tc], ...(row - 1 < 0 ? [] : [[row - 1, 1, tc]])])
-                            props.hotRef.current.selectCell(row + 1, 0)
-                        }
-                    }}><BsSun color={'white'} size={25}/></MDBBtn>
-                </MDBTooltip>
-                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In'>
-                    <MDBBtn ref={props.tcInButtonRef} color={'link'} size={'sm'} onClick={() => {
-                        if (props.tcLockRef.current) return
-                        const row = props.hotSelectionRef.current.rowStart
-                        if (row != null) {
-                            props.hotRef.current.setDataAtCell([[row, 0, secToTc(props.playerRef.current?.getCurrentTime())], [row, 1, secToTc(props.playerRef.current?.getCurrentTime() + 1)]])
-                            props.hotRef.current.selectCell(row, 0)
-                        }
-                    }}><BsSunrise color={'white'} size={25}/></MDBBtn>
-                </MDBTooltip>
-                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Out'>
-                    <MDBBtn ref={props.tcOutButtonRef} color={'link'} size={'sm'} onClick={() => {
-                        if (props.tcLockRef.current) return
-                        const row = props.hotSelectionRef.current.rowStart
-                        if (row != null) {
-                            props.hotRef.current.setDataAtCell(row, 1, secToTc(props.playerRef.current?.getCurrentTime()))
-                            props.hotRef.current.selectCell(row + 1, 0)
-                        }
-                    }}><BsSunset color={'white'} size={25}/></MDBBtn>
-                </MDBTooltip>
-            </div>
             <div style={{display: 'flex', marginLeft: 'auto'}}>
                 <MDBCheckbox id='tcLock-checkbox' wrapperStyle={{display: 'flex', marginRight: 10}}
                              label='TC Lock' labelStyle={checkboxLabelStyle} defaultChecked={true}

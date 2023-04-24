@@ -43,6 +43,7 @@ const Production = () => {
     const mergeLineButtonRef = useRef(null)
     const findButtonRef = useRef(null)
     const replaceButtonRef = useRef(null)
+    const selectedSegment = useRef(null);
     const resetSegmentsRef = useRef(null)
     const [tcLock, setTcLock] = useState(true)
     const tcLockRef = useRef(true)
@@ -173,6 +174,9 @@ const Production = () => {
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       fnToggle={fnToggle} setFnToggle={setFnToggle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef}
+                                      tcLockRef={tcLockRef} selectedSegment={selectedSegment}
+                                      tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
+                                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                                       afterRenderPromise={afterRenderPromise}
@@ -200,10 +204,10 @@ const Production = () => {
                             <TimelineWindow size={rightRefSize} resetSegments={resetSegments} hotRef={hotRef}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                             waveformRef={waveformRef} mediaFile={mediaFile} video={video}
-                                            hotSelectionRef={hotSelectionRef}
                                             tcLockRef={tcLockRef} setTcLock={setTcLock}
                                             tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
-                                            tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}/>
+                                            tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
+                                            selectedSegment={selectedSegment}/>
                         </Splitter>
                     </div>
                 </Splitter>

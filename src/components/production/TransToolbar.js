@@ -6,6 +6,7 @@ import {useRef} from "react";
 import {CgTranscript} from "react-icons/cg";
 import FindPopover from "./dialogs/FindPopover";
 import ReplacePopover from "./dialogs/ReplacePopover";
+import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 
 const TransToolbar = (props) => {
     const subtitleButtonRef = useRef(null)
@@ -39,6 +40,42 @@ const TransToolbar = (props) => {
                   }}/>
         <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset rest'>
+            <MDBBtn ref={props.tcOffsetButtonRef} color={'link'} size={'sm'} onClick={() => {
+                if (props.tcLockRef.current || !props.selectedSegment.current) return
+            }}><BsFillSunriseFill color={'black'} size={25}/></MDBBtn>
+        </MDBTooltip>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In & Out'>
+            <MDBBtn ref={props.tcIoButtonRef} color={'link'} size={'sm'} onClick={() => {
+                if (props.tcLockRef.current) return
+                const row = props.hotSelectionRef.current.rowStart
+                const tc = secToTc(props.playerRef.current?.getCurrentTime())
+                if (row != null) {
+                    props.hotRef.current.setDataAtCell([[row, 0, tc], ...(row - 1 < 0 ? [] : [[row - 1, 1, tc]])])
+                    props.hotRef.current.selectCell(row + 1, 0)
+                }
+            }}><BsSun color={'black'} size={20}/></MDBBtn>
+        </MDBTooltip>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In'>
+            <MDBBtn ref={props.tcInButtonRef} color={'link'} size={'sm'} onClick={() => {
+                if (props.tcLockRef.current) return
+                const row = props.hotSelectionRef.current.rowStart
+                if (row != null) {
+                    props.hotRef.current.setDataAtCell([[row, 0, secToTc(props.playerRef.current?.getCurrentTime())], [row, 1, secToTc(props.playerRef.current?.getCurrentTime() + 1)]])
+                    props.hotRef.current.selectCell(row, 0)
+                }
+            }}><BsSunrise color={'black'} size={20}/></MDBBtn>
+        </MDBTooltip>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Out'>
+            <MDBBtn ref={props.tcOutButtonRef} color={'link'} size={'sm'} onClick={() => {
+                if (props.tcLockRef.current) return
+                const row = props.hotSelectionRef.current.rowStart
+                if (row != null) {
+                    props.hotRef.current.setDataAtCell(row, 1, secToTc(props.playerRef.current?.getCurrentTime()))
+                    props.hotRef.current.selectCell(row + 1, 0)
+                }
+            }}><BsSunset color={'black'} size={20}/></MDBBtn>
+        </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Split Line'>
             <MDBBtn ref={props.splitLineButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const selection = props.hotSelectionRef.current

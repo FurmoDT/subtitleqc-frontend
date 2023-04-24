@@ -152,6 +152,32 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <BsFillSunriseFill color={'black'} size={20}/> F9
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <BsSun color={'black'} size={20}/> F10
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <BsSunrise color={'black'} size={20}/> F11
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <BsSunset color={'black'} size={20}/> F12
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
                                         <TbArrowsSplit2 color={'black'} size={20}/> CTRL SHIFT D
                                     </MDBListGroupItem>
                                 </MDBCol>
@@ -181,25 +207,7 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <BsFillSunriseFill color={'black'} size={20}/> F9
-                                    </MDBListGroupItem>
-                                </MDBCol>
-                                <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <BsSun color={'black'} size={20}/> F10
-                                    </MDBListGroupItem>
-                                </MDBCol>
-                                <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <BsSunrise color={'black'} size={20}/> F11
-                                    </MDBListGroupItem>
-                                </MDBCol>
-                                <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <BsSunset color={'black'} size={20}/> F12
+                                        Not Supported
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>

@@ -74,6 +74,7 @@ const Production = () => {
             const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
             if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
         })
+        selectedSegment.current = null
         return segments
     }, [])
     useEffect(() => {
@@ -90,6 +91,7 @@ const Production = () => {
         if (waveformRef.current) {
             waveformRef.current.segments.removeAll()
             waveformRef.current.segments.add(resetSegmentsRef.current())
+            selectedSegment.current = null
         }
     }, [fnToggle])
     useEffect(() => {

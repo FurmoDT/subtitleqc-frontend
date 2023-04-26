@@ -34,11 +34,11 @@ export default function Navbar(props) {
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/qc'), [navigate])}>QC</MDBNavbarLink>
+                                onClick={() => window.open('https://www.subtitleqc.com')}>QC</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/manual'), [navigate])}>Manual</MDBNavbarLink>
+                                onClick={() => window.open('https://docs.google.com/presentation/d/14zk9I95cR7y-E8ujeheKwtvlXKsnK4c0nUhUDyyUh0s/edit?usp=sharing')}>Manual</MDBNavbarLink>
                         </MDBNavbarItem>
                     </MDBNavbarNav>
                     <MDBBtn outline color={'link'} className={'text-nowrap'}

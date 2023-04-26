@@ -13,19 +13,21 @@ import axios, {AxiosInterceptor} from "./utils/axios";
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
     const [accessToken, setAccessToken] = useState(null)
+    const [fetchAccessTokenCompleted, setFetchAccessTokenCompleted] = useState(false)
     useEffect(() => {
         axios.post('/v1/auth/refresh').then((response) => {
             setAccessToken(response.data.access_token)
         }).catch(() => {
             console.clear()
-        })
+        }).finally(() => setFetchAccessTokenCompleted(true))
     }, [])
     return <div style={{overflow: 'hidden', width: '100vw', height: '100vh'}}>
         <AxiosInterceptor setAccessToken={setAccessToken}>
             <BrowserRouter basename={basename}>
                 <Routes>
                     <Route path={"/"} element={<Navbar basename={basename}
-                                                       accessToken={accessToken} setAccessToken={setAccessToken}/>}>
+                                                       accessToken={accessToken} setAccessToken={setAccessToken}
+                                                       fetchAccessTokenCompleted={fetchAccessTokenCompleted}/>}>
                         <Route index element={<MainPage/>}/>
                         <Route path={"/production"} element={<Production/>}/>
                         <Route path={"/qc"} element={<QualityControl/>}/>

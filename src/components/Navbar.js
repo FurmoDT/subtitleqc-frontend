@@ -42,10 +42,10 @@ export default function Navbar(props) {
                         </MDBNavbarItem>
                     </MDBNavbarNav>
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
-                            style={{display: props.accessToken ? 'none' : ''}}
+                            style={{display: (props.fetchAccessTokenCompleted && props.accessToken) ? 'none' : props.fetchAccessTokenCompleted ? '' : 'none'}}
                             onClick={useCallback(() => navigate('/login'), [navigate])}>Login</MDBBtn>
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
-                            style={{display: props.accessToken ? '' : 'none'}}
+                            style={{display: (props.fetchAccessTokenCompleted && props.accessToken) ? '' : 'none'}}
                             onClick={useCallback(() => {
                                 axios.post(`/v1/auth/logout`, {}, {
                                     headers: {Authorization: `Bearer ${props.accessToken}`}

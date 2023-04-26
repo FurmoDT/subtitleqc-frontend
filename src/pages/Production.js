@@ -70,19 +70,12 @@ const Production = () => {
     }, [])
     const resetSegments = useCallback(() => {
         const segments = []
-        if (!fnToggle) {
-            cellDataRef.current.forEach((value) => {
-                const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
-            })
-        } else {
-            fnRef.current.forEach((value) => {
-                const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-                if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
-            })
-        }
+        hotRef.current.getSourceData().forEach((value) => {
+            const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
+            if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
+        })
         return segments
-    }, [fnToggle])
+    }, [])
     useEffect(() => {
         resetSegmentsRef.current = resetSegments
     }, [resetSegments])
@@ -94,12 +87,18 @@ const Production = () => {
     }, [fnLanguages])
     useEffect(() => {
         fnToggleRef.current = fnToggle
+        if (waveformRef.current) {
+            waveformRef.current.segments.removeAll()
+            waveformRef.current.segments.add(resetSegmentsRef.current())
+        }
+    }, [fnToggle])
+    useEffect(() => {
+        tcLockRef.current = tcLock
         if (selectedSegment.current) {
             selectedSegment.current.update({color: 'white', editable: false})
             selectedSegment.current = null
         }
-        tcLockRef.current = tcLock
-    }, [fnToggle, tcLock])
+    }, [tcLock])
     useEffect(() => {
         if (languageFile) {
             if (languageFile.fn || languageFile.fx) { // fspx
@@ -193,16 +192,16 @@ const Production = () => {
                                           timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight + 10
                                       })
                                   }}>
-                            <LanguageWindow focusedRef={focusedRef} size={rightRefSize} hotRef={hotRef} playerRef={playerRef}
+                            <LanguageWindow focusedRef={focusedRef} size={rightRefSize} hotRef={hotRef}
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
-                                            waveformRef={waveformRef} fnToggle={fnToggle}
+                                            playerRef={playerRef} waveformRef={waveformRef} fnToggle={fnToggle}
                                             tcLock={tcLock} tcLockRef={tcLockRef}
                                             cellDataRef={cellDataRef} languages={languages}
+                                            fnRef={fnRef} fnLanguages={fnLanguages}
                                             guideline={projectDetail.guideline} resetSegments={resetSegments}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}
                                             isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                            subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}
-                                            fnRef={fnRef} fnLanguages={fnLanguages}/>
+                                            subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                             <TimelineWindow focusedRef={focusedRef} size={rightRefSize} hotRef={hotRef}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                             waveformRef={waveformRef} mediaFile={mediaFile} video={video}

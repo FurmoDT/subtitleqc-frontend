@@ -94,12 +94,11 @@ const Production = () => {
     }, [fnLanguages])
     useEffect(() => {
         fnToggleRef.current = fnToggle
-        if (waveformRef.current) {
-            waveformRef.current.segments.removeAll()
-            waveformRef.current.segments.add(resetSegmentsRef.current())
+        if (selectedSegment.current) {
+            selectedSegment.current.update({color: 'white', editable: false})
+            selectedSegment.current = null
         }
         tcLockRef.current = tcLock
-        selectedSegment.current = null
     }, [fnToggle, tcLock])
     useEffect(() => {
         if (languageFile) {

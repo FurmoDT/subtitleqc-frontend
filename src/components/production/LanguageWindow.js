@@ -3,7 +3,7 @@ import '../../css/Handsontable.css'
 import * as Grammarly from '@grammarly/editor-sdk'
 import {useCallback, useEffect, useRef, useState} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
-import {createSegment, tcToSec} from "../../utils/functions";
+import {tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 
@@ -185,45 +185,17 @@ const LanguageWindow = (props) => {
         })
         props.hotRef.current.addHook('afterChange', (changes, source) => {
             grammarlyPlugin?.disconnect()
+            setTotalLines(getTotalLines())
             !props.fnToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
             if (props.isFromTimelineWindowRef.current) {
                 props.isFromTimelineWindowRef.current = false
                 return
             }
-            if (source === 'offset') {
+            if (!props.waveformRef.current) return
+            if (changes.filter((value) => value[1] === 'start' || value[1] === 'end').length) {
                 props.waveformRef.current.segments.removeAll()
                 props.waveformRef.current.segments.add(resetSegments.current())
-                return
             }
-            const updatableSegments = {}
-            changes.forEach((change, index) => {
-                if (!props.waveformRef.current) return
-                if (change[1] === 'start') {
-                    const rowId = props.hotRef.current.getDataAtRowProp(change[0], 'rowId')
-                    const start = tcToSec(change[3])
-                    if (start >= 0) {
-                        const segment = props.waveformRef.current.segments.getSegment(rowId)
-                        if (segment) updatableSegments[rowId] = Object.assign(updatableSegments[rowId] || {segment: segment}, {startTime: start})
-                        else {
-                            const end = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'end'))
-                            if (end && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
-                        }
-                    } else props.waveformRef.current.segments.removeById(rowId)
-                } else if (change[1] === 'end') {
-                    const rowId = props.hotRef.current.getDataAtRowProp(change[0], 'rowId')
-                    const end = tcToSec(change[3])
-                    if (end) {
-                        const segment = props.waveformRef.current.segments.getSegment(rowId)
-                        if (segment) updatableSegments[rowId] = Object.assign(updatableSegments[rowId] || {segment: segment}, {endTime: end})
-                        else {
-                            const start = tcToSec(props.hotRef.current.getDataAtRowProp(change[0], 'start'))
-                            if (start && start <= end) props.waveformRef.current.segments.add(createSegment(start, end, rowId))
-                        }
-                    } else props.waveformRef.current.segments.removeById(rowId)
-                }
-            })
-            for (let key in updatableSegments) updatableSegments[key].segment.update(updatableSegments[key])
-            setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
             if (!props.fnToggle) {

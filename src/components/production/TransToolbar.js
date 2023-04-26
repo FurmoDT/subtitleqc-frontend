@@ -53,7 +53,7 @@ const TransToolbar = (props) => {
                     const tcOut = tcToSec(value[1])
                     if (tcIn >= offsetStart) newArray.push(...[[index, 0, secToTc(tcIn + diff)], [index, 1, secToTc(tcOut + diff)]])
                 })
-                props.hotRef.current.setDataAtCell(newArray, null, null, 'offset')
+                props.hotRef.current.setDataAtCell(newArray)
             }}><BsFillSunriseFill color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In & Out'>

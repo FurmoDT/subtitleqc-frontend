@@ -2,11 +2,13 @@ import {MDBBtn, MDBInput} from "mdb-react-ui-kit";
 import axios from "../utils/axios";
 import {HttpStatusCode} from "axios";
 import {useNavigate} from "react-router-dom";
+import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
+import {googleClientId} from "../utils/config";
 
 const LoginPage = (props) => {
     const navigate = useNavigate()
-    const authenticate = () => {
-        axios.post(`/v1/auth/login`, {}).then((response) => {
+    const authenticate = (data) => {
+        axios.post(`/v1/auth/login`, data).then((response) => {
             if (response.status === HttpStatusCode.Ok) {
                 props.setAccessToken(response.data.access_token)
                 navigate('/')
@@ -17,7 +19,16 @@ const LoginPage = (props) => {
         <div style={{width: '300px', display: 'flex', flexDirection: 'column'}}>
             <div style={{fontSize: '50px', fontWeight: 700, textAlign: 'center', color: 'black'}}>Login</div>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-                <MDBBtn style={{marginBottom: '15px'}} onClick={authenticate}>Google</MDBBtn>
+                <GoogleOAuthProvider clientId={googleClientId}>
+                    <GoogleLogin size={'large'} width={'300'} text={'continue_with'}
+                                 containerProps={{style: {marginBottom: '15px'}}}
+                                 onSuccess={credentialResponse => {
+                                     authenticate({auth_type: 'google', payload: JSON.stringify(credentialResponse)})
+                                 }}
+                                 onError={() => {
+                                     console.log('Login Failed');
+                                 }}/>
+                </GoogleOAuthProvider>
                 <MDBBtn style={{marginBottom: '20px'}} onClick={authenticate}>Naver</MDBBtn>
             </div>
             <div style={{width: '100%', borderBottom: 'solid', borderWidth: 'thick', color: 'rgba(55, 53, 47, 0.16)'}}/>

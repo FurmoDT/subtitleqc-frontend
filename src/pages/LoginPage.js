@@ -29,12 +29,27 @@ const LoginPage = (props) => {
                                      console.log('Login Failed');
                                  }}/>
                 </GoogleOAuthProvider>
-                <MDBBtn style={{marginBottom: '20px'}} onClick={authenticate}>Naver</MDBBtn>
+                <div ref={naverLoginRef} id="naverIdLogin" style={{display: 'none'}}/>
+                <MDBBtn style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '0.6em 1em',
+                    fontSize: '0.8rem',
+                    fontWeight: '400',
+                    backgroundColor: '#03c75a',
+                    color: 'white',
+                    marginBottom: '15px'
+                }} onClick={() => naverLoginRef.current?.children[0]?.click()}>
+                    <img style={{height: '30px', marginRight: '0.7em', marginLeft: '0.2em'}}
+                         src={'/naver.png'} alt={'naver'}/>
+                    <span style={{flex: 1}}>네이버 아이디로 로그인</span>
+                </MDBBtn>
             </div>
             <div style={{width: '100%', borderBottom: 'solid', borderWidth: 'thick', color: 'rgba(55, 53, 47, 0.16)'}}/>
-            <label style={{color: 'rgba(55, 53, 47, 0.65)', fontSize: '12px'}}>Email</label>
-            <MDBInput/>
-            <MDBInput/>
+            <label style={{color: 'rgba(55, 53, 47, 0.65)', fontSize: '12px', marginTop: '10px'}}>Email</label>
+            <MDBInput wrapperStyle={{marginBottom: '5px'}} label='Email' type={'email'}/>
+            <MDBInput wrapperStyle={{marginBottom: '5px'}} label='Password' type='password'/>
+            <MDBBtn style={{marginBottom: '5px'}}>로그인</MDBBtn>
         </div>
     </div>
 };

@@ -166,3 +166,4 @@ export const defaultProjectDetail = () => ({name: '', guideline: {client: '', la
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL
 export const apiUrl = process.env.REACT_APP_API_URL
 export const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
+export const naverClientId = process.env.REACT_APP_NAVER_CLIENT_ID

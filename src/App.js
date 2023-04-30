@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import {publicUrl} from "./utils/config";
 import {useEffect, useState} from "react";
 import axios, {AxiosInterceptor} from "./utils/axios";
+import {HttpStatusCode} from "axios";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
@@ -16,9 +17,7 @@ function App() {
     const [fetchAccessTokenCompleted, setFetchAccessTokenCompleted] = useState(false)
     useEffect(() => {
         axios.post('/v1/auth/refresh').then((response) => {
-            setAccessToken(response.data.access_token)
-        }).catch(() => {
-            console.clear()
+            if (response.status === HttpStatusCode.Ok) setAccessToken(response.data.access_token)
         }).finally(() => setFetchAccessTokenCompleted(true))
     }, [])
     return <div style={{overflow: 'hidden', width: '100vw', height: '100vh'}}>

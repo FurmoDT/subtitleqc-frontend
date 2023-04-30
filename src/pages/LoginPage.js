@@ -8,7 +8,11 @@ import {useCallback, useEffect, useRef} from "react";
 
 const {naver} = window
 const naverLogin = new naver.LoginWithNaverId({
-    clientId: naverClientId, callbackUrl: 'http://localhost:3000/login', isPopup: true, callbackHandel: true, loginButton: {},
+    clientId: naverClientId,
+    callbackUrl: `${window.location.origin}/login`,
+    isPopup: true,
+    callbackHandel: true,
+    loginButton: {},
 });
 
 const LoginPage = (props) => {

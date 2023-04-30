@@ -14,14 +14,14 @@ function AxiosInterceptor({children, setAccessToken}) {
             return response;
         };
         const errInterceptor = (error) => {
-            if (error.response.status === HttpStatusCode.Unauthorized && error.config.url !== '/v1/auth/refresh') {
+            if (error.response.status === HttpStatusCode.BadRequest && error.config.url !== '/v1/auth/refresh') {
                 return axios.post(`/v1/auth/refresh`).then((response) => {
                     if (response.status === HttpStatusCode.Ok) {
                         setAccessToken(response.data.access_token)
                         //TODO Retry prev API call (error)
                     }
                 })
-            } else if (error.response.status === HttpStatusCode.Unauthorized) return error
+            } else if (error.response.status === HttpStatusCode.BadRequest) return error
             return Promise.reject(error);
         };
         const interceptor = axios.interceptors.response.use(

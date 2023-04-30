@@ -34,7 +34,7 @@ const LoginPage = (props) => {
             window.opener.authenticate({auth_type: 'naver', access_token: token})
             window.close()
         }
-    }, [location, authenticate])
+    }, [location])
 
     useEffect(() => {
         naverLogin.init();

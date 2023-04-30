@@ -33,15 +33,14 @@ const LoginPage = (props) => {
                 <MDBBtn style={{
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '0.6em 1em',
+                    padding: '0.6em 0.8em',
                     fontSize: '0.8rem',
                     fontWeight: '400',
                     backgroundColor: '#03c75a',
                     color: 'white',
                     marginBottom: '15px'
                 }} onClick={() => naverLoginRef.current?.children[0]?.click()}>
-                    <img style={{height: '30px', marginRight: '0.7em', marginLeft: '0.2em'}}
-                         src={'/naver.png'} alt={'naver'}/>
+                    <img style={{height: '24px'}} src={'/naver.png'} alt={'naver'}/>
                     <span style={{flex: 1}}>네이버 아이디로 로그인</span>
                 </MDBBtn>
             </div>

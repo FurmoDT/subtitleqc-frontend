@@ -35,7 +35,7 @@ const LoginPage = (props) => {
         if (!location.hash) return;
         const token = location.hash.split('=')[1].split('&')[0];
         if (token) {
-            window.opener.authenticate({auth_type: 'naver', access_token: token})
+            window.opener.authenticate({auth: {auth_type: 'naver', access_token: token}})
             window.close()
         }
     }, [location])
@@ -53,7 +53,11 @@ const LoginPage = (props) => {
                     <GoogleLogin size={'large'} width={'300'} text={'continue_with'}
                                  containerProps={{style: {marginBottom: '15px'}}}
                                  onSuccess={credentialResponse => {
-                                     authenticate({auth_type: 'google', payload: JSON.stringify(credentialResponse)})
+                                     authenticate({
+                                         auth: {
+                                             auth_type: 'google', payload: JSON.stringify(credentialResponse)
+                                         }
+                                     })
                                  }}
                                  onError={() => {
                                      console.log('Login Failed');

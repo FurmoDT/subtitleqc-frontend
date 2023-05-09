@@ -4,7 +4,8 @@ import {HttpStatusCode} from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
 import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
 import {googleClientId, naverClientId} from "../utils/config";
-import {useCallback, useEffect, useRef} from "react";
+import {useCallback, useContext, useEffect, useRef} from "react";
+import {AuthContext} from "../utils/authContext";
 
 const {naver} = window
 const naverLogin = new naver.LoginWithNaverId({
@@ -16,19 +17,19 @@ const naverLogin = new naver.LoginWithNaverId({
 });
 
 const LoginPage = (props) => {
-    const setAccessToken = props.setAccessToken
     const navigate = useNavigate()
     const location = useLocation()
     const naverLoginRef = useRef(null);
+    const {setUserState} = useContext(AuthContext);
 
     const authenticate = useCallback((data) => {
         axios.post(`/v1/auth/login`, data).then((response) => {
             if (response.status === HttpStatusCode.Ok) {
-                setAccessToken(response.data.access_token)
+                setUserState({accessToken: response.data.access_token})
                 navigate('/')
             }
         })
-    }, [navigate, setAccessToken])
+    }, [navigate, setUserState])
 
     window.authenticate = authenticate
     const naverLoginCallback = useCallback(() => {

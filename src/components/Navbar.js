@@ -11,13 +11,14 @@ import {
     MDBNavbarToggler,
 } from 'mdb-react-ui-kit';
 import {Outlet, useNavigate} from "react-router-dom";
-import {useCallback, useState} from "react";
+import {useCallback, useContext, useState} from "react";
 import axios from "../utils/axios";
 import {HttpStatusCode} from "axios";
+import {AuthContext} from "../utils/authContext";
 
 export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
-    const setAccessToken = props.setAccessToken
+    const {userState, setUserState, fetchAccessTokenCompleted} = useContext(AuthContext);
     const navigate = useNavigate()
     return <div>
         <MDBNavbar expand='lg' light bgColor='light'>
@@ -42,20 +43,18 @@ export default function Navbar(props) {
                         </MDBNavbarItem>
                     </MDBNavbarNav>
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
-                            style={{display: (props.fetchAccessTokenCompleted && props.accessToken) ? 'none' : props.fetchAccessTokenCompleted ? '' : 'none'}}
+                            style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? 'none' : fetchAccessTokenCompleted ? '' : 'none'}}
                             onClick={useCallback(() => navigate('/login'), [navigate])}>Login</MDBBtn>
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
-                            style={{display: (props.fetchAccessTokenCompleted && props.accessToken) ? '' : 'none'}}
+                            style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? '' : 'none'}}
                             onClick={useCallback(() => {
-                                axios.post(`/v1/auth/logout`, {}, {
-                                    headers: {Authorization: `Bearer ${props.accessToken}`}
-                                }).then((response) => {
+                                axios.post(`/v1/auth/logout`, {}).then((response) => {
                                     if (response.status === HttpStatusCode.Ok) {
-                                        setAccessToken(null)
+                                        setUserState({...userState, accessToken: null})
                                         navigate('/')
                                     }
                                 })
-                            }, [navigate, props.accessToken, setAccessToken])}>Logout</MDBBtn>
+                            }, [navigate, userState, setUserState])}>Logout</MDBBtn>
                 </MDBCollapse>
             </MDBContainer>
         </MDBNavbar>

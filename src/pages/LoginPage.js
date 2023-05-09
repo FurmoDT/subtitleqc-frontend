@@ -47,9 +47,21 @@ const LoginPage = (props) => {
     }, [naverLoginCallback]);
 
     return <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <div style={{width: '300px', display: 'flex', flexDirection: 'column'}}>
-            <div style={{fontSize: '50px', fontWeight: 700, textAlign: 'center', color: 'black'}}>Login</div>
-            <div style={{display: 'flex', flexDirection: 'column'}}>
+        <div style={{
+            width: '400px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            borderStyle: 'solid',
+            color: 'rgba(0, 0, 0, 0.23)',
+            borderRadius: 5,
+            paddingTop: 30,
+            paddingBottom: 50
+        }}>
+            <div
+                style={{fontSize: '50px', fontWeight: 700, textAlign: 'center', color: 'black', marginBottom: 30}}>로그인
+            </div>
+            <div style={{width: '300px', display: 'flex', flexDirection: 'column'}}>
                 <GoogleOAuthProvider clientId={googleClientId}>
                     <GoogleLogin size={'large'} width={'300'} text={'continue_with'}
                                  containerProps={{style: {marginBottom: '15px'}}}
@@ -73,17 +85,22 @@ const LoginPage = (props) => {
                     fontWeight: '400',
                     backgroundColor: '#03c75a',
                     color: 'white',
-                    marginBottom: '15px'
+                    marginBottom: '20px'
                 }} onClick={() => naverLoginRef.current?.children[0]?.click()}>
                     <img style={{height: '24px'}} src={'/naver.png'} alt={'naver'}/>
                     <span style={{flex: 1}}>네이버 아이디로 로그인</span>
                 </MDBBtn>
             </div>
-            <div style={{width: '100%', borderBottom: 'solid', borderWidth: 'thick', color: 'rgba(55, 53, 47, 0.16)'}}/>
-            <label style={{color: 'rgba(55, 53, 47, 0.65)', fontSize: '12px', marginTop: '10px'}}>Email</label>
-            <MDBInput wrapperStyle={{marginBottom: '5px'}} label='Email' type={'email'}/>
-            <MDBInput wrapperStyle={{marginBottom: '5px'}} label='Password' type='password'/>
-            <MDBBtn style={{marginBottom: '5px'}}>로그인</MDBBtn>
+            <div style={{
+                width: 300,
+                borderBottom: 'solid',
+                borderWidth: 'thick',
+                color: 'rgba(55, 53, 47, 0.16)',
+                marginBottom: 25
+            }}/>
+            <MDBInput wrapperStyle={{marginBottom: 20, width: 300}} label='Email' type={'email'}/>
+            <MDBInput wrapperStyle={{marginBottom: 20, width: 300}} label='Password' type='password'/>
+            <MDBBtn style={{marginBottom: '5px', width: 300}}>로그인</MDBBtn>
         </div>
     </div>
 };

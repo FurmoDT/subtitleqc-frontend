@@ -7,3 +7,10 @@
     background-color: red;
     color: white;
 }
+
+.horizontal-divider {
+    border-bottom: solid;
+    border-width: thick;
+    color: rgba(55, 53, 47, 0.16);
+    margin-bottom: 25px;
+}

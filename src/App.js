@@ -1,15 +1,16 @@
 import './App.css';
+import "./css/AuthCss.css"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import MainPage from "./pages/MainPage";
 import Production from "./pages/Production";
 import QualityControl from "./pages/QualityControl";
 import Manual from "./pages/Manual";
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./pages/auth/LoginPage";
 import {publicUrl} from "./utils/config";
 import {AxiosInterceptor} from "./utils/axios";
 import {AuthProvider} from "./utils/authContext";
-import SignupPage from "./pages/SignupPage";
+import SignupPage from "./pages/auth/SignupPage";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`

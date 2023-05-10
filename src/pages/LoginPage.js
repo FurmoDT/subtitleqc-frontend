@@ -30,6 +30,8 @@ const LoginPage = (props) => {
                 setUserState({accessToken: response.data.access_token})
                 navigate('/')
             }
+        }).catch((reason) => {
+            //TODO navigate to signup
         })
     }, [navigate, setUserState])
 

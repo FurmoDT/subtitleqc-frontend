@@ -33,7 +33,7 @@ const LoginPage = () => {
             }
         }).catch((reason) => {
             if (reason.response.status === HttpStatusCode.UnprocessableEntity) {
-                errorLabelRef.current.innerText = 'Invalid Email Format'
+                errorLabelRef.current.innerText = '유효하지 않은 이메일입니다.'
             } else if (reason.response.status === HttpStatusCode.NotFound) {
                 if (data.auth.auth_type !== 'email') {
                     axios.post(`/v1/auth/register`, {
@@ -43,10 +43,10 @@ const LoginPage = () => {
                         navigate('/')
                     })
                 } else {
-                    errorLabelRef.current.innerText = 'Not Registered'
+                    errorLabelRef.current.innerText = '등록되지 않은 이메일입니다.'
                 }
             } else if (reason.response.status === HttpStatusCode.Forbidden) {
-                errorLabelRef.current.innerText = 'Wrong Password'
+                errorLabelRef.current.innerText = '이메일 또는 비밀번호가 틀렸습니다.'
             }
         })
     }, [navigate, setUserState])
@@ -90,9 +90,7 @@ const LoginPage = () => {
                     alignItems: 'center',
                     padding: '0.6em 0.8em',
                     fontSize: '0.8rem',
-                    fontWeight: '400',
                     backgroundColor: '#03c75a',
-                    color: 'white',
                     marginBottom: '20px'
                 }} onClick={() => naverLoginRef.current?.children[0]?.click()}>
                     <img style={{height: '24px'}} src={'/naver.png'} alt={'naver'}/>
@@ -105,7 +103,7 @@ const LoginPage = () => {
             <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
                 errorLabelRef.current.innerText = ''
                 if (!(emailInputRef.current.value && passwordInputRef.current.value)) {
-                    errorLabelRef.current.innerText = 'Incorrect Email or Password'
+                    errorLabelRef.current.innerText = '이메일 또는 비밀번호가 틀렸습니다.'
                     return
                 }
                 authenticate({

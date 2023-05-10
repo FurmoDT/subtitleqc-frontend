@@ -20,7 +20,7 @@ const SignupPage = () => {
                     textAlign: 'center',
                     color: 'black',
                     marginBottom: 30,
-                    fontFamily: 'Nanum Gothic Coding'
+                    fontFamily: 'Nanum Gothic'
                 }}>회원가입
             </div>
             <MDBInput wrapperStyle={{marginBottom: 20, width: 300}} label='name' type={'text'}/>

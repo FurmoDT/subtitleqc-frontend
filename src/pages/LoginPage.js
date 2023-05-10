@@ -79,7 +79,14 @@ const LoginPage = (props) => {
             paddingBottom: 50
         }}>
             <div
-                style={{fontSize: '50px', fontWeight: 700, textAlign: 'center', color: 'black', marginBottom: 30}}>로그인
+                style={{
+                    fontSize: '50px',
+                    fontWeight: 700,
+                    textAlign: 'center',
+                    color: 'black',
+                    marginBottom: 30,
+                    fontFamily: 'Nanum Gothic'
+                }}>로그인
             </div>
             <div style={{width: '300px', display: 'flex', flexDirection: 'column'}}>
                 <GoogleOAuthProvider clientId={googleClientId}>

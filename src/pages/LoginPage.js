@@ -20,6 +20,8 @@ const LoginPage = (props) => {
     const navigate = useNavigate()
     const location = useLocation()
     const naverLoginRef = useRef(null);
+    const emailInputRef = useRef(null)
+    const passwordInputRef = useRef(null)
     const {setUserState} = useContext(AuthContext);
 
     const authenticate = useCallback((data) => {
@@ -98,9 +100,18 @@ const LoginPage = (props) => {
                 color: 'rgba(55, 53, 47, 0.16)',
                 marginBottom: 25
             }}/>
-            <MDBInput wrapperStyle={{marginBottom: 20, width: 300}} label='Email' type={'email'}/>
-            <MDBInput wrapperStyle={{marginBottom: 20, width: 300}} label='Password' type='password'/>
-            <MDBBtn style={{marginBottom: '5px', width: 300}}>로그인</MDBBtn>
+            <MDBInput ref={emailInputRef} wrapperStyle={{marginBottom: 20, width: 300}} label='Email' type={'email'}/>
+            <MDBInput ref={passwordInputRef} wrapperStyle={{marginBottom: 20, width: 300}}
+                      label='Password' type={'password'}/>
+            <MDBBtn style={{marginBottom: '5px', width: 300}} onClick={() => {
+                authenticate({
+                    auth: {
+                        auth_type: 'email',
+                        user_email: emailInputRef.current.value,
+                        user_password: passwordInputRef.current.value
+                    }
+                })
+            }}>로그인</MDBBtn>
         </div>
     </div>
 };

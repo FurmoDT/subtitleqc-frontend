@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import {publicUrl} from "./utils/config";
 import {AxiosInterceptor} from "./utils/axios";
 import {AuthProvider} from "./utils/authContext";
+import SignupPage from "./pages/SignupPage";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
@@ -24,6 +25,7 @@ function App() {
                             <Route path={"/manual"} element={<Manual/>}/>
                         </Route>
                         <Route path={"/login"} element={<LoginPage/>}/>
+                        <Route path={"/signup"} element={<SignupPage/>}/>
                     </Routes>
                 </BrowserRouter>
             </AxiosInterceptor>

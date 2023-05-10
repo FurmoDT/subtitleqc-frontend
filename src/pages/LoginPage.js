@@ -1,7 +1,7 @@
 import {MDBBtn, MDBInput} from "mdb-react-ui-kit";
 import axios from "../utils/axios";
 import {HttpStatusCode} from "axios";
-import {useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
 import {googleClientId, naverClientId} from "../utils/config";
 import {useCallback, useContext, useEffect, useRef} from "react";
@@ -22,6 +22,7 @@ const LoginPage = (props) => {
     const naverLoginRef = useRef(null);
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)
+    const errorLabelRef = useRef(null)
     const {setUserState} = useContext(AuthContext);
 
     const authenticate = useCallback((data) => {
@@ -31,7 +32,22 @@ const LoginPage = (props) => {
                 navigate('/')
             }
         }).catch((reason) => {
-            //TODO navigate to signup
+            if (reason.response.status === HttpStatusCode.UnprocessableEntity) {
+                errorLabelRef.current.innerText = 'Invalid Email Format'
+            } else if (reason.response.status === HttpStatusCode.NotFound) {
+                if (data.auth.auth_type !== 'email') {
+                    axios.post(`/v1/auth/register`, {
+                        ...data, user: {}
+                    }).then((registerResponse) => {
+                        setUserState({accessToken: registerResponse.data.access_token})
+                        navigate('/')
+                    })
+                } else {
+                    errorLabelRef.current.innerText = 'Not Registered'
+                }
+            } else if (reason.response.status === HttpStatusCode.Forbidden) {
+                errorLabelRef.current.innerText = 'Wrong Password'
+            }
         })
     }, [navigate, setUserState])
 
@@ -105,7 +121,12 @@ const LoginPage = (props) => {
             <MDBInput ref={emailInputRef} wrapperStyle={{marginBottom: 20, width: 300}} label='Email' type={'email'}/>
             <MDBInput ref={passwordInputRef} wrapperStyle={{marginBottom: 20, width: 300}}
                       label='Password' type={'password'}/>
-            <MDBBtn style={{marginBottom: '5px', width: 300}} onClick={() => {
+            <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
+                errorLabelRef.current.innerText = ''
+                if (!(emailInputRef.current.value && passwordInputRef.current.value)) {
+                    errorLabelRef.current.innerText = 'Incorrect Email or Password'
+                    return
+                }
                 authenticate({
                     auth: {
                         auth_type: 'email',
@@ -114,6 +135,10 @@ const LoginPage = (props) => {
                     }
                 })
             }}>로그인</MDBBtn>
+            <label ref={errorLabelRef} style={{fontSize: 13, color: 'red'}}/>
+            <div style={{display: 'flex', width: 300, justifyContent: 'end', paddingRight: 10}}>
+                <Link to={'/signup'} style={{fontSize: 14, color: 'blue'}}>회원가입</Link>
+            </div>
         </div>
     </div>
 };

@@ -2,6 +2,10 @@ import {
     MDBBtn,
     MDBCollapse,
     MDBContainer,
+    MDBDropdown,
+    MDBDropdownItem,
+    MDBDropdownMenu,
+    MDBDropdownToggle,
     MDBIcon,
     MDBNavbar,
     MDBNavbarBrand,
@@ -12,9 +16,9 @@ import {
 } from 'mdb-react-ui-kit';
 import {Outlet, useNavigate} from "react-router-dom";
 import {useCallback, useContext, useState} from "react";
+import {AuthContext} from "../utils/authContext";
 import axios from "../utils/axios";
 import {HttpStatusCode} from "axios";
-import {AuthContext} from "../utils/authContext";
 
 export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
@@ -45,16 +49,24 @@ export default function Navbar(props) {
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
                             style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? 'none' : fetchAccessTokenCompleted ? '' : 'none'}}
                             onClick={useCallback(() => navigate('/login'), [navigate])}>Login</MDBBtn>
-                    <MDBBtn outline color={'link'} className={'text-nowrap'}
-                            style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? '' : 'none'}}
-                            onClick={useCallback(() => {
+                    <MDBDropdown style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? '' : 'none'}}>
+                        <MDBDropdownToggle tag={'section'}
+                                           onMouseEnter={(event) => event.target.style.cursor = 'pointer'}>
+                            <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>
+                        </MDBDropdownToggle>
+                        <MDBDropdownMenu>
+                            <MDBDropdownItem link>내 프로필</MDBDropdownItem>
+                            <MDBDropdownItem divider/>
+                            <MDBDropdownItem link onClick={useCallback(() => {
                                 axios.post(`/v1/auth/logout`, {}).then((response) => {
                                     if (response.status === HttpStatusCode.Ok) {
                                         setUserState({...userState, accessToken: null})
                                         navigate('/')
                                     }
                                 })
-                            }, [navigate, userState, setUserState])}>Logout</MDBBtn>
+                            }, [navigate, userState, setUserState])}>로그아웃</MDBDropdownItem>
+                        </MDBDropdownMenu>
+                    </MDBDropdown>
                 </MDBCollapse>
             </MDBContainer>
         </MDBNavbar>

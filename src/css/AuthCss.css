@@ -22,4 +22,5 @@
 .auth-input {
     width: 300px;
     margin-bottom: 20px;
+    font-family: var(--mdb-font-roboto);;
 }

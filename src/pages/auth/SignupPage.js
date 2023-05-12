@@ -18,13 +18,17 @@ const SignupPage = () => {
             <div className={'auth-title'}>회원가입</div>
             <MDBInput ref={nameInputRef} wrapperClass={'auth-input'} label='name' type={'text'}/>
             <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='Email' type={'email'}/>
-            <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='Password' type={'password'}/>
+            <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='Password' type={'password'} placeholder={'영문+숫자 8자리 이상 입력해주세요.'}/>
             <MDBInput ref={confirmPasswordInputRef} wrapperClass={'auth-input'} label='Confirm Password'
                       type={'password'}/>
             <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
                 errorLabelRef.current.innerText = ''
                 if (!(nameInputRef.current.value && emailInputRef.current.value && passwordInputRef.current.value && confirmPasswordInputRef.current.value)) {
                     errorLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+                    return
+                }
+                if (passwordInputRef.current.value.length < 8) {
+                    errorLabelRef.current.innerText = '비밀번호는 영문+숫자 8자리 이상 입력해주세요.'
                     return
                 }
                 if (passwordInputRef.current.value !== confirmPasswordInputRef.current.value) {

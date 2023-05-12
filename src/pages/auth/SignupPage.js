@@ -16,10 +16,10 @@ const SignupPage = () => {
     return <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <div className={'auth-container'}>
             <div className={'auth-title'}>회원가입</div>
-            <MDBInput ref={nameInputRef} wrapperClass={'auth-input'} label='name' type={'text'}/>
-            <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='Email' type={'email'}/>
-            <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='Password' type={'password'} placeholder={'영문+숫자 8자리 이상 입력해주세요.'}/>
-            <MDBInput ref={confirmPasswordInputRef} wrapperClass={'auth-input'} label='Confirm Password'
+            <MDBInput ref={nameInputRef} wrapperClass={'auth-input'} label='이름' type={'text'}/>
+            <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='이메일' type={'email'}/>
+            <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='비밀번호' type={'password'} placeholder={'영문+숫자 8자리 이상 입력해주세요.'}/>
+            <MDBInput ref={confirmPasswordInputRef} wrapperClass={'auth-input'} label='비밀번호 확인'
                       type={'password'}/>
             <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
                 errorLabelRef.current.innerText = ''

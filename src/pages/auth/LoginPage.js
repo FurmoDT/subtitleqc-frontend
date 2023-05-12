@@ -1,10 +1,10 @@
-import {MDBBtn, MDBInput} from "mdb-react-ui-kit";
+import {MDBBadge, MDBBtn, MDBCollapse, MDBInput} from "mdb-react-ui-kit";
 import axios from "../../utils/axios";
 import {HttpStatusCode} from "axios";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
 import {googleClientId, naverClientId} from "../../utils/config";
-import {useCallback, useContext, useEffect, useRef} from "react";
+import {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {AuthContext} from "../../utils/authContext";
 
 const {naver} = window
@@ -24,6 +24,8 @@ const LoginPage = () => {
     const passwordInputRef = useRef(null)
     const errorLabelRef = useRef(null)
     const {setUserState} = useContext(AuthContext);
+    const [showShow, setShowShow] = useState(false);
+    const toggleShow = () => setShowShow(!showShow);
 
     const authenticate = useCallback((data) => {
         axios.post(`/v1/auth/login`, data).then((response) => {
@@ -91,33 +93,52 @@ const LoginPage = () => {
                     padding: '0.6em 0.8em',
                     fontSize: '0.8rem',
                     backgroundColor: '#03c75a',
-                    marginBottom: '20px'
+                    marginBottom: '15px'
                 }} onClick={() => naverLoginRef.current?.children[0]?.click()}>
                     <img style={{height: '24px'}} src={'/naver.png'} alt={'naver'}/>
                     <span style={{flex: 1}}>네이버 아이디로 로그인</span>
                 </MDBBtn>
             </div>
-            <div className={'horizontal-divider'} style={{width: 300}}/>
-            <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='Email' type={'email'}/>
-            <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='Password' type={'password'}/>
-            <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
-                errorLabelRef.current.innerText = ''
-                if (!(emailInputRef.current.value && passwordInputRef.current.value)) {
-                    errorLabelRef.current.innerText = '이메일 또는 비밀번호가 틀렸습니다.'
-                    return
-                }
-                authenticate({
-                    auth: {
-                        auth_type: 'email',
-                        user_email: emailInputRef.current.value,
-                        user_password: passwordInputRef.current.value
-                    }
-                })
-            }}>로그인</MDBBtn>
-            <label ref={errorLabelRef} style={{fontSize: 13, color: 'red'}}/>
-            <div style={{display: 'flex', width: 300, justifyContent: 'end', paddingRight: 10}}>
-                <Link to={'/signup'} style={{fontSize: 14, color: 'blue'}}>회원가입</Link>
+            <div style={{
+                width: 300,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 10,
+                marginBottom: 20
+            }} onClick={toggleShow}>
+                <div style={{width: '100%'}} className={'horizontal-divider'}/>
+                <MDBBadge color={'secondary'} style={{
+                    marginLeft: 10,
+                    marginRight: 10,
+                    fontFamily: 'Nanum Gothic',
+                    fontSize: '0.8rem',
+                    fontWeight: 200
+                }}> 이메일로 로그인하기 </MDBBadge>
+                <div style={{width: '100%'}} className={'horizontal-divider'}/>
             </div>
+            <MDBCollapse show={showShow}>
+                <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='Email' type={'email'}/>
+                <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='Password' type={'password'}/>
+                <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
+                    errorLabelRef.current.innerText = ''
+                    if (!(emailInputRef.current.value && passwordInputRef.current.value)) {
+                        errorLabelRef.current.innerText = '이메일 또는 비밀번호가 틀렸습니다.'
+                        return
+                    }
+                    authenticate({
+                        auth: {
+                            auth_type: 'email',
+                            user_email: emailInputRef.current.value,
+                            user_password: passwordInputRef.current.value
+                        }
+                    })
+                }}>로그인</MDBBtn>
+                <label ref={errorLabelRef} style={{fontSize: 13, color: 'red'}}/>
+                <div style={{display: 'flex', width: 300, justifyContent: 'end', paddingRight: 10}}>
+                    <Link to={'/signup'} style={{fontSize: 14, color: 'blue'}}>회원가입</Link>
+                </div>
+            </MDBCollapse>
         </div>
     </div>
 };

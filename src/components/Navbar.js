@@ -52,7 +52,7 @@ export default function Navbar(props) {
                     <MDBDropdown style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? '' : 'none'}}>
                         <MDBDropdownToggle tag={'section'}
                                            onMouseEnter={(event) => event.target.style.cursor = 'pointer'}>
-                            <label style={{fontFamily: 'Nanum Gothic', marginRight: '5px', fontSize: 15}}>
+                            <label style={{marginRight: '5px', fontSize: 15}}>
                                 {userState.user?.userName} 님
                             </label>
                             <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>

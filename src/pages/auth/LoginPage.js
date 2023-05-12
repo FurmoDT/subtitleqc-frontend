@@ -106,7 +106,7 @@ const LoginPage = () => {
             }}>
                 <div style={{width: '100%'}} className={'horizontal-divider'}/>
                 <MDBBadge color={'secondary'} style={{
-                    marginLeft: 10, marginRight: 10, fontFamily: 'Nanum Gothic', fontSize: '0.8rem', fontWeight: 100
+                    marginLeft: 10, marginRight: 10, fontSize: '0.8rem', fontWeight: 100
                 }} light> 이메일로 로그인하기 </MDBBadge>
                 <div style={{width: '100%'}} className={'horizontal-divider'}/>
             </div>

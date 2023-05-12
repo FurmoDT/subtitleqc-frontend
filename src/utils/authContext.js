@@ -15,9 +15,11 @@ export const AuthProvider = ({children}) => {
     useEffect(() => {
         if (userState.accessToken) {
             axios.defaults.headers.common.Authorization = `Bearer ${userState.accessToken}`
-            axios.get('/v1/auth/get_current_user').then((response) => {
-                setUserState({...userState, userName: response.data.user_name})
-            })
+            if (!userState.user) {
+                axios.get('/v1/auth/get_current_user').then((response) => {
+                    setUserState({...userState, user: {userName: response.data.user_name}})
+                })
+            }
         }
     }, [userState])
     return (<AuthContext.Provider value={{userState, setUserState, fetchAccessTokenCompleted}}>

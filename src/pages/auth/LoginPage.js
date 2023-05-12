@@ -111,8 +111,8 @@ const LoginPage = () => {
                 <div style={{width: '100%'}} className={'horizontal-divider'}/>
             </div>
             <MDBCollapse show={showShow}>
-                <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='Email' type={'email'}/>
-                <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='Password' type={'password'}/>
+                <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='이메일' type={'email'}/>
+                <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='비밀번호' type={'password'}/>
                 <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
                     errorLabelRef.current.innerText = ''
                     if (!(emailInputRef.current.value && passwordInputRef.current.value)) {

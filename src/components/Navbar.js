@@ -48,7 +48,7 @@ export default function Navbar(props) {
                     </MDBNavbarNav>
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
                             style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? 'none' : fetchAccessTokenCompleted ? '' : 'none'}}
-                            onClick={useCallback(() => navigate('/login'), [navigate])}>Login</MDBBtn>
+                            onClick={useCallback(() => navigate('/login'), [navigate])}>로그인</MDBBtn>
                     <MDBDropdown style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? '' : 'none'}}>
                         <MDBDropdownToggle tag={'section'}
                                            onMouseEnter={(event) => event.target.style.cursor = 'pointer'}>
@@ -58,7 +58,9 @@ export default function Navbar(props) {
                             <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>
                         </MDBDropdownToggle>
                         <MDBDropdownMenu>
-                            <MDBDropdownItem link>내 프로필</MDBDropdownItem>
+                            <MDBDropdownItem link onClick={useCallback(() => {
+                                navigate('/profile')
+                            }, [navigate])}>내 프로필</MDBDropdownItem>
                             <MDBDropdownItem divider/>
                             <MDBDropdownItem link onClick={useCallback(() => {
                                 axios.post(`/v1/auth/logout`, {}).then((response) => {

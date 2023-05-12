@@ -127,9 +127,11 @@ const LoginPage = () => {
                         }
                     })
                 }}>로그인</MDBBtn>
-                <label ref={errorLabelRef} style={{fontSize: 13, color: 'red'}}/>
+                <section style={{display: 'flex', justifyContent: 'center'}}>
+                    <label ref={errorLabelRef} style={{fontSize: 13, color: 'red'}}/>
+                </section>
                 <div style={{display: 'flex', width: 300, justifyContent: 'end', paddingRight: 10}}>
-                    <Link to={'/signup'} style={{fontSize: 14, color: 'blue'}}>회원가입</Link>
+                    <Link to={'/signup'} style={{fontSize: 13, color: 'blue'}}>회원가입</Link>
                 </div>
             </MDBCollapse>
         </div>

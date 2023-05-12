@@ -100,21 +100,14 @@ const LoginPage = () => {
                 </MDBBtn>
             </div>
             <div style={{
-                width: 300,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 10,
-                marginBottom: 20
-            }} onClick={toggleShow}>
+                width: 300, display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 20
+            }} onClick={toggleShow} onMouseEnter={(event) => {
+                event.target.style.cursor = 'pointer'
+            }}>
                 <div style={{width: '100%'}} className={'horizontal-divider'}/>
                 <MDBBadge color={'secondary'} style={{
-                    marginLeft: 10,
-                    marginRight: 10,
-                    fontFamily: 'Nanum Gothic',
-                    fontSize: '0.8rem',
-                    fontWeight: 200
-                }}> 이메일로 로그인하기 </MDBBadge>
+                    marginLeft: 10, marginRight: 10, fontFamily: 'Nanum Gothic', fontSize: '0.8rem', fontWeight: 100
+                }} light> 이메일로 로그인하기 </MDBBadge>
                 <div style={{width: '100%'}} className={'horizontal-divider'}/>
             </div>
             <MDBCollapse show={showShow}>

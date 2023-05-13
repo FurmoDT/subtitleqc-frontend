@@ -58,7 +58,7 @@ export default function Navbar(props) {
                             <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>
                         </MDBDropdownToggle>
                         <MDBDropdownMenu>
-                            <MDBDropdownItem link onClick={useCallback(() => {
+                            <MDBDropdownItem link href={null} onClick={useCallback(() => {
                                 navigate('/profile')
                             }, [navigate])}>내 프로필</MDBDropdownItem>
                             <MDBDropdownItem divider/>

@@ -8,6 +8,7 @@ import {HttpStatusCode} from "axios";
 const SignupPage = () => {
     const navigate = useNavigate()
     const nameInputRef = useRef(null)
+    const birthInputRef = useRef(null)
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)
     const confirmPasswordInputRef = useRef(null)
@@ -18,13 +19,28 @@ const SignupPage = () => {
             <div className={'auth-title'}>회원가입</div>
             <MDBInput ref={nameInputRef} wrapperClass={'auth-input'} label='이름' type={'text'}/>
             <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='이메일' type={'email'}/>
-            <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='비밀번호' type={'password'} placeholder={'영문+숫자 8자리 이상 입력해주세요.'}/>
+            <MDBInput ref={birthInputRef} wrapperClass={'auth-input'} label='생년월일' type={'text'}
+                      placeholder={'YYYY-MM-DD'} onChange={(event) => {
+                const value = event.target.value.replace(/\D/g, '')
+                let year = value.slice(0, 4);
+                let month = value.slice(4, 6);
+                let day = value.slice(6, 8);
+                if (month) month = '-' + month
+                if (day) day = '-' + day
+                event.target.value = year + month + day
+            }}/>
+            <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='비밀번호' type={'password'}
+                      placeholder={'영문+숫자 8자리 이상 입력해주세요.'}/>
             <MDBInput ref={confirmPasswordInputRef} wrapperClass={'auth-input'} label='비밀번호 확인'
                       type={'password'}/>
             <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
                 errorLabelRef.current.innerText = ''
                 if (!(nameInputRef.current.value && emailInputRef.current.value && passwordInputRef.current.value && confirmPasswordInputRef.current.value)) {
                     errorLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+                    return
+                }
+                if (!(birthInputRef.current.value?.match(/^\d{4}-\d{2}-\d{2}$/) && new Date(birthInputRef.current.value).valueOf())) {
+                    errorLabelRef.current.innerText = '올바른 생년월일을 입력해주세요.'
                     return
                 }
                 if (passwordInputRef.current.value.length < 8) {

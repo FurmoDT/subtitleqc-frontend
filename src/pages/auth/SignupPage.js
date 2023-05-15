@@ -57,7 +57,8 @@ const SignupPage = () => {
                         user_email: emailInputRef.current.value,
                         user_password: passwordInputRef.current.value
                     }, user: {
-                        user_name: nameInputRef.current.value
+                        user_name: nameInputRef.current.value,
+                        user_birthday: birthInputRef.current.value
                     }
                 }).then((response) => {
                     if (response.status === HttpStatusCode.Ok) {

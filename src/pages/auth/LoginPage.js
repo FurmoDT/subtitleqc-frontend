@@ -80,12 +80,13 @@ const LoginPage = () => {
             <div style={{width: '300px', display: 'flex', flexDirection: 'column'}}>
                 <MDBBtn className={'auth-oauth'} style={{
                     display: 'flex',
-                    padding: '0.7em 1.1em',
+                    padding: '0.8em 1.1em',
                     fontSize: '0.8rem',
                     backgroundColor: '#ffffff',
-                    color: '#444'
-                }} onClick={() => googleLoginCallback()} color={'info'} outline>
-                    <img style={{height: '16px'}} src={'/google.png'} alt={'google'}/>
+                    color: '#444',
+                    borderColor: 'rgba(55, 53, 47, 0.16)'
+                }} onClick={() => googleLoginCallback()} outline>
+                    <img style={{height: '16px', marginRight: '8px'}} src={'/google.png'} alt={'google'}/>
                     <span style={{flex: 1}}>구글 아이디로 로그인</span>
                 </MDBBtn>
                 <div ref={naverLoginRef} id="naverIdLogin" style={{display: 'none'}}/>
@@ -94,8 +95,9 @@ const LoginPage = () => {
                     padding: '0.6em 0.8em',
                     fontSize: '0.8rem',
                     backgroundColor: '#03c75a',
-                    color: '#fff'
-                }} onClick={() => naverLoginRef.current?.children[0]?.click()} color={'info'} outline>
+                    color: '#fff',
+                    borderColor: 'rgba(55, 53, 47, 0.16)'
+                }} onClick={() => naverLoginRef.current?.children[0]?.click()} outline>
                     <img style={{height: '24px'}} src={'/naver.png'} alt={'naver'}/>
                     <span style={{flex: 1}}>네이버 아이디로 로그인</span>
                 </MDBBtn>

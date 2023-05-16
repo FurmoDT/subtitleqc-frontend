@@ -70,7 +70,8 @@ const Production = () => {
     }, [])
     const resetSegments = useCallback(() => {
         const segments = []
-        hotRef.current.getSourceData().forEach((value) => {
+        const source = fnToggleRef.current ? fnRef.current : cellDataRef.current
+        source.forEach((value) => {
             const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
             if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
         })
@@ -115,11 +116,11 @@ const Production = () => {
                 setLanguages(languageFile.language)
                 setFnLanguages(languageFile.fnLanguage || languageFile.fxLanguage)
                 setProjectDetail(languageFile.projectDetail)
+                if (waveformRef.current) {
+                    waveformRef.current.segments.removeAll()
+                    waveformRef.current.segments.add(resetSegmentsRef.current())
+                }
             } else setFileUploadModalShow(true)
-            if (waveformRef.current) {
-                waveformRef.current.segments.removeAll()
-                waveformRef.current.segments.add(resetSegmentsRef.current())
-            }
         }
     }, [languageFile])
     useEffect(() => {

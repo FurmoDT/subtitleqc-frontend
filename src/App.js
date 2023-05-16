@@ -7,11 +7,12 @@ import Production from "./pages/Production";
 import QualityControl from "./pages/QualityControl";
 import Manual from "./pages/Manual";
 import LoginPage from "./pages/auth/LoginPage";
-import {publicUrl} from "./utils/config";
+import {googleClientId, publicUrl} from "./utils/config";
 import {AxiosInterceptor} from "./utils/axios";
 import {AuthProvider} from "./utils/authContext";
 import SignupPage from "./pages/auth/SignupPage";
 import ProfilePage from "./pages/ProfilePage";
+import {GoogleOAuthProvider} from "@react-oauth/google";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
@@ -27,7 +28,8 @@ function App() {
                             <Route path={"/manual"} element={<Manual/>}/>
                             <Route path={"/profile"} element={<ProfilePage/>}/>
                         </Route>
-                        <Route path={"/login"} element={<LoginPage/>}/>
+                        <Route path={"/login"} element={<GoogleOAuthProvider clientId={googleClientId}>
+                            <LoginPage/></GoogleOAuthProvider>}/>
                         <Route path={"/signup"} element={<SignupPage/>}/>
                     </Routes>
                 </BrowserRouter>

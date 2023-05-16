@@ -24,3 +24,8 @@
     margin-bottom: 20px;
     font-family: var(--mdb-font-roboto);;
 }
+
+.auth-oauth {
+    align-items: center;
+    margin-bottom: 15px;
+}

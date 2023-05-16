@@ -2,10 +2,10 @@ import {MDBBadge, MDBBtn, MDBCollapse, MDBInput} from "mdb-react-ui-kit";
 import axios from "../../utils/axios";
 import {HttpStatusCode} from "axios";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
-import {googleClientId, naverClientId} from "../../utils/config";
+import {naverClientId} from "../../utils/config";
 import {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {AuthContext} from "../../utils/authContext";
+import {useGoogleLogin} from "@react-oauth/google";
 
 const {naver} = window
 const naverLogin = new naver.LoginWithNaverId({
@@ -63,6 +63,12 @@ const LoginPage = () => {
         }
     }, [location])
 
+    const googleLoginCallback = useGoogleLogin({
+        flow: 'implicit', onSuccess: (tokenResponse) => {
+            authenticate({auth: {auth_type: 'google', access_token: tokenResponse.access_token}})
+        }
+    })
+
     useEffect(() => {
         naverLogin.init();
         naverLoginCallback()
@@ -72,29 +78,24 @@ const LoginPage = () => {
         <div className={'auth-container'}>
             <div className={'auth-title'}>로그인</div>
             <div style={{width: '300px', display: 'flex', flexDirection: 'column'}}>
-                <GoogleOAuthProvider clientId={googleClientId}>
-                    <GoogleLogin size={'large'} width={'300'} text={'continue_with'}
-                                 containerProps={{style: {marginBottom: '15px'}}}
-                                 onSuccess={credentialResponse => {
-                                     authenticate({
-                                         auth: {
-                                             auth_type: 'google', payload: JSON.stringify(credentialResponse)
-                                         }
-                                     })
-                                 }}
-                                 onError={() => {
-                                     console.log('Login Failed');
-                                 }}/>
-                </GoogleOAuthProvider>
-                <div ref={naverLoginRef} id="naverIdLogin" style={{display: 'none'}}/>
-                <MDBBtn style={{
+                <MDBBtn className={'auth-oauth'} style={{
                     display: 'flex',
-                    alignItems: 'center',
+                    padding: '0.7em 1.1em',
+                    fontSize: '0.8rem',
+                    backgroundColor: '#ffffff',
+                    color: '#444'
+                }} onClick={() => googleLoginCallback()} color={'info'} outline>
+                    <img style={{height: '16px'}} src={'/google.png'} alt={'google'}/>
+                    <span style={{flex: 1}}>구글 아이디로 로그인</span>
+                </MDBBtn>
+                <div ref={naverLoginRef} id="naverIdLogin" style={{display: 'none'}}/>
+                <MDBBtn className={'auth-oauth'} style={{
+                    display: 'flex',
                     padding: '0.6em 0.8em',
                     fontSize: '0.8rem',
                     backgroundColor: '#03c75a',
-                    marginBottom: '15px'
-                }} onClick={() => naverLoginRef.current?.children[0]?.click()}>
+                    color: '#fff'
+                }} onClick={() => naverLoginRef.current?.children[0]?.click()} color={'info'} outline>
                     <img style={{height: '24px'}} src={'/naver.png'} alt={'naver'}/>
                     <span style={{flex: 1}}>네이버 아이디로 로그인</span>
                 </MDBBtn>

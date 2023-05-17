@@ -58,7 +58,7 @@ const TimelineWindow = (props) => {
         if (!props.video) return
         setStatusDisplay('isLoading')
         window.addEventListener('error', (ev) => {
-            if (ev.error.name === 'TypeError') setStatusDisplay('error')
+            if (ev.error.name === 'TypeError' && ev.error.message.startsWith('WaveformData')) setStatusDisplay('error')
         })
         const options = {
             mediaElement: document.querySelector('video'),

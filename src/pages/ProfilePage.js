@@ -81,7 +81,6 @@ const ProfilePage = () => {
                 birthInputRef.current.value = userInfo.user_birthday || null
                 phoneInputRef.current.value = userInfo.user_phone || null
                 accountInputRef.current.value = userInfo.user_account || null
-
             }, [basicActive])
             return <MDBCard className={'text-center'}>
                 <MDBCardBody>

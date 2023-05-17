@@ -4,6 +4,7 @@ import axios from "../../utils/axios";
 import {AuthContext} from "../../utils/authContext";
 import {useNavigate} from "react-router-dom";
 import {HttpStatusCode} from "axios";
+import {birthdayValidator} from "../../utils/functions";
 
 const SignupPage = () => {
     const navigate = useNavigate()
@@ -21,13 +22,7 @@ const SignupPage = () => {
             <MDBInput ref={emailInputRef} wrapperClass={'auth-input'} label='이메일' type={'email'}/>
             <MDBInput ref={birthInputRef} wrapperClass={'auth-input'} label='생년월일' type={'text'}
                       placeholder={'YYYY-MM-DD'} onChange={(event) => {
-                const value = event.target.value.replace(/\D/g, '')
-                let year = value.slice(0, 4);
-                let month = value.slice(4, 6);
-                let day = value.slice(6, 8);
-                if (month) month = '-' + month
-                if (day) day = '-' + day
-                event.target.value = year + month + day
+                event.target.value = birthdayValidator(event.target.value)
             }}/>
             <MDBInput ref={passwordInputRef} wrapperClass={'auth-input'} label='비밀번호' type={'password'}
                       placeholder={'영문+숫자 8자리 이상 입력해주세요.'}/>

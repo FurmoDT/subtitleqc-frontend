@@ -35,3 +35,11 @@ export const createSegment = (start, end, id) => {
         id: id
     }
 }
+
+export const birthdayValidator = (value) => {
+    value = value.replace(/\D/g, '')
+    let [year, month, day] = [value.slice(0, 4), value.slice(4, 6), value.slice(6, 8)]
+    if (month) month = '-' + month
+    if (day) day = '-' + day
+    return year + month + day
+}

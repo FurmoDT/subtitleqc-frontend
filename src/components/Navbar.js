@@ -22,7 +22,7 @@ import {HttpStatusCode} from "axios";
 
 export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
-    const {userState, setUserState, fetchAccessTokenCompleted} = useContext(AuthContext);
+    const {setAccessToken, userState} = useContext(AuthContext);
     const navigate = useNavigate()
     return <div>
         <MDBNavbar expand='lg' light bgColor='light'>
@@ -47,12 +47,12 @@ export default function Navbar(props) {
                         </MDBNavbarItem>
                     </MDBNavbarNav>
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
-                            style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? 'none' : fetchAccessTokenCompleted ? '' : 'none'}}
+                            style={{display: userState.isAuthenticated ? 'none' : ''}}
                             onClick={useCallback(() => navigate('/login'), [navigate])}>로그인</MDBBtn>
-                    <MDBDropdown style={{display: (fetchAccessTokenCompleted && userState.accessToken) ? '' : 'none'}}>
+                    <MDBDropdown style={{display: userState.isAuthenticated ? '' : 'none'}}>
                         <MDBDropdownToggle tag={'section'}
                                            onMouseEnter={(event) => event.target.style.cursor = 'pointer'}>
-                            <label style={{marginRight: '5px', fontSize: 15}}>
+                            <label style={{marginRight: '5px', fontSize: '1rem'}}>
                                 {userState.user?.userName} 님
                             </label>
                             <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>
@@ -65,11 +65,11 @@ export default function Navbar(props) {
                             <MDBDropdownItem link onClick={useCallback(() => {
                                 axios.post(`/v1/auth/logout`, {}).then((response) => {
                                     if (response.status === HttpStatusCode.Ok) {
-                                        setUserState({...userState, accessToken: null})
-                                        navigate('/')
+                                        setAccessToken(null)
+                                        navigate('/', {replace: true})
                                     }
                                 })
-                            }, [navigate, userState, setUserState])}>로그아웃</MDBDropdownItem>
+                            }, [navigate, setAccessToken])}>로그아웃</MDBDropdownItem>
                         </MDBDropdownMenu>
                     </MDBDropdown>
                 </MDBCollapse>

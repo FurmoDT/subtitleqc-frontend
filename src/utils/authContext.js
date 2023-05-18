@@ -5,24 +5,26 @@ import {HttpStatusCode} from "axios";
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({children}) => {
+    const [isInitialized, setIsInitialized] = useState(false);
+    const [accessToken, setAccessToken] = useState(null);
     const [userState, setUserState] = useState({});
-    const [fetchAccessTokenCompleted, setFetchAccessTokenCompleted] = useState(false)
     useEffect(() => {
         axios.post('/v1/auth/refresh').then((response) => {
-            if (response.status === HttpStatusCode.Ok) setUserState({accessToken: response.data.access_token})
-        }).finally(() => setFetchAccessTokenCompleted(true))
+            if (response.status === HttpStatusCode.Ok) setAccessToken(response.data.access_token)
+        }).catch(() => setIsInitialized(true))
     }, [])
     useEffect(() => {
-        if (userState.accessToken) {
-            axios.defaults.headers.common.Authorization = `Bearer ${userState.accessToken}`
-            if (!userState.isAuthenticated) {
-                axios.get('/v1/auth/get_current_user').then((response) => {
-                    setUserState({...userState, isAuthenticated: true, user: {userName: response.data.user_name}})
-                })
-            }
+        if (accessToken) {
+            axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+            axios.get('/v1/auth/get_current_user').then((response) => {
+                setUserState({isAuthenticated: true, user: {userName: response.data.user_name}})
+            }).finally(() => setIsInitialized(true))
+        } else {
+            delete axios.defaults.headers.common.Authorization
+            setUserState({})
         }
-    }, [userState])
-    return (<AuthContext.Provider value={{userState, setUserState, fetchAccessTokenCompleted}}>
+    }, [accessToken])
+    if (isInitialized) return (<AuthContext.Provider value={{accessToken, setAccessToken, userState, setUserState}}>
         {children}
     </AuthContext.Provider>);
 };

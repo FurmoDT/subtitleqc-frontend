@@ -14,7 +14,7 @@ const SignupPage = () => {
     const passwordInputRef = useRef(null)
     const confirmPasswordInputRef = useRef(null)
     const errorLabelRef = useRef(null)
-    const {setUserState} = useContext(AuthContext);
+    const {setAccessToken} = useContext(AuthContext);
     return <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <div className={'auth-container'}>
             <div className={'auth-title'}>회원가입</div>
@@ -57,7 +57,7 @@ const SignupPage = () => {
                     }
                 }).then((response) => {
                     if (response.status === HttpStatusCode.Ok) {
-                        setUserState({accessToken: response.data.access_token})
+                        setAccessToken(response.data.access_token)
                         navigate('/')
                     }
                 }).catch((reason) => {

@@ -30,8 +30,8 @@ const ProfilePage = () => {
             axios.get(`/v1/user/me`).then((response) => {
                 setUserInfo(response.data)
             })
-        }
-    }, [userState])
+        } else navigate('/login')
+    }, [userState, navigate])
     const LeftPanel = () => {
         const [basicActive, setBasicActive] = useState(pathname)
         const handleBasicClick = (value) => {

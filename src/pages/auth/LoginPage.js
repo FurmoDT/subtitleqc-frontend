@@ -23,14 +23,14 @@ const LoginPage = () => {
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)
     const errorLabelRef = useRef(null)
-    const {setUserState} = useContext(AuthContext);
+    const {setAccessToken} = useContext(AuthContext);
     const [showShow, setShowShow] = useState(false);
     const toggleShow = () => setShowShow(!showShow);
 
     const authenticate = useCallback((data) => {
         axios.post(`/v1/auth/login`, data).then((response) => {
             if (response.status === HttpStatusCode.Ok) {
-                setUserState({accessToken: response.data.access_token})
+                setAccessToken(response.data.access_token)
                 navigate('/')
             }
         }).catch((reason) => {
@@ -41,7 +41,7 @@ const LoginPage = () => {
                     axios.post(`/v1/auth/register`, {
                         ...data, user: {}
                     }).then((registerResponse) => {
-                        setUserState({accessToken: registerResponse.data.access_token})
+                        setAccessToken(registerResponse.data.access_token)
                         navigate('/')
                     })
                 } else {
@@ -51,7 +51,7 @@ const LoginPage = () => {
                 errorLabelRef.current.innerText = '이메일 또는 비밀번호가 틀렸습니다.'
             }
         })
-    }, [navigate, setUserState])
+    }, [navigate, setAccessToken])
 
     window.authenticate = authenticate
     const naverLoginCallback = useCallback(() => {

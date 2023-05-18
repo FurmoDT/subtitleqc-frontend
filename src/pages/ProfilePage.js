@@ -92,11 +92,21 @@ const ProfilePage = () => {
                     <MDBTabs>
                         <MDBTabsContent style={{width: '100%'}}>
                             <MDBTabsPane show={basicActive === 'tab1'}>
-                                <MDBCardText>{userInfo.user_email}</MDBCardText>
-                                <MDBCardText>{userInfo.user_name}</MDBCardText>
-                                <MDBCardText>{userInfo.user_birthday}</MDBCardText>
-                                <MDBCardText>{userInfo.user_phone}</MDBCardText>
-                                <MDBCardText>{userInfo.user_account}</MDBCardText>
+                                <MDBCardText style={{lineHeight: '1rem'}}>
+                                    <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
+                                        이메일</MDBBadge><br/>{userInfo.user_email}</MDBCardText>
+                                <MDBCardText style={{lineHeight: '1rem'}}>
+                                    <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
+                                        이름</MDBBadge><br/>{userInfo.user_name}</MDBCardText>
+                                <MDBCardText style={{lineHeight: '1rem'}}>
+                                    <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
+                                        생년월일</MDBBadge><br/>{userInfo.user_birthday}</MDBCardText>
+                                <MDBCardText style={{lineHeight: '1rem'}}>
+                                    <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
+                                        휴대폰 번호</MDBBadge><br/>{userInfo.user_phone}</MDBCardText>
+                                <MDBCardText style={{lineHeight: '1rem'}}>
+                                    <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
+                                        계좌 번호</MDBBadge><br/>{userInfo.user_account}</MDBCardText>
                                 <MDBBtn className={'float-end'} onClick={() => handleBasicClick('tab2')}>수정</MDBBtn>
                             </MDBTabsPane>
                             <MDBTabsPane show={basicActive === 'tab2'}>

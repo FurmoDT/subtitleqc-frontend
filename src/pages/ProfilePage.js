@@ -26,12 +26,15 @@ const ProfilePage = () => {
     const {userState} = useContext(AuthContext)
     const [userInfo, setUserInfo] = useState({})
     useEffect(() => {
+        if (!userState.isAuthenticated) navigate('/login')
+    }, [userState, navigate])
+    useEffect(() => {
         if (userState.isAuthenticated) {
             axios.get(`/v1/user/me`).then((response) => {
                 setUserInfo(response.data)
             })
-        } else navigate('/login')
-    }, [userState, navigate])
+        }
+    }, [userState])
     const LeftPanel = () => {
         const [basicActive, setBasicActive] = useState(pathname)
         const handleBasicClick = (value) => {
@@ -86,8 +89,9 @@ const ProfilePage = () => {
                 <MDBCardBody>
                     <MDBCardTitle className={'mb-5'} style={{display: 'flex', justifyContent: 'space-between'}}>
                         <MDBBadge light>기본정보</MDBBadge>
-                        <MDBBadge color={"secondary"}
-                                  light>{userInfo.user_role === 'admin' ? '관리자' : userInfo.user_role === 'pm' ? 'PM' : userInfo.user_role === 'worker' ? '작업자' : undefined}</MDBBadge>
+                        <MDBBadge color={"secondary"} light>
+                            {userInfo.user_role === 'admin' ? '관리자' : userInfo.user_role === 'pm' ? 'PM' : userInfo.user_role === 'worker' ? '작업자' : undefined}
+                        </MDBBadge>
                     </MDBCardTitle>
                     <MDBTabs>
                         <MDBTabsContent style={{width: '100%'}}>
@@ -134,9 +138,13 @@ const ProfilePage = () => {
                 </MDBCardBody>
             </MDBCard>
         }
-        if (pathname === '/profile') return <ProfilePanel/>
-        else if (pathname === '/profile/1') return <div>sample1</div>
-        else if (pathname === '/profile/2') return <div>sample2</div>
+        if (pathname === '/profile') {
+            return <ProfilePanel/>
+        } else if (pathname === '/profile/1') {
+            return <div>sample1</div>
+        } else if (pathname === '/profile/2') {
+            return <div>sample2</div>
+        }
     }
     return <div style={{width: '100%', height: 'calc(100vh - 60px)', display: 'flex', justifyContent: 'center'}}>
         <MDBRow style={{width: '100%', maxWidth: '75rem', marginTop: '30px'}}>

@@ -56,6 +56,7 @@ const ProfilePage = () => {
 
     const RightPanel = () => {
         const ProfilePanel = () => {
+            const [isInitialized, setIsInitialized] = useState(false)
             const [basicActive, setBasicActive] = useState('tab1')
             const nameInputRef = useRef(null)
             const birthInputRef = useRef(null)
@@ -80,12 +81,15 @@ const ProfilePage = () => {
                 setBasicActive(value);
             };
             useEffect(() => {
+                if (Object.keys(userInfo).length && !isInitialized) setIsInitialized(true)
+            }, [isInitialized])
+            useEffect(() => {
                 nameInputRef.current.value = userInfo.user_name || null
                 birthInputRef.current.value = userInfo.user_birthday || null
                 phoneInputRef.current.value = userInfo.user_phone || null
                 accountInputRef.current.value = userInfo.user_account || null
             }, [basicActive])
-            return <MDBCard className={'text-center'}>
+            return <MDBCard className={'text-center'} style={{display: isInitialized ? '' : 'none'}}>
                 <MDBCardBody>
                     <MDBCardTitle className={'mb-5'} style={{display: 'flex', justifyContent: 'space-between'}}>
                         <MDBBadge light>기본정보</MDBBadge>

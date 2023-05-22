@@ -26,7 +26,7 @@ function App() {
                             <Route path={"/production"} element={<Production/>}/>
                             <Route path={"/qc"} element={<QualityControl/>}/>
                             <Route path={"/manual"} element={<Manual/>}/>
-                            <Route path={"/profile/*"} element={<ProfilePage/>}/>
+                            <Route path={"/user/*"} element={<ProfilePage/>}/>
                         </Route>
                         <Route path={"/login"} element={<GoogleOAuthProvider clientId={googleClientId}>
                             <LoginPage/></GoogleOAuthProvider>}/>

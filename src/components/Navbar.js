@@ -59,7 +59,7 @@ export default function Navbar(props) {
                         </MDBDropdownToggle>
                         <MDBDropdownMenu>
                             <MDBDropdownItem link href={null} onClick={useCallback(() => {
-                                navigate('/profile')
+                                navigate('/user')
                             }, [navigate])}>내 프로필</MDBDropdownItem>
                             <MDBDropdownItem divider/>
                             <MDBDropdownItem link onClick={useCallback(() => {

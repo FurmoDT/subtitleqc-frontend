@@ -27,6 +27,7 @@ const ProfilePage = () => {
     const navigate = useNavigate()
     const {userState} = useContext(AuthContext)
     const [userInfo, setUserInfo] = useState({})
+    const [isInitialized, setIsInitialized] = useState(false)
     useEffect(() => {
         if (!userState.isAuthenticated) navigate('/login')
     }, [userState, navigate])
@@ -37,6 +38,9 @@ const ProfilePage = () => {
             })
         }
     }, [userState])
+    useEffect(() => {
+        if (Object.keys(userInfo).length) setIsInitialized(true)
+    }, [userInfo])
     const LeftPanel = () => {
         const [basicActive, setBasicActive] = useState(pathname)
         const handleBasicClick = (value) => {
@@ -46,19 +50,19 @@ const ProfilePage = () => {
         }
         return <MDBCard>
             <MDBListGroup>
-                <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/profile')} action
-                                  active={basicActive === '/profile'}>내 정보</MDBListGroupItem>
-                <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/profile/1')} action
-                                  active={basicActive === '/profile/1'}>Tab-Sample</MDBListGroupItem>
-                <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/profile/2')} action
-                                  active={basicActive === '/profile/2'}>Tab-Sample</MDBListGroupItem>
+                <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user')} action
+                                  active={basicActive === '/user'}>내 정보</MDBListGroupItem>
+                <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user/project')} action
+                                  active={basicActive === '/user/project'}>프로젝트 정보</MDBListGroupItem>
+                {/^(admin|PM)$/.test(userInfo.user_role) &&
+                    <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user/admin')} action
+                                      active={basicActive === '/user/admin'}>관리자 화면</MDBListGroupItem>}
             </MDBListGroup>
         </MDBCard>
     }
 
     const RightPanel = () => {
         const ProfilePanel = () => {
-            const [isInitialized, setIsInitialized] = useState(false)
             const [basicActive, setBasicActive] = useState('tab1')
             const birthInputRef = useRef(null)
             const [phoneInputValue, setPhoneInputValue] = useState('')
@@ -77,9 +81,6 @@ const ProfilePage = () => {
                 }
                 setBasicActive(value);
             };
-            useEffect(() => {
-                if (Object.keys(userInfo).length && !isInitialized) setIsInitialized(true)
-            }, [isInitialized])
             useEffect(() => {
                 birthInputRef.current.value = userInfo.user_birthday || null
                 setPhoneInputValue(userInfo.user_phone || null)
@@ -131,12 +132,12 @@ const ProfilePage = () => {
                 </MDBCardBody>
             </MDBCard>
         }
-        if (pathname === '/profile') {
+        if (pathname === '/user') {
             return <ProfilePanel/>
-        } else if (pathname === '/profile/1') {
-            return <div>sample1</div>
-        } else if (pathname === '/profile/2') {
-            return <div>sample2</div>
+        } else if (pathname === '/user/project') {
+            return <div>프로젝트 정보</div>
+        } else if (pathname === '/user/admin') {
+            return <div>관리자 페이지</div>
         }
     }
     return <div style={{width: '100%', height: 'calc(100vh - 60px)', display: 'flex', justifyContent: 'center'}}>

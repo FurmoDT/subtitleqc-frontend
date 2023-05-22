@@ -53,7 +53,7 @@ export default function Navbar(props) {
                         <MDBDropdownToggle tag={'section'}
                                            onMouseEnter={(event) => event.target.style.cursor = 'pointer'}>
                             <label style={{marginRight: '5px', fontSize: '1rem'}}>
-                                {userState.user?.userName} 님
+                                {userState.user?.userEmail} 님
                             </label>
                             <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>
                         </MDBDropdownToggle>

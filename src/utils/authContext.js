@@ -17,7 +17,7 @@ export const AuthProvider = ({children}) => {
         if (accessToken) {
             axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
             axios.get('/v1/auth/get_current_user').then((response) => {
-                setUserState({isAuthenticated: true, user: {userName: response.data.user_name}})
+                setUserState({isAuthenticated: true, user: {userEmail: response.data.user_email}})
             }).finally(() => setIsInitialized(true))
         } else {
             delete axios.defaults.headers.common.Authorization

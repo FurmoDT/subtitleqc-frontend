@@ -19,6 +19,8 @@ import {
 import axios from "../utils/axios";
 import {useNavigate} from "react-router-dom";
 import {birthdayValidator} from "../utils/functions";
+import 'react-phone-number-input/style.css'
+import PhoneInput, {formatPhoneNumber} from 'react-phone-number-input'
 
 const ProfilePage = () => {
     const pathname = window.location.pathname;
@@ -58,21 +60,16 @@ const ProfilePage = () => {
         const ProfilePanel = () => {
             const [isInitialized, setIsInitialized] = useState(false)
             const [basicActive, setBasicActive] = useState('tab1')
-            const nameInputRef = useRef(null)
             const birthInputRef = useRef(null)
-            const phoneInputRef = useRef(null)
-            const accountInputRef = useRef(null)
+            const [phoneInputValue, setPhoneInputValue] = useState('')
             const handleBasicClick = (value, update) => {
                 if (value === basicActive) return;
                 if (update) {
-                    if (!nameInputRef.current.value) return
                     if (!(birthInputRef.current.value?.match(/^\d{4}-\d{2}-\d{2}$/) && new Date(birthInputRef.current.value).valueOf())) return
                     axios.post(`/v1/user/me`, {
                         user: {
-                            user_name: nameInputRef.current.value,
                             user_birthday: birthInputRef.current.value,
-                            user_phone: phoneInputRef.current.value,
-                            user_account: accountInputRef.current.value,
+                            user_phone: phoneInputValue,
                         }
                     }).then((response) => {
                         setUserInfo(response.data)
@@ -84,10 +81,8 @@ const ProfilePage = () => {
                 if (Object.keys(userInfo).length && !isInitialized) setIsInitialized(true)
             }, [isInitialized])
             useEffect(() => {
-                nameInputRef.current.value = userInfo.user_name || null
                 birthInputRef.current.value = userInfo.user_birthday || null
-                phoneInputRef.current.value = userInfo.user_phone || null
-                accountInputRef.current.value = userInfo.user_account || null
+                setPhoneInputValue(userInfo.user_phone || null)
             }, [basicActive])
             return <MDBCard className={'text-center'} style={{display: isInitialized ? '' : 'none'}}>
                 <MDBCardBody>
@@ -105,16 +100,10 @@ const ProfilePage = () => {
                                         이메일</MDBBadge><br/>{userInfo.user_email}</MDBCardText>
                                 <MDBCardText style={{lineHeight: '1rem'}}>
                                     <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
-                                        이름</MDBBadge><br/>{userInfo.user_name}</MDBCardText>
-                                <MDBCardText style={{lineHeight: '1rem'}}>
-                                    <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
                                         생년월일</MDBBadge><br/>{userInfo.user_birthday}</MDBCardText>
                                 <MDBCardText style={{lineHeight: '1rem'}}>
                                     <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
-                                        휴대폰 번호</MDBBadge><br/>{userInfo.user_phone}</MDBCardText>
-                                <MDBCardText style={{lineHeight: '1rem'}}>
-                                    <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
-                                        계좌 번호</MDBBadge><br/>{userInfo.user_account}</MDBCardText>
+                                        휴대폰 번호</MDBBadge><br/>{formatPhoneNumber(userInfo.user_phone)}</MDBCardText>
                                 <MDBBtn className={'float-end'} onClick={() => handleBasicClick('tab2')}>수정</MDBBtn>
                             </MDBTabsPane>
                             <MDBTabsPane show={basicActive === 'tab2'}>
@@ -123,13 +112,13 @@ const ProfilePage = () => {
                                         <h4 className={'mb-4'}>
                                             <MDBBadge color={'light'} light>{userInfo.user_email}</MDBBadge>
                                         </h4>
-                                        <MDBInput ref={nameInputRef} wrapperClass={'mb-4'} label={'이름'}/>
                                         <MDBInput ref={birthInputRef} wrapperClass={'mb-4'} label={'생년월일'}
                                                   onChange={(event) => {
                                                       event.target.value = birthdayValidator(event.target.value)
                                                   }}/>
-                                        <MDBInput ref={phoneInputRef} wrapperClass={'mb-4'} label={'휴대폰 번호'}/>
-                                        <MDBInput ref={accountInputRef} wrapperClass={'mb-4'} label={'계좌 번호'}/>
+                                        <PhoneInput className={'mb-4'} placeholder="휴대폰 번호" defaultCountry={'KR'}
+                                                    value={phoneInputValue} onChange={setPhoneInputValue}
+                                                    international={false}/>
                                     </div>
                                 </div>
                                 <MDBBtn className={'float-end'} onClick={() => handleBasicClick('tab1', true)}

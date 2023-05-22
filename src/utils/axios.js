@@ -1,10 +1,10 @@
 import Axios, {HttpStatusCode} from "axios";
-import {apiUrl} from "./config";
+import {localApiUrl, apiUrl} from "./config";
 import {useContext, useEffect} from "react";
 import {AuthContext} from "./authContext";
 
 const axios = Axios.create({
-    baseURL: apiUrl
+    baseURL: process.env.NODE_ENV === 'development' ? localApiUrl : apiUrl
 });
 
 axios.defaults.withCredentials = true;

@@ -11,7 +11,7 @@ import {googleClientId, publicUrl} from "./utils/config";
 import {AxiosInterceptor} from "./utils/axios";
 import {AuthProvider} from "./utils/authContext";
 import SignupPage from "./pages/auth/SignupPage";
-import ProfilePage from "./pages/user/ProfilePage";
+import UserPage from "./pages/user/UserPage";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
                             <Route path={"/production"} element={<Production/>}/>
                             <Route path={"/qc"} element={<QualityControl/>}/>
                             <Route path={"/manual"} element={<Manual/>}/>
-                            <Route path={"/user/*"} element={<ProfilePage/>}/>
+                            <Route path={"/user/*"} element={<UserPage/>}/>
                         </Route>
                         <Route path={"/login"} element={<GoogleOAuthProvider clientId={googleClientId}>
                             <LoginPage/></GoogleOAuthProvider>}/>

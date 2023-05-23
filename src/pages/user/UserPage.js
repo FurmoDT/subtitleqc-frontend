@@ -7,11 +7,12 @@ import 'react-phone-number-input/style.css'
 import ProfilePanel from './components/ProfilePanel'
 import AdminPanel from "./components/AdminPanel";
 
-const ProfilePage = () => {
+const UserPage = () => {
     const pathname = window.location.pathname;
     const navigate = useNavigate()
     const {userState} = useContext(AuthContext)
     const [userInfo, setUserInfo] = useState({})
+    const [userList, setUserList] = useState([])
     const [isInitialized, setIsInitialized] = useState(false)
     useEffect(() => {
         if (!userState.isAuthenticated) navigate('/login')
@@ -53,7 +54,7 @@ const ProfilePage = () => {
         } else if (pathname === '/user/project') {
             return <div>프로젝트 정보</div>
         } else if (pathname === '/user/admin') {
-            return <AdminPanel/>
+            return <AdminPanel userList={userList} setUserList={setUserList}/>
         }
     }
     return <div style={{width: '100%', height: 'calc(100vh - 60px)', display: 'flex', justifyContent: 'center'}}>
@@ -68,4 +69,4 @@ const ProfilePage = () => {
     </div>
 };
 
-export default ProfilePage
+export default UserPage

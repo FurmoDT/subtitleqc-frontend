@@ -16,7 +16,7 @@ import {
     MDBTooltip,
 } from 'mdb-react-ui-kit';
 import {ReactSortable} from "react-sortablejs";
-import {languageCodes} from "../../../utils/config";
+import {languageCodes} from "../../../../utils/config";
 
 const LanguagesModal = (props) => {
     const [languages, setLanguages] = useState([])

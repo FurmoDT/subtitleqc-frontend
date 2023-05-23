@@ -3,7 +3,7 @@ import "./css/AuthCss.css"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import MainPage from "./pages/MainPage";
-import Production from "./pages/Production";
+import Production from "./pages/production/Production";
 import QualityControl from "./pages/QualityControl";
 import Manual from "./pages/Manual";
 import LoginPage from "./pages/auth/LoginPage";

@@ -16,7 +16,7 @@ import {
     MDBRadio,
 } from 'mdb-react-ui-kit';
 import {useCallback, useEffect, useRef, useState} from "react";
-import {languageCodes} from "../../../utils/config";
+import {languageCodes} from "../../../../utils/config";
 import {v4} from "uuid";
 
 const FileUploadModal = (props) => {

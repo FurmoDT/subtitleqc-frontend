@@ -1,9 +1,9 @@
 import Handsontable from 'handsontable';
-import '../../css/Handsontable.css'
+import '../../../css/Handsontable.css'
 import * as Grammarly from '@grammarly/editor-sdk'
 import {useCallback, useEffect, useRef, useState} from "react";
-import {tcInValidator, tcOutValidator, textValidator} from "../../utils/hotRenderer";
-import {tcToSec} from "../../utils/functions";
+import {tcInValidator, tcOutValidator, textValidator} from "../../../utils/hotRenderer";
+import {tcToSec} from "../../../utils/functions";
 import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 

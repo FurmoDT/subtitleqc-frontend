@@ -11,7 +11,7 @@ import {googleClientId, publicUrl} from "./utils/config";
 import {AxiosInterceptor} from "./utils/axios";
 import {AuthProvider} from "./utils/authContext";
 import SignupPage from "./pages/auth/SignupPage";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilePage from "./pages/user/ProfilePage";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 
 function App() {

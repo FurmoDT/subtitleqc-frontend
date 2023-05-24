@@ -40,7 +40,7 @@ const UserPage = () => {
                                   active={basicActive === '/user'}>내 정보</MDBListGroupItem>
                 <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user/project')} action
                                   active={basicActive === '/user/project'}>프로젝트 정보</MDBListGroupItem>
-                {/^(admin|PM)$/.test(userInfo.user_role) &&
+                {/^(admin|PM)$/.test(userState.user.userRole) &&
                     <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user/admin')} action
                                       active={basicActive === '/user/admin'}>관리자 화면</MDBListGroupItem>}
             </MDBListGroup>

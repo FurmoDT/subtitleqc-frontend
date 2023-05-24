@@ -16,7 +16,7 @@ import {birthdayValidator} from "../../../utils/functions";
 import 'react-phone-number-input/style.css'
 import PhoneInput, {formatPhoneNumber} from 'react-phone-number-input'
 
-const ProfilePanel = (props) => {
+const ProfilePanel = ({isInitialized, userInfo, setUserInfo}) => {
     const [basicActive, setBasicActive] = useState('tab1')
     const birthInputRef = useRef(null)
     const [phoneInputValue, setPhoneInputValue] = useState('')
@@ -29,21 +29,21 @@ const ProfilePanel = (props) => {
                     user_birthday: birthInputRef.current.value, user_phone: phoneInputValue,
                 }
             }).then((response) => {
-                props.setUserInfo(response.data)
+                setUserInfo(response.data)
             })
         }
         setBasicActive(value);
     };
     useEffect(() => {
-        birthInputRef.current.value = props.userInfo.user_birthday || null
-        setPhoneInputValue(props.userInfo.user_phone || null)
-    }, [basicActive, props.userInfo])
-    return <MDBCard className={'text-center'} style={{display: props.isInitialized ? '' : 'none'}}>
+        birthInputRef.current.value = userInfo.user_birthday || null
+        setPhoneInputValue(userInfo.user_phone || null)
+    }, [basicActive, userInfo])
+    return <MDBCard className={'text-center'} style={{display: isInitialized ? '' : 'none'}}>
         <MDBCardBody>
             <MDBCardTitle className={'mb-5'} style={{display: 'flex', justifyContent: 'space-between'}}>
                 <MDBBadge light>기본정보</MDBBadge>
                 <MDBBadge color={"secondary"} light>
-                    {props.userInfo.user_role === 'admin' ? '관리자' : props.userInfo.user_role === 'pm' ? 'PM' : props.userInfo.user_role === 'worker' ? '작업자' : undefined}
+                    {userInfo.user_role === 'admin' ? '관리자' : userInfo.user_role === 'pm' ? 'PM' : userInfo.user_role === 'worker' ? '작업자' : undefined}
                 </MDBBadge>
             </MDBCardTitle>
             <MDBTabs>
@@ -51,20 +51,20 @@ const ProfilePanel = (props) => {
                     <MDBTabsPane show={basicActive === 'tab1'}>
                         <MDBCardText style={{lineHeight: '1rem'}}>
                             <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
-                                이메일</MDBBadge><br/>{props.userInfo.user_email}</MDBCardText>
+                                이메일</MDBBadge><br/>{userInfo.user_email}</MDBCardText>
                         <MDBCardText style={{lineHeight: '1rem'}}>
                             <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
-                                생년월일</MDBBadge><br/>{props.userInfo.user_birthday}</MDBCardText>
+                                생년월일</MDBBadge><br/>{userInfo.user_birthday}</MDBCardText>
                         <MDBCardText style={{lineHeight: '1rem'}}>
                             <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
-                                휴대폰 번호</MDBBadge><br/>{formatPhoneNumber(props.userInfo.user_phone)}</MDBCardText>
+                                휴대폰 번호</MDBBadge><br/>{formatPhoneNumber(userInfo.user_phone)}</MDBCardText>
                         <MDBBtn className={'float-end'} onClick={() => handleBasicClick('tab2')}>수정</MDBBtn>
                     </MDBTabsPane>
                     <MDBTabsPane show={basicActive === 'tab2'}>
                         <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
                             <div style={{width: '50%'}}>
                                 <h4 className={'mb-4'}>
-                                    <MDBBadge color={'light'} light>{props.userInfo.user_email}</MDBBadge>
+                                    <MDBBadge color={'light'} light>{userInfo.user_email}</MDBBadge>
                                 </h4>
                                 <MDBInput ref={birthInputRef} wrapperClass={'mb-4'} label={'생년월일'}
                                           onChange={(event) => {

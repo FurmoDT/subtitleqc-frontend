@@ -48,7 +48,6 @@ const UserPage = () => {
     }
 
     const RightPanel = () => {
-
         if (pathname === '/user') {
             return <ProfilePanel isInitialized={isInitialized} userInfo={userInfo} setUserInfo={setUserInfo}/>
         } else if (pathname === '/user/project') {

@@ -1,16 +1,16 @@
 import {useEffect} from "react";
 import axios from "../../../utils/axios";
 
-const AdminPanel = (props) => {
+const AdminPanel = ({userList, setUserList}) => {
     useEffect(() => {
-        if (!props.userList.length) {
+        if (!userList.length) {
             axios.get(`/v1/user/users`).then((response) => {
-                props.setUserList(response.data)
+                setUserList(response.data)
                 console.log(response)
             })
         }
-        console.log(props.userList)
-    }, [props.userList])
+        console.log(userList)
+    }, [userList])
     return <div>관리자 대시보드</div>
 }
 

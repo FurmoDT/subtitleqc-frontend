@@ -16,8 +16,9 @@ import {birthdayValidator} from "../../../utils/functions";
 import 'react-phone-number-input/style.css'
 import PhoneInput, {formatPhoneNumber} from 'react-phone-number-input'
 
-const ProfilePanel = ({isInitialized, userInfo, setUserInfo}) => {
-    const [basicActive, setBasicActive] = useState('tab1')
+const ProfilePanel = ({userInfoRef}) => {
+    const [userInfo, setUserInfo] = useState(userInfoRef.current)
+    const [basicActive, setBasicActive] = useState('show')
     const birthInputRef = useRef(null)
     const [phoneInputValue, setPhoneInputValue] = useState('')
     const handleBasicClick = (value, update) => {
@@ -29,7 +30,8 @@ const ProfilePanel = ({isInitialized, userInfo, setUserInfo}) => {
                     user_birthday: birthInputRef.current.value, user_phone: phoneInputValue,
                 }
             }).then((response) => {
-                setUserInfo(response.data)
+                userInfoRef.current = response.data
+                setUserInfo(userInfoRef.current)
             })
         }
         setBasicActive(value);
@@ -38,7 +40,7 @@ const ProfilePanel = ({isInitialized, userInfo, setUserInfo}) => {
         birthInputRef.current.value = userInfo.user_birthday || null
         setPhoneInputValue(userInfo.user_phone || null)
     }, [basicActive, userInfo])
-    return <MDBCard className={'text-center'} style={{display: isInitialized ? '' : 'none'}}>
+    return <MDBCard className={'text-center'}>
         <MDBCardBody>
             <MDBCardTitle className={'mb-5'} style={{display: 'flex', justifyContent: 'space-between'}}>
                 <MDBBadge light>기본정보</MDBBadge>
@@ -48,19 +50,19 @@ const ProfilePanel = ({isInitialized, userInfo, setUserInfo}) => {
             </MDBCardTitle>
             <MDBTabs>
                 <MDBTabsContent style={{width: '100%'}}>
-                    <MDBTabsPane show={basicActive === 'tab1'}>
+                    <MDBTabsPane show={basicActive === 'show'}>
                         <MDBCardText style={{lineHeight: '1rem'}}>
                             <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
                                 이메일</MDBBadge><br/>{userInfo.user_email}</MDBCardText>
                         <MDBCardText style={{lineHeight: '1rem'}}>
                             <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
-                                생년월일</MDBBadge><br/>{userInfo.user_birthday}</MDBCardText>
+                                생년월일</MDBBadge><br/>{userInfo.user_birthday || '\u00A0'}</MDBCardText>
                         <MDBCardText style={{lineHeight: '1rem'}}>
                             <MDBBadge style={{position: 'absolute', left: '25%'}} color={"light"} light>
-                                휴대폰 번호</MDBBadge><br/>{formatPhoneNumber(userInfo.user_phone)}</MDBCardText>
-                        <MDBBtn className={'float-end'} onClick={() => handleBasicClick('tab2')}>수정</MDBBtn>
+                                휴대폰 번호</MDBBadge><br/>{formatPhoneNumber(userInfo.user_phone) || '\u00A0'}</MDBCardText>
+                        <MDBBtn className={'float-end'} onClick={() => handleBasicClick('edit')}>수정</MDBBtn>
                     </MDBTabsPane>
-                    <MDBTabsPane show={basicActive === 'tab2'}>
+                    <MDBTabsPane show={basicActive === 'edit'}>
                         <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
                             <div style={{width: '50%'}}>
                                 <h4 className={'mb-4'}>
@@ -75,9 +77,9 @@ const ProfilePanel = ({isInitialized, userInfo, setUserInfo}) => {
                                             international={false}/>
                             </div>
                         </div>
-                        <MDBBtn className={'float-end'} onClick={() => handleBasicClick('tab1', true)}
+                        <MDBBtn className={'float-end'} onClick={() => handleBasicClick('show', true)}
                                 style={{marginLeft: '0.5rem'}}>확인</MDBBtn>
-                        <MDBBtn className={'float-end'} onClick={() => handleBasicClick('tab1')}
+                        <MDBBtn className={'float-end'} onClick={() => handleBasicClick('show')}
                                 color={'secondary'} outline>취소</MDBBtn>
                     </MDBTabsPane>
                 </MDBTabsContent>

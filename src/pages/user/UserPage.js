@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {AuthContext} from "../../utils/authContext";
 import {MDBCard, MDBCol, MDBListGroup, MDBListGroupItem, MDBRow} from "mdb-react-ui-kit";
 import axios from "../../utils/axios";
@@ -11,22 +11,22 @@ const UserPage = () => {
     const pathname = window.location.pathname;
     const navigate = useNavigate()
     const {userState} = useContext(AuthContext)
-    const [userInfo, setUserInfo] = useState({})
-    const [userList, setUserList] = useState([])
-    const [isInitialized, setIsInitialized] = useState(false)
+    const [isProfileInitialized, setIsProfileInitialized] = useState(false)
+    const [isAdminInitialized, setIsAdminInitialized] = useState(false)
+    const userInfoRef = useRef({})
+    const userListRef = useRef([])
+
     useEffect(() => {
-        if (!userState.isAuthenticated) navigate('/login')
-    }, [userState, navigate])
-    useEffect(() => {
-        if (userState.isAuthenticated) {
-            axios.get(`/v1/user/me`).then((response) => {
-                setUserInfo(response.data)
-            })
-        }
-    }, [userState])
-    useEffect(() => {
-        if (Object.keys(userInfo).length) setIsInitialized(true)
-    }, [userInfo])
+        axios.get(`/v1/user/me`).then((response) => {
+            userInfoRef.current = response.data
+            setIsProfileInitialized(true)
+        })
+        axios.get(`/v1/user/users`).then((response) => {
+            userListRef.current = response.data
+            setIsAdminInitialized(true)
+        })
+    }, [])
+
     const LeftPanel = () => {
         const [basicActive, setBasicActive] = useState(pathname)
         const handleBasicClick = (value) => {
@@ -38,8 +38,6 @@ const UserPage = () => {
             <MDBListGroup>
                 <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user')} action
                                   active={basicActive === '/user'}>내 정보</MDBListGroupItem>
-                <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user/project')} action
-                                  active={basicActive === '/user/project'}>프로젝트 정보</MDBListGroupItem>
                 {/^(admin|PM)$/.test(userState.user.userRole) &&
                     <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user/admin')} action
                                       active={basicActive === '/user/admin'}>관리자 화면</MDBListGroupItem>}
@@ -49,11 +47,9 @@ const UserPage = () => {
 
     const RightPanel = () => {
         if (pathname === '/user') {
-            return <ProfilePanel isInitialized={isInitialized} userInfo={userInfo} setUserInfo={setUserInfo}/>
-        } else if (pathname === '/user/project') {
-            return <div>프로젝트 정보</div>
+            return isProfileInitialized && <ProfilePanel userInfoRef={userInfoRef}/>
         } else if (pathname === '/user/admin') {
-            return <AdminPanel userList={userList} setUserList={setUserList}/>
+            return isAdminInitialized && <AdminPanel userListRef={userListRef}/>
         }
     }
     return <div style={{width: '100%', height: 'calc(100vh - 60px)', display: 'flex', justifyContent: 'center'}}>

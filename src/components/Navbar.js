@@ -25,9 +25,11 @@ export default function Navbar(props) {
     const {setAccessToken, userState} = useContext(AuthContext);
     const navigate = useNavigate()
     return <div>
-        <MDBNavbar expand='lg' light bgColor='light'>
+        <MDBNavbar expand='lg' dark style={{backgroundColor: '#595959ff', color: 'white'}}>
             <MDBContainer fluid>
-                <MDBNavbarBrand href={`${props.basename}`}>SubtitleQC</MDBNavbarBrand>
+                <MDBNavbarBrand href={`${props.basename}`}>
+                    <img src='/furmo-logo.png' height='30' alt='' loading='lazy'/>SubtitleQC
+                </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={() => setShowNavNoTogglerSecond(!showNavNoTogglerSecond)}>
                     <MDBIcon icon='bars' fas/>
                 </MDBNavbarToggler>
@@ -55,9 +57,9 @@ export default function Navbar(props) {
                             <label style={{marginRight: '5px', fontSize: '1rem'}}>
                                 {userState.user?.userEmail} 님
                             </label>
-                            <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>
+                            <MDBIcon fas icon="user-circle" size={'xl'} color={'white-50'}/>
                         </MDBDropdownToggle>
-                        <MDBDropdownMenu>
+                        <MDBDropdownMenu responsive={'end'}>
                             <MDBDropdownItem link href={null} onClick={useCallback(() => {
                                 navigate('/user')
                             }, [navigate])}>내 프로필</MDBDropdownItem>

@@ -37,7 +37,10 @@ export default function Navbar(props) {
                     <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/production'), [navigate])}>Production</MDBNavbarLink>
+                                onClick={useCallback(() => navigate('/production'), [navigate])}>VIDEO</MDBNavbarLink>
+                        </MDBNavbarItem>
+                        <MDBNavbarItem>
+                            <MDBNavbarLink disabled={true} onClick={null}>Text</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink

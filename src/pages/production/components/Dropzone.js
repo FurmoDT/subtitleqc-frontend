@@ -20,11 +20,11 @@ const Dropzone = (props) => {
         e.stopPropagation();
         counter = Math.max(counter++, 2)
         Object.assign(props.dropzoneRef.current.style, dragStyle);
-    }, [])
+    }, [props.dropzoneRef])
     const handleDragOver = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
-    }, [props.dropzoneRef])
+    }, [])
     const handleDragLeave = useCallback((e) => {
         e.preventDefault()
         e.stopPropagation();
@@ -66,7 +66,7 @@ const Dropzone = (props) => {
     }, [props])
     useEffect(()=>{
         Object.assign(props.dropzoneRef.current.style, baseStyle)
-    }, [])
+    }, [props.dropzoneRef])
     useEffect(() => {
         props.dropzoneRef.current.addEventListener('dragenter', handleDragEnter)
         props.dropzoneRef.current.addEventListener('dragover', handleDragOver)

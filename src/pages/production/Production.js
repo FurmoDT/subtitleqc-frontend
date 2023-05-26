@@ -158,7 +158,6 @@ const Production = () => {
             flexDirection: "row",
             display: 'flex',
             justifyContent: 'center',
-            padding: '20px',
             width: '100vw',
             height: 'calc(100vh - 100px)',
             position: 'relative'

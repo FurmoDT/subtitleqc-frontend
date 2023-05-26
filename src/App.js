@@ -1,4 +1,3 @@
-import './App.css';
 import "./css/AuthCss.css"
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -19,7 +18,7 @@ function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
     const {userState} = useContext(AuthContext);
 
-    return <div style={{overflow: 'hidden', width: '100vw', height: '100vh'}}>
+    return <div style={{overflow: 'hidden', width: '100vw', height: '100vh', backgroundColor: '#f3f3f3ff'}}>
         <AxiosInterceptor>
             <BrowserRouter basename={basename}>
                 <Routes>

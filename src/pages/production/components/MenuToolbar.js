@@ -12,7 +12,7 @@ const MenuToolbar = (props) => {
         alignItems: 'center',
         borderStyle: 'solid',
         borderWidth: 'thin',
-        backgroundColor: 'lightgray'
+        backgroundColor: '#b7b7b7ff'
     }}>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Project Setting'>
             <ProjectSettingModal projectDetail={props.projectDetail} setProjectDetail={props.setProjectDetail}/>

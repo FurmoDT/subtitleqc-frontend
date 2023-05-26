@@ -10,8 +10,6 @@ const MenuToolbar = (props) => {
         height: '40px',
         display: 'flex',
         alignItems: 'center',
-        borderStyle: 'solid',
-        borderWidth: 'thin',
         backgroundColor: '#b7b7b7ff'
     }}>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Project Setting'>

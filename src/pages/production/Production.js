@@ -175,14 +175,8 @@ const Production = () => {
                             <InformationWindow/>
                         </Splitter>
                     </div>
-                    <div ref={rightRef} style={{
-                        flexDirection: 'column',
-                        display: 'flex',
-                        width: '100%',
-                        height: '100%',
-                        borderStyle: 'solid',
-                        borderWidth: 'thin'
-                    }}>
+                    <div ref={rightRef}
+                         style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       fnToggle={fnToggle} setFnToggle={setFnToggle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef}

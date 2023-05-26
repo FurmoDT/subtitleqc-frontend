@@ -5,12 +5,7 @@ import {xml2json} from "xml-js";
 import {getInfo} from 'react-mediainfo'
 
 const baseStyle = {
-    backgroundColor: '#fafafa',
-    borderWidth: 2,
-    borderRadius: 2,
-    borderStyle: 'dashed',
-    borderColor: '#ffffff',
-    transition: 'border .24s ease-in-out'
+    borderStyle: 'none',
 };
 
 const dragStyle = {
@@ -23,12 +18,12 @@ const Dropzone = (props) => {
     const handleDragEnter = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
-        counter++
+        counter = Math.max(counter++, 2)
+        Object.assign(props.dropzoneRef.current.style, dragStyle);
     }, [])
     const handleDragOver = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
-        Object.assign(props.dropzoneRef.current.style, dragStyle);
     }, [props.dropzoneRef])
     const handleDragLeave = useCallback((e) => {
         e.preventDefault()
@@ -69,8 +64,10 @@ const Dropzone = (props) => {
             }
         })
     }, [props])
+    useEffect(()=>{
+        Object.assign(props.dropzoneRef.current.style, baseStyle)
+    }, [])
     useEffect(() => {
-        Object.assign(props.dropzoneRef.current.style, baseStyle);
         props.dropzoneRef.current.addEventListener('dragenter', handleDragEnter)
         props.dropzoneRef.current.addEventListener('dragover', handleDragOver)
         props.dropzoneRef.current.addEventListener('dragleave', handleDragLeave)

@@ -40,7 +40,7 @@ export default function Navbar(props) {
                                 onClick={useCallback(() => navigate('/production'), [navigate])}>VIDEO</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink disabled={true} onClick={null}>Text</MDBNavbarLink>
+                            <MDBNavbarLink disabled={true} onClick={null}>TEXT</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
@@ -48,7 +48,7 @@ export default function Navbar(props) {
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
-                                onClick={() => window.open('https://docs.google.com/presentation/d/14zk9I95cR7y-E8ujeheKwtvlXKsnK4c0nUhUDyyUh0s/edit?usp=sharing')}>Manual</MDBNavbarLink>
+                                onClick={() => window.open('https://docs.google.com/presentation/d/14zk9I95cR7y-E8ujeheKwtvlXKsnK4c0nUhUDyyUh0s/edit?usp=sharing')}>MANUAL</MDBNavbarLink>
                         </MDBNavbarItem>
                     </MDBNavbarNav>
                     <MDBBtn outline color={'link'} className={'text-nowrap'}

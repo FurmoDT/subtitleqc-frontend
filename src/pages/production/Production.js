@@ -17,7 +17,7 @@ const Production = () => {
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
     const rightRef = useRef(null)
-    const [rightRefSize, setRightRefSize] = useState({width: 0, languageWindowHeight: 0, timelineWindowHeight: 0})
+    const [componentSize, setComponentSize] = useState({languageWindowHeight: 0, timelineWindowHeight: 0})
     const LanguageTimelineSplitterRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [mediaInfo, setMediaInfo] = useState(null)
@@ -127,8 +127,7 @@ const Production = () => {
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
                 const {width} = entry.contentRect;
-                setRightRefSize({
-                    width: width,
+                setComponentSize({
                     languageWindowHeight: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight,
                     timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight + 10
                 })
@@ -154,15 +153,8 @@ const Production = () => {
                      tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
-        <div ref={dropzoneRef} style={{
-            flexDirection: "row",
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100vw',
-            height: 'calc(100vh - 100px)',
-            position: 'relative'
-        }}>
-            <div id={'splitter-wrapper'} style={{width: '100%', height: '100%', position: 'relative'}}>
+        <div ref={dropzoneRef}>
+            <div style={{width: '100%', height: '100%', position: 'relative'}}>
                 <Splitter position={'vertical'} primaryPaneWidth={'500px'} postPoned
                           primaryPaneMaxWidth={'100%'} primaryPaneMinWidth={0}>
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
@@ -191,13 +183,13 @@ const Production = () => {
                         <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'}
                                   primaryPaneHeight={'calc(100% - 300px)'}
                                   onDragFinished={() => {
-                                      setRightRefSize({
-                                          ...rightRefSize,
+                                      setComponentSize({
+                                          ...componentSize,
                                           languageWindowHeight: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight,
                                           timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight + 10
                                       })
                                   }}>
-                            <LanguageWindow focusedRef={focusedRef} size={rightRefSize} hotRef={hotRef}
+                            <LanguageWindow focusedRef={focusedRef} size={componentSize} hotRef={hotRef}
                                             hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
                                             playerRef={playerRef} waveformRef={waveformRef} fnToggle={fnToggle}
                                             tcLock={tcLock} tcLockRef={tcLockRef}
@@ -207,7 +199,7 @@ const Production = () => {
                                             isFromTimelineWindowRef={isFromTimelineWindowRef}
                                             isFromLanguageWindowRef={isFromLanguageWindowRef}
                                             subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
-                            <TimelineWindow focusedRef={focusedRef} size={rightRefSize} hotRef={hotRef}
+                            <TimelineWindow focusedRef={focusedRef} size={componentSize} hotRef={hotRef}
                                             isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                             waveformRef={waveformRef} mediaFile={mediaFile} video={video}
                                             resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}

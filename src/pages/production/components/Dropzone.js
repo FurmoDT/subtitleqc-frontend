@@ -5,6 +5,12 @@ import {xml2json} from "xml-js";
 import {getInfo} from 'react-mediainfo'
 
 const baseStyle = {
+    display: 'flex',
+    flexDirection: "row",
+    justifyContent: 'center',
+    width: '100vw',
+    height: 'calc(100vh - 100px)',
+    position: 'relative',
     borderStyle: 'none',
 };
 
@@ -64,7 +70,7 @@ const Dropzone = (props) => {
             }
         })
     }, [props])
-    useEffect(()=>{
+    useEffect(() => {
         Object.assign(props.dropzoneRef.current.style, baseStyle)
     }, [props.dropzoneRef])
     useEffect(() => {

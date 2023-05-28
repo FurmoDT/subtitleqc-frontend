@@ -4,9 +4,7 @@ const InformationWindow = () => {
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        display: 'flex',
-        borderStyle: 'solid',
-        borderWidth: 'thin'
+        display: 'flex'
     }}>InformationWindow
     </div>
 }

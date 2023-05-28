@@ -58,7 +58,7 @@ const TimelineWindow = (props) => {
         if (!props.video) return
         setStatusDisplay('isLoading')
         window.addEventListener('error', (ev) => {
-            if (ev.error.name === 'TypeError' && ev.error.message.startsWith('WaveformData')) setStatusDisplay('error')
+            if (ev.error?.name === 'TypeError' && ev.error.message.startsWith('WaveformData')) setStatusDisplay('error')
         })
         const options = {
             mediaElement: document.querySelector('video'),
@@ -226,17 +226,17 @@ const TimelineWindow = (props) => {
         }}>
             <div ref={statusRef} className={'text-center'}>
                 <MDBSpinner ref={spinnerRef} style={{
-                    width: `${props.size.timelineWindowHeight / 3}px`,
-                    height: `${props.size.timelineWindowHeight / 3}px`,
+                    width: `${props.size.height / 3}px`,
+                    height: `${props.size.height / 3}px`,
                     marginTop: '10px'
                 }}/>
                 <MDBBtn ref={warningRef} style={{marginTop: '10px'}} size={'sm'} color={'link'} disabled>
                     <MDBIcon fas icon="exclamation-circle" size={'3x'} color={'white'}/>
                 </MDBBtn>
             </div>
-            <div ref={waveformRef} style={{width: '100%', height: `${props.size.timelineWindowHeight - 100}px`}}
+            <div ref={waveformRef} style={{width: '100%', height: `${props.size.height - 100}px`}}
                  onClick={() => props.waveformRef.current?.player.pause()}/>
-            <div ref={overviewRef} style={{width: '100%', height: '60px'}}/>
+            <div ref={overviewRef} style={{width: '100%', height: '30px'}}/>
         </div>
     </>
 };

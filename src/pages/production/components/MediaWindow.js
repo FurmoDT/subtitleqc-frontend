@@ -110,7 +110,8 @@ const MediaWindow = (props) => {
         alignItems: 'end',
         display: 'flex',
         borderStyle: 'solid',
-        borderWidth: 'thin'
+        borderWidth: 'thin',
+        overflow: 'hidden'
     }} onClick={(event) => {
         const video = props.playerRef.current?.getInternalPlayer()
         if (video && event.target.tagName === 'VIDEO') video.paused ? video.play() : video.pause()

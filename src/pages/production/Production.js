@@ -4,7 +4,6 @@ import MediaWindow from "./components/MediaWindow";
 import MenuToolbar from "./components/MenuToolbar";
 import TimelineWindow from "./components/TimelineWindow";
 import {useCallback, useEffect, useRef, useState} from "react";
-import Splitter from "m-react-splitters";
 import "../../css/Splitter.css"
 import TransToolbar from "./components/TransToolbar";
 import {defaultLanguage, defaultProjectDetail, defaultSubtitle} from "../../utils/config";
@@ -12,13 +11,15 @@ import FileUploadModal from "./components/dialogs/FileUploadModal";
 import Dropzone from "./components/Dropzone";
 import {createSegment, tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
+import SplitterLayout from 'react-splitter-layout-react-v18';
 
 const Production = () => {
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
-    const rightRef = useRef(null)
-    const [componentSize, setComponentSize] = useState({languageWindowHeight: 0, timelineWindowHeight: 0})
-    const LanguageTimelineSplitterRef = useRef(null)
+    const languageSplitter = useRef(null)
+    const timelineSplitter = useRef(null)
+    const [languageWindowSize, setLanguageWindowSize] = useState({width: 0, height: 0})
+    const [timelineWindowSize, setTimelineWindowSize] = useState({height: 370})
     const [mediaFile, setMediaFile] = useState(null)
     const [mediaInfo, setMediaInfo] = useState(null)
     const [video, setVideo] = useState(null)
@@ -124,16 +125,13 @@ const Production = () => {
         }
     }, [languageFile])
     useEffect(() => {
-        const observer = new ResizeObserver((entries) => {
-            for (let entry of entries) {
-                const {width} = entry.contentRect;
-                setComponentSize({
-                    languageWindowHeight: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight,
-                    timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight + 10
-                })
-            }
+        const observer = new ResizeObserver(() => {
+            setLanguageWindowSize({
+                width: languageSplitter.current.container.lastChild.offsetWidth,
+                height: languageSplitter.current.container.lastChild.offsetHeight - 40
+            })
         });
-        observer.observe(rightRef.current);
+        observer.observe(dropzoneRef.current);
         return () => observer.disconnect()
     }, []);
     return <>
@@ -154,21 +152,25 @@ const Production = () => {
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef}>
-            <div style={{width: '100%', height: '100%', position: 'relative'}}>
-                <Splitter position={'vertical'} primaryPaneWidth={'500px'} postPoned
-                          primaryPaneMaxWidth={'100%'} primaryPaneMinWidth={0}>
+            <SplitterLayout ref={timelineSplitter} vertical={true} secondaryInitialSize={300} onDragEnd={()=>{
+                setLanguageWindowSize({...languageWindowSize, height: timelineSplitter.current.container.firstChild.offsetHeight - 40})
+                setTimelineWindowSize({height: timelineSplitter.current.container.lastChild.offsetHeight + 70})
+            }            }>
+                <SplitterLayout ref={languageSplitter} vertical={false} primaryIndex={1} secondaryInitialSize={480} onDragEnd={() => {
+                    setTimeout(() => setLanguageWindowSize({
+                        ...languageWindowSize,
+                        width: languageSplitter.current.container.lastChild.offsetWidth
+                    }), 100)
+                }}>
+                    <SplitterLayout vertical={true} secondaryMinSize={200} secondaryInitialSize={300} primaryIndex={1}>
+                        <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
+                                     languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
+                                     mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
+                                     waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
+                                     subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
+                        <InformationWindow/>
+                    </SplitterLayout>
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
-                        <Splitter position={'horizontal'} primaryPaneHeight={'30%'} postPoned>
-                            <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
-                                         languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
-                                         mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
-                                         waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
-                            <InformationWindow/>
-                        </Splitter>
-                    </div>
-                    <div ref={rightRef}
-                         style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       fnToggle={fnToggle} setFnToggle={setFnToggle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef}
@@ -180,36 +182,25 @@ const Production = () => {
                                       afterRenderPromise={afterRenderPromise}
                                       languages={languages} setLanguages={setLanguages}
                                       fnLanguages={fnLanguages} setFnLanguages={setFnLanguages}/>
-                        <Splitter ref={LanguageTimelineSplitterRef} position={'horizontal'}
-                                  primaryPaneHeight={'calc(100% - 300px)'}
-                                  onDragFinished={() => {
-                                      setComponentSize({
-                                          ...componentSize,
-                                          languageWindowHeight: LanguageTimelineSplitterRef.current.panePrimary.div.offsetHeight,
-                                          timelineWindowHeight: LanguageTimelineSplitterRef.current.paneNotPrimary.div.offsetHeight + 10
-                                      })
-                                  }}>
-                            <LanguageWindow focusedRef={focusedRef} size={componentSize} hotRef={hotRef}
-                                            hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
-                                            playerRef={playerRef} waveformRef={waveformRef} fnToggle={fnToggle}
-                                            tcLock={tcLock} tcLockRef={tcLockRef}
-                                            cellDataRef={cellDataRef} languages={languages}
-                                            fnRef={fnRef} fnLanguages={fnLanguages}
-                                            guideline={projectDetail.guideline} resetSegments={resetSegments}
-                                            isFromTimelineWindowRef={isFromTimelineWindowRef}
-                                            isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                            subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
-                            <TimelineWindow focusedRef={focusedRef} size={componentSize} hotRef={hotRef}
-                                            isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
-                                            waveformRef={waveformRef} mediaFile={mediaFile} video={video}
-                                            resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}
-                                            tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
-                                            tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
-                                            selectedSegment={selectedSegment}/>
-                        </Splitter>
+                        <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}
+                                        hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
+                                        playerRef={playerRef} waveformRef={waveformRef} fnToggle={fnToggle}
+                                        tcLock={tcLock} tcLockRef={tcLockRef} cellDataRef={cellDataRef}
+                                        languages={languages} fnRef={fnRef} fnLanguages={fnLanguages}
+                                        guideline={projectDetail.guideline} resetSegments={resetSegments}
+                                        isFromTimelineWindowRef={isFromTimelineWindowRef}
+                                        isFromLanguageWindowRef={isFromLanguageWindowRef}
+                                        subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                     </div>
-                </Splitter>
-            </div>
+                </SplitterLayout>
+                <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
+                                isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
+                                waveformRef={waveformRef} mediaFile={mediaFile} video={video}
+                                resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}
+                                tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
+                                tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
+                                selectedSegment={selectedSegment}/>
+            </SplitterLayout>
         </div>
     </>
 };

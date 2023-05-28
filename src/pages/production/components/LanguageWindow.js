@@ -102,7 +102,8 @@ const LanguageWindow = (props) => {
             manualColumnResize: true,
             colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fnToggle ? props.languages.map((value) => value.name) : props.fnLanguages.map((value) => value.name)), 'error'],
             rowHeaders: true,
-            height: props.size.languageWindowHeight,
+            width: props.size.width,
+            height: props.size.height,
             minSpareRows: 2,
             contextMenu: {
                 items: {
@@ -246,7 +247,7 @@ const LanguageWindow = (props) => {
         <div style={{zIndex: 0}} ref={containerMain} onClick={(event) => {
             props.focusedRef.current = props.hotRef.current
         }}/>
-        <MDBBtn style={{position: 'absolute', top: props.size.languageWindowHeight - 60, right: 25, padding: 10}}
+        <MDBBtn style={{position: 'absolute', bottom: 30, right: 25, padding: 10}}
                 color={'info'} rounded onClick={() => props.hotRef.current.scrollViewportTo(totalLines - 1)}>
             <MDBIcon fas icon="arrow-down"/>&nbsp;{totalLines}
         </MDBBtn>

@@ -13,3 +13,7 @@
     border-width: thick;
     color: rgba(55, 53, 47, 0.16);
 }
+
+.ag-header-container {
+    background-color: #f28720ff;
+}

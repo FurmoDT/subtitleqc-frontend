@@ -9,7 +9,7 @@ const baseStyle = {
     flexDirection: "row",
     justifyContent: 'center',
     width: '100vw',
-    height: 'calc(100vh - 100px)',
+    height: 'calc(100vh - 50px - 40px)',
     position: 'relative',
     borderStyle: 'none',
 };

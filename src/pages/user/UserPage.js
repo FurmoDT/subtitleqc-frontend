@@ -52,7 +52,7 @@ const UserPage = () => {
             return isAdminInitialized && <AdminPanel userListRef={userListRef}/>
         }
     }
-    return <div style={{width: '100%', height: 'calc(100vh - 50px)', display: 'flex', justifyContent: 'center', backgroundColor: 'red'}}>
+    return <div style={{width: '100%', height: 'calc(100vh - 50px)', display: 'flex', justifyContent: 'center'}}>
         <MDBRow style={{width: '100%', maxWidth: '75rem', marginTop: '30px'}}>
             <MDBCol md={'3'}>
                 <LeftPanel/>

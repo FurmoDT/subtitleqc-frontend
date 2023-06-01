@@ -38,7 +38,7 @@ const AdminPanel = ({userListRef}) => {
         {field: 'note1', headerComponent: () => <div className={'custom-header'}><span>비고1</span></div>},
         {field: 'note2', headerComponent: () => <div className={'custom-header'}><span>비고2</span></div>},
     ])
-    return <div className="ag-theme-alpine" style={{height: 'calc(100vh - 90px - 100px)'}}>
+    return <div className="ag-theme-alpine" style={{height: 'calc(100% - 100px)'}}>
         <AgGridReact
             ref={gridRef}
             rowData={rowData}

@@ -25,7 +25,7 @@ export default function Navbar(props) {
     const {setAccessToken, userState} = useContext(AuthContext);
     const navigate = useNavigate()
     return <div>
-        <MDBNavbar expand='lg' dark style={{backgroundColor: '#121212ff', color: 'white'}}>
+        <MDBNavbar expand='lg' dark style={{backgroundColor: '#121212ff', color: 'white', height: '50px'}}>
             <MDBContainer fluid>
                 <MDBNavbarBrand href={`${props.basename}`}>
                     <img src='/furmo-logo.png' height='30' alt='' loading='lazy'/>SubtitleQC

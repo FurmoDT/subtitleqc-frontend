@@ -12,7 +12,7 @@ const InformationWindow = () => {
     };
 
     return <>
-        <MDBTabs fill className='mb-3'>
+        <MDBTabs className='mb-3'>
             <MDBTabsItem>
                 <MDBTabsLink onClick={() => handleFillClick('tab1')} active={fillActive === 'tab1'}>전달사항</MDBTabsLink>
             </MDBTabsItem>

@@ -8,18 +8,18 @@ const MainPage = () => {
     const navigate = useNavigate()
     const pathname = window.location.pathname
     return <div style={{height: '100%', display: 'flex'}}>
-        <Sidebar collapsed={true} rootStyles={{
+        <Sidebar collapsedWidth={'50px'} collapsed={true} rootStyles={{
             [`.${sidebarClasses.container}`]: {
                 backgroundColor: '#121212ff', height: 'calc(100vh - 50px)'
             },
         }}>
-            <Menu>
+            <Menu style={{display: 'flex', justifyContent: 'center'}}>
                 <MenuItem disabled={true}/>
-                <MenuItem style={{textAlign: 'center'}}>
-                    <MdDashboard size={30} color={'white'} onClick={() => navigate('/')}/>
+                <MenuItem>
+                    <MdDashboard size={25} color={'white'} onClick={() => navigate('/')}/>
                 </MenuItem>
-                <MenuItem style={{textAlign: 'center'}}>
-                    <MdFolderOpen size={30} color={'white'} onClick={() => navigate('/projects')}/>
+                <MenuItem>
+                    <MdFolderOpen size={25} color={'white'} onClick={() => navigate('/projects')}/>
                 </MenuItem>
             </Menu>
         </Sidebar>

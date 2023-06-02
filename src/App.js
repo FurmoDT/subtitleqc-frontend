@@ -1,7 +1,6 @@
 import "./css/AuthCss.css"
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Dashboard from "./pages/Dashboard";
 import Production from "./pages/production/Production";
 import QualityControl from "./pages/QualityControl";
 import Manual from "./pages/Manual";
@@ -13,6 +12,7 @@ import SignupPage from "./pages/auth/SignupPage";
 import UserPage from "./pages/user/UserPage";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {useContext} from "react";
+import MainPage from "./pages/main/MainPage";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
@@ -22,8 +22,10 @@ function App() {
         <AxiosInterceptor>
             <BrowserRouter basename={basename}>
                 <Routes>
-                    <Route path={"/"} element={userState.isAuthenticated ? <Navbar basename={basename}/> : <Navigate to={'/login'} replace/>}>
-                        <Route index element={<Dashboard/>}/>
+                    <Route path={"/"} element={userState.isAuthenticated ? <Navbar basename={basename}/> :
+                        <Navigate to={'/login'} replace/>}>
+                        <Route index element={<MainPage/>}/>
+                        <Route path={'/*'} element={<MainPage/>}/>
                         <Route path={"/production"} element={<Production/>}/>
                         <Route path={"/qc"} element={<QualityControl/>}/>
                         <Route path={"/manual"} element={<Manual/>}/>

@@ -6,7 +6,7 @@ import ProjectsPanel from "./components/ProjectsPanel";
 
 const MainPage = () => {
     const pathname = window.location.pathname
-    return <div style={{height: '100%', display: 'flex'}}>
+    return <div style={{height: 'calc(100vh - 50px)', display: 'flex'}}>
         <Sidebar collapsedWidth={'50px'} collapsed={true} rootStyles={{
             [`.${sidebarClasses.container}`]: {
                 backgroundColor: '#121212ff', height: 'calc(100vh - 50px)'

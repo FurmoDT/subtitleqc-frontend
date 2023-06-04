@@ -24,8 +24,8 @@ export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
     const {setAccessToken, userState} = useContext(AuthContext);
     const navigate = useNavigate()
-    return <div>
-        <MDBNavbar expand='lg' dark style={{backgroundColor: '#121212ff', color: 'white', height: '50px'}}>
+    return <>
+        <MDBNavbar expand={'lg'} dark style={{backgroundColor: '#121212ff', padding: 0, minHeight: '50px'}}>
             <MDBContainer fluid>
                 <MDBNavbarBrand href={`${props.basename}`}>
                     <img src='/furmo-logo.png' width={'40'} height={'30'} alt='' loading='lazy'/>
@@ -54,7 +54,7 @@ export default function Navbar(props) {
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
                             style={{display: userState.isAuthenticated ? 'none' : ''}}
                             onClick={useCallback(() => navigate('/login'), [navigate])}>로그인</MDBBtn>
-                    <MDBDropdown style={{display: userState.isAuthenticated ? '' : 'none'}}>
+                    <MDBDropdown style={{display: userState.isAuthenticated ? '' : 'none', color: 'white'}}>
                         <MDBDropdownToggle tag={'section'}
                                            onMouseEnter={(event) => event.target.style.cursor = 'pointer'}>
                             <label style={{marginRight: '5px', fontSize: '1rem'}}>
@@ -81,5 +81,5 @@ export default function Navbar(props) {
             </MDBContainer>
         </MDBNavbar>
         <Outlet/>
-    </div>
+    </>
 }

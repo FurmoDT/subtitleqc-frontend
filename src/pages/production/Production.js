@@ -19,7 +19,7 @@ const Production = () => {
     const languageSplitter = useRef(null)
     const timelineSplitter = useRef(null)
     const [languageWindowSize, setLanguageWindowSize] = useState({width: 0, height: 0})
-    const [timelineWindowSize, setTimelineWindowSize] = useState({height: 370})
+    const [timelineWindowSize, setTimelineWindowSize] = useState({height: 320})
     const [mediaFile, setMediaFile] = useState(null)
     const [mediaInfo, setMediaInfo] = useState(null)
     const [video, setVideo] = useState(null)
@@ -152,7 +152,7 @@ const Production = () => {
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef}>
-            <SplitterLayout ref={timelineSplitter} vertical={true} secondaryInitialSize={300} onDragEnd={()=>{
+            <SplitterLayout ref={timelineSplitter} vertical={true} secondaryInitialSize={250} onDragEnd={()=>{
                 setLanguageWindowSize({...languageWindowSize, height: timelineSplitter.current.container.firstChild.offsetHeight - 40})
                 setTimelineWindowSize({height: timelineSplitter.current.container.lastChild.offsetHeight + 70})
             }            }>

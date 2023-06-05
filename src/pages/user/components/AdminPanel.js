@@ -1,11 +1,14 @@
-import {useLayoutEffect, useRef, useState} from "react";
+import {useCallback, useContext, useLayoutEffect, useRef, useState} from "react";
 import {AgGridReact} from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import axios from "../../../utils/axios";
+import {AuthContext} from "../../../utils/authContext";
 
 const AdminPanel = ({userListRef}) => {
     const gridRef = useRef(null)
     const [rowData, setRowData] = useState([]);
+    const {userState} = useContext(AuthContext)
     useLayoutEffect(() => {
         setRowData(userListRef.current.map(v => {
             return {
@@ -23,20 +26,34 @@ const AdminPanel = ({userListRef}) => {
             }
         }))
     }, [userListRef])
+    const updateUser = useCallback((userId, key, value) => {
+        const user = {user_id: userId}
+        if (['name', 'birthday', 'phone', 'role'].includes(key)) user[`user_${key}`] = value
+        else user.user_info = [{[key]: value}]
+        axios.post('/v1/user/', {user: user}).then()
+    }, [])
 
     const [columnDefs] = useState([
-        {field: 'id'},
-        {field: 'role', cellEditor: 'agSelectCellEditor', cellEditorParams: {values: ['admin', 'pm', 'worker', 'client']}},
+        {field: 'id', editable: false},
+        {
+            field: 'role',
+            cellEditor: 'agSelectCellEditor',
+            cellEditorParams: {values: ['admin', 'pm', 'worker', 'client']},
+            editable: userState.user?.userRole === 'admin'
+        },
         {field: 'code', headerComponent: () => <div className={'custom-header'}><span>거래처코드</span></div>},
         {field: 'name', headerComponent: () => <div className={'custom-header'}><span>이름</span></div>},
-        {field: 'email', headerComponent: () => <div className={'custom-header'}><span>이메일</span></div>},
+        {
+            field: 'email',
+            headerComponent: () => <div className={'custom-header'}><span>이메일</span></div>,
+            editable: false
+        },
         {field: 'birthday', headerComponent: () => <div className={'custom-header'}><span>생년월일</span></div>},
         {field: 'phone', headerComponent: () => <div className={'custom-header'}><span>휴대폰번호</span></div>},
         {field: 'address', headerComponent: () => <div className={'custom-header'}><span>주소</span></div>},
         {field: 'skill', headerComponent: () => <div className={'custom-header'}><span>스킬셋</span></div>},
         {field: 'tag', headerComponent: () => <div className={'custom-header'}><span>태그</span></div>},
-        {field: 'note1', headerComponent: () => <div className={'custom-header'}><span>비고1</span></div>},
-        {field: 'note2', headerComponent: () => <div className={'custom-header'}><span>비고2</span></div>},
+        {field: 'note', headerComponent: () => <div className={'custom-header'}><span>비고</span></div>},
     ])
     return <div className="ag-theme-alpine" style={{height: 'calc(100% - 100px)'}}>
         <AgGridReact
@@ -52,6 +69,7 @@ const AdminPanel = ({userListRef}) => {
                 gridRef.current.columnApi.autoSizeColumns(allColumnIds, false);
             }}
             undoRedoCellEditing={true}
+            onCellValueChanged={(event) => updateUser(event.data.id, event.colDef.field, event.newValue)}
         >
         </AgGridReact>
     </div>

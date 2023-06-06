@@ -1,10 +1,14 @@
 import {MDBBtn, MDBCard, MDBCardBody, MDBCardText, MDBCardTitle, MDBCol, MDBRow} from "mdb-react-ui-kit";
 import {AgGridReact} from "ag-grid-react";
 import {useRef, useState} from "react";
+import DatePickerComponent from "./DatePickerComponent";
+import {subDays} from 'date-fns'
 
 const DashboardPanel = () => {
     const gridRef = useRef(null)
     const [rowData, setRowData] = useState([{id: 1, task: '프로그램 회차 언어쌍', endAt: 'YYYY-MM-DD', status: '🟡진행중'}]);
+    const [startAt, setStartAt] = useState(subDays(new Date(), 7));
+    const [endAt, setEndAt] = useState(new Date());
     const columnDefs = [
         {field: 'id', editable: false, sort: 'asc'},
         {field: 'task', headerComponent: () => <div className={'custom-header'}><span>태스크</span></div>},
@@ -13,6 +17,9 @@ const DashboardPanel = () => {
     ]
 
     return <div style={{padding: '5rem', width: '100%', height: '100%'}}>
+        <div className={'d-flex justify-content-end'}>
+            <DatePickerComponent startAt={startAt} setStartAt={setStartAt} endAt={endAt} setEndAt={setEndAt}/>
+        </div>
         <MDBRow style={{justifyContent: 'center', height: '100%'}}>
             <MDBCol lg={'5'} style={{height: '50%'}}>
                 <div className="ag-theme-alpine" style={{height: '100%'}}>

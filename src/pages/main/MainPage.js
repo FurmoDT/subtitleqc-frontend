@@ -6,7 +6,7 @@ import TasksPanel from "./components/TasksPanel";
 
 const MainPage = () => {
     const pathname = window.location.pathname
-    return <div style={{height: 'calc(100vh - 50px)', display: 'flex'}}>
+    return <div style={{height: 'calc(100vh - 50px)', display: 'flex', fontFamily: 'Nanum Gothic'}}>
         <Sidebar collapsedWidth={'50px'} collapsed={true} rootStyles={{
             [`.${sidebarClasses.container}`]: {
                 backgroundColor: '#121212ff', height: 'calc(100vh - 50px)'

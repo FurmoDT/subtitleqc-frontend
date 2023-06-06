@@ -11,7 +11,6 @@ const TasksPanel = () => {
     const [startAt, setStartAt] = useState(subDays(new Date(), 7));
     const [endAt, setEndAt] = useState(new Date());
     const {userState} = useContext(AuthContext)
-    console.log(userState.user.userRole)
     const columnDefs = []
     return <div style={{padding: '5rem', width: '100%', height: '100%', textAlign: 'center'}}>
         <MDBRow>

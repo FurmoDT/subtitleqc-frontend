@@ -26,15 +26,19 @@ export default function Navbar(props) {
     const navigate = useNavigate()
     return <>
         <MDBNavbar expand={'lg'} dark style={{backgroundColor: '#121212ff', padding: 0, minHeight: '50px'}}>
-            <MDBContainer fluid>
-                <MDBNavbarBrand href={`${props.basename}`}>
-                    <img src='/furmo-logo.png' width={'40'} height={'30'} alt='' loading='lazy'/>
+            <MDBContainer fluid style={{paddingLeft: 5}}>
+                <MDBNavbarBrand href={`${props.basename}`} style={{width: '40px', height: '35px', backgroundColor: 'white'}}>
+                    <img src='/furmo-logo.png' width={'40'} height={'33'} alt='' loading='lazy' style={{margin: '0 auto'}}/>
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={() => setShowNavNoTogglerSecond(!showNavNoTogglerSecond)}>
                     <MDBIcon icon='bars' fas/>
                 </MDBNavbarToggler>
                 <MDBCollapse navbar show={showNavNoTogglerSecond}>
                     <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
+                        <MDBNavbarItem>
+                            <MDBNavbarLink
+                                onClick={useCallback(() => navigate('/'), [navigate])}>MAIN</MDBNavbarLink>
+                        </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
                                 onClick={useCallback(() => navigate('/production'), [navigate])}>VIDEO</MDBNavbarLink>

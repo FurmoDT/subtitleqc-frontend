@@ -30,7 +30,7 @@ const DashboardPanel = () => {
                     <MDBCol>
                         <MDBCard>
                             <MDBCardBody>
-                                <MDBCardTitle>프로젝트 카드</MDBCardTitle>
+                                <MDBCardTitle>테스크 카드</MDBCardTitle>
                                 <MDBCardText>sample</MDBCardText>
                                 <MDBBtn>Button</MDBBtn>
                             </MDBCardBody>
@@ -39,7 +39,7 @@ const DashboardPanel = () => {
                     <MDBCol>
                         <MDBCard>
                             <MDBCardBody>
-                                <MDBCardTitle>프로젝트 카드</MDBCardTitle>
+                                <MDBCardTitle>테스크 카드</MDBCardTitle>
                                 <MDBCardText>sample</MDBCardText>
                                 <MDBBtn>Button</MDBBtn>
                             </MDBCardBody>
@@ -50,7 +50,7 @@ const DashboardPanel = () => {
                     <MDBCol>
                         <MDBCard>
                             <MDBCardBody>
-                                <MDBCardTitle>프로젝트 카드</MDBCardTitle>
+                                <MDBCardTitle>테스크 카드</MDBCardTitle>
                                 <MDBCardText>sample</MDBCardText>
                                 <MDBBtn>Button</MDBBtn>
                             </MDBCardBody>
@@ -59,7 +59,7 @@ const DashboardPanel = () => {
                     <MDBCol>
                         <MDBCard>
                             <MDBCardBody>
-                                <MDBCardTitle>프로젝트 카드</MDBCardTitle>
+                                <MDBCardTitle>테스크 카드</MDBCardTitle>
                                 <MDBCardText>sample</MDBCardText>
                                 <MDBBtn>Button</MDBBtn>
                             </MDBCardBody>

@@ -2,7 +2,7 @@ import {Menu, MenuItem, Sidebar, sidebarClasses} from 'react-pro-sidebar';
 import {MdDashboard, MdFolderOpen} from "react-icons/md";
 import DashboardPanel from "./components/DashboardPanel";
 import {Link} from "react-router-dom";
-import ProjectsPanel from "./components/ProjectsPanel";
+import TasksPanel from "./components/TasksPanel";
 
 const MainPage = () => {
     const pathname = window.location.pathname
@@ -17,12 +17,12 @@ const MainPage = () => {
                 <MenuItem component={<Link to={'/'}/>}>
                     <MdDashboard size={25} color={'white'}/>
                 </MenuItem>
-                <MenuItem component={<Link to={'/projects'}/>}>
+                <MenuItem component={<Link to={'/tasks'}/>}>
                     <MdFolderOpen size={25} color={'white'}/>
                 </MenuItem>
             </Menu>
         </Sidebar>
-        {pathname === '/' ? <DashboardPanel/> : pathname === '/projects' ? <ProjectsPanel/> : null}
+        {pathname === '/' ? <DashboardPanel/> : pathname === '/tasks' ? <TasksPanel/> : null}
     </div>
 };
 

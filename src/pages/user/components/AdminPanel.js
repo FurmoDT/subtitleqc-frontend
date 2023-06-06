@@ -34,7 +34,7 @@ const AdminPanel = ({userListRef}) => {
     }, [])
 
     const [columnDefs] = useState([
-        {field: 'id', editable: false},
+        {field: 'id', editable: false, sort: 'asc'},
         {
             field: 'role',
             cellEditor: 'agSelectCellEditor',

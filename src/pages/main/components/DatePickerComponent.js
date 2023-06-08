@@ -11,11 +11,11 @@ const DatePickerComponent = ({startAt, setStartAt, endAt, setEndAt}) => {
             <label>조회 기간</label>
         </div>
         <div style={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'white'}}>
-            <DatePicker customInput={<ExampleCustomInput/>} selected={startAt} locale={ko}
+            <DatePicker customInput={<ExampleCustomInput/>} selected={startAt} locale={ko} maxDate={endAt}
                         dateFormat={'yyyy-MM-dd'} onChange={(date) => setStartAt(date)}/>
             -
-            <DatePicker customInput={<ExampleCustomInput/>} selected={endAt} locale={ko} maxDate={new Date()}
-                        dateFormat={'yyyy-MM-dd'} onChange={(date) => setEndAt(date)}/>
+            <DatePicker customInput={<ExampleCustomInput/>} selected={endAt} locale={ko} minDate={startAt}
+                        maxDate={new Date()} dateFormat={'yyyy-MM-dd'} onChange={(date) => setEndAt(date)}/>
         </div>
     </div>
 };

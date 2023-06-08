@@ -1,9 +1,6 @@
 import {useState} from 'react';
 import {MDBBtn, MDBModal, MDBModalBody, MDBModalContent, MDBModalDialog, MDBModalHeader,} from 'mdb-react-ui-kit';
 
-const inputStyle = {backgroundColor: 'white'}
-const labelStyle = {fontSize: '0.75rem', lineHeight: '1.5rem', color: 'black'}
-
 const TaskModal = () => {
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);

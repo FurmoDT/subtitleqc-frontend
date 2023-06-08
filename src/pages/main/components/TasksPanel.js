@@ -2,8 +2,10 @@ import {AgGridReact} from "ag-grid-react";
 import {useContext, useRef, useState} from "react";
 import DatePickerComponent from "./DatePickerComponent";
 import {subDays} from 'date-fns'
-import {MDBBtn, MDBCol, MDBRow} from "mdb-react-ui-kit";
+import {MDBCol, MDBRow} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../utils/authContext";
+import RequestModal from "./dialogs/RequestModal";
+import TaskModal from "./dialogs/TaskModal";
 
 const TasksPanel = () => {
     const gridRef = useRef(null)
@@ -16,10 +18,7 @@ const TasksPanel = () => {
         <MDBRow>
             <MDBCol sm={4} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'end'}}>
                 {userState.user.userRole === 'client' ?
-                    <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black', marginBottom: '0.5rem'}}>
-                        새로운 작업 의뢰하기</MDBBtn> : /^(admin|pm)$/.test(userState.user.userRole) ?
-                        <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black', marginBottom: '0.5rem'}}>
-                            신규 의뢰 확인</MDBBtn> : null}
+                    <RequestModal/> : /^(admin|pm)$/.test(userState.user.userRole) ? <TaskModal/> : null}
             </MDBCol>
             <MDBCol sm={4} style={{display: 'flex', justifyContent: 'center', alignItems: 'end'}}>
                 <div>태스크 리스트</div>

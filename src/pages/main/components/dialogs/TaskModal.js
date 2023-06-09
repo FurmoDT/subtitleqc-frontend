@@ -16,21 +16,23 @@ import {
     MDBRow,
     MDBTextArea,
 } from 'mdb-react-ui-kit';
+import Select from "react-select";
 
 const inputStyle = {backgroundColor: 'white'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem', color: 'black'}
 const TaskModal = () => {
     const [basicModal, setBasicModal] = useState(false);
+    const [workers, setWorkers] = useState([{}])
     const toggleShow = () => setBasicModal(!basicModal);
     return <>
         <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black', marginBottom: '0.5rem'}} onClick={toggleShow}>
             신규 의뢰 확인</MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1' staticBackdrop>
-            <MDBModalDialog size={'fullscreen'} centered style={{height: 'auto'}}>
-                <MDBRow style={{width: '100%', justifyContent: 'center', alignItems: 'center', color: 'black'}}>
-                    <MDBCol md={4}>
-                        <MDBModalContent style={{backgroundColor: '#b7b7b7ff'}}>
-                            <MDBModalHeader style={{borderBottom: 'none', justifyContent: 'center'}}>
+            <MDBModalDialog size={'fullscreen'} style={{height: 'auto', marginTop: '1rem'}}>
+                <MDBRow style={{margin: 'inherit', justifyContent: 'center'}}>
+                    <MDBCol lg={4}>
+                        <MDBModalContent style={{backgroundColor: '#b7b7b7ff', height: 'auto'}}>
+                            <MDBModalHeader style={{borderBottom: 'none', justifyContent: 'center', color: 'black'}}>
                                 작업 의뢰 카드</MDBModalHeader>
                             <MDBModalBody>
                                 <MDBRow className={'mb-3'}>
@@ -60,7 +62,12 @@ const TaskModal = () => {
                                 </MDBRow>
                                 <MDBRow className={'mb-3'}>
                                     <MDBCol>
-                                        <MDBListGroup numbered style={{textAlign: 'left', borderRadius: '0.25rem'}}>
+                                        <MDBListGroup numbered style={{
+                                            textAlign: 'left',
+                                            borderRadius: '0.25rem',
+                                            height: '6rem',
+                                            backgroundColor: 'white'
+                                        }}>
                                             <MDBListGroupItem style={{padding: '0 0.75rem'}}>파일</MDBListGroupItem>
                                         </MDBListGroup>
                                     </MDBCol>
@@ -103,65 +110,48 @@ const TaskModal = () => {
                                         </MDBCol>
                                     </MDBRow>
                                 </MDBRow>
-                                <MDBRow className={'mb-3'}
-                                        style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
-                                    <label className={'mb-3'} style={{textAlign: 'left'}}>작업자 배정</label>
-                                    <MDBRow className={'mb-3 align-items-center'}>
-                                        <MDBCol size={1}>대본</MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'작업자 이름'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'마감일'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={5}><MDBInput style={inputStyle} label={'요청 사항'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                    </MDBRow>
-                                    <MDBRow className={'mb-3 align-items-center'}>
-                                        <MDBCol size={1}>싱크</MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'작업자 이름'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'마감일'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={5}><MDBInput style={inputStyle} label={'요청 사항'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                    </MDBRow>
-                                    <MDBRow className={'mb-3 align-items-center'}>
-                                        <MDBCol size={1}>번역</MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'작업자 이름'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'마감일'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={5}><MDBInput style={inputStyle} label={'요청 사항'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                    </MDBRow>
-                                    <MDBRow className={'mb-3 align-items-center'}>
-                                        <MDBCol size={1}>감수</MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'작업자 이름'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'마감일'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={5}><MDBInput style={inputStyle} label={'요청 사항'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                    </MDBRow>
-                                    <MDBRow className={'mb-3 align-items-center'}>
-                                        <MDBCol size={1}>QC</MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={1}><MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>언어<br/>선택</MDBBtn></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'작업자 이름'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={2}><MDBInput style={inputStyle} label={'마감일'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                        <MDBCol size={5}><MDBInput style={inputStyle} label={'요청 사항'}
-                                                                   labelStyle={labelStyle}/></MDBCol>
-                                    </MDBRow>
-                                    <MDBRow className={'mb-3 align-items-center'}>
+                                <MDBRow className={'mb-3 m-0 py-3 px-0'} style={{backgroundColor: '#f3f3f3ff'}}>
+                                    <label style={{textAlign: 'left'}}>작업자 배정</label>
+                                    <MDBBtn color={'link'} style={{
+                                        backgroundColor: 'white',
+                                        width: 'auto',
+                                        margin: '1rem 0.75rem',
+                                        whiteSpace: 'nowrap'
+                                    }} onClick={() => setWorkers(prevState => [...prevState, {}])}>+ 추가하기</MDBBtn>
+                                    {workers.map((value, index) => {
+                                        return <MDBRow key={index}
+                                                       className={'mb-3 align-items-center m-0 p-0 flex-nowrap'}>
+                                            <MDBCol style={{display: 'flex', flexDirection: 'row'}}>
+                                                <Select styles={{
+                                                    container: base => ({...base, width: '5rem'}),
+                                                    dropdownIndicator: base => ({...base, padding: 0})
+                                                }} options={[
+                                                    {value: '대본', label: '대본'},
+                                                    {value: '싱크', label: '싱크'},
+                                                    {value: '번역', label: '번역'},
+                                                    {value: '감수', label: '감수'},
+                                                    {value: 'QC', label: 'QC'}]} placeholder={'선택'}/>
+                                                <MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>
+                                                    언어선택</MDBBtn>
+                                                <MDBBtn color={'link'} size={'sm'} style={{whiteSpace: 'pre'}}>
+                                                    언어선택</MDBBtn>
+                                                <MDBCol size={2} style={{maxWidth: '10rem'}}><MDBInput
+                                                    style={inputStyle} labelStyle={labelStyle}
+                                                    label={'작업자 이름'}/></MDBCol>
+                                                <MDBCol size={2} style={{maxWidth: '10rem'}}><MDBInput
+                                                    style={inputStyle} labelStyle={labelStyle} label={'마감일'}/></MDBCol>
+                                                <MDBCol><MDBInput style={inputStyle} labelStyle={labelStyle}
+                                                                  label={'요청 사항'}/></MDBCol>
+                                            </MDBCol>
+                                            <MDBBtn className='btn-close me-1' color='none'
+                                                    onClick={() => setWorkers(prevState => {
+                                                        console.log(index)
+                                                        prevState.splice(index, 1)
+                                                        return [...prevState]
+                                                    })}/>
+                                        </MDBRow>
+                                    })}
+                                    <MDBRow className={'mb-3 align-items-center m-0 p-0'}>
                                         <MDBCol size={10}>
                                             <MDBListGroup numbered style={{
                                                 borderRadius: '0.25rem',

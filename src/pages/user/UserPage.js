@@ -21,6 +21,7 @@ const UserPage = () => {
             userInfoRef.current = response.data
             setIsProfileInitialized(true)
         })
+        if (!/^(admin|pm)$/.test(userState.user.userRole)) return
         axios.get(`/v1/user/users`).then((response) => {
             userListRef.current = response.data
             setIsAdminInitialized(true)

@@ -39,7 +39,8 @@ const AdminPanel = ({userListRef}) => {
             field: 'role',
             cellEditor: 'agSelectCellEditor',
             cellEditorParams: {values: ['admin', 'pm', 'worker', 'client']},
-            editable: userState.user?.userRole === 'admin'
+            editable: userState.user?.userRole === 'admin',
+            headerComponent: () => <div className={'custom-header'}><span>권한</span></div>
         },
         {field: 'code', headerComponent: () => <div className={'custom-header'}><span>거래처코드</span></div>},
         {field: 'name', headerComponent: () => <div className={'custom-header'}><span>이름</span></div>},

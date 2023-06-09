@@ -83,9 +83,9 @@ const RequestModal = () => {
     return <>
         <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black', marginBottom: '0.5rem'}} onClick={toggleShow}>
             새로운 작업 의뢰하기</MDBBtn>
-        <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
+        <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'xl'} centered>
-                <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+                <MDBModalContent style={{backgroundColor: '#f28720ff', borderRadius: 0}}>
                     <MDBModalHeader style={{borderBottom: 'none'}}>
                         <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
                     </MDBModalHeader>

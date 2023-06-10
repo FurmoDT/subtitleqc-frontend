@@ -14,6 +14,7 @@ import {
     MDBRow,
     MDBTextArea,
 } from 'mdb-react-ui-kit';
+import {aws} from "../../../../utils/awsConfig";
 
 const inputStyle = {backgroundColor: 'white'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem', color: 'black'}
@@ -131,7 +132,10 @@ const RequestModal = () => {
                         </MDBRow>
                     </MDBModalBody>
                     <MDBModalFooter style={{borderTop: 'none', justifyContent: 'center'}}>
-                        <MDBBtn color={'dark'} size={'sm'} onClick={toggleShow}>의뢰하기</MDBBtn>
+                        <MDBBtn color={'dark'} size={'sm'} onClick={() => {
+                            aws(uploadedFiles)
+                            toggleShow()
+                        }}>의뢰하기</MDBBtn>
                     </MDBModalFooter>
                 </MDBModalContent>
             </MDBModalDialog>

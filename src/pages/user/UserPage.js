@@ -26,7 +26,7 @@ const UserPage = () => {
             userListRef.current = response.data
             setIsAdminInitialized(true)
         })
-    }, [])
+    }, [userState.user.userRole])
 
     const LeftPanel = () => {
         const [basicActive, setBasicActive] = useState(pathname)

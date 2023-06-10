@@ -9,7 +9,7 @@ export const aws = (files) => {
             sessionToken: response.data.session_token,
             region: response.data.region,
         });
-        files.forEach((file)=>{
+        files.forEach((file) => {
             const upload = new AWS.S3.ManagedUpload({
                 params: {
                     Bucket: 'furmodt',
@@ -17,7 +17,7 @@ export const aws = (files) => {
                     Body: file,
                 }
             })
-            upload.promise().then((response) => console.log(response))
+            upload.promise().then((response) => console.log(response)).catch((reason) => console.log(reason))
         })
     })
 }

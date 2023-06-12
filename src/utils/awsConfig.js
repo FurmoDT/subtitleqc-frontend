@@ -2,7 +2,7 @@ import axios from "./axios";
 import AWS from "aws-sdk"
 
 export const aws = (files) => {
-    axios.get('v1/aws/iam').then((response) => {
+    axios.get('v1/aws/sts/s3').then((response) => {
         AWS.config.update({
             accessKeyId: response.data.access_key,
             secretAccessKey: response.data.secret_access_key,
@@ -12,7 +12,7 @@ export const aws = (files) => {
         files.forEach((file) => {
             const upload = new AWS.S3.ManagedUpload({
                 params: {
-                    Bucket: 'furmodt',
+                    Bucket: response.data.bucket,
                     Key: file.name,
                     Body: file,
                 }

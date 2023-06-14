@@ -21,12 +21,16 @@ const UserPage = () => {
             userInfoRef.current = response.data
             setIsProfileInitialized(true)
         })
-        if (!/^(admin|pm)$/.test(userState.user.userRole)) return
-        axios.get(`/v1/user/users`).then((response) => {
-            userListRef.current = response.data
-            setIsAdminInitialized(true)
-        })
-    }, [userState.user.userRole])
+    }, [])
+
+    useEffect(() => {
+        if (isProfileInitialized && /^(admin|pm)$/.test(userState.user.userRole)) {
+            axios.get(`/v1/user/users`).then((response) => {
+                userListRef.current = response.data
+                setIsAdminInitialized(true)
+            })
+        }
+    }, [isProfileInitialized, userState])
 
     const LeftPanel = () => {
         const [basicActive, setBasicActive] = useState(pathname)

@@ -22,7 +22,7 @@ import {HttpStatusCode} from "axios";
 
 export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
-    const {setAccessToken, userState} = useContext(AuthContext);
+    const {userState, updateAccessToken} = useContext(AuthContext);
     const navigate = useNavigate()
     return <>
         <MDBNavbar expand={'lg'} dark style={{backgroundColor: '#121212ff', padding: 0, minHeight: '50px'}}>
@@ -74,11 +74,10 @@ export default function Navbar(props) {
                             <MDBDropdownItem link onClick={useCallback(() => {
                                 axios.post(`/v1/auth/logout`, {}).then((response) => {
                                     if (response.status === HttpStatusCode.Ok) {
-                                        setAccessToken(null)
-                                        navigate('/', {replace: true})
+                                        updateAccessToken(null).then(() => navigate('/', {replace: true}))
                                     }
                                 })
-                            }, [navigate, setAccessToken])}>로그아웃</MDBDropdownItem>
+                            }, [navigate, updateAccessToken])}>로그아웃</MDBDropdownItem>
                         </MDBDropdownMenu>
                     </MDBDropdown>
                 </MDBCollapse>

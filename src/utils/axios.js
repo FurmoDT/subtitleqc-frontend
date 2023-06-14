@@ -26,7 +26,8 @@ function AxiosInterceptor({children}) {
                                 return retryResponse
                             })
                         })
-
+                    } else {
+                        return updateAccessToken(null).then(() => response)
                     }
                 })
             }

@@ -15,7 +15,11 @@ export const AuthProvider = ({children}) => {
                 return axios.get('/v1/auth/get_current_user').then((response) => {
                     setUserState({
                         isAuthenticated: true,
-                        user: {userEmail: response.data.user_email, userRole: response.data.user_role}
+                        user: {
+                            userId: response.data.user_id,
+                            userEmail: response.data.user_email,
+                            userRole: response.data.user_role
+                        }
                     })
                     resolve(accessToken);
                 })
@@ -33,7 +37,7 @@ export const AuthProvider = ({children}) => {
         }).finally(() => setIsInitialized(true))
     }, [updateAccessToken])
 
-    if (isInitialized) return (<AuthContext.Provider value={{userState, setUserState, updateAccessToken}}>
+    if (isInitialized) return (<AuthContext.Provider value={{userState, updateAccessToken}}>
         {children}
     </AuthContext.Provider>);
 };

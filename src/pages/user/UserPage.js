@@ -1,20 +1,20 @@
 import {useContext, useEffect, useRef, useState} from "react";
-import {AuthContext} from "../../utils/authContext";
 import {MDBCard, MDBCol, MDBListGroup, MDBListGroupItem, MDBRow} from "mdb-react-ui-kit";
 import axios from "../../utils/axios";
 import {useNavigate} from "react-router-dom";
 import 'react-phone-number-input/style.css'
 import ProfilePanel from './components/ProfilePanel'
 import AdminPanel from "./components/AdminPanel";
+import {AuthContext} from "../../utils/authContext";
 
 const UserPage = () => {
     const pathname = window.location.pathname;
     const navigate = useNavigate()
-    const {userState} = useContext(AuthContext)
     const [isProfileInitialized, setIsProfileInitialized] = useState(false)
     const [isAdminInitialized, setIsAdminInitialized] = useState(false)
     const userInfoRef = useRef({})
     const userListRef = useRef([])
+    const {userState} = useContext(AuthContext)
 
     useEffect(() => {
         axios.get(`/v1/user/me`).then((response) => {
@@ -24,13 +24,13 @@ const UserPage = () => {
     }, [])
 
     useEffect(() => {
-        if (isProfileInitialized && /^(admin|pm)$/.test(userState.user.userRole)) {
+        if (/^(admin|pm)$/.test(userState.user.userRole)) {
             axios.get(`/v1/user/users`).then((response) => {
                 userListRef.current = response.data
                 setIsAdminInitialized(true)
             })
         }
-    }, [isProfileInitialized, userState])
+    }, [userState])
 
     const LeftPanel = () => {
         const [basicActive, setBasicActive] = useState(pathname)
@@ -54,7 +54,7 @@ const UserPage = () => {
         if (pathname === '/user') {
             return isProfileInitialized && <ProfilePanel userInfoRef={userInfoRef}/>
         } else if (pathname === '/user/admin') {
-            return isAdminInitialized && <AdminPanel userListRef={userListRef}/>
+            return isAdminInitialized && <AdminPanel userInfoRef={userInfoRef} userListRef={userListRef}/>
         }
     }
     return <div style={{width: '100%', height: 'calc(100vh - 50px)', display: 'flex', justifyContent: 'center'}}>

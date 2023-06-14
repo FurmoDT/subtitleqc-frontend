@@ -23,12 +23,14 @@ import {HttpStatusCode} from "axios";
 export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
     const {userState, updateAccessToken} = useContext(AuthContext);
+    const [activeNav, setActiveNav] = useState(window.location.pathname)
     const navigate = useNavigate()
     return <>
         <MDBNavbar expand={'lg'} dark style={{backgroundColor: '#121212ff', padding: 0, minHeight: '50px'}}>
             <MDBContainer fluid style={{paddingLeft: 5}}>
-                <MDBNavbarBrand href={`${props.basename}`} style={{width: '40px', height: '35px', backgroundColor: 'white'}}>
-                    <img src='/furmo-logo.png' width={'40'} height={'33'} alt='' loading='lazy' style={{margin: '0 auto'}}/>
+                <MDBNavbarBrand href={`${props.basename}`}
+                                style={{width: '40px', height: '35px', backgroundColor: 'white'}}>
+                    <img src='/furmo-logo.png' width={'40'} height={'33'} alt='' style={{margin: '0 auto'}}/>
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={() => setShowNavNoTogglerSecond(!showNavNoTogglerSecond)}>
                     <MDBIcon icon='bars' fas/>
@@ -36,15 +38,22 @@ export default function Navbar(props) {
                 <MDBCollapse navbar show={showNavNoTogglerSecond}>
                     <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
                         <MDBNavbarItem>
-                            <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/'), [navigate])}>MAIN</MDBNavbarLink>
+                            <MDBNavbarLink active={activeNav === '/'} onClick={useCallback(() => {
+                                navigate('/')
+                                setActiveNav('/')
+                            }, [navigate])}>MAIN</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink
-                                onClick={useCallback(() => navigate('/production'), [navigate])}>VIDEO</MDBNavbarLink>
+                            <MDBNavbarLink active={activeNav === '/production'} onClick={useCallback(() => {
+                                navigate('/production')
+                                setActiveNav('/production')
+                            }, [navigate])}>VIDEO</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink disabled={true} onClick={null}>TEXT</MDBNavbarLink>
+                            <MDBNavbarLink active={activeNav === '/text'} onClick={useCallback(() => {
+                                navigate('/text')
+                                setActiveNav('/text')
+                            }, [navigate])} disabled>TEXT</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink
@@ -69,6 +78,7 @@ export default function Navbar(props) {
                         <MDBDropdownMenu responsive={'end'}>
                             <MDBDropdownItem link href={null} onClick={useCallback(() => {
                                 navigate('/user')
+                                setActiveNav('/user')
                             }, [navigate])}>내 프로필</MDBDropdownItem>
                             <MDBDropdownItem divider/>
                             <MDBDropdownItem link onClick={useCallback(() => {

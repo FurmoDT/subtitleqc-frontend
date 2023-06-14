@@ -37,7 +37,7 @@ export const AuthProvider = ({children}) => {
         }).finally(() => setIsInitialized(true))
     }, [updateAccessToken])
 
-    if (isInitialized) return (<AuthContext.Provider value={{userState, updateAccessToken}}>
+    return isInitialized && <AuthContext.Provider value={{userState, updateAccessToken}}>
         {children}
-    </AuthContext.Provider>);
+    </AuthContext.Provider>;
 };

@@ -13,6 +13,7 @@ import UserPage from "./pages/user/UserPage";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {useContext} from "react";
 import MainPage from "./pages/main/MainPage";
+import AuthComponent from "./utils/authComponent";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
@@ -29,7 +30,7 @@ function App() {
                         <Route path={"/production"} element={<Production/>}/>
                         <Route path={"/qc"} element={<QualityControl/>}/>
                         <Route path={"/manual"} element={<Manual/>}/>
-                        <Route path={"/user/*"} element={<UserPage/>}/>
+                        <Route path={"/user/*"} element={<AuthComponent component={UserPage}/>}/>
                     </Route>
                     <Route path={"/login"}
                            element={<GoogleOAuthProvider clientId={googleClientId}><LoginPage/></GoogleOAuthProvider>}/>

@@ -21,7 +21,7 @@ export const WebsocketProvider = ({children}) => {
             wsRef.current.onclose = () => {
                 wsRef.current = null
                 console.log('ws closed')
-                setTimeout(connect, 5000)
+                setTimeout(connect, 10000)
             }
         })
     }, [])

@@ -53,7 +53,7 @@ export default function Navbar(props) {
                             <MDBNavbarLink active={activeNav === '/text'} onClick={useCallback(() => {
                                 navigate('/text')
                                 setActiveNav('/text')
-                            }, [navigate])} disabled>TEXT</MDBNavbarLink>
+                            }, [navigate])}>TEXT</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink

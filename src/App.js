@@ -14,6 +14,7 @@ import {GoogleOAuthProvider} from "@react-oauth/google";
 import {useContext} from "react";
 import MainPage from "./pages/main/MainPage";
 import AuthComponent from "./utils/authComponent";
+import TextPage from "./pages/text/TextPage";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
@@ -28,6 +29,7 @@ function App() {
                         <Route index element={<MainPage/>}/>
                         <Route path={'/*'} element={<MainPage/>}/>
                         <Route path={"/production"} element={<Production/>}/>
+                        <Route path={"/text"} element={<TextPage/>}/>
                         <Route path={"/qc"} element={<QualityControl/>}/>
                         <Route path={"/manual"} element={<Manual/>}/>
                         <Route path={"/user/*"} element={<AuthComponent component={UserPage}/>}/>

@@ -5,15 +5,20 @@ import PdfViewer from "./components/PdfViewer";
 
 const TextPage = () => {
 
-    return <div style={{width: '100%', height: 'calc(100vh - 50px)'}}>
+    return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
         <MenuToolbar/>
-        <SplitterLayout>
-            <PdfViewer/>
-            <SplitterLayout>
-                <QuillEditor/>
-                <QuillEditor/>
+        <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
+            <SplitterLayout vertical={true} percentage={true} secondaryInitialSize={25}>
+                <SplitterLayout percentage={true} secondaryInitialSize={60}>
+                    <PdfViewer/>
+                    <SplitterLayout percentage={true} secondaryInitialSize={50}>
+                        <QuillEditor/>
+                        <QuillEditor/>
+                    </SplitterLayout>
+                </SplitterLayout>
+                <div>component</div>
             </SplitterLayout>
-        </SplitterLayout>
+        </div>
     </div>
 };
 

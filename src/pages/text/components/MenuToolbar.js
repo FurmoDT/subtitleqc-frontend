@@ -1,4 +1,4 @@
-const MenuToolbar = (props) => {
+const MenuToolbar = () => {
     return <div style={{
         width: '100%',
         height: '40px',

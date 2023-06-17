@@ -17,3 +17,16 @@
 .ag-header-container {
     background-color: #f28720ff;
 }
+
+.ql-toolbar {
+    display: flex;
+}
+
+.ql-formats {
+    display: flex !important;
+    flex-wrap: nowrap;
+}
+
+.ql-container {
+    height: calc(100% - 42px) !important;
+}

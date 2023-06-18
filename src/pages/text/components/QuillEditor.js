@@ -26,11 +26,11 @@ const QuillEditor = () => {
                     redo: redoChange
                 }
             }, history: {
-                delay: 2000, userOnly: true
+                delay: 1000, userOnly: true
             }
         }
     }, [])
-    
+
     return <ReactQuill ref={reactQuillRef} modules={modules} theme={'snow'} value={value} onChange={setValue}
                        style={{width: '100%', height: '100%'}}/>
 };

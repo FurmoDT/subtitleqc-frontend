@@ -15,6 +15,7 @@ import {useContext} from "react";
 import MainPage from "./pages/main/MainPage";
 import AuthComponent from "./utils/authComponent";
 import TextPage from "./pages/text/TextPage";
+import AWSSignedComponent from "./utils/awsSignedComponent";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
@@ -28,8 +29,8 @@ function App() {
                         <Navigate to={'/login'} replace/>}>
                         <Route index element={<MainPage/>}/>
                         <Route path={'/*'} element={<MainPage/>}/>
-                        <Route path={"/production"} element={<Production/>}/>
-                        <Route path={"/text"} element={<TextPage/>}/>
+                        <Route path={"/production"} element={<AWSSignedComponent component={Production}/>}/>
+                        <Route path={"/text"} element={<AWSSignedComponent component={TextPage}/>}/>
                         <Route path={"/qc"} element={<QualityControl/>}/>
                         <Route path={"/manual"} element={<Manual/>}/>
                         <Route path={"/user/*"} element={<AuthComponent component={UserPage}/>}/>

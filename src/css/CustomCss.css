@@ -18,6 +18,11 @@
     background-color: #f28720ff;
 }
 
+.rdg-header-row {
+    background-color: #f28720ff;
+    text-align: center;
+}
+
 .ql-toolbar {
     display: flex;
 }

@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import 'react-data-grid/lib/styles.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import {AuthProvider} from "./utils/authContext";
 import {WebsocketProvider} from "./utils/websocketContext";

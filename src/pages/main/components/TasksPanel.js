@@ -8,7 +8,6 @@ import TaskModal from "./dialogs/TaskModal";
 import DataGrid from 'react-data-grid';
 
 const TasksPanel = () => {
-    const gridRef = useRef(null)
     const [startAt, setStartAt] = useState(subDays(new Date(), 7));
     const [endAt, setEndAt] = useState(new Date());
     const {userState} = useContext(AuthContext)

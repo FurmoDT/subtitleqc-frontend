@@ -205,7 +205,7 @@ const TimelineWindow = (props) => {
     }, [props.mediaFile, props.waveformRef])
 
     return <>
-        <div style={{display: 'flex', width: '100%', position: 'absolute', alignItems: 'center', zIndex: 1}}>
+        <div style={{position: 'absolute', right: 0, zIndex: 1}}>
             <div style={{display: 'flex', marginLeft: 'auto'}}>
                 <MDBCheckbox id='tcLock-checkbox' wrapperStyle={{display: 'flex', marginRight: 10}}
                              label='TC Lock' labelStyle={checkboxLabelStyle} defaultChecked={true}

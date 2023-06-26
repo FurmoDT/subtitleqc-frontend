@@ -1,7 +1,7 @@
 import MenuToolbar from "./components/MenuToolbar";
 import QuillEditor from "./components/QuillEditor";
 import SplitterLayout from "react-splitter-layout-react-v18";
-import DocumentViewer from "./components/DocViewer";
+import DocViewer from "./components/DocViewer";
 
 const TextPage = () => {
 
@@ -10,7 +10,7 @@ const TextPage = () => {
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <SplitterLayout vertical={true} percentage={true} secondaryInitialSize={25}>
                 <SplitterLayout percentage={true} secondaryInitialSize={60}>
-                    <DocumentViewer/>
+                    <DocViewer/>
                     <SplitterLayout percentage={true} secondaryInitialSize={50}>
                         <QuillEditor/>
                         <QuillEditor/>

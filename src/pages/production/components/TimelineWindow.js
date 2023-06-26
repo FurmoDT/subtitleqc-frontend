@@ -65,6 +65,7 @@ const TimelineWindow = (props) => {
             webAudio: {
                 audioContext: new AudioContext()
             },
+            withCredentials: true,
             zoomview: {
                 container: waveformRef.current,
                 waveformColor: 'yellow',

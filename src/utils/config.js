@@ -162,7 +162,26 @@ export const guidelines = [
 export const defaultSubtitle = () => (Array.from({length: 100}, () => ({rowId: v4()})))
 export const defaultLanguage = () => []
 export const defaultProjectDetail = () => ({name: '', guideline: {client: '', language: {}}})
-
+export const workTypeSelectOption = [
+    {value: '대본', label: '대본'},
+    {value: '싱크', label: '싱크'},
+    {value: '번역', label: '번역'},
+    {value: '감수', label: '감수'}
+]
+export const languageSelectOption = [
+    {value: 'koKR', label: '한국어'},
+    {value: 'enUS', label: '영어'},
+    {value: 'jaJP', label: '일어'},
+    {value: 'zhCN', label: '중국어(간체)'},
+    {value: 'zhTW', label: '중국어(번체)'},
+    {value: 'viVN', label: '베트남어'},
+    {value: 'thTH', label: '태국어'},
+    {value: 'idID', label: '인니어'},
+    {value: 'arAE', label: '아랍어'},
+    {value: 'ruRU', label: '러시아어'},
+    {value: 'frFR', label: '프랑스어'},
+    {value: 'esES', label: '스페인어'},
+]
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL
 export const localApiUrl = process.env.REACT_APP_LOCAL_API_URL
 export const apiUrl = process.env.REACT_APP_API_URL

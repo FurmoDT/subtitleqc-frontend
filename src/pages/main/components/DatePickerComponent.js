@@ -8,7 +8,7 @@ const DatePickerComponent = ({startAt, setStartAt, endAt, setEndAt}) => {
         <label style={{fontSize: '0.8rem'}} onClick={onClick}>{value}</label>));
     return <div style={{width: '200px', textAlign: 'center', marginBottom: 10}}>
         <div style={{backgroundColor: '#f28720ff', color: 'black', fontSize: '0.875rem'}}>
-            <label style={{fontWeight: 'bold'}}>조회 기간</label>
+            <label>조회 기간</label>
         </div>
         <div style={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'white'}}>
             <DatePicker customInput={<ExampleCustomInput/>} selected={startAt} locale={ko} maxDate={endAt}

@@ -25,8 +25,8 @@ const TaskModal = () => {
     const [workers, setWorkers] = useState([{}])
     const toggleShow = () => setBasicModal(!basicModal);
     return <>
-        <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black', marginBottom: '0.5rem'}} onClick={toggleShow}>
-            신규 의뢰 확인</MDBBtn>
+        <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black', marginBottom: '0.5rem', marginRight: '0.5rem'}}
+                onClick={toggleShow} disabled>신규 의뢰 확인</MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'fullscreen'} style={{height: 'auto', marginTop: '1rem'}}>
                 <MDBRow style={{margin: 'inherit', justifyContent: 'center'}}>
@@ -104,9 +104,6 @@ const TaskModal = () => {
                                         </MDBCol>
                                         <MDBCol>
                                             <MDBInput style={inputStyle} label={'에피소드'} labelStyle={labelStyle}/>
-                                        </MDBCol>
-                                        <MDBCol>
-                                            <MDBInput style={inputStyle} label={'언어쌍'} labelStyle={labelStyle}/>
                                         </MDBCol>
                                     </MDBRow>
                                 </MDBRow>

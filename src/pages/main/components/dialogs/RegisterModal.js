@@ -26,7 +26,7 @@ let counter = 0
 
 const RegisterModal = () => {
     const [basicModal, setBasicModal] = useState(false);
-    const [uploadedFiles, setUploadedFiles] = useState([])
+    const [uploadedFiles, setUploadedFiles] = useState(null)
     const [workers, setWorkers] = useState([{}])
     const [dueDate, setDueDate] = useState(null)
     const dropzoneRef = useRef(null)
@@ -73,7 +73,7 @@ const RegisterModal = () => {
         e.preventDefault();
         e.stopPropagation();
         if (e.target.className.includes('btn-close')) {
-            setUploadedFiles(prevState => [...prevState.filter((value) => value.name !== e.target.parentElement.innerText)])
+            setUploadedFiles(null)
             return
         }
         Object.assign(dropzoneRef.current.style, dragStyle);
@@ -190,22 +190,18 @@ const RegisterModal = () => {
                             <MDBRow className={'mb-3 align-items-center m-0 p-0'}>
                                 <MDBCol>
                                     <MDBListGroup ref={dropzoneRef} style={{textAlign: 'left'}}>
-                                        {uploadedFiles.length ? uploadedFiles.map((value) => <MDBListGroupItem
-                                                key={value.name} style={{padding: '0 0.75rem'}}>{value.name}
+                                        {uploadedFiles ?
+                                            <MDBListGroupItem style={{padding: '0 0.75rem'}}>{uploadedFiles.name}
                                                 <MDBBtn className='btn-close' color='none'
                                                         style={{position: 'absolute', right: 0}} onClick={handleClick}/>
-                                            </MDBListGroupItem>) :
+                                            </MDBListGroupItem> :
                                             <label style={{textAlign: 'left', paddingLeft: '0.75rem', ...labelStyle}}>
-                                                파일 업로드 또는 드래그앤드롭</label>}
+                                                파일 업로드 또는 드래그앤드롭</label>
+                                        }
                                     </MDBListGroup>
-                                    <input ref={fileInputRef} style={{display: 'none'}} multiple type={'file'}
+                                    <input ref={fileInputRef} style={{display: 'none'}} type={'file'}
                                            onChange={(e) => {
-                                               Array.from(e.target.files).forEach((file) => {
-                                                   setUploadedFiles(prev => {
-                                                       if (prev.map(value => value.name).includes(file.name)) return prev
-                                                       else return [...prev, file]
-                                                   })
-                                               })
+                                               setUploadedFiles(e.target.files[0])
                                                e.target.value = ''
                                            }}/>
                                 </MDBCol>

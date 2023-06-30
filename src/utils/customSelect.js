@@ -9,8 +9,7 @@ export const CustomOption = (props) => {
     </>;
 };
 export const customStyle = {
-    container: base => ({...base, marginRight: '0.5rem', minWidth: '5rem', textAlign: 'left'}),
+    container: base => ({...base, marginRight: '0.5rem', minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap'}),
     dropdownIndicator: base => ({...base, padding: 0}),
-    menu: base => ({...base, width: 'auto', whiteSpace: 'nowrap'})
+    menu: base => ({...base, width: 'auto'})
 }
-

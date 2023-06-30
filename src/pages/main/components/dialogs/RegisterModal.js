@@ -1,4 +1,4 @@
-import {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
+import {forwardRef, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {
     MDBBtn,
     MDBCol,
@@ -17,7 +17,8 @@ import DatePicker from "react-datepicker";
 import {ko} from 'date-fns/esm/locale';
 import {languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
 import axios from "../../../../utils/axios";
-import {CustomOption, customStyle} from "../../../../utils/customSelect";
+import {CustomControl, CustomOption, customStyle} from "../../../../utils/customSelect";
+import {AuthContext} from "../../../../utils/authContext";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
@@ -35,6 +36,8 @@ const RegisterModal = () => {
     const fileInputRef = useRef(null)
     const toggleShow = () => setBasicModal(!basicModal)
     const [workerListOption, setWorkerListOption] = useState([])
+    const [pmListOption, setPmListOption] = useState([])
+    const {userState} = useContext(AuthContext)
     const CustomInput = forwardRef(({value, onClick, label}, ref) => {
         return <MDBInput style={inputStyle} label={label} labelStyle={labelStyle} onClick={onClick} value={value}/>
     })
@@ -101,6 +104,13 @@ const RegisterModal = () => {
                 email: value.user_email
             })))
         })
+        axios.get(`/v1/user/pm`).then((response) => {
+            setPmListOption(response.data.map(value => ({
+                value: value.user_id,
+                label: value.user_name,
+                email: value.user_email
+            })))
+        })
     }, [])
 
 
@@ -119,16 +129,16 @@ const RegisterModal = () => {
                                 style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
                             <label className={'mb-3'} style={{textAlign: 'left'}}>태스크 정보</label>
                             <MDBRow className={'mb-3'}>
-                                <MDBCol size={2}>
+                                <MDBCol size={2} style={{minWidth: '150px', maxWidth: '150px'}}>
                                     <MDBInput style={inputStyle} label={'프로젝트 코드'} labelStyle={labelStyle}/>
                                 </MDBCol>
-                                <MDBCol>
+                                <MDBCol size={3}>
                                     <MDBInput style={inputStyle} label={'클라이언트명'} labelStyle={labelStyle}/>
                                 </MDBCol>
                                 <MDBCol>
                                     <MDBInput style={inputStyle} label={'프로젝트명'} labelStyle={labelStyle}/>
                                 </MDBCol>
-                                <MDBCol>
+                                <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
                                     <DatePicker customInput={<CustomInput label={'납품기한'}/>} locale={ko}
                                                 selected={dueDate}
                                                 showTimeSelect timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
@@ -136,7 +146,14 @@ const RegisterModal = () => {
                                 </MDBCol>
                             </MDBRow>
                             <MDBRow>
-                                <MDBCol size={3}>
+                                <MDBCol style={{display: 'flex'}}>
+                                    {pmListOption.length &&
+                                        <Select styles={customStyle} options={pmListOption} placeholder={null}
+                                                components={{Option: CustomOption, Control: CustomControl}}
+                                                isMulti isClearable={false}
+                                                defaultValue={pmListOption.find(value => value.value === userState.user.userId)}/>}
+                                </MDBCol>
+                                <MDBCol>
                                     <MDBInput style={inputStyle} label={'프로그램명'} labelStyle={labelStyle}/>
                                 </MDBCol>
                                 <MDBCol size={2}>
@@ -147,27 +164,27 @@ const RegisterModal = () => {
                         <MDBRow className={'mb-3 m-0 py-3 px-0'} style={{backgroundColor: '#f3f3f3ff'}}>
                             <label className={'mb-3'} style={{textAlign: 'left'}}>작업자 배정</label>
                             {workers.map((value, index) => {
-                                return <MDBRow key={index} className={'mb-3 align-items-center m-0 p-0 flex-nowrap'}>
+                                return <MDBRow key={index} className={'mb-3 align-items-center m-0 p-0'}>
                                     <MDBCol style={{display: 'flex'}}>
-                                        <Select styles={customStyle} options={workTypeSelectOption} placeholder={'유형'}
+                                        <Select className={'me-2'} styles={customStyle} options={workTypeSelectOption}
+                                                placeholder={'유형'}
                                                 onChange={(newValue) => {
                                                     setWorkers(prevState => {
                                                         prevState[index].workType = newValue.value
                                                         return [...prevState]
                                                     })
                                                 }}/>
-                                        {
-                                            /^(대본|싱크)$/.test(workers[index].workType) ? null :
-                                                <Select styles={customStyle} options={languageSelectOption}
-                                                        placeholder={'언어'}/>
-                                        }
-                                        <Select styles={customStyle} options={languageSelectOption} placeholder={'언어'}/>
+                                        {/^(대본|싱크)$/.test(workers[index].workType) ? null :
+                                            <Select className={'me-2'} styles={customStyle}
+                                                    options={languageSelectOption} placeholder={'언어'}/>}
+                                        <Select className={'me-2'} styles={customStyle} options={languageSelectOption}
+                                                placeholder={'언어'}/>
                                     </MDBCol>
                                     <MDBCol size={2}>
                                         <Select styles={customStyle} options={workerListOption} placeholder={'작업자 이름'}
                                                 components={{Option: CustomOption}}/>
                                     </MDBCol>
-                                    <MDBCol size={3}>
+                                    <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
                                         <DatePicker customInput={<CustomInput label={'마감일'}/>} locale={ko}
                                                     selected={workers[index].dueDate} showTimeSelect
                                                     timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}

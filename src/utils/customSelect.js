@@ -8,8 +8,20 @@ export const CustomOption = (props) => {
         </components.Option>
     </>;
 };
+
+export const CustomControl = (props) => {
+    return <>
+        <components.Control {...props}>
+            <label className={'text-muted'} style={{marginLeft: '0.5rem'}}>PD</label>
+            {props.children}
+        </components.Control>
+    </>;
+};
+
 export const customStyle = {
-    container: base => ({...base, marginRight: '0.5rem', minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap'}),
+    container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap'}),
     dropdownIndicator: base => ({...base, padding: 0}),
-    menu: base => ({...base, width: 'auto'})
+    menu: base => ({...base, width: 'auto'}),
+    valueContainer: base => ({...base, padding: '0 0.5rem'}),
+    control: base => ({...base, minHeight: '36px'}),
 }

@@ -16,6 +16,8 @@ import Select from "react-select";
 import DatePicker from "react-datepicker";
 import {ko} from 'date-fns/esm/locale';
 import {languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
+import axios from "../../../../utils/axios";
+import {CustomOption, customStyle} from "../../../../utils/customSelect";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
@@ -32,6 +34,7 @@ const RegisterModal = () => {
     const dropzoneRef = useRef(null)
     const fileInputRef = useRef(null)
     const toggleShow = () => setBasicModal(!basicModal)
+    const [workerListOption, setWorkerListOption] = useState([])
     const CustomInput = forwardRef(({value, onClick, label}, ref) => {
         return <MDBInput style={inputStyle} label={label} labelStyle={labelStyle} onClick={onClick} value={value}/>
     })
@@ -90,6 +93,17 @@ const RegisterModal = () => {
         dropzoneRef.current.addEventListener('click', handleClick)
     }, [handleDragEnter, handleDragOver, handleDragLeave, handleDrop, handleClick])
 
+    useEffect(() => {
+        axios.get(`/v1/user/workers`).then((response) => {
+            setWorkerListOption(response.data.map(value => ({
+                value: value.user_id,
+                label: value.user_name,
+                email: value.user_email
+            })))
+        })
+    }, [])
+
+
     return <>
         <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black', marginBottom: '0.5rem'}} onClick={toggleShow}>
             신규 태스크 등록
@@ -135,44 +149,38 @@ const RegisterModal = () => {
                             {workers.map((value, index) => {
                                 return <MDBRow key={index} className={'mb-3 align-items-center m-0 p-0 flex-nowrap'}>
                                     <MDBCol style={{display: 'flex'}}>
-                                        <Select styles={{
-                                            container: base => ({...base, marginRight: '0.5rem', minWidth: '5rem'}),
-                                            dropdownIndicator: base => ({...base, padding: 0}),
-                                        }} options={workTypeSelectOption} placeholder={'유형'} onChange={(newValue) => {
-                                            setWorkers(prevState => {
-                                                prevState[index].workType = newValue.value
-                                                return [...prevState]
-                                            })
-                                        }}/>
+                                        <Select styles={customStyle} options={workTypeSelectOption} placeholder={'유형'}
+                                                onChange={(newValue) => {
+                                                    setWorkers(prevState => {
+                                                        prevState[index].workType = newValue.value
+                                                        return [...prevState]
+                                                    })
+                                                }}/>
                                         {
-                                            /^(대본|싱크)$/.test(workers[index].workType) ?
-                                                null : <Select styles={{
-                                                    container: base => ({...base, marginRight: '0.5rem', minWidth: '5rem'}),
-                                                    dropdownIndicator: base => ({...base, padding: 0}),
-                                                    menu: base => ({...base, width: 'auto', whiteSpace: 'nowrap'})
-                                                }} options={languageSelectOption} placeholder={'언어'}/>
+                                            /^(대본|싱크)$/.test(workers[index].workType) ? null :
+                                                <Select styles={customStyle} options={languageSelectOption}
+                                                        placeholder={'언어'}/>
                                         }
-                                        <Select styles={{
-                                            container: base => ({...base, minWidth: '5rem'}),
-                                            dropdownIndicator: base => ({...base, padding: 0}),
-                                            menu: base => ({...base, width: 'auto', whiteSpace: 'nowrap'}),
-                                        }} options={languageSelectOption} placeholder={'언어'}/>
+                                        <Select styles={customStyle} options={languageSelectOption} placeholder={'언어'}/>
                                     </MDBCol>
-                                    <MDBCol size={2} style={{maxWidth: '10rem'}}><MDBInput
-                                        style={inputStyle} labelStyle={labelStyle}
-                                        label={'작업자 이름'}/></MDBCol>
-                                    <MDBCol size={3}><DatePicker customInput={<CustomInput label={'마감일'}/>} locale={ko}
-                                                                 selected={workers[index].dueDate}
-                                                                 showTimeSelect timeFormat={'HH:mm'}
-                                                                 dateFormat={'yyyy-MM-dd h:mm aa'}
-                                                                 onChange={(date) => {
-                                                                     setWorkers(prevState => {
-                                                                         prevState[index].dueDate = date
-                                                                         return [...prevState]
-                                                                     })
-                                                                 }}/></MDBCol>
-                                    <MDBCol><MDBInput style={inputStyle} labelStyle={labelStyle}
-                                                      label={'요청 사항'}/></MDBCol>
+                                    <MDBCol size={2}>
+                                        <Select styles={customStyle} options={workerListOption} placeholder={'작업자 이름'}
+                                                components={{Option: CustomOption}}/>
+                                    </MDBCol>
+                                    <MDBCol size={3}>
+                                        <DatePicker customInput={<CustomInput label={'마감일'}/>} locale={ko}
+                                                    selected={workers[index].dueDate} showTimeSelect
+                                                    timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
+                                                    onChange={(date) => {
+                                                        setWorkers(prevState => {
+                                                            prevState[index].dueDate = date
+                                                            return [...prevState]
+                                                        })
+                                                    }}/>
+                                    </MDBCol>
+                                    <MDBCol>
+                                        <MDBInput style={inputStyle} labelStyle={labelStyle} label={'요청 사항'}/>
+                                    </MDBCol>
                                     <MDBBtn className='btn-close' color='none'
                                             style={{marginRight: 'calc(0.75rem + 1px)'}}
                                             onClick={() => setWorkers(prevState => {

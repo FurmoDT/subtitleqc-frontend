@@ -128,36 +128,52 @@ const RegisterModal = () => {
                         <MDBRow className={'mb-3'}
                                 style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
                             <label className={'mb-3'} style={{textAlign: 'left'}}>태스크 정보</label>
-                            <MDBRow className={'mb-3'}>
-                                <MDBCol size={2} style={{minWidth: '150px', maxWidth: '150px'}}>
-                                    <MDBInput style={inputStyle} label={'프로젝트 코드'} labelStyle={labelStyle}/>
-                                </MDBCol>
-                                <MDBCol size={3}>
-                                    <MDBInput style={inputStyle} label={'클라이언트명'} labelStyle={labelStyle}/>
+                            <MDBRow>
+                                <MDBCol size={5}>
+                                    <MDBRow className={'mb-3'}>
+                                        <MDBCol style={{minWidth: '150px', maxWidth: '150px'}}>
+                                            <MDBInput style={inputStyle} label={'프로젝트 코드'} labelStyle={labelStyle}/>
+                                        </MDBCol>
+                                        <MDBCol>
+                                            <MDBInput style={inputStyle} label={'클라이언트명'} labelStyle={labelStyle}/>
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBRow>
+                                        <MDBCol style={{display: 'flex'}}>
+                                            {pmListOption.length &&
+                                                <Select styles={customStyle} options={pmListOption} placeholder={null}
+                                                        components={{Option: CustomOption, Control: CustomControl}}
+                                                        isMulti isClearable={false}
+                                                        defaultValue={pmListOption.find(value => value.value === userState.user.userId)}/>}
+                                        </MDBCol>
+                                    </MDBRow>
                                 </MDBCol>
                                 <MDBCol>
-                                    <MDBInput style={inputStyle} label={'프로젝트명'} labelStyle={labelStyle}/>
+                                    <MDBRow className={'mb-3'}>
+                                        <MDBCol>
+                                            <MDBInput style={inputStyle} label={'프로젝트명'} labelStyle={labelStyle}/>
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <MDBInput style={inputStyle} label={'프로그램명'} labelStyle={labelStyle}/>
+                                        </MDBCol>
+                                    </MDBRow>
                                 </MDBCol>
                                 <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
-                                    <DatePicker customInput={<CustomInput label={'납품기한'}/>} locale={ko}
-                                                selected={dueDate}
-                                                showTimeSelect timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
-                                                onChange={(date) => setDueDate(date)}/>
-                                </MDBCol>
-                            </MDBRow>
-                            <MDBRow>
-                                <MDBCol style={{display: 'flex'}}>
-                                    {pmListOption.length &&
-                                        <Select styles={customStyle} options={pmListOption} placeholder={null}
-                                                components={{Option: CustomOption, Control: CustomControl}}
-                                                isMulti isClearable={false}
-                                                defaultValue={pmListOption.find(value => value.value === userState.user.userId)}/>}
-                                </MDBCol>
-                                <MDBCol>
-                                    <MDBInput style={inputStyle} label={'프로그램명'} labelStyle={labelStyle}/>
-                                </MDBCol>
-                                <MDBCol size={2}>
-                                    <MDBInput style={inputStyle} label={'에피소드'} labelStyle={labelStyle}/>
+                                    <MDBRow className={'mb-3'}>
+                                        <MDBCol>
+                                            <DatePicker customInput={<CustomInput label={'납품기한'}/>} locale={ko}
+                                                        selected={dueDate}
+                                                        showTimeSelect timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
+                                                        onChange={(date) => setDueDate(date)}/>
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <MDBInput style={inputStyle} label={'에피소드'} labelStyle={labelStyle}/>
+                                        </MDBCol>
+                                    </MDBRow>
                                 </MDBCol>
                             </MDBRow>
                         </MDBRow>

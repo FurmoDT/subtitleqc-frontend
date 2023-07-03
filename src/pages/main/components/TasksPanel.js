@@ -4,7 +4,6 @@ import {subDays} from 'date-fns'
 import {MDBCol, MDBRow} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../utils/authContext";
 import RequestModal from "./dialogs/RequestModal";
-import TaskModal from "./dialogs/TaskModal";
 import DataGrid from 'react-data-grid';
 import RegisterModal from "./dialogs/RegisterModal";
 
@@ -16,7 +15,7 @@ const TasksPanel = () => {
         if (userState.user.userRole === 'client') {
             return <RequestModal/>
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
-            return <><TaskModal/><RegisterModal/></>
+            return <><RegisterModal/></>
         } else return null
     }
 

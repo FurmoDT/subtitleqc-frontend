@@ -30,8 +30,8 @@ let counter = 0
 const RegisterModal = () => {
     const [basicModal, setBasicModal] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState(null)
+    const [task, setTask] = useState({})
     const [workers, setWorkers] = useState([{}])
-    const [dueDate, setDueDate] = useState(null)
     const dropzoneRef = useRef(null)
     const fileInputRef = useRef(null)
     const toggleShow = () => setBasicModal(!basicModal)
@@ -129,13 +129,29 @@ const RegisterModal = () => {
                                 style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
                             <label className={'mb-3'} style={{textAlign: 'left'}}>태스크 정보</label>
                             <MDBRow>
-                                <MDBCol size={5}>
+                                <MDBCol size={4}>
                                     <MDBRow className={'mb-3'}>
-                                        <MDBCol style={{minWidth: '150px', maxWidth: '150px'}}>
-                                            <MDBInput style={inputStyle} label={'프로젝트 코드'} labelStyle={labelStyle}/>
+                                        <MDBCol style={{minWidth: '155px', maxWidth: '155px'}}>
+                                            <MDBInput style={inputStyle} label={'프로젝트 코드'} labelStyle={labelStyle}
+                                                      onChange={(event) => task.project_code = event.target.value}
+                                                      onBlur={(event) => {
+                                                          axios.get(`/v1/project/`, {params: {project_code: event.target.value}}).then((response) => {
+                                                              setTask(prevState => {
+                                                                  return {
+                                                                      ...prevState,
+                                                                      projectId: response.data?.project_id,
+                                                                      projectName: response.data?.project_name,
+                                                                      clientId: response.data?.client_id,
+                                                                      clientName: response.data?.client_name,
+                                                                  }
+                                                              })
+                                                          })
+                                                      }}/>
                                         </MDBCol>
                                         <MDBCol>
-                                            <MDBInput style={inputStyle} label={'클라이언트명'} labelStyle={labelStyle}/>
+                                            <MDBInput label={'클라이언트명'} labelStyle={labelStyle} disabled
+                                                      value={task.clientName || ''}
+                                                      style={{textOverflow: 'ellipsis', pointerEvents: 'none'}}/>
                                         </MDBCol>
                                     </MDBRow>
                                     <MDBRow>
@@ -151,12 +167,19 @@ const RegisterModal = () => {
                                 <MDBCol>
                                     <MDBRow className={'mb-3'}>
                                         <MDBCol>
-                                            <MDBInput style={inputStyle} label={'프로젝트명'} labelStyle={labelStyle}/>
+                                            <MDBInput label={'프로젝트명'} labelStyle={labelStyle} disabled
+                                                      value={task.projectName || ''}
+                                                      style={{textOverflow: 'ellipsis', pointerEvents: 'none'}}/>
+                                        </MDBCol>
+                                        <MDBCol size={3}>
+                                            <MDBInput style={inputStyle} label={'프로젝트 그룹'} labelStyle={labelStyle}
+                                                      onBlur={(event) => task.projectGroup = event.target.value}/>
                                         </MDBCol>
                                     </MDBRow>
                                     <MDBRow>
                                         <MDBCol>
-                                            <MDBInput style={inputStyle} label={'프로그램명'} labelStyle={labelStyle}/>
+                                            <MDBInput style={inputStyle} label={'프로그램명'} labelStyle={labelStyle}
+                                                      onBlur={(event) => task.programName = event.target.value}/>
                                         </MDBCol>
                                     </MDBRow>
                                 </MDBCol>
@@ -164,14 +187,22 @@ const RegisterModal = () => {
                                     <MDBRow className={'mb-3'}>
                                         <MDBCol>
                                             <DatePicker customInput={<CustomInput label={'납품기한'}/>} locale={ko}
-                                                        selected={dueDate}
-                                                        showTimeSelect timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
-                                                        onChange={(date) => setDueDate(date)}/>
+                                                        selected={task.dueDate} showTimeSelect
+                                                        timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
+                                                        onChange={(date) => setTask(prevState => {
+                                                            prevState.dueDate = date.getTime()
+                                                            return {...prevState}
+                                                        })}/>
                                         </MDBCol>
                                     </MDBRow>
                                     <MDBRow>
                                         <MDBCol>
-                                            <MDBInput style={inputStyle} label={'에피소드'} labelStyle={labelStyle}/>
+                                            <MDBInput style={inputStyle} label={'에피소드'} labelStyle={labelStyle}
+                                                      onBlur={(event) => task.episode = event.target.value}/>
+                                        </MDBCol>
+                                        <MDBCol>
+                                            <MDBInput style={inputStyle} label={'장르'} labelStyle={labelStyle}
+                                                      onBlur={(event) => task.genre = event.target.value}/>
                                         </MDBCol>
                                     </MDBRow>
                                 </MDBCol>
@@ -192,13 +223,29 @@ const RegisterModal = () => {
                                                 }}/>
                                         {/^(대본|싱크)$/.test(workers[index].workType) ? null :
                                             <Select className={'me-2'} styles={customStyle}
-                                                    options={languageSelectOption} placeholder={'언어'}/>}
+                                                    options={languageSelectOption} placeholder={'언어'}
+                                                    onChange={(newValue) => {
+                                                        setWorkers(prevState => {
+                                                            prevState[index].sourceLanguage = newValue.value
+                                                            return [...prevState]
+                                                        })
+                                                    }}/>}
                                         <Select className={'me-2'} styles={customStyle} options={languageSelectOption}
-                                                placeholder={'언어'}/>
+                                                placeholder={'언어'} onChange={(newValue) => {
+                                            setWorkers(prevState => {
+                                                prevState[index].targetLanguage = newValue.value
+                                                return [...prevState]
+                                            })
+                                        }}/>
                                     </MDBCol>
                                     <MDBCol size={2}>
                                         <Select styles={customStyle} options={workerListOption} placeholder={'작업자 이름'}
-                                                components={{Option: CustomOption}}/>
+                                                components={{Option: CustomOption}} onChange={(newValue) => {
+                                            setWorkers(prevState => {
+                                                prevState[index].workerId = newValue.value
+                                                return [...prevState]
+                                            })
+                                        }}/>
                                     </MDBCol>
                                     <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
                                         <DatePicker customInput={<CustomInput label={'마감일'}/>} locale={ko}
@@ -206,13 +253,16 @@ const RegisterModal = () => {
                                                     timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
                                                     onChange={(date) => {
                                                         setWorkers(prevState => {
-                                                            prevState[index].dueDate = date
+                                                            prevState[index].dueDate = date.getTime()
                                                             return [...prevState]
                                                         })
                                                     }}/>
                                     </MDBCol>
                                     <MDBCol>
-                                        <MDBInput style={inputStyle} labelStyle={labelStyle} label={'요청 사항'}/>
+                                        <MDBInput style={inputStyle} labelStyle={labelStyle} label={'요청 사항'}
+                                                  onChange={(event) => {
+                                                      workers[index].memo = event.target.value
+                                                  }}/>
                                     </MDBCol>
                                     <MDBBtn className='btn-close' color='none'
                                             style={{marginRight: 'calc(0.75rem + 1px)'}}

@@ -12,7 +12,7 @@ export const CustomOption = (props) => {
 export const CustomControl = (props) => {
     return <>
         <components.Control {...props}>
-            <label className={'text-muted'} style={{marginLeft: '0.5rem'}}>PD</label>
+            <label className={'text-muted'} style={{marginLeft: '0.5rem'}}>*PD</label>
             {props.children}
         </components.Control>
     </>;

@@ -137,7 +137,7 @@ const TaskModalContent = (props) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBInput ref={programNameRef} style={inputStyle} label={'프로그램명'}
+                                <MDBInput ref={programNameRef} style={inputStyle} label={'*프로그램명'}
                                           labelStyle={labelStyle}
                                           onBlur={(event) => task.programName = event.target.value}/>
                             </MDBCol>
@@ -146,7 +146,7 @@ const TaskModalContent = (props) => {
                     <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
                         <MDBRow className={'mb-3'}>
                             <MDBCol>
-                                <DatePicker customInput={<CustomInput label={'납품기한'}/>} locale={ko}
+                                <DatePicker customInput={<CustomInput label={'*납품기한'}/>} locale={ko}
                                             selected={task.dueDate} showTimeSelect
                                             timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
                                             onChange={(date) => setTask(prevState => ({
@@ -156,7 +156,7 @@ const TaskModalContent = (props) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBInput ref={episodeRef} style={inputStyle} label={'에피소드'} labelStyle={labelStyle}
+                                <MDBInput ref={episodeRef} style={inputStyle} label={'*에피소드'} labelStyle={labelStyle}
                                           onBlur={(event) => task.episode = event.target.value}/>
                             </MDBCol>
                             <MDBCol>
@@ -173,7 +173,7 @@ const TaskModalContent = (props) => {
                     return <MDBRow key={index} className={'mb-3 align-items-center m-0 p-0'}>
                         <MDBCol style={{display: 'flex'}}>
                             <Select className={'me-2'} styles={customStyle} options={workTypeSelectOption}
-                                    placeholder={'유형'}
+                                    placeholder={'*유형'}
                                     onChange={(newValue) => {
                                         setWorkers(prevState => {
                                             prevState[index].workType = newValue.value
@@ -182,7 +182,7 @@ const TaskModalContent = (props) => {
                                     }}/>
                             {/^(대본|싱크)$/.test(workers[index].workType) ? null :
                                 <Select className={'me-2'} styles={customStyle}
-                                        options={languageSelectOption} placeholder={'언어'}
+                                        options={languageSelectOption} placeholder={'*언어'}
                                         onChange={(newValue) => {
                                             setWorkers(prevState => {
                                                 prevState[index].sourceLanguage = newValue.value
@@ -190,7 +190,7 @@ const TaskModalContent = (props) => {
                                             })
                                         }}/>}
                             <Select className={'me-2'} styles={customStyle} options={languageSelectOption}
-                                    placeholder={'언어'} onChange={(newValue) => {
+                                    placeholder={'*언어'} onChange={(newValue) => {
                                 setWorkers(prevState => {
                                     prevState[index].targetLanguage = newValue.value
                                     return [...prevState]
@@ -198,7 +198,7 @@ const TaskModalContent = (props) => {
                             }}/>
                         </MDBCol>
                         <MDBCol size={2}>
-                            <Select styles={customStyle} options={workerListOption} placeholder={'작업자 이름'}
+                            <Select styles={customStyle} options={workerListOption} placeholder={'*작업자 이름'}
                                     components={{Option: CustomOption}} onChange={(newValue) => {
                                 setWorkers(prevState => {
                                     prevState[index].workerId = newValue.value
@@ -207,7 +207,7 @@ const TaskModalContent = (props) => {
                             }}/>
                         </MDBCol>
                         <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
-                            <DatePicker customInput={<CustomInput label={'마감일'}/>} locale={ko}
+                            <DatePicker customInput={<CustomInput label={'*마감일'}/>} locale={ko}
                                         selected={workers[index].dueDate} showTimeSelect
                                         timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
                                         onChange={(date) => {
@@ -245,9 +245,15 @@ const TaskModalContent = (props) => {
                 </MDBRow>
                 <MDBCol>
                     <MDBBtn color={'dark'} onClick={() => {
+                        if (!(task.dueDate && task.pd && task.programName && task.episode)) {
+                            console.log('insufficient task information')
+                        }
+                        if (workers.filter(value => !(value.workType && (/^(대본|싱크)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage) && value.workerId && value.dueDate)).length !== 0) {
+                            console.log('insufficient worker information')
+                        }
                         // aws(uploadedFiles)
-                        props.toggleShow()
-                        console.log(task, workers)
+                        // props.toggleShow()
+                        // console.log(task, workers)
                     }}>확인</MDBBtn>
                 </MDBCol>
             </MDBRow>

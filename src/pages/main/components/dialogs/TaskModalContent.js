@@ -54,12 +54,6 @@ const TaskModalContent = (props) => {
     }, [])
 
     useEffect(() => {
-        if (!props.show) {
-            projectCodeRef.current.value = projectGroupRef.current.value = programNameRef.current.value = genreRef.current.value = episodeRef.current.value = ''
-            setTask({})
-            setWorkers([])
-            return
-        }
         axios.get(`/v1/user/workers`).then((response) => {
             setWorkerListOption(response.data.map(value => ({
                 value: value.user_id,
@@ -74,6 +68,15 @@ const TaskModalContent = (props) => {
                 email: value.user_email
             })))
         })
+    }, [])
+
+    useEffect(() => {
+        if (!props.show) {
+            projectCodeRef.current.value = projectGroupRef.current.value = programNameRef.current.value = genreRef.current.value = episodeRef.current.value = ''
+            setTask({})
+            setWorkers([])
+            return
+        }
         if (props.taskId) {
             //TODO axios.get('/v1/project/task', params: {task_id: props.task_id}).then((response) => {setProjectInfo() && setWorkers()})
         } else {
@@ -82,9 +85,9 @@ const TaskModalContent = (props) => {
     }, [props.show, props.taskId])
 
     useEffect(() => {
-        if (pmListOption.length === 0 || props.taskId) return
+        if (!props.show || pmListOption.length === 0 || props.taskId) return
         setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userState.user.userId)]}))
-    }, [props.taskId, pmListOption, userState])
+    }, [props.show, props.taskId, pmListOption, userState])
 
     return <MDBModalContent style={{backgroundColor: 'transparent'}}>
         <MDBModalHeader style={{borderBottom: 'none', backgroundColor: '#f28720ff'}}>

@@ -68,7 +68,7 @@ const SignupPage = () => {
                     }
                 })
             }}>회원가입</MDBBtn>
-            <label ref={errorLabelRef} style={{fontSize: 13, color: 'red'}}/>
+            <label ref={errorLabelRef} className={'input-error-label'}/>
         </div>
     </div>
 };

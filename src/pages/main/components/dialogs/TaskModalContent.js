@@ -23,6 +23,8 @@ const TaskModalContent = (props) => {
     const programNameRef = useRef(null)
     const episodeRef = useRef(null)
     const genreRef = useRef(null)
+    const taskValidationLabelRef = useRef(null)
+    const workerValidationLabelRef = useRef(null)
 
     const CustomInput = forwardRef(({value, onClick, label}, ref) => {
         return <MDBInput style={inputStyle} label={label} labelStyle={labelStyle} onClick={onClick} value={value}/>
@@ -96,7 +98,8 @@ const TaskModalContent = (props) => {
         <MDBModalBody style={{backgroundColor: '#f28720ff'}}>
             <MDBRow className={'mb-3'}
                     style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
-                <label className={'mb-3'} style={{textAlign: 'left', fontWeight: 'bold'}}>태스크 정보</label>
+                <label className={'mb-3'} style={{textAlign: 'left', fontWeight: 'bold'}}>
+                    태스크 정보<label ref={taskValidationLabelRef} className={'input-error-label'}/></label>
                 <MDBRow>
                     <MDBCol size={4}>
                         <MDBRow className={'mb-3'}>
@@ -168,7 +171,8 @@ const TaskModalContent = (props) => {
                 </MDBRow>
             </MDBRow>
             <MDBRow className={'mb-3 m-0 py-3 px-0'} style={{backgroundColor: '#f3f3f3ff'}}>
-                <label className={'mb-3'} style={{textAlign: 'left', fontWeight: 'bold'}}>작업자 배정</label>
+                <label className={'mb-3'} style={{textAlign: 'left', fontWeight: 'bold'}}>
+                    작업자 배정<label ref={workerValidationLabelRef} className={'input-error-label'}/></label>
                 {workers.map((value, index) => {
                     return <MDBRow key={index} className={'mb-3 align-items-center m-0 p-0'}>
                         <MDBCol style={{display: 'flex'}}>
@@ -245,14 +249,18 @@ const TaskModalContent = (props) => {
                 </MDBRow>
                 <MDBCol>
                     <MDBBtn color={'dark'} onClick={() => {
+                        let error = false
                         if (!(task.dueDate && task.pd && task.programName && task.episode)) {
-                            console.log('insufficient task information')
-                        }
+                            taskValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+                            error = true
+                        } else taskValidationLabelRef.current.innerText = ''
                         if (workers.filter(value => !(value.workType && (/^(대본|싱크)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage) && value.workerId && value.dueDate)).length !== 0) {
-                            console.log('insufficient worker information')
-                        }
+                            workerValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+                            error = true
+                        } else workerValidationLabelRef.current.innerText = ''
+                        if (error) return
+                        props.toggleShow()
                         // aws(uploadedFiles)
-                        // props.toggleShow()
                         // console.log(task, workers)
                     }}>확인</MDBBtn>
                 </MDBCol>

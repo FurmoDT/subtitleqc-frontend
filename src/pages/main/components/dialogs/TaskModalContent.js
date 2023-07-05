@@ -77,6 +77,7 @@ const TaskModalContent = (props) => {
             projectCodeRef.current.value = projectGroupRef.current.value = programNameRef.current.value = genreRef.current.value = episodeRef.current.value = ''
             setTask({})
             setWorkers([])
+            taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
             return
         }
         if (props.taskId) {

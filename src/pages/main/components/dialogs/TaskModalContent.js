@@ -1,5 +1,15 @@
 import {forwardRef, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {MDBBtn, MDBCol, MDBInput, MDBModalBody, MDBModalContent, MDBModalHeader, MDBRow,} from 'mdb-react-ui-kit';
+import {
+    MDBBtn,
+    MDBCol,
+    MDBInput,
+    MDBModal,
+    MDBModalBody,
+    MDBModalContent,
+    MDBModalDialog,
+    MDBModalHeader,
+    MDBRow,
+} from 'mdb-react-ui-kit';
 import Select from "react-select";
 import axios from "../../../../utils/axios";
 import {CustomControl, CustomOption, customStyle} from "../../../../utils/customSelect";
@@ -25,6 +35,8 @@ const TaskModalContent = (props) => {
     const genreRef = useRef(null)
     const taskValidationLabelRef = useRef(null)
     const workerValidationLabelRef = useRef(null)
+    const [submitModal, setSubmitModal] = useState(false);
+    const submitToggleShow = () => setSubmitModal(!submitModal);
 
     const CustomInput = forwardRef(({value, onClick, label}, ref) => {
         return <MDBInput style={inputStyle} label={label} labelStyle={labelStyle} onClick={onClick} value={value}/>
@@ -92,12 +104,12 @@ const TaskModalContent = (props) => {
         setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userState.user.userId)]}))
     }, [props.show, props.taskId, pmListOption, userState])
 
-    return <MDBModalContent style={{backgroundColor: 'transparent'}}>
-        <MDBModalHeader style={{borderBottom: 'none', backgroundColor: '#f28720ff'}}>
+    return <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+        <MDBModalHeader style={{borderBottom: 'none'}}>
             <MDBBtn className='btn-close' color='none' onClick={props.toggleShow}/>
         </MDBModalHeader>
-        <MDBModalBody style={{backgroundColor: '#f28720ff'}}>
-            <MDBRow className={'mb-3'}
+        <MDBModalBody>
+            <MDBRow className={'mb-1'}
                     style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
                 <label className={'mb-3'} style={{textAlign: 'left', fontWeight: 'bold'}}>
                     태스크 정보<label ref={taskValidationLabelRef} className={'input-error-label'}/></label>
@@ -260,10 +272,37 @@ const TaskModalContent = (props) => {
                             error = true
                         } else workerValidationLabelRef.current.innerText = ''
                         if (error) return
-                        props.toggleShow()
-                        // aws(uploadedFiles)
-                        // console.log(task, workers)
+                        submitToggleShow()
                     }}>확인</MDBBtn>
+                    <MDBModal show={submitModal} setShow={setSubmitModal} tabIndex='-1'>
+                        <MDBModalDialog centered>
+                            <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+                                <MDBModalBody>
+                                    <div style={{backgroundColor: 'white', margin: 'inherit', padding: '1rem 0'}}>
+                                        <MDBRow>
+                                            <MDBCol>
+                                                <p>[{task.programName}_{task.episode}]</p>
+                                                태스크를 생성하고 작업자 배정을 완료하시겠습니까?
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            margin: '1rem 5rem'
+                                        }}>
+                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                                submitToggleShow()
+                                                props.toggleShow()
+                                                // aws(uploadedFiles)
+                                                // console.log(task, workers)
+                                            }}>확인</MDBBtn>
+                                            <MDBBtn color='dark' onClick={submitToggleShow}>취소</MDBBtn>
+                                        </div>
+                                    </div>
+                                </MDBModalBody>
+                            </MDBModalContent>
+                        </MDBModalDialog>
+                    </MDBModal>
                 </MDBCol>
             </MDBRow>
         </MDBModalBody>

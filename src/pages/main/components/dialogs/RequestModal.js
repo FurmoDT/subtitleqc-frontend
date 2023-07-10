@@ -22,7 +22,7 @@ const RequestModal = () => {
     const [uploadedFiles, setUploadedFiles] = useState([])
     const toggleShow = () => setBasicModal(!basicModal);
     return <>
-        <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black', marginBottom: '0.5rem'}} onClick={toggleShow}>
+        <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black'}} onClick={toggleShow}>
             새로운 작업 의뢰하기</MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'xl'} centered>

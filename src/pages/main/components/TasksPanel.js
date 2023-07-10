@@ -20,7 +20,7 @@ const TasksPanel = () => {
     }
 
     return <div style={{padding: '5rem', width: '100%', height: '100%', textAlign: 'center'}}>
-        <MDBRow>
+        <MDBRow style={{marginBottom: '0.5rem'}}>
             <MDBCol sm={4} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'end'}}>
                 <ModalComponent/>
             </MDBCol>

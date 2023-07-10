@@ -122,7 +122,7 @@ const TaskModalContent = (props) => {
                                           onBlur={(event) => setProjectInfo(event.target.value)}/>
                             </MDBCol>
                             <MDBCol>
-                                <MDBInput label={'클라이언트명'} labelStyle={labelStyle} disabled
+                                <MDBInput label={'클라이언트명'} labelStyle={labelStyle} disabled tabIndex={-1}
                                           value={task.projectInfo?.clientName || ''}
                                           style={{textOverflow: 'ellipsis', pointerEvents: 'none'}}/>
                             </MDBCol>
@@ -141,7 +141,7 @@ const TaskModalContent = (props) => {
                     <MDBCol>
                         <MDBRow className={'mb-3'}>
                             <MDBCol>
-                                <MDBInput label={'프로젝트명'} labelStyle={labelStyle} disabled
+                                <MDBInput label={'프로젝트명'} labelStyle={labelStyle} disabled tabIndex={-1}
                                           value={task.projectInfo?.projectName || ''}
                                           style={{textOverflow: 'ellipsis', pointerEvents: 'none'}}/>
                             </MDBCol>
@@ -197,7 +197,7 @@ const TaskModalContent = (props) => {
                                             return [...prevState]
                                         })
                                     }}/>
-                            {/^(대본|싱크)$/.test(workers[index].workType) ? null :
+                            {/^(sync|transcribe)$/.test(workers[index].workType) ? null :
                                 <Select className={'me-2'} styles={customStyle}
                                         options={languageSelectOption} placeholder={'*언어'}
                                         onChange={(newValue) => {
@@ -267,7 +267,7 @@ const TaskModalContent = (props) => {
                             taskValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
                             error = true
                         } else taskValidationLabelRef.current.innerText = ''
-                        if (workers.filter(value => !(value.workType && (/^(대본|싱크)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage) && value.workerId && value.dueDate)).length !== 0) {
+                        if (workers.filter(value => !(value.workType && (/^(sync|transcribe)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage) && value.workerId && value.dueDate)).length !== 0) {
                             workerValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
                             error = true
                         } else workerValidationLabelRef.current.innerText = ''
@@ -293,8 +293,29 @@ const TaskModalContent = (props) => {
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
                                                 submitToggleShow()
                                                 props.toggleShow()
-                                                // aws(uploadedFiles)
-                                                // console.log(task, workers)
+                                                axios.post('v1/project/task', {
+                                                    project_id: task.projectInfo?.projectId,
+                                                    pm_id: userState.user.userId,
+                                                    pd_ids: task.pd.map(value => value.value),
+                                                    task_name: task.programName,
+                                                    task_episode: task.episode,
+                                                    task_genre: task.genre,
+                                                    task_due_date: task.dueDate,
+                                                    task_group_key: task.projectGroup
+                                                }).then((taskResponse) => {
+                                                    const taskId = taskResponse.data
+                                                    // aws(uploadedFiles)
+                                                    axios.post('v1/project/work', {
+                                                        works: workers.map((value) => {
+                                                            return {
+                                                                task_id: taskId,
+                                                                worker_id: value.workerId,
+                                                                work_type: value.workType,
+                                                                work_due_date: value.dueDate
+                                                            }
+                                                        })
+                                                    }).then()
+                                                })
                                             }}>확인</MDBBtn>
                                             <MDBBtn color='dark' onClick={submitToggleShow}>취소</MDBBtn>
                                         </div>

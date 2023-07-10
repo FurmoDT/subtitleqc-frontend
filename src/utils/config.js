@@ -163,10 +163,10 @@ export const defaultSubtitle = () => (Array.from({length: 100}, () => ({rowId: v
 export const defaultLanguage = () => []
 export const defaultProjectDetail = () => ({name: '', guideline: {client: '', language: {}}})
 export const workTypeSelectOption = [
-    {value: '대본', label: '대본'},
-    {value: '싱크', label: '싱크'},
-    {value: '번역', label: '번역'},
-    {value: '감수', label: '감수'}
+    {value: 'sync', label: '싱크'},
+    {value: 'transcribe', label: '대본'},
+    {value: 'translate', label: '번역'},
+    {value: 'qc', label: '감수'}
 ]
 export const languageSelectOption = [
     {value: 'koKR', label: '한국어'},

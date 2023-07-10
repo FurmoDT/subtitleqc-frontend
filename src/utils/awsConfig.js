@@ -1,7 +1,7 @@
 import axios from "./axios";
 import AWS from "aws-sdk"
 
-export const aws = (files) => {
+export const aws = (taskId, files) => {
     axios.get('v1/aws/sts/s3').then((response) => {
         AWS.config.update({
             accessKeyId: response.data.access_key,
@@ -13,7 +13,7 @@ export const aws = (files) => {
             const upload = new AWS.S3.ManagedUpload({
                 params: {
                     Bucket: response.data.bucket,
-                    Key: file.name,
+                    Key: `task/${taskId}/${file.name}`,
                     Body: file,
                 }
             })

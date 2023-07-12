@@ -14,7 +14,7 @@ import Select from "react-select";
 import axios from "../../../../utils/axios";
 import {CustomControl, CustomOption, customStyle} from "../../../../utils/customSelect";
 import DatePicker from "react-datepicker";
-import {languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
+import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
 import TaskDropzone from "../TaskDropzone";
 import {AuthContext} from "../../../../utils/authContext";
 import {ko} from 'date-fns/esm/locale';
@@ -87,7 +87,8 @@ const TaskModalContent = (props) => {
 
     useEffect(() => {
         if (!props.show) {
-            projectCodeRef.current.value = projectGroupRef.current.value = programNameRef.current.value = genreRef.current.value = episodeRef.current.value = ''
+            projectCodeRef.current.value = projectGroupRef.current.value = programNameRef.current.value = episodeRef.current.value = ''
+            genreRef.current.clearValue()
             setTask({})
             setWorkers([])
             taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
@@ -177,8 +178,10 @@ const TaskModalContent = (props) => {
                                           onBlur={(event) => task.episode = event.target.value}/>
                             </MDBCol>
                             <MDBCol>
-                                <MDBInput ref={genreRef} style={inputStyle} label={'장르'} labelStyle={labelStyle}
-                                          onBlur={(event) => task.genre = event.target.value}/>
+                                <Select ref={genreRef} styles={customStyle} options={genreSelectOption} placeholder={null}
+                                                    onChange={(newValue) => {
+                                                        setTask(prevState => ({...prevState, genre: newValue}))
+                                                    }}/>
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>

@@ -182,6 +182,16 @@ export const languageSelectOption = [
     {value: 'frFR', label: '프랑스어'},
     {value: 'esES', label: '스페인어'},
 ]
+export const genreSelectOption = [
+    {value: 'drama', label: '드라마'},
+    {value: 'entertainment', label: '예능'},
+    {value: 'movie', label: '영화'},
+    {value: 'documentary', label: '다큐'},
+    {value: 'proposal', label: '기획안'},
+    {value: 'script', label: '대본'},
+    {value: 'synopsis', label: '시놉시스'},
+    {value: 'etc', label: '기타 문서'},
+]
 export const publicUrl = process.env.REACT_APP_PUBLIC_URL
 export const localApiUrl = process.env.REACT_APP_LOCAL_API_URL
 export const apiUrl = process.env.REACT_APP_API_URL

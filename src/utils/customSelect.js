@@ -22,6 +22,14 @@ export const customStyle = {
     container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap'}),
     dropdownIndicator: base => ({...base, padding: 0}),
     menu: base => ({...base, width: 'auto'}),
-    valueContainer: base => ({...base, padding: '0 0.5rem'}),
+    valueContainer: base => ({...base, padding: '0 0.5rem', fontSize: '0.8rem'}),
+    control: base => ({...base, minHeight: '36px'}),
+}
+
+export const customMultiStyle = {
+    container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap'}),
+    dropdownIndicator: base => ({...base, padding: 0}),
+    menu: base => ({...base, width: 'auto'}),
+    valueContainer: base => ({...base, padding: '0 0.5rem', fontSize: '1rem'}),
     control: base => ({...base, minHeight: '36px'}),
 }

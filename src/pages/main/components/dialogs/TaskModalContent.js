@@ -12,7 +12,7 @@ import {
 } from 'mdb-react-ui-kit';
 import Select from "react-select";
 import axios from "../../../../utils/axios";
-import {CustomControl, CustomOption, customStyle} from "../../../../utils/customSelect";
+import {CustomControl, customMultiStyle, CustomOption, customStyle} from "../../../../utils/customSelect";
 import DatePicker from "react-datepicker";
 import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
 import TaskDropzone from "../TaskDropzone";
@@ -131,7 +131,7 @@ const TaskModalContent = (props) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol style={{display: 'flex'}}>
-                                {task.pd && <Select styles={customStyle} options={pmListOption} placeholder={null}
+                                {task.pd && <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
                                                     components={{Option: CustomOption, Control: CustomControl}}
                                                     isMulti isClearable={false} defaultValue={task.pd}
                                                     onChange={(newValue) => {
@@ -179,7 +179,7 @@ const TaskModalContent = (props) => {
                         <MDBRow>
                             <MDBCol>
                                 <Select ref={genreRef} styles={customStyle} options={genreSelectOption}
-                                        placeholder={null}
+                                        placeholder={'장르'}
                                         onChange={(newValue) => {
                                             setTask(prevState => ({...prevState, genre: newValue}))
                                         }}/>

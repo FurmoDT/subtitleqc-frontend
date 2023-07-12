@@ -159,6 +159,10 @@ const TaskModalContent = (props) => {
                                           labelStyle={labelStyle}
                                           onBlur={(event) => task.programName = event.target.value}/>
                             </MDBCol>
+                            <MDBCol size={3}>
+                                <MDBInput ref={episodeRef} style={inputStyle} label={'*에피소드'} labelStyle={labelStyle}
+                                          onBlur={(event) => task.episode = event.target.value}/>
+                            </MDBCol>
                         </MDBRow>
                     </MDBCol>
                     <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
@@ -174,14 +178,11 @@ const TaskModalContent = (props) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBInput ref={episodeRef} style={inputStyle} label={'*에피소드'} labelStyle={labelStyle}
-                                          onBlur={(event) => task.episode = event.target.value}/>
-                            </MDBCol>
-                            <MDBCol>
-                                <Select ref={genreRef} styles={customStyle} options={genreSelectOption} placeholder={null}
-                                                    onChange={(newValue) => {
-                                                        setTask(prevState => ({...prevState, genre: newValue}))
-                                                    }}/>
+                                <Select ref={genreRef} styles={customStyle} options={genreSelectOption}
+                                        placeholder={null}
+                                        onChange={(newValue) => {
+                                            setTask(prevState => ({...prevState, genre: newValue}))
+                                        }}/>
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>

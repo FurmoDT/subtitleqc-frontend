@@ -5,7 +5,7 @@ const AWSSignedComponent = ({component: Component}) => {
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-        axios.get('v1/aws/cloudfront/signed-cookie').then(() => {
+        axios.get('v1/aws/cloudfront/signed-cookies').then(() => {
             setIsInitialized(true)
         })
     }, []);

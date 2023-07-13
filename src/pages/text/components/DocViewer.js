@@ -13,6 +13,8 @@ const DocViewer = () => {
             const file = new File([response.data], 'sample.xlsx', {type: response.headers['content-type']});
             reader.onload = () => setDocxFile(reader.result)
             reader.readAsDataURL(file);
+        }).finally(()=>{
+            axios.delete('v1/aws/cloudfront/signed-cookies').then()
         })
     }, [])
 

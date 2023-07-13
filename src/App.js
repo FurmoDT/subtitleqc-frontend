@@ -29,8 +29,8 @@ function App() {
                         <Navigate to={'/login'} replace/>}>
                         <Route index element={<MainPage/>}/>
                         <Route path={'/*'} element={<MainPage/>}/>
-                        <Route path={"/production"} element={<AWSSignedComponent component={Production}/>}/>
-                        <Route path={"/text"} element={<AWSSignedComponent component={TextPage}/>}/>
+                        <Route path={"/production"} element={<AWSSignedComponent component={Production} type={'production'}/>}/>
+                        <Route path={"/text"} element={<AWSSignedComponent component={TextPage} type={'text'}/>}/>
                         <Route path={"/qc"} element={<QualityControl/>}/>
                         <Route path={"/manual"} element={<Manual/>}/>
                         <Route path={"/user/*"} element={<AuthComponent component={UserPage}/>}/>

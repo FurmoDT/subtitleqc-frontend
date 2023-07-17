@@ -1,10 +1,12 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import axios from "./axios";
 
 const AWSSignedComponent = ({component: Component, ...props}) => {
     const [isInitialized, setIsInitialized] = useState(false);
     const [isRendered, setIsRendered] = useState(false);
-    const updateIsRendered = () => {setIsRendered(true)}
+    const updateIsRendered = useCallback(() => {
+        setIsRendered(true)
+    }, [])
 
     useEffect(() => {
         axios.get('v1/aws/cloudfront/signed-cookies').then(() => {
@@ -13,7 +15,7 @@ const AWSSignedComponent = ({component: Component, ...props}) => {
     }, [props.type]);
 
     useEffect(() => {
-        if (isRendered) axios.delete('v1/aws/cloudfront/signed-cookies').then(()=>setIsRendered(false))
+        if (isRendered) axios.delete('v1/aws/cloudfront/signed-cookies').then(() => setIsRendered(false))
     }, [isRendered])
 
 

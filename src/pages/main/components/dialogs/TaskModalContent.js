@@ -91,6 +91,7 @@ const TaskModalContent = (props) => {
             genreRef.current.clearValue()
             setTask({})
             setWorkers([])
+            setUploadedFiles([])
             taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
             return
         }
@@ -304,7 +305,7 @@ const TaskModalContent = (props) => {
                                                     pd_ids: task.pd.map(value => value.value),
                                                     task_name: task.programName,
                                                     task_episode: task.episode,
-                                                    task_genre: task.genre,
+                                                    task_genre: task.genre.value,
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup
                                                 }).then((taskResponse) => {
@@ -316,7 +317,10 @@ const TaskModalContent = (props) => {
                                                                 task_id: taskId,
                                                                 worker_id: value.workerId,
                                                                 work_type: value.workType,
-                                                                work_due_date: value.dueDate
+                                                                work_source_language: value.sourceLanguage,
+                                                                work_target_language: value.targetLanguage,
+                                                                work_due_date: value.dueDate,
+                                                                work_memo: value.memo,
                                                             }
                                                         })
                                                     }).then()

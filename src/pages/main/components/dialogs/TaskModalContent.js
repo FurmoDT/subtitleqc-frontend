@@ -305,7 +305,7 @@ const TaskModalContent = (props) => {
                                                     pd_ids: task.pd.map(value => value.value),
                                                     task_name: task.programName,
                                                     task_episode: task.episode,
-                                                    task_genre: task.genre.value,
+                                                    task_genre: task.genre?.value,
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup
                                                 }).then((taskResponse) => {

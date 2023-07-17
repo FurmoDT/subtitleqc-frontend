@@ -18,7 +18,7 @@ import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../
 import TaskDropzone from "../TaskDropzone";
 import {AuthContext} from "../../../../utils/authContext";
 import {ko} from 'date-fns/esm/locale';
-import {aws} from "../../../../utils/awsConfig";
+import {s3Upload} from "../../../../utils/awsS3Upload";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
@@ -310,7 +310,7 @@ const TaskModalContent = (props) => {
                                                     task_group_key: task.projectGroup
                                                 }).then((taskResponse) => {
                                                     const taskId = taskResponse.data
-                                                    aws(taskId, uploadedFiles)
+                                                    s3Upload(taskId, uploadedFiles)
                                                     axios.post('v1/project/work', {
                                                         works: workers.map((value) => {
                                                             return {

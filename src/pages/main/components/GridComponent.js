@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
 
-const GridComponent = ({role}) => {
+const GridComponent = ({role, startAt, endAt}) => {
     let columns
     const [rows, setRows] = useState([])
     if (role === 'client') {
@@ -61,11 +61,14 @@ const GridComponent = ({role}) => {
     }
 
     useEffect(() => {
-        axios.get('v1/project/task/pm').then((response)=>{
-            console.log(response.data)
+        axios.get('v1/project/task/pm', {params: {
+                start_date: startAt.getTime(),
+                end_date: endAt.getTime(),
+            }}).then((response)=>{
+                console.log(response.data)
         })
         setRows([{no: 1, pm: ''}, {no: 2, title: 'Demo'}])
-    }, [])
+    }, [startAt, endAt])
     return <DataGrid className={'rdg-light fill-grid'} columns={columns} rows={rows}/>
 }
 

@@ -32,7 +32,7 @@ const TasksPanel = () => {
             </MDBCol>
         </MDBRow>
         <div style={{height: 'calc(100% - 5rem)'}}>
-            <GridComponent role={userState.user.userRole}/>
+            <GridComponent role={userState.user.userRole} startAt={startAt} endAt={endAt}/>
         </div>
     </div>
 };

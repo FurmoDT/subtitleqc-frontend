@@ -1,6 +1,5 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {ko} from 'date-fns/esm/locale';
 import {forwardRef} from "react";
 import {MDBCol, MDBRow} from "mdb-react-ui-kit";
 
@@ -13,15 +12,15 @@ const DatePickerComponent = ({startAt, setStartAt, endAt, setEndAt}) => {
         </MDBRow>
         <MDBRow style={{backgroundColor: 'white'}}>
             <MDBCol style={{padding: 0}}>
-                <DatePicker customInput={<ExampleCustomInput/>} selected={startAt} locale={ko} maxDate={endAt}
-                            dateFormat={'yyyy-MM-dd'} onChange={(date) => setStartAt(date)}/>
+                <DatePicker customInput={<ExampleCustomInput/>} selected={startAt} maxDate={endAt}
+                            dateFormat={'yyyy-MM-dd'} onChange={(date) => setStartAt(date.setHours(0, 0, 0, 0))}/>
             </MDBCol>
             <MDBCol style={{padding: 0}}>
                 -
             </MDBCol>
             <MDBCol style={{padding: 0}}>
-                <DatePicker customInput={<ExampleCustomInput/>} selected={endAt} locale={ko} minDate={startAt}
-                            maxDate={new Date()} dateFormat={'yyyy-MM-dd'} onChange={(date) => setEndAt(date)}/>
+                <DatePicker customInput={<ExampleCustomInput/>} selected={endAt} minDate={startAt}
+                            dateFormat={'yyyy-MM-dd'} onChange={(date) => setEndAt(date.setHours(23, 59, 59, 999))}/>
             </MDBCol>
         </MDBRow>
     </MDBRow>

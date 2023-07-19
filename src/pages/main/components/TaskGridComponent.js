@@ -1,8 +1,9 @@
 import {useEffect, useState} from "react";
 import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
+import {formatTimestamp} from "../../../utils/functions";
 
-const GridComponent = ({role, startAt, endAt}) => {
+const TaskGridComponent = ({role, startAt, endAt}) => {
     let columns
     const [rows, setRows] = useState([])
     if (role === 'client') {
@@ -37,7 +38,7 @@ const GridComponent = ({role, startAt, endAt}) => {
             {key: 'createdAt', name: '생성일'},
             {key: 'endedAt', name: '완료일'},
             {key: 'dueDate', name: '납품기한'},
-            {key: 'memo', name: '메모'},
+            {key: 'memo', name: '메모', resizable: true},
             {key: 'status', name: '상태'},
             {key: '-', name: ''},
         ]
@@ -61,15 +62,37 @@ const GridComponent = ({role, startAt, endAt}) => {
     }
 
     useEffect(() => {
-        axios.get('v1/project/task/pm', {params: {
-                start_date: startAt.getTime(),
-                end_date: endAt.getTime(),
-            }}).then((response)=>{
+        if (role === 'client') {
+        } else if (/^(admin|pm)$/.test(role)) {
+            axios.get('v1/project/task/pm', {
+                params: {
+                    start_date: startAt,
+                    end_date: endAt,
+                }
+            }).then((response) => {
                 console.log(response.data)
-        })
-        setRows([{no: 1, pm: ''}, {no: 2, title: 'Demo'}])
+                setRows(response.data.map((item, index) => {
+                    return {
+                        no: index + 1,
+                        client: 'client',
+                        pm: item.pm_id,
+                        pd: item.pd_id,
+                        projectCode: item.project_code,
+                        projectName: item.project_name,
+                        projectGroup: item.project_group,
+                        type: item.type,
+                        work: item.work,
+                        createdAt: formatTimestamp(item.task_created_at),
+                        dueDate: formatTimestamp(item.task_due_date),
+                        memo: item.task_memo
+                    }
+                }))
+            })
+        } else {
+        }
     }, [startAt, endAt])
-    return <DataGrid className={'rdg-light fill-grid'} columns={columns} rows={rows}/>
+    return <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={rows}
+                     rowHeight={(args) => 45}/>
 }
 
-export default GridComponent
+export default TaskGridComponent

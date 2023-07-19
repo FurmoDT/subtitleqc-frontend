@@ -17,7 +17,6 @@ import DatePicker from "react-datepicker";
 import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
 import TaskDropzone from "../TaskDropzone";
 import {AuthContext} from "../../../../utils/authContext";
-import {ko} from 'date-fns/esm/locale';
 import {s3Upload} from "../../../../utils/awsS3Upload";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
@@ -169,7 +168,7 @@ const TaskModalContent = (props) => {
                     <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
                         <MDBRow className={'mb-3'}>
                             <MDBCol>
-                                <DatePicker customInput={<CustomInput label={'*납품기한'}/>} locale={ko}
+                                <DatePicker customInput={<CustomInput label={'*납품기한'}/>}
                                             selected={task.dueDate} showTimeSelect
                                             timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
                                             onChange={(date) => setTask(prevState => ({
@@ -230,7 +229,7 @@ const TaskModalContent = (props) => {
                             }}/>
                         </MDBCol>
                         <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
-                            <DatePicker customInput={<CustomInput label={'*마감일'}/>} locale={ko}
+                            <DatePicker customInput={<CustomInput label={'*마감일'}/>}
                                         selected={workers[index].dueDate} showTimeSelect
                                         timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
                                         onChange={(date) => {

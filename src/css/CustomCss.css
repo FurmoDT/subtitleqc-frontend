@@ -30,6 +30,18 @@
     text-align: center;
 }
 
+.rdg-cell {
+    white-space: pre !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rdg-row {
+    line-height: normal;
+}
+
+
 .ql-toolbar {
     display: flex;
 }

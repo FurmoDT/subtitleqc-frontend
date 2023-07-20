@@ -7,10 +7,12 @@ import {AuthContext} from "../../../utils/authContext";
 import {useNavigate} from "react-router-dom";
 
 const TaskGridComponent = ({startAt, endAt}) => {
+    const [initialized, setInitialized] = useState(false)
     const {userState} = useContext(AuthContext)
     const navigate = useNavigate()
     let columns
     const [rows, setRows] = useState([])
+
     if (userState.user.userRole === 'client') {
         columns = [
             {key: 'no', name: 'No', width: 60},
@@ -110,8 +112,14 @@ const TaskGridComponent = ({startAt, endAt}) => {
         } else {
         }
     }, [userState.user.userRole, startAt, endAt])
-    return <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={rows}
-                     rowHeight={(args) => 45}/>
+
+    useEffect(() => {
+        if (rows.length) setInitialized(true)
+    }, [rows])
+
+    return initialized &&
+        <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={rows}
+                  rowHeight={(args) => 45}/>
 }
 
 export default TaskGridComponent

@@ -1,13 +1,17 @@
 import {Menu, MenuItem, Sidebar, sidebarClasses} from 'react-pro-sidebar';
 import {MdDashboard, MdFolderOpen} from "react-icons/md";
 import DashboardPanel from "./components/DashboardPanel";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import TasksPanel from "./components/TasksPanel";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const MainPage = () => {
     const pathname = window.location.pathname
-    const [activeMenu, setActiveMenu] = useState(pathname)
+    const [activeMenu, setActiveMenu] = useState(null)
+    const navigate = useNavigate()
+    useEffect(()=>{
+        setActiveMenu(pathname)
+    }, [navigate, pathname])
 
     return <div style={{height: 'calc(100vh - 50px)', display: 'flex', fontFamily: 'Nanum Gothic'}}>
         <Sidebar collapsedWidth={'50px'} collapsed={true} rootStyles={{

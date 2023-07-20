@@ -18,6 +18,7 @@ import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../
 import TaskDropzone from "../TaskDropzone";
 import {AuthContext} from "../../../../utils/authContext";
 import {s3Upload} from "../../../../utils/awsS3Upload";
+import {fileFormat} from "../../../../utils/functions";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
@@ -306,7 +307,8 @@ const TaskModalContent = (props) => {
                                                     task_episode: task.episode,
                                                     task_genre: task.genre?.value,
                                                     task_due_date: task.dueDate,
-                                                    task_group_key: task.projectGroup
+                                                    task_group_key: task.projectGroup,
+                                                    task_file_type: fileFormat(uploadedFiles[0]?.name)
                                                 }).then((taskResponse) => {
                                                     const [taskId, fileVersion] = taskResponse.data
                                                     s3Upload(taskId, fileVersion, uploadedFiles)

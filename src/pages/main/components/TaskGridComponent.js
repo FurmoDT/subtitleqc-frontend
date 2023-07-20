@@ -1,12 +1,17 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
 import {formatTimestamp} from "../../../utils/functions";
+import {MDBBtn} from "mdb-react-ui-kit";
+import {AuthContext} from "../../../utils/authContext";
+import {useNavigate} from "react-router-dom";
 
-const TaskGridComponent = ({role, startAt, endAt}) => {
+const TaskGridComponent = ({startAt, endAt}) => {
+    const {userState} = useContext(AuthContext)
+    const navigate = useNavigate()
     let columns
     const [rows, setRows] = useState([])
-    if (role === 'client') {
+    if (userState.user.userRole === 'client') {
         columns = [
             {key: 'no', name: 'No', width: 60},
             {key: 'pm', name: 'PM'},
@@ -21,7 +26,7 @@ const TaskGridComponent = ({role, startAt, endAt}) => {
             {key: 'status', name: '상태'},
             {key: '-', name: ''},
         ];
-    } else if (/^(admin|pm)$/.test(role)) {
+    } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
         columns = [
             {key: 'no', name: 'No', width: 60},
             {key: 'client', name: 'Client'},
@@ -29,8 +34,9 @@ const TaskGridComponent = ({role, startAt, endAt}) => {
             {key: 'pd', name: 'PD'},
             {key: 'projectCode', name: '프로젝트 코드'},
             {key: 'projectName', name: '프로젝트명'},
-            {key: 'projectGroup', name: '그룹'},
-            {key: 'type', name: '소재'},
+            {key: 'group', name: '그룹'},
+            {key: 'taskName', name: '태스크명'},
+            {key: 'type', name: '소재', renderCell: (row) => <div>{row.row.type?.toUpperCase()}</div>},
             {key: 'work', name: '작업'},
             {key: 'sourceLanguage', name: '출발어'},
             {key: 'targetLanguage', name: '도착어'},
@@ -40,7 +46,18 @@ const TaskGridComponent = ({role, startAt, endAt}) => {
             {key: 'dueDate', name: '납품기한'},
             {key: 'memo', name: '메모', resizable: true},
             {key: 'status', name: '상태'},
-            {key: '-', name: ''},
+            {
+                key: '-',
+                name: '',
+                renderCell: (row) => row.row.extra.pdId === userState.user.userId ?
+                    <><MDBBtn color={'link'} onClick={() => {
+                        console.log(row.row.extra.hashedId)
+                        navigate(`/${row.row.type}/${row.row.extra.hashedId}`)
+                    }} disabled={!row.row.type}>이동하기</MDBBtn>
+                        <div className={'mx-1'}/>
+                        <MDBBtn color={'link'} disabled>수정하기</MDBBtn>
+                    </> : null
+            },
         ]
     } else {
         columns = [
@@ -62,8 +79,8 @@ const TaskGridComponent = ({role, startAt, endAt}) => {
     }
 
     useEffect(() => {
-        if (role === 'client') {
-        } else if (/^(admin|pm)$/.test(role)) {
+        if (userState.user.userRole === 'client') {
+        } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
             axios.get('v1/project/task/pm', {
                 params: {
                     start_date: startAt,
@@ -74,23 +91,25 @@ const TaskGridComponent = ({role, startAt, endAt}) => {
                 setRows(response.data.map((item, index) => {
                     return {
                         no: index + 1,
-                        client: 'client',
-                        pm: item.pm_id,
-                        pd: item.pd_id,
+                        client: item.client_name,
+                        pm: item.pm_name,
+                        pd: item.pd_name,
                         projectCode: item.project_code,
                         projectName: item.project_name,
-                        projectGroup: item.project_group,
-                        type: item.type,
-                        work: item.work,
+                        group: item.task_group_key,
+                        taskName: `${item.task_name}_${item.task_episode}`,
+                        type: item.task_file_type,
+                        // work: item.work,
                         createdAt: formatTimestamp(item.task_created_at),
                         dueDate: formatTimestamp(item.task_due_date),
-                        memo: item.task_memo
+                        memo: item.task_memo,
+                        extra: {pmId: item.pm_id, pdId: item.pd_id, hashedId: item.task_hashed_id}
                     }
                 }))
             })
         } else {
         }
-    }, [startAt, endAt])
+    }, [userState.user.userRole, startAt, endAt])
     return <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={rows}
                      rowHeight={(args) => 45}/>
 }

@@ -46,14 +46,13 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'createdAt', name: '생성일'},
             {key: 'endedAt', name: '완료일'},
             {key: 'dueDate', name: '납품기한'},
-            {key: 'memo', name: '메모', resizable: true},
+            {key: 'memo', name: '메모'},
             {key: 'status', name: '상태'},
             {
                 key: '-',
                 name: '',
                 renderCell: (row) => row.row.extra.pdId === userState.user.userId ?
                     <><MDBBtn color={'link'} onClick={() => {
-                        console.log(row.row.extra.hashedId)
                         navigate(`/${row.row.type}/${row.row.extra.hashedId}`)
                     }} disabled={!row.row.type}>이동하기</MDBBtn>
                         <div className={'mx-1'}/>
@@ -81,6 +80,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
     }
 
     useEffect(() => {
+        setInitialized(false)
         if (userState.user.userRole === 'client') {
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
             axios.get('v1/project/task/pm', {
@@ -114,7 +114,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
     }, [userState.user.userRole, startAt, endAt])
 
     useEffect(() => {
-        if (rows.length) setInitialized(true)
+        setInitialized(true)
     }, [rows])
 
     return initialized &&

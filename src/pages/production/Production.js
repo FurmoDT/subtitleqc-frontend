@@ -12,8 +12,10 @@ import Dropzone from "./components/Dropzone";
 import {createSegment, tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
 import SplitterLayout from 'react-splitter-layout-react-v18';
+import axios from "../../utils/axios";
 
 const Production = () => {
+    const pathname = window.location.pathname
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
     const languageSplitter = useRef(null)
@@ -79,15 +81,19 @@ const Production = () => {
         selectedSegment.current = null
         return segments
     }, [])
+
     useEffect(() => {
         resetSegmentsRef.current = resetSegments
     }, [resetSegments])
+
     useEffect(() => {
         localStorage.setItem('language', JSON.stringify(languages))
     }, [languages])
+
     useEffect(() => {
         localStorage.setItem('fnLanguage', JSON.stringify(fnLanguages))
     }, [fnLanguages])
+
     useEffect(() => {
         fnToggleRef.current = fnToggle
         if (waveformRef.current) {
@@ -96,6 +102,7 @@ const Production = () => {
             selectedSegment.current = null
         }
     }, [fnToggle])
+
     useEffect(() => {
         tcLockRef.current = tcLock
         if (selectedSegment.current) {
@@ -103,6 +110,7 @@ const Production = () => {
             selectedSegment.current = null
         }
     }, [tcLock])
+
     useEffect(() => {
         if (languageFile) {
             if (languageFile.fn || languageFile.fx) { // fspx
@@ -124,6 +132,7 @@ const Production = () => {
             } else setFileUploadModalShow(true)
         }
     }, [languageFile])
+
     useEffect(() => {
         const observer = new ResizeObserver(() => {
             setLanguageWindowSize({
@@ -134,6 +143,15 @@ const Production = () => {
         observer.observe(dropzoneRef.current);
         return () => observer.disconnect()
     }, []);
+
+    useEffect(()=>{
+        if (!pathname.split('/')[2]) return
+        axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond)=>{
+            console.log(respond.data)
+            setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.mp4`)
+        })
+    }, [pathname])
+
     return <>
         <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                   fnToggleRef={fnToggleRef} setLanguageFile={setLanguageFile}

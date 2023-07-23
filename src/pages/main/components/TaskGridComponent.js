@@ -11,7 +11,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
     const {userState} = useContext(AuthContext)
     const navigate = useNavigate()
     let columns
-    const [rows, setRows] = useState([])
+    const [rows, setRows] = useState(null)
 
     if (userState.user.userRole === 'client') {
         columns = [
@@ -114,7 +114,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
     }, [userState.user.userRole, startAt, endAt])
 
     useEffect(() => {
-        setInitialized(true)
+        if (rows) setInitialized(true)
     }, [rows])
 
     return initialized &&

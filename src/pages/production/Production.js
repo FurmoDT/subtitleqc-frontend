@@ -14,7 +14,7 @@ import {v4} from "uuid";
 import SplitterLayout from 'react-splitter-layout-react-v18';
 import axios from "../../utils/axios";
 
-const Production = () => {
+const Production = ({updateIsRendered}) => {
     const pathname = window.location.pathname
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
@@ -147,10 +147,11 @@ const Production = () => {
     useEffect(()=>{
         if (!pathname.split('/')[2]) return
         axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond)=>{
-            console.log(respond.data)
-            setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.mp4`)
+            setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${respond.data.task_file_type}`)
+        }).finally(()=>{
+            updateIsRendered()
         })
-    }, [pathname])
+    }, [pathname, updateIsRendered])
 
     return <>
         <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}

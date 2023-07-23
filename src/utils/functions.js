@@ -64,3 +64,7 @@ export const fileFormat = (filename) => {
         return 'text'
     } else return null
 }
+
+export const fileExtension = (filename) => {
+    return filename?.split('.').pop().toLowerCase()
+}

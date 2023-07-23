@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
 import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
-import {formatTimestamp} from "../../../utils/functions";
+import {fileType, formatTimestamp} from "../../../utils/functions";
 import {MDBBtn} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../utils/authContext";
 import {useNavigate} from "react-router-dom";
@@ -100,7 +100,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         projectName: item.project_name,
                         group: item.task_group_key,
                         taskName: `${item.task_name}_${item.task_episode}`,
-                        type: item.task_file_type,
+                        type: fileType(item.task_file_extension),
                         // work: item.work,
                         createdAt: formatTimestamp(item.task_created_at),
                         dueDate: formatTimestamp(item.task_due_date),

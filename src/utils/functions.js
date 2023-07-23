@@ -56,15 +56,14 @@ export const formatTimestamp = (timestamp) => {
     return `${year}-${month}-${day}\n${hours}:${minutes}`;
 }
 
-export const fileFormat = (filename) => {
-    const extension = filename?.split('.').pop().toLowerCase()
+export const fileExtension = (filename) => {
+    return filename?.split('.').pop().toLowerCase()
+}
+
+export const fileType = (extension) => {
     if (['mp4', 'mkv'].includes(extension)) {
         return 'video'
     } else if (['docx', 'pdf', 'txt'].includes(extension)) {
         return 'text'
     } else return null
-}
-
-export const fileExtension = (filename) => {
-    return filename?.split('.').pop().toLowerCase()
 }

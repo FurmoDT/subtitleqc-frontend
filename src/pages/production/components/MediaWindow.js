@@ -123,7 +123,8 @@ const MediaWindow = (props) => {
                          file: {
                              attributes: {
                                  controlsList: 'nodownload nofullscreen',
-                                 disablePictureInPicture: true
+                                 disablePictureInPicture: true,
+                                 onContextMenu: e => e.preventDefault()
                              }
                          }
                      }}/>

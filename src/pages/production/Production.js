@@ -14,7 +14,7 @@ import {v4} from "uuid";
 import SplitterLayout from 'react-splitter-layout-react-v18';
 import axios from "../../utils/axios";
 
-const Production = ({updateIsRendered}) => {
+const Production = () => {
     const pathname = window.location.pathname
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
@@ -144,9 +144,9 @@ const Production = ({updateIsRendered}) => {
         return () => observer.disconnect()
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         if (!pathname.split('/')[2]) return
-        axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond)=>{
+        axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond) => {
             setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${respond.data.task_file_extension}`)
         })
     }, [pathname])
@@ -169,16 +169,20 @@ const Production = ({updateIsRendered}) => {
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef}>
-            <SplitterLayout ref={timelineSplitter} vertical={true} secondaryInitialSize={250} onDragEnd={()=>{
-                setLanguageWindowSize({...languageWindowSize, height: timelineSplitter.current.container.firstChild.offsetHeight - 40})
+            <SplitterLayout ref={timelineSplitter} vertical={true} secondaryInitialSize={250} onDragEnd={() => {
+                setLanguageWindowSize({
+                    ...languageWindowSize,
+                    height: timelineSplitter.current.container.firstChild.offsetHeight - 40
+                })
                 setTimelineWindowSize({height: timelineSplitter.current.container.lastChild.offsetHeight + 70})
-            }            }>
-                <SplitterLayout ref={languageSplitter} vertical={false} primaryIndex={1} secondaryInitialSize={480} onDragEnd={() => {
-                    setTimeout(() => setLanguageWindowSize({
-                        ...languageWindowSize,
-                        width: languageSplitter.current.container.lastChild.offsetWidth
-                    }), 100)
-                }}>
+            }}>
+                <SplitterLayout ref={languageSplitter} vertical={false} primaryIndex={1} secondaryInitialSize={480}
+                                onDragEnd={() => {
+                                    setTimeout(() => setLanguageWindowSize({
+                                        ...languageWindowSize,
+                                        width: languageSplitter.current.container.lastChild.offsetWidth
+                                    }), 100)
+                                }}>
                     <SplitterLayout vertical={true} secondaryMinSize={200} secondaryInitialSize={300} primaryIndex={1}>
                         <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
                                      languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
@@ -216,7 +220,7 @@ const Production = ({updateIsRendered}) => {
                                 resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}
                                 tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                                 tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
-                                selectedSegment={selectedSegment} updateIsRendered={updateIsRendered}/>
+                                selectedSegment={selectedSegment}/>
             </SplitterLayout>
         </div>
     </>

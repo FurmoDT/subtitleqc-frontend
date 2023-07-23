@@ -15,6 +15,8 @@ const TimelineWindow = (props) => {
     const spinnerRef = useRef(null);
     const warningRef = useRef(null);
     const amplitudeScale = useRef(2)
+    const updateIsRendered = props.updateIsRendered
+
     const onWheel = useCallback((e) => {
         if (e.ctrlKey) {
             e.preventDefault()
@@ -161,6 +163,7 @@ const TimelineWindow = (props) => {
                         props.waveformRef.current = null
                     } else {
                         setStatusDisplay('loaded')
+                        if (updateIsRendered) updateIsRendered()
                     }
                 })
                 amplitudeScale.current = 2
@@ -189,7 +192,7 @@ const TimelineWindow = (props) => {
                 if (ev.error.name === 'TypeError') setStatusDisplay('error')
             })
         }
-    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef, props.selectedSegment])
+    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef, props.selectedSegment, updateIsRendered])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

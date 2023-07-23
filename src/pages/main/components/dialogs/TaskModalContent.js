@@ -308,7 +308,7 @@ const TaskModalContent = (props) => {
                                                     task_genre: task.genre?.value,
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup,
-                                                    task_file_type: fileExtension(uploadedFiles[0]?.name)
+                                                    task_file_extension: fileExtension(uploadedFiles[0]?.name)
                                                 }).then((taskResponse) => {
                                                     const [taskId, fileVersion] = taskResponse.data
                                                     s3Upload(taskId, fileVersion, uploadedFiles)

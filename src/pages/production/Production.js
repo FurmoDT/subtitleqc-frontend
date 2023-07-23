@@ -148,10 +148,8 @@ const Production = ({updateIsRendered}) => {
         if (!pathname.split('/')[2]) return
         axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond)=>{
             setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${respond.data.task_file_extension}`)
-        }).finally(()=>{
-            updateIsRendered()
         })
-    }, [pathname, updateIsRendered])
+    }, [pathname])
 
     return <>
         <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
@@ -218,7 +216,7 @@ const Production = ({updateIsRendered}) => {
                                 resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}
                                 tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                                 tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
-                                selectedSegment={selectedSegment}/>
+                                selectedSegment={selectedSegment} updateIsRendered={updateIsRendered}/>
             </SplitterLayout>
         </div>
     </>

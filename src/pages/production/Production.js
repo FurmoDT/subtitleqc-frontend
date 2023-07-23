@@ -147,7 +147,7 @@ const Production = ({updateIsRendered}) => {
     useEffect(()=>{
         if (!pathname.split('/')[2]) return
         axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond)=>{
-            setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${respond.data.task_file_type}`)
+            setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${respond.data.task_file_extension}`)
         }).finally(()=>{
             updateIsRendered()
         })

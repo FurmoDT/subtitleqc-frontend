@@ -44,6 +44,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'worker', name: '작업자'},
             {key: 'sourceLanguage', name: '출발어'},
             {key: 'targetLanguage', name: '도착어'},
+            {key: 'workDueDate', name: '마감일'},
             {key: 'requestedAt', name: '의뢰일'},
             {key: 'createdAt', name: '생성일'},
             {key: 'endedAt', name: '완료일'},
@@ -85,12 +86,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
         setInitialized(false)
         if (userState.user.userRole === 'client') {
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
-            axios.get('v1/project/task/pm', {
-                params: {
-                    start_date: startAt,
-                    end_date: endAt,
-                }
-            }).then((response) => {
+            axios.get('v1/project/task/pm', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
                 console.log(response.data)
                 setRows(response.data.map((item, index) => {
                     const pd = JSON.parse(item.pd)
@@ -106,6 +102,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         type: fileType(item.task_file_extension),
                         work: workType[item.work_type],
                         worker: item.worker_name,
+                        workDueDate: formatTimestamp(item.work_due_date),
                         sourceLanguage: languageCodes[item.work_source_language],
                         targetLanguage: languageCodes[item.work_target_language],
                         createdAt: formatTimestamp(item.task_created_at),

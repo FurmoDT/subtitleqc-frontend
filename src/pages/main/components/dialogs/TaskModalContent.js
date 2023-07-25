@@ -312,7 +312,7 @@ const TaskModalContent = (props) => {
                                                 }).then((taskResponse) => {
                                                     const [taskId, fileVersion] = taskResponse.data
                                                     s3Upload(taskId, fileVersion, uploadedFiles)
-                                                    axios.post('v1/project/work', {
+                                                    workers.length && axios.post('v1/project/work', {
                                                         works: workers.map((value) => {
                                                             return {
                                                                 task_id: taskId,

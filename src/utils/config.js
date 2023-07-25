@@ -18,6 +18,13 @@ export const languageCodes = {
     memo: '메모',
 }
 
+export const workType = {
+    sync: '싱크',
+    transcribe: '대본',
+    translate: '번역',
+    qc: '감수',
+}
+
 export const guidelines = [
     {
         client: 'KBS WORLD',

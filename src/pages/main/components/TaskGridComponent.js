@@ -5,6 +5,7 @@ import {fileType, formatTimestamp} from "../../../utils/functions";
 import {MDBBtn} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../utils/authContext";
 import {useNavigate} from "react-router-dom";
+import {languageCodes, workType} from "../../../utils/config";
 
 const TaskGridComponent = ({startAt, endAt}) => {
     const [initialized, setInitialized] = useState(false)
@@ -40,6 +41,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'taskName', name: '태스크명'},
             {key: 'type', name: '소재', renderCell: (row) => <div>{row.row.type?.toUpperCase()}</div>},
             {key: 'work', name: '작업'},
+            {key: 'worker', name: '작업자'},
             {key: 'sourceLanguage', name: '출발어'},
             {key: 'targetLanguage', name: '도착어'},
             {key: 'requestedAt', name: '의뢰일'},
@@ -51,7 +53,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {
                 key: '-',
                 name: '',
-                renderCell: (row) => row.row.extra.pdId === userState.user.userId ?
+                renderCell: (row) => Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`) ?
                     <><MDBBtn color={'link'} onClick={() => {
                         navigate(`/${row.row.type}/${row.row.extra.hashedId}`)
                     }} disabled={!row.row.type}>이동하기</MDBBtn>
@@ -91,21 +93,25 @@ const TaskGridComponent = ({startAt, endAt}) => {
             }).then((response) => {
                 console.log(response.data)
                 setRows(response.data.map((item, index) => {
+                    const pd = JSON.parse(item.pd)
                     return {
                         no: index + 1,
                         client: item.client_name,
                         pm: item.pm_name,
-                        pd: item.pd_name,
+                        pd: Object.values(pd).join(','),
                         projectCode: item.project_code,
                         projectName: item.project_name,
                         group: item.task_group_key,
                         taskName: `${item.task_name}_${item.task_episode}`,
                         type: fileType(item.task_file_extension),
-                        // work: item.work,
+                        work: workType[item.work_type],
+                        worker: item.worker_name,
+                        sourceLanguage: languageCodes[item.work_source_language],
+                        targetLanguage: languageCodes[item.work_target_language],
                         createdAt: formatTimestamp(item.task_created_at),
                         dueDate: formatTimestamp(item.task_due_date),
                         memo: item.task_memo,
-                        extra: {pmId: item.pm_id, pdId: item.pd_id, hashedId: item.task_hashed_id}
+                        extra: {pmId: item.pm_id, pd: pd, hashedId: item.task_hashed_id}
                     }
                 }))
             })

@@ -68,17 +68,26 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'no', name: 'No', width: 60},
             {key: 'client', name: 'Client'},
             {key: 'pd', name: 'PD'},
-            {key: 'taskName', name: '프로그램'},
-            {key: 'type', name: '소재'},
+            {key: 'taskName', name: '태스크명'},
+            {key: 'type', name: '소재', renderCell: (row) => <div>{row.row.type?.toUpperCase()}</div>},
             {key: 'work', name: '작업'},
             {key: 'sourceLanguage', name: '출발어'},
             {key: 'targetLanguage', name: '도착어'},
             {key: 'createdAt', name: '생성일'},
             {key: 'endedAt', name: '완료일'},
-            {key: 'dueDate', name: '납품기한'},
+            {key: 'dueDate', name: '마감일'},
             {key: 'memo', name: '메모'},
             {key: 'status', name: '상태'},
-            {key: '-', name: ''},
+            {
+                key: '-',
+                name: '',
+                renderCell: (row) => <><MDBBtn color={'link'} onClick={() => {
+                    navigate(`/${row.row.type}/${row.row.extra.hashedId}`)
+                }} disabled={!row.row.type}>이동하기</MDBBtn>
+                    <div className={'mx-1'}/>
+                    <MDBBtn color={'link'} disabled>수정하기</MDBBtn>
+                </>
+            },
         ]
     }
 
@@ -113,6 +122,27 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 }))
             })
         } else {
+            axios.get('v1/project/task/worker', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
+                console.log(response.data)
+                setRows(response.data.map((item, index) => {
+                    const pd = JSON.parse(item.pd)
+                    return {
+                        no: index + 1,
+                        client: item.client_name,
+                        pd: Object.values(pd).join(','),
+                        taskName: `${item.task_name}_${item.task_episode}`,
+                        type: fileType(item.task_file_extension),
+                        work: workType[item.work_type],
+                        sourceLanguage: languageCodes[item.work_source_language],
+                        targetLanguage: languageCodes[item.work_target_language],
+                        createdAt: formatTimestamp(item.work_created_at),
+                        dueDate: formatTimestamp(item.work_due_date),
+                        memo: item.work_memo,
+                        extra: {pd: pd, hashedId: item.task_hashed_id}
+                    }
+                }))
+            })
+
         }
     }, [userState.user.userRole, startAt, endAt])
 

@@ -59,7 +59,9 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         navigate(`/${row.row.type}/${row.row.extra.hashedId}`)
                     }} disabled={!row.row.type}>이동하기</MDBBtn>
                         <div className={'mx-1'}/>
-                        <MDBBtn color={'link'} disabled>수정하기</MDBBtn>
+                        <MDBBtn color={'link'} onClick={() => {
+                            console.log(row.row.extra.hashedId)
+                        }}>수정하기</MDBBtn>
                     </> : null
             },
         ]
@@ -85,7 +87,9 @@ const TaskGridComponent = ({startAt, endAt}) => {
                     navigate(`/${row.row.type}/${row.row.extra.hashedId}`)
                 }} disabled={!row.row.type}>이동하기</MDBBtn>
                     <div className={'mx-1'}/>
-                    <MDBBtn color={'link'} disabled>수정하기</MDBBtn>
+                    <MDBBtn color={'link'} onClick={() => {
+                        console.log(row.row.extra.hashedId)
+                    }}>수정하기</MDBBtn>
                 </>
             },
         ]
@@ -117,7 +121,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         createdAt: formatTimestamp(item.task_created_at),
                         dueDate: formatTimestamp(item.task_due_date),
                         memo: item.task_memo,
-                        extra: {pmId: item.pm_id, pd: pd, hashedId: item.task_hashed_id}
+                        extra: {hashedId: item.task_hashed_id, pmId: item.pm_id, pd: pd}
                     }
                 }))
             })
@@ -138,11 +142,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         createdAt: formatTimestamp(item.work_created_at),
                         dueDate: formatTimestamp(item.work_due_date),
                         memo: item.work_memo,
-                        extra: {pd: pd, hashedId: item.task_hashed_id}
+                        extra: {hashedId: item.task_hashed_id, pd: pd}
                     }
                 }))
             })
-
         }
     }, [userState.user.userRole, startAt, endAt])
 

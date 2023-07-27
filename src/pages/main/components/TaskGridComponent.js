@@ -45,6 +45,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'sourceLanguage', name: '출발어'},
             {key: 'targetLanguage', name: '도착어'},
             {key: 'workDueDate', name: '마감일'},
+            {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
             {key: 'requestedAt', name: '의뢰일'},
             {key: 'createdAt', name: '생성일'},
             {key: 'endedAt', name: '완료일'},
@@ -56,8 +57,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 name: '',
                 renderCell: (row) => Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`) ?
                     <><MDBBtn color={'link'} onClick={() => {
-                        navigate(`/${row.row.type}/${row.row.extra.hashedId}`)
-                    }} disabled={!row.row.type}>이동하기</MDBBtn>
+                        navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)
+                    }} disabled={!row.row.taskType}>이동하기</MDBBtn>
                         <div className={'mx-1'}/>
                         <MDBBtn color={'link'} onClick={() => {
                             console.log(row.row.extra.hashedId)
@@ -71,8 +72,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'client', name: 'Client'},
             {key: 'pd', name: 'PD'},
             {key: 'taskName', name: '태스크명'},
-            {key: 'type', name: '소재', renderCell: (row) => <div>{row.row.type?.toUpperCase()}</div>},
-            {key: 'work', name: '작업'},
+            {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
+            {key: 'workType', name: '작업'},
             {key: 'sourceLanguage', name: '출발어'},
             {key: 'targetLanguage', name: '도착어'},
             {key: 'createdAt', name: '생성일'},
@@ -84,8 +85,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 key: '-',
                 name: '',
                 renderCell: (row) => <><MDBBtn color={'link'} onClick={() => {
-                    navigate(`/${row.row.type}/${row.row.extra.hashedId}`)
-                }} disabled={!row.row.type}>이동하기</MDBBtn>
+                    navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)
+                }} disabled={!row.row.taskType}>이동하기</MDBBtn>
                     <div className={'mx-1'}/>
                     <MDBBtn color={'link'} onClick={() => {
                         console.log(row.row.extra.hashedId)
@@ -112,8 +113,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         projectName: item.project_name,
                         group: item.task_group_key,
                         taskName: `${item.task_name}_${item.task_episode}`,
-                        type: fileType(item.task_file_extension),
-                        work: workType[item.work_type],
+                        taskType: fileType(item.task_file_extension),
+                        workType: workType[item.work_type],
                         worker: item.worker_name,
                         workDueDate: formatTimestamp(item.work_due_date),
                         sourceLanguage: languageCodes[item.work_source_language],
@@ -135,8 +136,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         client: item.client_name,
                         pd: Object.values(pd).join(','),
                         taskName: `${item.task_name}_${item.task_episode}`,
-                        type: fileType(item.task_file_extension),
-                        work: workType[item.work_type],
+                        taskType: fileType(item.task_file_extension),
+                        workType: workType[item.work_type],
                         sourceLanguage: languageCodes[item.work_source_language],
                         targetLanguage: languageCodes[item.work_target_language],
                         createdAt: formatTimestamp(item.work_created_at),

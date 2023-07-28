@@ -41,6 +41,10 @@
     line-height: normal;
 }
 
+.rdg-detail-cell {
+    padding: 25px;
+    background-color: #fcdcd4;
+}
 
 .ql-toolbar {
     display: flex;

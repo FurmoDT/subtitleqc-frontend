@@ -207,7 +207,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
     return initialized &&
         <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={rows}
                   rowHeight={(args) => {
-                      return args.row.type === 'DETAIL' ? 98 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45
+                      return args.row.type === 'DETAIL' ? 80 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45
                   }}
                   onRowsChange={onRowsChange}/>
 }

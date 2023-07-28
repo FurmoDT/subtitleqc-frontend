@@ -104,7 +104,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {
                 key: '-',
                 name: '',
-                renderCell: (row) => row.row.type === 'MASTER' && Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`) ?
+                renderCell: (row) => row.row.type === 'MASTER' && row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`) ?
                     <><MDBBtn color={'link'} onClick={() => {
                         navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)
                     }} disabled={!row.row.taskType}>이동하기</MDBBtn>

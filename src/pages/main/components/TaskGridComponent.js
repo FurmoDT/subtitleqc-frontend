@@ -68,7 +68,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
         const WorkGrid = ({hashedId}) => {
             const work = taskAndWork[hashedId].work
             return work.length ? (<DataGrid className={'rdg-light fill-grid'} style={{width: '50%', height: '100%'}}
-                                            rows={work} rowHeight={45} columns={[
+                                            rows={work} rowHeight={() => 45} columns={[
                 {key: 'workType', name: '작업'}, {key: 'worker', name: '작업자'},
                 {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
                 {key: 'workDueDate', name: '마감일'}]}/>) : null
@@ -207,7 +207,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
     return initialized &&
         <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={rows}
                   rowHeight={(args) => {
-                      return args.row.type === 'DETAIL' ? 80 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45
+                      return args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45
                   }}
                   onRowsChange={onRowsChange}/>
 }

@@ -6,6 +6,7 @@ import {MDBBtn} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../utils/authContext";
 import {useNavigate} from "react-router-dom";
 import {languageCodes, workType} from "../../../utils/config";
+import ModifyModal from "./dialogs/ModifyModal";
 
 const TaskGridComponent = ({startAt, endAt}) => {
     const [initialized, setInitialized] = useState(false)
@@ -14,6 +15,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
     let columns
     const [rows, setRows] = useState(null)
     const [taskAndWork, setTaskAndWork] = useState(null)
+    const [modifyTaskHashedId, setModifyTaskHashedId] = useState(null)
 
     const groupBy = (arr, keyFunc) => {
         return arr.reduce((result, current) => {
@@ -110,7 +112,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                     }} disabled={!row.row.taskType}>이동하기</MDBBtn>
                         <div className={'mx-1'}/>
                         <MDBBtn color={'link'} onClick={() => {
-                            console.log(row.row.extra.hashedId)
+                            setModifyTaskHashedId(row.row.extra.hashedId)
                         }}>수정하기</MDBBtn>
                     </> : null
             },
@@ -204,12 +206,14 @@ const TaskGridComponent = ({startAt, endAt}) => {
         }
     }
 
-    return initialized &&
+    return initialized && <>
         <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={rows}
                   rowHeight={(args) => {
                       return args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45
                   }}
                   onRowsChange={onRowsChange}/>
+        <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId}/>
+    </>
 }
 
 export default TaskGridComponent

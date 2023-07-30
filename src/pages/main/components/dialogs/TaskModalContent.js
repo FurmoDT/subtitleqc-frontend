@@ -22,7 +22,7 @@ import {fileExtension} from "../../../../utils/functions";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
-const TaskModalContent = (props) => {
+const TaskModalContent = ({toggleShow, show, hashedId}) => {
     const [task, setTask] = useState({})
     const [workers, setWorkers] = useState([])
     const [uploadedFiles, setUploadedFiles] = useState([])
@@ -61,7 +61,6 @@ const TaskModalContent = (props) => {
                 projectInfo: {
                     projectId: response.data.project_id,
                     projectName: response.data.project_name,
-                    clientId: response.data.client_id,
                     clientName: response.data.client_name,
                 }
             }))
@@ -86,30 +85,55 @@ const TaskModalContent = (props) => {
     }, [])
 
     useEffect(() => {
-        if (!props.show) {
+        if (!show || hashedId || pmListOption.length === 0) return
+        setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userState.user.userId)]}))
+    }, [show, hashedId, pmListOption, userState])
+
+    useEffect(() => {
+        if (!show) {
             projectCodeRef.current.value = projectGroupRef.current.value = programNameRef.current.value = episodeRef.current.value = ''
-            genreRef.current.clearValue()
             setTask({})
             setWorkers([])
             setUploadedFiles([])
             taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
             return
         }
-        if (props.taskId) {
-            //TODO axios.get('/v1/project/task', params: {task_id: props.task_id}).then((response) => {setProjectInfo() && setWorkers()})
+        if (hashedId) {
+            axios.get('/v1/project/task', {params: {hashed_id: hashedId}}).then((response) => {
+                setTask({
+                    pd: pmListOption.filter(value => Object.keys(JSON.parse(response.data.pd)).includes(`${value.value}`)),
+                    projectInfo: {
+                        projectId: response.data.project_id,
+                        projectCode: response.data.project_code,
+                        projectName: response.data.project_name,
+                        clientName: response.data.client_name,
+                    },
+                    projectGroup: response.data.task_group_key,
+                    dueDate: response.data.task_due_date,
+                    programName: response.data.task_name,
+                    episode: response.data.task_episode,
+                    genre: response.data.task_genre,
+                })
+            })
+            axios.get('v1/project/task/works', {params: {hashed_id: hashedId}}).then((response) => {
+                response.data.map((value) => setWorkers(prevState => [...prevState,
+                    {
+                        workType: value.work_type,
+                        sourceLanguage: value.work_source_language,
+                        targetLanguage: value.work_target_language,
+                        workerId: value.worker_id,
+                        dueDate: value.work_due_date,
+                        memo: value.work_memo
+                    }]))
+            })
         } else {
             setWorkers([{}])
         }
-    }, [props.show, props.taskId])
-
-    useEffect(() => {
-        if (!props.show || pmListOption.length === 0 || props.taskId) return
-        setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userState.user.userId)]}))
-    }, [props.show, props.taskId, pmListOption, userState])
+    }, [show, hashedId, pmListOption])
 
     return <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
         <MDBModalHeader style={{borderBottom: 'none'}}>
-            <MDBBtn className='btn-close' color='none' onClick={props.toggleShow}/>
+            <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
         </MDBModalHeader>
         <MDBModalBody>
             <MDBRow className={'mb-1'}
@@ -181,6 +205,7 @@ const TaskModalContent = (props) => {
                             <MDBCol>
                                 <Select ref={genreRef} styles={customStyle} options={genreSelectOption}
                                         placeholder={'장르'}
+                                        value={genreSelectOption.find(value => value.value === task.genre)}
                                         onChange={(newValue) => {
                                             setTask(prevState => ({...prevState, genre: newValue}))
                                         }}/>
@@ -197,6 +222,7 @@ const TaskModalContent = (props) => {
                         <MDBCol style={{display: 'flex'}}>
                             <Select className={'me-2'} styles={customStyle} options={workTypeSelectOption}
                                     placeholder={'*유형'}
+                                    value={workTypeSelectOption.find(value => value.value === workers[index].workType)}
                                     onChange={(newValue) => {
                                         setWorkers(prevState => {
                                             prevState[index].workType = newValue.value
@@ -206,6 +232,7 @@ const TaskModalContent = (props) => {
                             {/^(sync|transcribe)$/.test(workers[index].workType) ? null :
                                 <Select className={'me-2'} styles={customStyle}
                                         options={languageSelectOption} placeholder={'*언어'}
+                                        value={languageSelectOption.find(value => value.value === workers[index].sourceLanguage)}
                                         onChange={(newValue) => {
                                             setWorkers(prevState => {
                                                 prevState[index].sourceLanguage = newValue.value
@@ -213,6 +240,7 @@ const TaskModalContent = (props) => {
                                             })
                                         }}/>}
                             <Select className={'me-2'} styles={customStyle} options={languageSelectOption}
+                                    value={languageSelectOption.find(value => value.value === workers[index].targetLanguage)}
                                     placeholder={'*언어'} onChange={(newValue) => {
                                 setWorkers(prevState => {
                                     prevState[index].targetLanguage = newValue.value
@@ -222,6 +250,7 @@ const TaskModalContent = (props) => {
                         </MDBCol>
                         <MDBCol size={2}>
                             <Select styles={customStyle} options={workerListOption} placeholder={'*작업자 이름'}
+                                    value={workerListOption.find(value => value.value === workers[index].workerId)}
                                     components={{Option: CustomOption}} onChange={(newValue) => {
                                 setWorkers(prevState => {
                                     prevState[index].workerId = newValue.value
@@ -298,7 +327,7 @@ const TaskModalContent = (props) => {
                                         }}>
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
                                                 submitToggleShow()
-                                                props.toggleShow()
+                                                toggleShow()
                                                 axios.post('v1/project/task', {
                                                     project_id: task.projectInfo?.projectId,
                                                     pm_id: userState.user.userId,

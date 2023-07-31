@@ -23,6 +23,7 @@ import {fileExtension} from "../../../../utils/functions";
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
 const TaskModalContent = ({toggleShow, show, hashedId}) => {
+    const [initialized, setInitialized] = useState(false)
     const [task, setTask] = useState({})
     const [workers, setWorkers] = useState([])
     const [uploadedFiles, setUploadedFiles] = useState([])
@@ -91,11 +92,10 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
 
     useEffect(() => {
         if (!show) {
-            projectCodeRef.current.value = projectGroupRef.current.value = programNameRef.current.value = episodeRef.current.value = ''
+            setInitialized(false)
             setTask({})
             setWorkers([])
             setUploadedFiles([])
-            taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
             return
         }
         if (hashedId) {
@@ -131,7 +131,15 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
         }
     }, [show, hashedId, pmListOption])
 
-    return <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+    useEffect(() => {
+        if (Object.keys(task).length && workers.length) setInitialized(true)
+    }, [task, workers])
+
+    useEffect(() => {
+        if (initialized) taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
+    }, [initialized])
+
+    return initialized && <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
         <MDBModalHeader style={{borderBottom: 'none'}}>
             <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
         </MDBModalHeader>
@@ -145,7 +153,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         <MDBRow className={'mb-3'}>
                             <MDBCol style={{minWidth: '155px', maxWidth: '155px'}}>
                                 <MDBInput ref={projectCodeRef} style={inputStyle} label={'프로젝트 코드'}
-                                          labelStyle={labelStyle}
+                                          labelStyle={labelStyle} defaultValue={task.projectInfo?.projectCode}
                                           onBlur={(event) => setProjectInfo(event.target.value)}/>
                             </MDBCol>
                             <MDBCol>
@@ -174,18 +182,19 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             </MDBCol>
                             <MDBCol size={3}>
                                 <MDBInput ref={projectGroupRef} style={inputStyle} label={'프로젝트 그룹'}
-                                          labelStyle={labelStyle}
-                                          onBlur={(event) => task.projectGroup = event.target.value}/>
+                                          labelStyle={labelStyle} defaultValue={task.projectGroup}
+                                />
                             </MDBCol>
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
                                 <MDBInput ref={programNameRef} style={inputStyle} label={'*프로그램명'}
-                                          labelStyle={labelStyle}
+                                          labelStyle={labelStyle} defaultValue={task.programName}
                                           onBlur={(event) => task.programName = event.target.value}/>
                             </MDBCol>
                             <MDBCol size={3}>
                                 <MDBInput ref={episodeRef} style={inputStyle} label={'*에피소드'} labelStyle={labelStyle}
+                                          defaultValue={task.episode}
                                           onBlur={(event) => task.episode = event.target.value}/>
                             </MDBCol>
                         </MDBRow>
@@ -271,6 +280,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBCol>
                         <MDBCol>
                             <MDBInput style={inputStyle} labelStyle={labelStyle} label={'요청 사항'}
+                                      defaultValue={workers[index].memo}
                                       onChange={(event) => {
                                           workers[index].memo = event.target.value
                                       }}/>

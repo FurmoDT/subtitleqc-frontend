@@ -20,7 +20,7 @@
     "handsontable": "^6.2.2",
     "konva": "^8.4.3",
     "mdb-react-ui-kit": "^6.1.0",
-    "peaks.js": "^3.0.0-beta.8",
+    "peaks.js": "^3.0.0-beta.13",
     "react": "^18.2.0",
     "react-data-grid": "^7.0.0-beta.34",
     "react-datepicker": "^4.15.0",

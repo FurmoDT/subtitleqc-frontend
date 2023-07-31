@@ -89,7 +89,6 @@ const TaskDropzone = (props) => {
                            }
                        })
                    })
-                   e.target.value = ''
                }}/>
     </>
 }

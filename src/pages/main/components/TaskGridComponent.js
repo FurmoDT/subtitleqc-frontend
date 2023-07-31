@@ -45,7 +45,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 worker: current.worker_name,
                 workDueDate: formatTimestamp(current.work_due_date),
                 sourceLanguage: languageCodes[current.work_source_language],
-                targetLanguage: languageCodes[current.work_target_language]
+                targetLanguage: languageCodes[current.work_target_language],
+                memo: current.work_memo
             });
             return result;
         }, {});
@@ -73,7 +74,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                                             rows={work} rowHeight={() => 45} columns={[
                 {key: 'workType', name: '작업'}, {key: 'worker', name: '작업자'},
                 {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
-                {key: 'workDueDate', name: '마감일'}]}/>) : null
+                {key: 'workDueDate', name: '마감일'}, {key: 'memo', name: '메모'}]}/>) : null
         }
         columns = [
             {

@@ -2,6 +2,7 @@ import {forwardRef, useCallback, useContext, useEffect, useRef, useState} from '
 import {
     MDBBtn,
     MDBCol,
+    MDBIcon,
     MDBInput,
     MDBModal,
     MDBModalBody,
@@ -39,6 +40,20 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     const workerValidationLabelRef = useRef(null)
     const [submitModal, setSubmitModal] = useState(false);
     const submitToggleShow = () => setSubmitModal(!submitModal);
+
+    const inputValidation = () => {
+        let error = false
+        if (!(task.dueDate && task.pd && task.programName && task.episode)) {
+            taskValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+            error = true
+        } else taskValidationLabelRef.current.innerText = ''
+        if (workers.filter(value => !(value.workType && (/^(sync|transcribe)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage) && value.workerId && value.dueDate)).length !== 0) {
+            workerValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+            error = true
+        } else workerValidationLabelRef.current.innerText = ''
+        if (error) return
+        submitToggleShow()
+    }
 
     const CustomInput = forwardRef(({value, onClick, label}, ref) => {
         return <MDBInput style={inputStyle} label={label} labelStyle={labelStyle} onClick={onClick} value={value}/>
@@ -132,8 +147,8 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     }, [show, hashedId, pmListOption])
 
     useEffect(() => {
-        if (Object.keys(task).length && workers.length) setInitialized(true)
-    }, [task, workers])
+        if (Object.keys(task).length) setInitialized(true)
+    }, [task])
 
     useEffect(() => {
         if (initialized) taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
@@ -305,20 +320,8 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                       multiple={false}/>
                     </MDBCol>
                 </MDBRow>
-                <MDBCol>
-                    <MDBBtn color={'dark'} onClick={() => {
-                        let error = false
-                        if (!(task.dueDate && task.pd && task.programName && task.episode)) {
-                            taskValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
-                            error = true
-                        } else taskValidationLabelRef.current.innerText = ''
-                        if (workers.filter(value => !(value.workType && (/^(sync|transcribe)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage) && value.workerId && value.dueDate)).length !== 0) {
-                            workerValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
-                            error = true
-                        } else workerValidationLabelRef.current.innerText = ''
-                        if (error) return
-                        submitToggleShow()
-                    }}>확인</MDBBtn>
+                {!hashedId ? <MDBCol>
+                    <MDBBtn color={'dark'} onClick={inputValidation}>확인</MDBBtn>
                     <MDBModal show={submitModal} setShow={setSubmitModal} tabIndex='-1'>
                         <MDBModalDialog centered>
                             <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
@@ -373,7 +376,43 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             </MDBModalContent>
                         </MDBModalDialog>
                     </MDBModal>
-                </MDBCol>
+                </MDBCol> : <MDBCol>
+                    <MDBBtn color={'dark'} onClick={inputValidation}>수정</MDBBtn>
+                    <MDBBtn color={'link'}
+                            style={{color: '#808080', paddingLeft: '0.5rem', paddingRight: '0.5rem', margin: '0 1rem'}}
+                            onClick={() => {
+                            }}>
+                        <MDBIcon fas icon="trash"/> 삭제
+                    </MDBBtn>
+                    <MDBModal show={submitModal} setShow={setSubmitModal} tabIndex='-1'>
+                        <MDBModalDialog centered>
+                            <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+                                <MDBModalBody>
+                                    <div style={{backgroundColor: 'white', margin: 'inherit', padding: '1rem 0'}}>
+                                        <MDBRow>
+                                            <MDBCol>
+                                                <p>[{task.programName}_{task.episode}]</p>
+                                                태스크를 수정하시겠습니까?
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            margin: '1rem 5rem'
+                                        }}>
+                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                                submitToggleShow()
+                                                toggleShow()
+                                                // TODO update API
+                                            }}>확인</MDBBtn>
+                                            <MDBBtn color={'dark'} onClick={submitToggleShow}>취소</MDBBtn>
+                                        </div>
+                                    </div>
+                                </MDBModalBody>
+                            </MDBModalContent>
+                        </MDBModalDialog>
+                    </MDBModal>
+                </MDBCol>}
             </MDBRow>
         </MDBModalBody>
     </MDBModalContent>

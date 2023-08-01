@@ -39,7 +39,9 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     const taskValidationLabelRef = useRef(null)
     const workerValidationLabelRef = useRef(null)
     const [submitModal, setSubmitModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
     const submitToggleShow = () => setSubmitModal(!submitModal);
+    const deleteToggleShow = () => setDeleteModal(!deleteModal);
 
     const inputValidation = () => {
         let error = false
@@ -380,8 +382,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                     <MDBBtn color={'dark'} onClick={inputValidation}>수정</MDBBtn>
                     <MDBBtn color={'link'}
                             style={{color: '#808080', paddingLeft: '0.5rem', paddingRight: '0.5rem', margin: '0 1rem'}}
-                            onClick={() => {
-                            }}>
+                            onClick={deleteToggleShow}>
                         <MDBIcon fas icon="trash"/> 삭제
                     </MDBBtn>
                     <MDBModal show={submitModal} setShow={setSubmitModal} tabIndex='-1'>
@@ -406,6 +407,37 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                 // TODO update API
                                             }}>확인</MDBBtn>
                                             <MDBBtn color={'dark'} onClick={submitToggleShow}>취소</MDBBtn>
+                                        </div>
+                                    </div>
+                                </MDBModalBody>
+                            </MDBModalContent>
+                        </MDBModalDialog>
+                    </MDBModal>
+                    <MDBModal show={deleteModal} setShow={setDeleteModal} tabIndex='-1'>
+                        <MDBModalDialog centered>
+                            <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+                                <MDBModalBody>
+                                    <div style={{backgroundColor: 'white', margin: 'inherit', padding: '1rem 0'}}>
+                                        <MDBRow>
+                                            <MDBCol>
+                                                <p>[{task.programName}_{task.episode}]</p>
+                                                태스크를 삭제하시겠습니까?
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            margin: '1rem 5rem'
+                                        }}>
+                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                                deleteToggleShow()
+                                                toggleShow()
+                                                axios.put('v1/project/task', {
+                                                    task_hashed_id: hashedId,
+                                                    task_deactivated: true
+                                                }).then()
+                                            }}>확인</MDBBtn>
+                                            <MDBBtn color={'dark'} onClick={deleteToggleShow}>취소</MDBBtn>
                                         </div>
                                     </div>
                                 </MDBModalBody>

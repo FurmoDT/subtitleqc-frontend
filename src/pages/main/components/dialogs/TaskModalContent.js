@@ -32,12 +32,9 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     const [pmListOption, setPmListOption] = useState([])
     const {userState} = useContext(AuthContext)
     const projectCodeRef = useRef(null)
-    const projectGroupRef = useRef(null)
-    const programNameRef = useRef(null)
-    const episodeRef = useRef(null)
-    const genreRef = useRef(null)
     const taskValidationLabelRef = useRef(null)
     const workerValidationLabelRef = useRef(null)
+    const [originalTask, setOriginalTask] = useState({})
     const [submitModal, setSubmitModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const submitToggleShow = () => setSubmitModal(!submitModal);
@@ -65,7 +62,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
         const reset = () => {
             setTask(prevState => {
                 const {projectInfo, ...rest} = prevState
-                return rest
+                return {...rest, projectInfo: {projectId: null}}
             })
             projectCodeRef.current.value = ''
         }
@@ -111,13 +108,14 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
         if (!show) {
             setInitialized(false)
             setTask({})
+            setOriginalTask({})
             setWorkers([])
             setUploadedFiles([])
             return
         }
         if (hashedId) {
             axios.get('/v1/project/task', {params: {hashed_id: hashedId}}).then((response) => {
-                setTask({
+                const taskInfo = JSON.stringify({
                     pd: pmListOption.filter(value => Object.keys(JSON.parse(response.data.pd)).includes(`${value.value}`)),
                     projectInfo: {
                         projectId: response.data.project_id,
@@ -131,6 +129,8 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                     episode: response.data.task_episode,
                     genre: response.data.task_genre,
                 })
+                setTask(JSON.parse(taskInfo))
+                setOriginalTask(JSON.parse(taskInfo))
             })
             axios.get('v1/project/task/works', {params: {hashed_id: hashedId}}).then((response) => {
                 response.data.map((value) => setWorkers(prevState => [...prevState,
@@ -198,19 +198,20 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                           style={{textOverflow: 'ellipsis', pointerEvents: 'none'}}/>
                             </MDBCol>
                             <MDBCol size={3}>
-                                <MDBInput ref={projectGroupRef} style={inputStyle} label={'프로젝트 그룹'}
+                                <MDBInput style={inputStyle} label={'프로젝트 그룹'}
                                           labelStyle={labelStyle} defaultValue={task.projectGroup}
+                                          onBlur={(event) => task.projectGroup = event.target.value}
                                 />
                             </MDBCol>
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBInput ref={programNameRef} style={inputStyle} label={'*프로그램명'}
+                                <MDBInput style={inputStyle} label={'*프로그램명'}
                                           labelStyle={labelStyle} defaultValue={task.programName}
                                           onBlur={(event) => task.programName = event.target.value}/>
                             </MDBCol>
                             <MDBCol size={3}>
-                                <MDBInput ref={episodeRef} style={inputStyle} label={'*에피소드'} labelStyle={labelStyle}
+                                <MDBInput style={inputStyle} label={'*에피소드'} labelStyle={labelStyle}
                                           defaultValue={task.episode}
                                           onBlur={(event) => task.episode = event.target.value}/>
                             </MDBCol>
@@ -229,7 +230,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <Select ref={genreRef} styles={customStyle} options={genreSelectOption}
+                                <Select styles={customStyle} options={genreSelectOption}
                                         placeholder={'장르'}
                                         value={genreSelectOption.find(value => value.value === task.genre)}
                                         onChange={(newValue) => {

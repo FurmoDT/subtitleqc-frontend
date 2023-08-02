@@ -19,7 +19,6 @@ import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../
 import TaskDropzone from "../TaskDropzone";
 import {AuthContext} from "../../../../utils/authContext";
 import {s3Upload} from "../../../../utils/awsS3Upload";
-import {fileExtension} from "../../../../utils/functions";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
@@ -34,7 +33,6 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     const projectCodeRef = useRef(null)
     const taskValidationLabelRef = useRef(null)
     const workerValidationLabelRef = useRef(null)
-    const fileValidationLabelRef = useRef(null)
     const [originalTask, setOriginalTask] = useState({})
     const [submitModal, setSubmitModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
@@ -51,10 +49,6 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
             workerValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
             error = true
         } else workerValidationLabelRef.current.innerText = ''
-        if (!uploadedFiles.length) {
-            fileValidationLabelRef.current.innerText = '파일을 업로드해주세요.'
-            error = true
-        } else fileValidationLabelRef.current.innerText = ''
         if (error) return
         submitToggleShow()
     }
@@ -137,6 +131,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                 })
                 setTask(JSON.parse(taskInfo))
                 setOriginalTask(JSON.parse(taskInfo))
+                if (response.data.task_file_name) setUploadedFiles([{name: response.data.task_file_name}])
             })
             axios.get('v1/project/task/works', {params: {hashed_id: hashedId}}).then((response) => {
                 setWorkers(response.data.map((value) => ({
@@ -158,7 +153,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     }, [task])
 
     useEffect(() => {
-        if (initialized) taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = fileValidationLabelRef.current.innerText = ''
+        if (initialized) taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
     }, [initialized])
 
     return initialized && <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
@@ -316,21 +311,13 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                 })}/>
                     </MDBRow>
                 })}
-                <MDBBtn color={'link'} style={{
-                    backgroundColor: 'white',
-                    width: 'auto',
-                    margin: '0 0.75rem',
-                    marginTop: 0,
-                }} onClick={() => setWorkers(prevState => [...prevState, {}])}>+ 추가하기</MDBBtn>
-                <MDBRow>
-                    <MDBCol>
-                        <label ref={fileValidationLabelRef} className={'input-error-label'}/>
-                    </MDBCol>
-                </MDBRow>
+                <MDBBtn color={'link'}
+                        style={{width: 'auto', backgroundColor: 'white', marginLeft: '0.75rem', marginBottom: '1rem'}}
+                        onClick={() => setWorkers(prevState => [...prevState, {}])}>+ 추가하기</MDBBtn>
                 <MDBRow className={'mb-3 m-0 p-0'}>
                     <MDBCol>
-                        {!hashedId && <TaskDropzone uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles}
-                                                    multiple={false}/>}
+                        <TaskDropzone uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles}
+                                      multiple={false}/>
                     </MDBCol>
                 </MDBRow>
                 {!hashedId ? <MDBCol>
@@ -363,7 +350,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                     task_genre: task.genre?.value,
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup,
-                                                    task_file_extension: fileExtension(uploadedFiles[0]?.name)
+                                                    task_file_name: uploadedFiles[0]?.name
                                                 }).then((taskResponse) => {
                                                     const [taskId, fileVersion] = taskResponse.data
                                                     s3Upload(taskId, fileVersion, uploadedFiles)

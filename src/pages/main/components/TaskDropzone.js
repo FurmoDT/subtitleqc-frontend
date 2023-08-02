@@ -7,10 +7,9 @@ const dragStyle = {borderStyle: 'dashed', borderColor: '#2196f3'};
 
 let counter = 0
 
-const TaskDropzone = (props) => {
+const TaskDropzone = ({uploadedFiles, setUploadedFiles, multiple}) => {
     const dropzoneRef = useRef(null)
     const fileInputRef = useRef(null)
-    const setUploadedFiles = props.setUploadedFiles
 
     const handleDragEnter = useCallback((e) => {
         e.preventDefault();
@@ -41,12 +40,12 @@ const TaskDropzone = (props) => {
             setUploadedFiles(prev => {
                 if (prev.map(value => value.name).includes(file.name)) return prev
                 else {
-                    if (props.multiple) return [...prev, file]
+                    if (multiple) return [...prev, file]
                     else return [file]
                 }
             })
         })
-    }, [props.multiple, setUploadedFiles])
+    }, [multiple, setUploadedFiles])
     const handleClick = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -69,8 +68,8 @@ const TaskDropzone = (props) => {
     }, [handleDragEnter, handleDragOver, handleDragLeave, handleDrop, handleClick])
 
     return <>
-        <MDBListGroup ref={dropzoneRef} numbered={props.multiple} style={{textAlign: 'left'}}>
-            {props.uploadedFiles.length ? props.uploadedFiles.map((value) => <MDBListGroupItem
+        <MDBListGroup ref={dropzoneRef} numbered={multiple} style={{textAlign: 'left'}}>
+            {uploadedFiles.length ? uploadedFiles.map((value) => <MDBListGroupItem
                     key={value.name} style={{padding: '0 0.75rem'}}>{value.name}
                     <MDBBtn className='btn-close' color='none'
                             style={{position: 'absolute', right: 0}} onClick={handleClick}/>
@@ -78,13 +77,13 @@ const TaskDropzone = (props) => {
                 <label style={{textAlign: 'left', paddingLeft: '0.75rem', ...labelStyle}}>
                     파일 업로드 또는 드래그앤드롭</label>}
         </MDBListGroup>
-        <input ref={fileInputRef} style={{display: 'none'}} multiple={props.multiple} type={'file'}
+        <input ref={fileInputRef} style={{display: 'none'}} multiple={multiple} type={'file'}
                onChange={(e) => {
                    Array.from(e.target.files).forEach((file) => {
                        setUploadedFiles(prev => {
                            if (prev.map(value => value.name).includes(file.name)) return prev
                            else {
-                               if (props.multiple) return [...prev, file]
+                               if (multiple) return [...prev, file]
                                else return [file]
                            }
                        })

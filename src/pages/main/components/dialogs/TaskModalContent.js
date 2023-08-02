@@ -34,6 +34,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     const projectCodeRef = useRef(null)
     const taskValidationLabelRef = useRef(null)
     const workerValidationLabelRef = useRef(null)
+    const fileValidationLabelRef = useRef(null)
     const [originalTask, setOriginalTask] = useState({})
     const [submitModal, setSubmitModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
@@ -50,6 +51,10 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
             workerValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
             error = true
         } else workerValidationLabelRef.current.innerText = ''
+        if (!uploadedFiles.length) {
+            fileValidationLabelRef.current.innerText = '파일을 업로드해주세요.'
+            error = true
+        } else fileValidationLabelRef.current.innerText = ''
         if (error) return
         submitToggleShow()
     }
@@ -75,6 +80,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                 ...prevState,
                 projectInfo: {
                     projectId: response.data.project_id,
+                    projectCode: value,
                     projectName: response.data.project_name,
                     clientName: response.data.client_name,
                 }
@@ -133,15 +139,14 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                 setOriginalTask(JSON.parse(taskInfo))
             })
             axios.get('v1/project/task/works', {params: {hashed_id: hashedId}}).then((response) => {
-                response.data.map((value) => setWorkers(prevState => [...prevState,
-                    {
-                        workType: value.work_type,
-                        sourceLanguage: value.work_source_language,
-                        targetLanguage: value.work_target_language,
-                        workerId: value.worker_id,
-                        dueDate: value.work_due_date,
-                        memo: value.work_memo
-                    }]))
+                setWorkers(response.data.map((value) => ({
+                    workType: value.work_type,
+                    sourceLanguage: value.work_source_language,
+                    targetLanguage: value.work_target_language,
+                    workerId: value.worker_id,
+                    dueDate: value.work_due_date,
+                    memo: value.work_memo
+                })))
             })
         } else {
             setWorkers([{}])
@@ -153,7 +158,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     }, [task])
 
     useEffect(() => {
-        if (initialized) taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
+        if (initialized) taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = fileValidationLabelRef.current.innerText = ''
     }, [initialized])
 
     return initialized && <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
@@ -314,13 +319,18 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                 <MDBBtn color={'link'} style={{
                     backgroundColor: 'white',
                     width: 'auto',
-                    margin: '1rem 0.75rem',
+                    margin: '0 0.75rem',
                     marginTop: 0,
                 }} onClick={() => setWorkers(prevState => [...prevState, {}])}>+ 추가하기</MDBBtn>
-                <MDBRow className={'mb-3 align-items-center m-0 p-0'}>
+                <MDBRow>
                     <MDBCol>
-                        <TaskDropzone uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles}
-                                      multiple={false}/>
+                        <label ref={fileValidationLabelRef} className={'input-error-label'}/>
+                    </MDBCol>
+                </MDBRow>
+                <MDBRow className={'mb-3 m-0 p-0'}>
+                    <MDBCol>
+                        {!hashedId && <TaskDropzone uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles}
+                                                    multiple={false}/>}
                     </MDBCol>
                 </MDBRow>
                 {!hashedId ? <MDBCol>

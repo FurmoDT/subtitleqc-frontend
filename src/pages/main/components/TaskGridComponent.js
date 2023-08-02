@@ -115,7 +115,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         <MDBBtn color={'link'} onClick={() => {
                             setModifyTaskHashedId(row.row.extra.hashedId)
                         }}>수정하기</MDBBtn>
-                    </> : null
+                    </> : null,
+                width: 210,
+                maxWidth: 210,
+                minWidth: 210
             },
         ]
     } else {
@@ -143,7 +146,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
                     <MDBBtn color={'link'} onClick={() => {
                         console.log(row.row.extra.hashedId)
                     }}>수정하기</MDBBtn>
-                </>
+                </>,
+                width: 210,
+                maxWidth: 210,
+                minWidth: 210
             },
         ]
     }

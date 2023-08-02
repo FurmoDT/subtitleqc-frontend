@@ -19,7 +19,7 @@ const TasksPanel = () => {
         } else return null
     }
 
-    return <div style={{padding: '5rem', width: '100%', height: '100%', textAlign: 'center'}}>
+    return <div style={{padding: '5rem', width: 'calc(100vw - 50px)', height: '100%', textAlign: 'center'}}>
         <MDBRow style={{marginBottom: '0.5rem'}}>
             <MDBCol sm={4} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'end'}}>
                 <ModalComponent/>

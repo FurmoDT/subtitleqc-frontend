@@ -218,7 +218,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                   rowHeight={(args) => {
                       return args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45
                   }}
-                  onRowsChange={onRowsChange}/>
+                  onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId}/>
     </>
 }

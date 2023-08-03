@@ -9,7 +9,7 @@ import TransToolbar from "./components/TransToolbar";
 import {defaultLanguage, defaultProjectDetail, defaultSubtitle} from "../../utils/config";
 import FileUploadModal from "./components/dialogs/FileUploadModal";
 import Dropzone from "./components/Dropzone";
-import {createSegment, tcToSec} from "../../utils/functions";
+import {createSegment, fileType, tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
 import SplitterLayout from 'react-splitter-layout-react-v18';
 import axios from "../../utils/axios";
@@ -147,7 +147,7 @@ const Production = () => {
     useEffect(() => {
         if (!pathname.split('/')[2]) return
         axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond) => {
-            setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${respond.data.task_file_extension}`)
+            setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${fileType(respond.data.task_file_name)}`)
         })
     }, [pathname])
 

@@ -339,8 +339,6 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                             margin: '1rem 5rem'
                                         }}>
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
-                                                submitToggleShow()
-                                                toggleShow()
                                                 axios.post('v1/project/task', {
                                                     project_id: task.projectInfo?.projectId,
                                                     pm_id: userState.user.userId,
@@ -353,7 +351,6 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                     task_file_name: uploadedFiles[0]?.name
                                                 }).then((taskResponse) => {
                                                     const [taskId, fileVersion] = taskResponse.data
-                                                    s3Upload(taskId, fileVersion, uploadedFiles)
                                                     workers.length && axios.post('v1/project/work', {
                                                         works: workers.map((value) => {
                                                             return {
@@ -367,6 +364,10 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                             }
                                                         })
                                                     }).then()
+                                                    s3Upload(taskId, fileVersion, uploadedFiles).then(()=>{
+                                                        submitToggleShow()
+                                                        toggleShow()
+                                                    })
                                                 })
                                             }}>확인</MDBBtn>
                                             <MDBBtn color='dark' onClick={submitToggleShow}>취소</MDBBtn>

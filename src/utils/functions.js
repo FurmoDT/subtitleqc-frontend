@@ -56,8 +56,12 @@ export const formatTimestamp = (timestamp) => {
     return `${year}-${month}-${day}\n${hours}:${minutes}`;
 }
 
+export const fileExtension = (filename) => {
+    return filename?.split('.').pop().toLowerCase()
+}
+
 export const fileType = (filename) => {
-    const extension = filename?.split('.').pop().toLowerCase()
+    const extension = fileExtension(filename)
     if (['mp4', 'mkv'].includes(extension)) {
         return 'video'
     } else if (['docx', 'pdf', 'txt', 'xlsx'].includes(extension)) {

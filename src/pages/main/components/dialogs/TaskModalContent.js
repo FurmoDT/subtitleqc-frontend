@@ -33,7 +33,6 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     const projectCodeRef = useRef(null)
     const taskValidationLabelRef = useRef(null)
     const workerValidationLabelRef = useRef(null)
-    const [originalTask, setOriginalTask] = useState({})
     const [submitModal, setSubmitModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const submitToggleShow = () => setSubmitModal(!submitModal);
@@ -108,14 +107,13 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
         if (!show) {
             setInitialized(false)
             setTask({})
-            setOriginalTask({})
             setWorkers([])
             setUploadedFiles([])
             return
         }
         if (hashedId) {
             axios.get('/v1/project/task', {params: {hashed_id: hashedId}}).then((response) => {
-                const taskInfo = JSON.stringify({
+                setTask({
                     pd: pmListOption.filter(value => Object.keys(JSON.parse(response.data.pd)).includes(`${value.value}`)),
                     projectInfo: {
                         projectId: response.data.project_id,
@@ -128,9 +126,8 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                     programName: response.data.task_name,
                     episode: response.data.task_episode,
                     genre: response.data.task_genre,
+                    fileVersion: response.data.task_file_version,
                 })
-                setTask(JSON.parse(taskInfo))
-                setOriginalTask(JSON.parse(taskInfo))
                 if (response.data.task_file_name) setUploadedFiles([{name: response.data.task_file_name}])
             })
             axios.get('v1/project/task/works', {params: {hashed_id: hashedId}}).then((response) => {
@@ -349,12 +346,12 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup,
                                                     task_file_name: uploadedFiles[0]?.name
-                                                }).then((taskResponse) => {
-                                                    const [taskId, fileVersion] = taskResponse.data
+                                                }).then((response) => {
+                                                    const [taskId, fileVersion] = response.data
                                                     workers.length && axios.post('v1/project/work', {
+                                                        task_id: taskId,
                                                         works: workers.map((value) => {
                                                             return {
-                                                                task_id: taskId,
                                                                 worker_id: value.workerId,
                                                                 work_type: value.workType,
                                                                 work_source_language: value.sourceLanguage,
@@ -364,7 +361,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                             }
                                                         })
                                                     }).then()
-                                                    s3Upload(taskId, fileVersion, uploadedFiles).then(()=>{
+                                                    s3Upload(taskId, fileVersion, uploadedFiles).then(() => {
                                                         submitToggleShow()
                                                         toggleShow()
                                                     })
@@ -401,9 +398,40 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                             margin: '1rem 5rem'
                                         }}>
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
-                                                submitToggleShow()
-                                                toggleShow()
-                                                // TODO update API
+                                                const fileUpdated = uploadedFiles[0] instanceof File
+                                                axios.put('v1/project/task', {
+                                                    task_hashed_id: hashedId,
+                                                    project_id: task.projectInfo.projectId,
+                                                    pd_ids: task.pd.map(value => value.value),
+                                                    task_name: task.programName,
+                                                    task_episode: task.episode,
+                                                    task_genre: task.genre?.value,
+                                                    task_due_date: task.dueDate,
+                                                    task_group_key: task.projectGroup,
+                                                    task_file_name: uploadedFiles[0]?.name,
+                                                    task_file_version: task.fileVersion + (fileUpdated ? 1 : 0)
+                                                }).then((response) => {
+                                                    const taskId = response.data
+                                                    axios.put('v1/project/work', {
+                                                        task_hashed_id: hashedId,
+                                                        works: workers.map((value) => {
+                                                            return {
+                                                                worker_id: value.workerId,
+                                                                work_type: value.workType,
+                                                                work_source_language: value.sourceLanguage,
+                                                                work_target_language: value.targetLanguage,
+                                                                work_due_date: value.dueDate,
+                                                                work_memo: value.memo,
+                                                            }
+                                                        })
+                                                    }).then()
+                                                    if (fileUpdated) {
+                                                        s3Upload(taskId, task.fileVersion + 1, uploadedFiles).then(() => {
+                                                            submitToggleShow()
+                                                            toggleShow()
+                                                        })
+                                                    }
+                                                })
                                             }}>확인</MDBBtn>
                                             <MDBBtn color={'dark'} onClick={submitToggleShow}>취소</MDBBtn>
                                         </div>

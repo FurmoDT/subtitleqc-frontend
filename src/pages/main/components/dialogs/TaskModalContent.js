@@ -10,6 +10,7 @@ import {
     MDBModalDialog,
     MDBModalHeader,
     MDBRow,
+    MDBSpinner,
 } from 'mdb-react-ui-kit';
 import Select from "react-select";
 import axios from "../../../../utils/axios";
@@ -30,6 +31,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     const [workerListOption, setWorkerListOption] = useState([])
     const [pmListOption, setPmListOption] = useState([])
     const {userState} = useContext(AuthContext)
+    const modifySpinnerRef = useRef(null)
     const projectCodeRef = useRef(null)
     const taskValidationLabelRef = useRef(null)
     const workerValidationLabelRef = useRef(null)
@@ -336,6 +338,8 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                             margin: '1rem 5rem'
                                         }}>
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                                modifySpinnerRef.current.style.display = ''
+                                                submitToggleShow()
                                                 axios.post('v1/project/task', {
                                                     project_id: task.projectInfo?.projectId,
                                                     pm_id: userState.user.userId,
@@ -362,8 +366,8 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                         })
                                                     }).then()
                                                     s3Upload(taskId, fileVersion, uploadedFiles).then(() => {
-                                                        submitToggleShow()
                                                         toggleShow()
+                                                        modifySpinnerRef.current.style.display = 'none'
                                                     })
                                                 })
                                             }}>확인</MDBBtn>
@@ -374,6 +378,11 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             </MDBModalContent>
                         </MDBModalDialog>
                     </MDBModal>
+                    <div ref={modifySpinnerRef} className={'fullscreen-block'} style={{display: 'none'}}>
+                        <MDBSpinner role='status'>
+                            <span className='visually-hidden'>Loading...</span>
+                        </MDBSpinner>
+                    </div>
                 </MDBCol> : <MDBCol>
                     <MDBBtn color={'dark'} onClick={inputValidation}>수정</MDBBtn>
                     <MDBBtn color={'link'}
@@ -398,6 +407,8 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                             margin: '1rem 5rem'
                                         }}>
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                                modifySpinnerRef.current.style.display = ''
+                                                submitToggleShow()
                                                 const fileUpdated = uploadedFiles[0] instanceof File
                                                 axios.put('v1/project/task', {
                                                     task_hashed_id: hashedId,
@@ -427,7 +438,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                     }).then()
                                                     if (fileUpdated) {
                                                         s3Upload(taskId, task.fileVersion + 1, uploadedFiles).then(() => {
-                                                            submitToggleShow()
+                                                            modifySpinnerRef.current.style.display = 'none'
                                                             toggleShow()
                                                         })
                                                     }
@@ -440,6 +451,11 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             </MDBModalContent>
                         </MDBModalDialog>
                     </MDBModal>
+                    <div ref={modifySpinnerRef} className={'fullscreen-block'} style={{display: 'none'}}>
+                        <MDBSpinner role='status'>
+                            <span className='visually-hidden'>Loading...</span>
+                        </MDBSpinner>
+                    </div>
                     <MDBModal show={deleteModal} setShow={setDeleteModal} tabIndex='-1'>
                         <MDBModalDialog centered>
                             <MDBModalContent style={{backgroundColor: '#f28720ff'}}>

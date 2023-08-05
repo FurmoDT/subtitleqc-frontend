@@ -2,7 +2,7 @@ import FileViewer from "react-file-viewer";
 import {useEffect, useState} from "react";
 import axios from "../../../utils/axios";
 
-const DocViewer = ({updateIsRendered}) => {
+const DocViewer = () => {
     const [docxFile, setDocxFile] = useState(null)
 
     useEffect(() => {
@@ -13,10 +13,8 @@ const DocViewer = ({updateIsRendered}) => {
             const file = new File([response.data], 'sample.xlsx', {type: response.headers['content-type']});
             reader.onload = () => setDocxFile(reader.result)
             reader.readAsDataURL(file);
-        }).finally(() => {
-            updateIsRendered()
         })
-    }, [updateIsRendered])
+    }, [])
 
     return <>
         <div style={{height: '100%', overflow: 'auto'}}>

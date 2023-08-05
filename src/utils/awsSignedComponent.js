@@ -1,25 +1,14 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import axios from "./axios";
 
 const AWSSignedComponent = ({component: Component, ...props}) => {
     const [isInitialized, setIsInitialized] = useState(false);
-    const [isRendered, setIsRendered] = useState(false);
-    const updateIsRendered = useCallback(() => {
-        setIsRendered(true)
-    }, [])
 
     useEffect(() => {
-        axios.get('v1/aws/cloudfront/signed-cookies').then(() => {
-            setIsInitialized(true)
-        })
+        axios.get('v1/aws/cloudfront/signed-cookies').then(() => setIsInitialized(true))
     }, [props.type]);
 
-    useEffect(() => {
-        if (isRendered) axios.delete('v1/aws/cloudfront/signed-cookies').then(() => setIsRendered(false))
-    }, [isRendered])
-
-
-    return isInitialized && <Component updateIsRendered={updateIsRendered}/>;
+    return isInitialized && <Component/>;
 };
 
 export default AWSSignedComponent;

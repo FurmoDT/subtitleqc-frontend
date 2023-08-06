@@ -7,7 +7,7 @@ import {MDBBtn, MDBIcon, MDBInput, MDBRange} from "mdb-react-ui-kit";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-const PdfViewer = () => {
+const PdfViewer = ({textFile}) => {
     const [numPages, setNumPages] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
     const [pdfFile, setPdfFile] = useState(null)
@@ -15,7 +15,7 @@ const PdfViewer = () => {
     const [scale, setScale] = useState(1)
 
     useEffect(() => {
-        axios.get('https://s3.subtitleqc.ai/test.pdf', {headers: {Authorization: null}}).then((response) => {
+        axios.get(textFile, {headers: {Authorization: null}, responseType: 'blob'}).then((response) => {
             setPdfFile(URL.createObjectURL(new Blob([response.data], {type: response.headers['content-type']})))
         })
     }, [])

@@ -21,7 +21,7 @@ const TextPage = () => {
         axios.get(`v1/project/task/work`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond) => {
             setTextFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${fileExtension(respond.data.task_file_name)}`)
         }).catch(() => navigate('/error'))
-    }, [pathname])
+    }, [pathname, navigate])
 
     useEffect(() => {
         console.log(textFile)

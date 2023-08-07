@@ -13,9 +13,11 @@ import {createSegment, fileExtension, tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
 import SplitterLayout from 'react-splitter-layout-react-v18';
 import axios from "../../utils/axios";
+import {useNavigate} from "react-router-dom";
 
 const Production = () => {
     const pathname = window.location.pathname
+    const navigate = useNavigate()
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
     const languageSplitter = useRef(null)
@@ -146,9 +148,9 @@ const Production = () => {
 
     useEffect(() => {
         if (!pathname.split('/')[2]) return
-        axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond) => {
+        axios.get(`v1/project/task/work`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond) => {
             setMediaFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${fileExtension(respond.data.task_file_name)}`)
-        })
+        }).catch(() => navigate('/error'))
     }, [pathname])
 
     return <>

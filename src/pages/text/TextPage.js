@@ -6,9 +6,11 @@ import {useEffect, useState} from "react";
 import axios from "../../utils/axios";
 import {fileExtension} from "../../utils/functions";
 import PdfViewer from "./components/PdfViewer";
+import {useNavigate} from "react-router-dom";
 
 const TextPage = () => {
     const pathname = window.location.pathname
+    const navigate = useNavigate()
     const [textFile, setTextFile] = useState(null)
 
     useEffect(() => {
@@ -16,9 +18,9 @@ const TextPage = () => {
             setTextFile('https://subtitleqc.s3.ap-northeast-2.amazonaws.com/sample.pdf')
             return
         }
-        axios.get(`v1/project/task`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond) => {
+        axios.get(`v1/project/task/work`, {params: {hashed_id: pathname.split('/')[2]}}).then((respond) => {
             setTextFile(`https://s3.subtitleqc.ai/task/${respond.data.task_id}/source/original_v${respond.data.task_file_version}.${fileExtension(respond.data.task_file_name)}`)
-        })
+        }).catch(() => navigate('/error'))
     }, [pathname])
 
     useEffect(() => {

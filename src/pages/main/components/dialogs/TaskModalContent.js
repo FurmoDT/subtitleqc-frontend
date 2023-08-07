@@ -84,6 +84,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
     }, [])
 
     useEffect(() => {
+        if (!show) return
         axios.get(`/v1/user/workers`).then((response) => {
             setWorkerListOption(response.data.map(value => ({
                 value: value.user_id,
@@ -98,7 +99,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                 email: value.user_email
             })))
         })
-    }, [])
+    }, [show])
 
     useEffect(() => {
         if (!show || hashedId || pmListOption.length === 0) return

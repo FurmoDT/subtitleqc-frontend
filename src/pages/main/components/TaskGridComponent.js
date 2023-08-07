@@ -128,7 +128,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'pd', name: 'PD'},
             {key: 'taskName', name: '태스크명'},
             {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
-            {key: 'workType', name: '작업'},
+            {key: 'workType', name: '작업', renderCell: (row) => <div>{workType[row.row.workType]}</div>},
             {key: 'sourceLanguage', name: '출발어'},
             {key: 'targetLanguage', name: '도착어'},
             {key: 'createdAt', name: '생성일'},
@@ -140,7 +140,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 key: '-',
                 name: '',
                 renderCell: (row) => <><MDBBtn color={'link'} onClick={() => {
-                    navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)
+                    navigate(`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.workType}`)
                 }} disabled={!row.row.taskType}>이동하기</MDBBtn>
                     <div className={'mx-1'}/>
                     <MDBBtn color={'link'} onClick={() => {
@@ -163,7 +163,6 @@ const TaskGridComponent = ({startAt, endAt}) => {
             })
         } else {
             axios.get('v1/project/task/worker', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
-                console.log(response.data)
                 setRows(response.data.map((item, index) => {
                     const pd = JSON.parse(item.pd)
                     return {
@@ -172,7 +171,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         pd: Object.values(pd).join(','),
                         taskName: `${item.task_name}_${item.task_episode}`,
                         taskType: fileType(item.task_file_name),
-                        workType: workType[item.work_type],
+                        workType: item.work_type,
                         sourceLanguage: languageCodes[item.work_source_language],
                         targetLanguage: languageCodes[item.work_target_language],
                         createdAt: formatTimestamp(item.work_created_at),

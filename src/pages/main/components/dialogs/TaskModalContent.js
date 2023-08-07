@@ -181,12 +181,13 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol style={{display: 'flex'}}>
-                                {task.pd && <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
-                                                    components={{Option: CustomOption, Control: CustomControl}}
-                                                    isMulti isClearable={false} defaultValue={task.pd}
-                                                    onChange={(newValue) => {
-                                                        setTask(prevState => ({...prevState, pd: newValue}))
-                                                    }}/>}
+                                {task.pd.length &&
+                                    <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
+                                            components={{Option: CustomOption, Control: CustomControl}}
+                                            isMulti isClearable={false} defaultValue={task.pd}
+                                            onChange={(newValue) => {
+                                                setTask(prevState => ({...prevState, pd: newValue}))
+                                            }}/>}
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>
@@ -442,6 +443,9 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                             modifySpinnerRef.current.style.display = 'none'
                                                             toggleShow()
                                                         })
+                                                    } else {
+                                                        modifySpinnerRef.current.style.display = 'none'
+                                                        toggleShow()
                                                     }
                                                 })
                                             }}>확인</MDBBtn>

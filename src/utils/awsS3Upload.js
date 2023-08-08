@@ -1,6 +1,6 @@
 import axios from "./axios";
 import AWS from "aws-sdk"
-import {fileExtension, fileType} from "./functions";
+import {fileExtension} from "./functions";
 
 export const s3Upload = (taskId, fileVersion, files) => {
     return new Promise((resolve, reject) => {

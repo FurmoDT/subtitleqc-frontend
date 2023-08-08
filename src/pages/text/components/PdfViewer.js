@@ -18,7 +18,7 @@ const PdfViewer = ({textFile}) => {
         axios.get(textFile, {headers: {Authorization: null}, responseType: 'blob'}).then((response) => {
             setPdfFile(URL.createObjectURL(new Blob([response.data], {type: response.headers['content-type']})))
         })
-    }, [])
+    }, [textFile])
 
     const onDocumentLoadSuccess = ({numPages}) => {
         setNumPages(numPages);

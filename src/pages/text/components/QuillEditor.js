@@ -1,5 +1,8 @@
+import * as Y from 'yjs'
 import ReactQuill from "react-quill";
-import {useMemo, useRef, useState} from "react";
+import {QuillBinding} from 'y-quill'
+import {IndexeddbPersistence} from 'y-indexeddb'
+import {useEffect, useMemo, useRef, useState} from "react";
 import 'react-quill/dist/quill.snow.css';
 
 const icons = ReactQuill.Quill.import("ui/icons");
@@ -14,13 +17,13 @@ function redoChange() {
     this.quill.history.redo();
 }
 
-const QuillEditor = () => {
+const QuillEditor = ({editorType}) => {
     const [value, setValue] = useState('');
     const reactQuillRef = useRef(null)
     const modules = useMemo(() => {
         return {
             toolbar: {
-                container: [[{size: ['small', false, 'large', 'huge']}], [{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
+                container: [[{size: ['normal', 'large']}], [{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
                 handlers: {
                     undo: undoChange,
                     redo: redoChange
@@ -28,6 +31,27 @@ const QuillEditor = () => {
             }, history: {
                 delay: 1000, userOnly: true
             }
+        }
+    }, [])
+
+    useEffect(() => {
+        const ydoc = new Y.Doc()
+        const ytext = ydoc.getText('quill')
+        const binding = new QuillBinding(ytext, reactQuillRef.current.getEditor())
+        const persistence = new IndexeddbPersistence(editorType, ydoc)
+
+        persistence.once('synced', () => {
+            // TODO sync with server
+        })
+
+        ydoc.on('update', update => {
+            // TODO update server
+        })
+
+        return () => {
+            if (!reactQuillRef.current) persistence.clearData().then()
+            binding.destroy()
+            ydoc.destroy()
         }
     }, [])
 

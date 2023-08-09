@@ -16,10 +16,16 @@ const TextPage = () => {
 
     useEffect(() => {
         if (!pathname.split('/')[2]) {
+            setAuthority('test')
             setTextFile('https://subtitleqc.s3.ap-northeast-2.amazonaws.com/sample.pdf')
             return
         }
-        axios.get(`v1/project/task/work`, {params: {hashed_id: pathname.split('/')[2], work_type: pathname.split('/')[3]}}).then((respond) => {
+        axios.get(`v1/project/task/work`, {
+            params: {
+                hashed_id: pathname.split('/')[2],
+                work_type: pathname.split('/')[3]
+            }
+        }).then((respond) => {
             setAuthority(respond.data.authority)
             const task = respond.data.task
             setTextFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
@@ -30,15 +36,15 @@ const TextPage = () => {
         <MenuToolbar/>
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <SplitterLayout vertical={true} percentage={true} secondaryInitialSize={25}>
-                <SplitterLayout percentage={true} secondaryInitialSize={60}>
-                    {textFile && fileExtension(textFile).startsWith('doc') ? <DocViewer textFile={textFile}/> :
+                {textFile && <SplitterLayout percentage={true} secondaryInitialSize={60}>
+                    {fileExtension(textFile).startsWith('doc') ? <DocViewer textFile={textFile}/> :
                         fileExtension(textFile) === 'pdf' ? <PdfViewer textFile={textFile}/> : null
                     }
                     <SplitterLayout percentage={true} secondaryInitialSize={50}>
-                        <QuillEditor/>
-                        {['pm', 'pd', 'qc'].includes(authority) && <QuillEditor/>}
+                        <QuillEditor editorType={'original'}/>
+                        {['test', 'pm', 'pd', 'qc'].includes(authority) && <QuillEditor editorType={'review'}/>}
                     </SplitterLayout>
-                </SplitterLayout>
+                </SplitterLayout>}
                 <div/>
             </SplitterLayout>
         </div>

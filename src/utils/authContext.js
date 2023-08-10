@@ -1,4 +1,4 @@
-import {createContext, useCallback, useEffect, useState} from "react";
+import {createContext, useCallback, useEffect, useRef, useState} from "react";
 import axios from "./axios";
 import {HttpStatusCode} from "axios";
 
@@ -7,10 +7,12 @@ export const AuthContext = createContext(null);
 export const AuthProvider = ({children}) => {
     const [isInitialized, setIsInitialized] = useState(false);
     const [userState, setUserState] = useState({})
+    const accessTokenRef = useRef(null)
 
     const updateAccessToken = useCallback((accessToken) => {
         return new Promise((resolve) => {
             if (accessToken) {
+                accessTokenRef.current = accessToken
                 axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
                 return axios.get('/v1/auth/get_current_user').then((response) => {
                     setUserState({
@@ -24,6 +26,7 @@ export const AuthProvider = ({children}) => {
                     resolve(accessToken);
                 })
             } else {
+                accessTokenRef.current = null
                 delete axios.defaults.headers.common.Authorization
                 setUserState({})
                 resolve(accessToken);
@@ -37,7 +40,7 @@ export const AuthProvider = ({children}) => {
         }).finally(() => setIsInitialized(true))
     }, [updateAccessToken])
 
-    return isInitialized && <AuthContext.Provider value={{userState, updateAccessToken}}>
+    return isInitialized && <AuthContext.Provider value={{userState, accessTokenRef, updateAccessToken}}>
         {children}
     </AuthContext.Provider>;
 };

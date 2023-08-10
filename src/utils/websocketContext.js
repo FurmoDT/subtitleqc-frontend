@@ -1,10 +1,12 @@
-import {createContext, useCallback, useEffect, useRef, useState} from "react";
+import {createContext, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {localWsUrl, wsUrl} from "./config";
+import {AuthContext} from "./authContext";
 
 export const WebsocketContext = createContext(null);
 
 export const WebsocketProvider = ({children}) => {
     const [isInitialized, setIsInitialized] = useState(false)
+    const {accessTokenRef} = useContext(AuthContext)
     const wsRef = useRef(null)
 
     const connect = useCallback(() => {
@@ -15,6 +17,7 @@ export const WebsocketProvider = ({children}) => {
             }
             wsRef.current = new WebSocket(`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/ws`)
             wsRef.current.onopen = () => {
+                wsRef.current.send(accessTokenRef.current)
                 resolve()
                 console.log('ws opened')
             }
@@ -24,7 +27,7 @@ export const WebsocketProvider = ({children}) => {
                 setTimeout(connect, 10000)
             }
         })
-    }, [])
+    }, [accessTokenRef])
 
     useEffect(() => {
         connect().then(() => setIsInitialized(true))

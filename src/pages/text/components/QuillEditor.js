@@ -66,7 +66,7 @@ const QuillEditor = ({editorType}) => {
                 axios.get('v1/project/task/content', {
                     params: {hashed_id: taskHashedId, room_type: editorType}
                 }).then((r) => {
-                    Y.applyUpdate(ydoc, toUint8Array(r.data.task_crdt))
+                    if (r.data) Y.applyUpdate(ydoc, toUint8Array(r.data.task_crdt))
                 })
             }
         })

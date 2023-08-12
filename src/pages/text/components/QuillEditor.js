@@ -8,8 +8,9 @@ import 'react-quill/dist/quill.snow.css';
 import QuillCursors from 'quill-cursors'
 import {AuthContext} from "../../../utils/authContext";
 import {WebsocketContext} from "../../../utils/websocketContext";
-import {fromUint8Array} from "js-base64";
+import {fromUint8Array, toUint8Array} from "js-base64";
 import {localWsUrl, wsUrl} from "../../../utils/config";
+import axios from "../../../utils/axios";
 
 const icons = ReactQuill.Quill.import("ui/icons");
 ReactQuill.Quill.register('modules/cursors', QuillCursors)
@@ -62,10 +63,11 @@ const QuillEditor = ({editorType}) => {
 
         persistence.once('synced', () => {
             if (provider.awareness.getStates().size) {
-                // TODO sync with server DB
-                // axios.get('v1/project/task/content', {params: {hashed_id: taskHashedId}}).then((r) => {
-                //     r.data.forEach((item) => Y.applyUpdate(ydoc, toUint8Array(item)))
-                // })
+                axios.get('v1/project/task/content', {
+                    params: {hashed_id: taskHashedId, room_type: editorType}
+                }).then((r) => {
+                    Y.applyUpdate(ydoc, toUint8Array(r.data.task_crdt))
+                })
             }
         })
 

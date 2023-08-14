@@ -58,7 +58,7 @@ const QuillEditor = ({editorType}) => {
             signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`], maxConns: 20,
         })
         const persistence = new IndexeddbPersistence(editorType, ydoc)
-        provider.awareness.setLocalStateField('user', {name: `${userState.user.userId}`})
+        provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
         const binding = new QuillBinding(ytext, reactQuillRef.current.getEditor(), provider.awareness)
 
         persistence.once('synced', () => {

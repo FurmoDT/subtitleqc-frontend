@@ -29,6 +29,7 @@ function redoChange() {
 const QuillEditor = ({editorType}) => {
     const pathname = window.location.pathname
     const [value, setValue] = useState('');
+    const [iceservers, setIceServers] = useState(null)
     const reactQuillRef = useRef(null)
     const {userState} = useContext(AuthContext);
     const {wsRef} = useContext(WebsocketContext)
@@ -51,11 +52,20 @@ const QuillEditor = ({editorType}) => {
     }, [editorType])
 
     useEffect(() => {
+        axios.get(`v1/twilio/iceservers`).then((response) => {
+            setIceServers(response.data)
+        })
+    }, [])
+
+    useEffect(() => {
+        if (!iceservers) return
         const taskHashedId = pathname.split('/')[2]
         const ydoc = new Y.Doc()
         const ytext = ydoc.getText('quill')
         const provider = new WebrtcProvider(`${taskHashedId}-${editorType}`, ydoc, {
-            signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`], maxConns: 20,
+            signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`],
+            maxConns: 20,
+            peerOpts: {config: {iceServers: iceservers}}
         })
         const persistence = new IndexeddbPersistence(editorType, ydoc)
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
@@ -83,7 +93,7 @@ const QuillEditor = ({editorType}) => {
             binding.destroy()
             ydoc.destroy()
         }
-    }, [pathname, editorType, userState, wsRef])
+    }, [pathname, editorType, userState, wsRef, iceservers])
 
     return <ReactQuill ref={reactQuillRef} modules={modules} theme={'snow'} value={value} onChange={setValue}
                        style={{width: '100%', height: '100%'}}/>

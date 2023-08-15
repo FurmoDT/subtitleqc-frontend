@@ -26,10 +26,9 @@ function redoChange() {
     this.quill.history.redo();
 }
 
-const QuillEditor = ({editorType}) => {
+const QuillEditor = ({editorType, iceservers}) => {
     const pathname = window.location.pathname
     const [value, setValue] = useState('');
-    const [iceservers, setIceServers] = useState(null)
     const reactQuillRef = useRef(null)
     const {userState} = useContext(AuthContext);
     const {wsRef} = useContext(WebsocketContext)
@@ -52,13 +51,6 @@ const QuillEditor = ({editorType}) => {
     }, [editorType])
 
     useEffect(() => {
-        axios.get(`v1/twilio/iceservers`).then((response) => {
-            setIceServers(response.data)
-        })
-    }, [])
-
-    useEffect(() => {
-        if (!iceservers) return
         const taskHashedId = pathname.split('/')[2]
         const ydoc = new Y.Doc()
         const ytext = ydoc.getText('quill')
@@ -71,14 +63,17 @@ const QuillEditor = ({editorType}) => {
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
         const binding = new QuillBinding(ytext, reactQuillRef.current.getEditor(), provider.awareness)
 
-        persistence.once('synced', () => {
-            if (provider.awareness.getStates().size) {
+        provider.signalingConns[0].ws.addEventListener('message', (evt) => {
+            if (JSON.parse(evt.data).clients) {
                 axios.get('v1/project/task/content', {
                     params: {hashed_id: taskHashedId, room_type: editorType}
                 }).then((r) => {
                     if (r.data) Y.applyUpdate(ydoc, toUint8Array(r.data.task_crdt))
                 })
             }
+        }, {once: true})
+
+        persistence.once('synced', () => {
         })
 
         ydoc.on('update', update => {

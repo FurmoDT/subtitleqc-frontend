@@ -13,6 +13,7 @@ const TextPage = () => {
     const navigate = useNavigate()
     const [textFile, setTextFile] = useState(null)
     const [authority, setAuthority] = useState(null)
+    const [iceservers, setIceServers] = useState(null)
 
     useEffect(() => {
         if (!pathname.split('/')[2]) {
@@ -22,8 +23,7 @@ const TextPage = () => {
         }
         axios.get(`v1/project/task/work`, {
             params: {
-                hashed_id: pathname.split('/')[2],
-                work_type: pathname.split('/')[3]
+                hashed_id: pathname.split('/')[2], work_type: pathname.split('/')[3]
             }
         }).then((respond) => {
             setAuthority(respond.data.authority)
@@ -32,17 +32,25 @@ const TextPage = () => {
         }).catch(() => navigate('/error'))
     }, [pathname, navigate])
 
+    useEffect(() => {
+        axios.get(`v1/twilio/iceservers`).then((response) => {
+            setIceServers(response.data)
+        })
+    }, [])
+
+
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
         <MenuToolbar/>
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <SplitterLayout vertical={true} percentage={true} secondaryInitialSize={25}>
-                {textFile && <SplitterLayout percentage={true} secondaryInitialSize={60}>
-                    {fileExtension(textFile).startsWith('doc') ? <DocViewer textFile={textFile}/> :
-                        fileExtension(textFile) === 'pdf' ? <PdfViewer textFile={textFile}/> : null
-                    }
+                {textFile && iceservers && <SplitterLayout percentage={true} secondaryInitialSize={60}>
+                    {fileExtension(textFile).startsWith('doc') ?
+                        <DocViewer textFile={textFile}/> : fileExtension(textFile) === 'pdf' ?
+                            <PdfViewer textFile={textFile}/> : null}
                     <SplitterLayout percentage={true} secondaryInitialSize={50}>
-                        <QuillEditor editorType={'original'}/>
-                        {['test', 'pm', 'pd', 'qc'].includes(authority) && <QuillEditor editorType={'review'}/>}
+                        <QuillEditor editorType={'original'} iceservers={iceservers}/>
+                        {['test', 'pm', 'pd', 'qc'].includes(authority) &&
+                            <QuillEditor editorType={'review'} iceservers={iceservers}/>}
                     </SplitterLayout>
                 </SplitterLayout>}
                 <div/>

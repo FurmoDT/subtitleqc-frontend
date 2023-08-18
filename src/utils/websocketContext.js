@@ -49,7 +49,7 @@ export const WebsocketProvider = ({children}) => {
     useEffect(() => {
         if (isOnline) connect().then(() => setIsInitialized(true))
         return () => {
-            wsRef.current.close()
+            wsRef.current?.close()
         }
     }, [connect, isOnline])
 

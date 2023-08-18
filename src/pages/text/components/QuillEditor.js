@@ -63,13 +63,26 @@ const QuillEditor = ({editorType, iceservers}) => {
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
         const binding = new QuillBinding(ytext, reactQuillRef.current.getEditor(), provider.awareness)
 
-        provider.signalingConns[0].ws.addEventListener('message', (evt) => {
-            if (JSON.parse(evt.data).clients) {
+        const ws = provider.signalingConns[0].ws
+
+        ws.addEventListener('message', (evt) => {
+            const initialzeContent = () => {
                 axios.get('v1/project/task/content', {
                     params: {hashed_id: taskHashedId, room_type: editorType}
                 }).then((r) => {
                     if (r.data) Y.applyUpdate(ydoc, toUint8Array(r.data.task_crdt))
                 })
+            }
+            if (JSON.parse(evt.data).clients <= 1) {
+                initialzeContent()
+            } else {
+                let synced = false
+                provider.once('synced', () => {
+                    synced = true
+                })
+                setTimeout(() => {
+                    if (!synced) initialzeContent()
+                }, 1000)
             }
         }, {once: true})
 

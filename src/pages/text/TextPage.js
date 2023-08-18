@@ -52,7 +52,6 @@ const TextPage = () => {
         }
     }, [])
 
-
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
         <MenuToolbar/>
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>

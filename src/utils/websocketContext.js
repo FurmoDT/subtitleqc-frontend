@@ -23,11 +23,12 @@ export const WebsocketProvider = ({children}) => {
                 resolve()
                 console.log('ws opened')
             }
-            wsRef.current.onclose = () => {
+            wsRef.current.onclose = (event) => {
                 wsRef.current = null
+                if (event.code === 1006) return
                 axios.post('/v1/auth/refresh').then((response) => {
-                    if (response.status === HttpStatusCode.Ok) return updateAccessToken(response.data.access_token).then()
-                }).finally(() => setTimeout(connect, 10000))
+                    if (response.status === HttpStatusCode.Ok) return updateAccessToken(response.data.access_token).then(() => setTimeout(connect, 10000))
+                }).catch(() => null)
                 console.log('ws closed')
             }
         })

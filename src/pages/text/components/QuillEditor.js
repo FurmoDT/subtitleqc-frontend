@@ -32,6 +32,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
     const reactQuillRef = useRef(null)
     const [value, setValue] = useState('');
     const {wsRef} = useContext(WebsocketContext)
+    const [isInitialized, setIsInitialized] = useState(false)
     const [forceRender, setForceRender] = useState(0)
 
     const modules = useMemo(() => {
@@ -71,7 +72,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
                     params: {hashed_id: taskHashedId, room_type: editorType}
                 }).then((r) => {
                     if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
-                })
+                }).finally(() => setIsInitialized(true))
             }
             if (JSON.parse(evt.data).clients <= 1) {
                 initializeContent()
@@ -90,9 +91,11 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
         })
 
         yDoc.on('update', update => {
-            wsRef.current?.send(JSON.stringify({
-                room_id: `${taskHashedId}-${editorType}`, update: fromUint8Array(update)
-            }))
+            if (wsRef.current?.readyState === 1) {
+                wsRef.current.send(JSON.stringify({
+                    room_id: `${taskHashedId}-${editorType}`, update: fromUint8Array(update)
+                }))
+            }
         })
 
         return () => {
@@ -104,8 +107,8 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
     }, [taskHashedId, editorType, userState, wsRef, iceservers, forceRender])
 
     useEffect(() => {
-        setForceRender(forceRender + 1)
-    }, [isOnline, connectionType, userState])
+        if (isInitialized) setForceRender(prevState => prevState + 1)
+    }, [isOnline, connectionType, userState, isInitialized])
 
     return <ReactQuill ref={reactQuillRef} modules={modules} theme={'snow'} value={value} onChange={setValue}
                        style={{width: '100%', height: '100%'}}/>

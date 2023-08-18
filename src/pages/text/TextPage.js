@@ -2,11 +2,12 @@ import MenuToolbar from "./components/MenuToolbar";
 import QuillEditor from "./components/QuillEditor";
 import SplitterLayout from "react-splitter-layout-react-v18";
 import DocViewer from "./components/DocViewer";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "../../utils/axios";
 import {fileExtension} from "../../utils/functions";
 import PdfViewer from "./components/PdfViewer";
 import {useNavigate} from "react-router-dom";
+import {WebsocketContext} from "../../utils/websocketContext";
 
 const TextPage = () => {
     const pathname = window.location.pathname
@@ -14,6 +15,8 @@ const TextPage = () => {
     const [textFile, setTextFile] = useState(null)
     const [authority, setAuthority] = useState(null)
     const [iceservers, setIceServers] = useState(null)
+    const {isOnline} = useContext(WebsocketContext)
+    const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
 
     useEffect(() => {
         if (!pathname.split('/')[2]) {
@@ -38,6 +41,17 @@ const TextPage = () => {
         })
     }, [])
 
+    useEffect(() => {
+        const connection = navigator.connection
+        const handleConnectionChange = () => setConnectionType(connection.effectiveType)
+
+        navigator.connection.addEventListener('change', handleConnectionChange)
+
+        return () => {
+            navigator.connection.removeEventListener('change', handleConnectionChange)
+        }
+    }, [])
+
 
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
         <MenuToolbar/>
@@ -48,9 +62,11 @@ const TextPage = () => {
                         <DocViewer textFile={textFile}/> : fileExtension(textFile) === 'pdf' ?
                             <PdfViewer textFile={textFile}/> : null}
                     <SplitterLayout percentage={true} secondaryInitialSize={50}>
-                        <QuillEditor editorType={'original'} iceservers={iceservers}/>
+                        <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
+                                     connectionType={connectionType}/>
                         {['test', 'pm', 'pd', 'qc'].includes(authority) &&
-                            <QuillEditor editorType={'review'} iceservers={iceservers}/>}
+                            <QuillEditor editorType={'review'} iceservers={iceservers} isOnline={isOnline}
+                                         connectionType={connectionType}/>}
                     </SplitterLayout>
                 </SplitterLayout>}
                 <div/>

@@ -26,12 +26,13 @@ function redoChange() {
     this.quill.history.redo();
 }
 
-const QuillEditor = ({editorType, iceservers}) => {
-    const pathname = window.location.pathname
-    const [value, setValue] = useState('');
-    const reactQuillRef = useRef(null)
+const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
+    const taskHashedId = window.location.pathname.split('/')[2]
     const {userState} = useContext(AuthContext);
+    const reactQuillRef = useRef(null)
+    const [value, setValue] = useState('');
     const {wsRef} = useContext(WebsocketContext)
+    const [forceRender, setForceRender] = useState(0)
 
     const modules = useMemo(() => {
         return {
@@ -51,37 +52,36 @@ const QuillEditor = ({editorType, iceservers}) => {
     }, [editorType])
 
     useEffect(() => {
-        const taskHashedId = pathname.split('/')[2]
-        const ydoc = new Y.Doc()
-        const ytext = ydoc.getText('quill')
-        const provider = new WebrtcProvider(`${taskHashedId}-${editorType}`, ydoc, {
+        const yDoc = new Y.Doc()
+        const yText = yDoc.getText('quill')
+        const provider = new WebrtcProvider(`${taskHashedId}-${editorType}`, yDoc, {
             signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`],
             maxConns: 20,
             peerOpts: {config: {iceServers: iceservers}}
         })
-        const persistence = new IndexeddbPersistence(editorType, ydoc)
+        const persistence = new IndexeddbPersistence(editorType, yDoc)
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
-        const binding = new QuillBinding(ytext, reactQuillRef.current.getEditor(), provider.awareness)
+        const binding = new QuillBinding(yText, reactQuillRef.current.getEditor(), provider.awareness)
 
         const ws = provider.signalingConns[0].ws
 
         ws.addEventListener('message', (evt) => {
-            const initialzeContent = () => {
+            const initializeContent = () => {
                 axios.get('v1/project/task/content', {
                     params: {hashed_id: taskHashedId, room_type: editorType}
                 }).then((r) => {
-                    if (r.data) Y.applyUpdate(ydoc, toUint8Array(r.data.task_crdt))
+                    if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
                 })
             }
             if (JSON.parse(evt.data).clients <= 1) {
-                initialzeContent()
+                initializeContent()
             } else {
                 let synced = false
                 provider.once('synced', () => {
                     synced = true
                 })
                 setTimeout(() => {
-                    if (!synced) initialzeContent()
+                    if (!synced) initializeContent()
                 }, 1000)
             }
         }, {once: true})
@@ -89,8 +89,8 @@ const QuillEditor = ({editorType, iceservers}) => {
         persistence.once('synced', () => {
         })
 
-        ydoc.on('update', update => {
-            wsRef.current.send(JSON.stringify({
+        yDoc.on('update', update => {
+            wsRef.current?.send(JSON.stringify({
                 room_id: `${taskHashedId}-${editorType}`, update: fromUint8Array(update)
             }))
         })
@@ -99,9 +99,13 @@ const QuillEditor = ({editorType, iceservers}) => {
             provider.disconnect()
             provider.destroy()
             binding.destroy()
-            ydoc.destroy()
+            yDoc.destroy()
         }
-    }, [pathname, editorType, userState, wsRef, iceservers])
+    }, [taskHashedId, editorType, userState, wsRef, iceservers, forceRender])
+
+    useEffect(() => {
+        setForceRender(forceRender + 1)
+    }, [isOnline, connectionType, userState])
 
     return <ReactQuill ref={reactQuillRef} modules={modules} theme={'snow'} value={value} onChange={setValue}
                        style={{width: '100%', height: '100%'}}/>

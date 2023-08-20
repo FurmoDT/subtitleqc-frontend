@@ -90,8 +90,8 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
         persistence.once('synced', () => {
         })
 
-        yDoc.on('update', update => {
-            if (wsRef.current?.readyState === 1) {
+        yDoc.on('update', (update, origin) => {
+            if (wsRef.current?.readyState === 1 && origin && !origin.peerId) {
                 wsRef.current.send(JSON.stringify({
                     room_id: `${taskHashedId}-${editorType}`, update: fromUint8Array(update)
                 }))

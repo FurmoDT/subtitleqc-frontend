@@ -1,22 +1,24 @@
-import FileViewer from "react-file-viewer";
-import {useEffect, useState} from "react";
-import axios from "../../../utils/axios";
+import {useEffect, useRef} from "react";
+import WebViewer from '@pdftron/webviewer';
 
 const DocViewer = ({textFile}) => {
-    const [docxFile, setDocxFile] = useState(null)
+    const viewer = useRef(null);
 
     useEffect(() => {
-        axios.get(textFile, {headers: {Authorization: null}, responseType: 'blob'}).then((response) => {
-            const reader = new FileReader();
-            const file = new File([response.data], '', {type: response.headers['content-type']});
-            reader.onload = () => setDocxFile(reader.result)
-            reader.readAsDataURL(file);
-        })
-    }, [textFile])
+        WebViewer({
+            path: '/webviewer',
+            licenseKey: 'demo:1691321479102:7c5cde3a030000000098e5ae4b3bfe9f2e04b89f2529305bd83b50c6d7',
+            initialDoc: textFile,
+            disabledElements: ['menuButton', 'leftPanelButton', 'panToolButton', 'toggleNotesButton', 'selectToolButton', 'toolsHeader', 'ribbons'],
+        }, viewer.current,).then((instance) => {
+            const {documentViewer} = instance.Core;
+            // you can now call WebViewer APIs here...
+        });
+    }, [textFile]);
 
     return <>
-        <div style={{height: '100%', overflow: 'auto'}}>
-            {docxFile && <FileViewer filePath={docxFile} fileType={'docx'}/>}
+        <div className="MyComponent" style={{width: '100%', height: '100%'}}>
+            <div className="webviewer" ref={viewer} style={{height: "100%"}}/>
         </div>
     </>
 };

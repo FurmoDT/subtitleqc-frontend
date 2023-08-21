@@ -5,7 +5,6 @@ import DocViewer from "./components/DocViewer";
 import {useContext, useEffect, useState} from "react";
 import axios from "../../utils/axios";
 import {fileExtension} from "../../utils/functions";
-import PdfViewer from "./components/PdfViewer";
 import {useNavigate} from "react-router-dom";
 import {WebsocketContext} from "../../utils/websocketContext";
 
@@ -31,7 +30,11 @@ const TextPage = () => {
         }).then((respond) => {
             setAuthority(respond.data.authority)
             const task = respond.data.task
-            setTextFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
+            axios.get(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`, {
+                headers: {Authorization: null}, responseType: 'blob'
+            }).then((response) => {
+                setTextFile(URL.createObjectURL(new Blob([response.data], {type: response.headers['content-type']})))
+            })
         }).catch(() => navigate('/error'))
     }, [pathname, navigate])
 
@@ -57,9 +60,7 @@ const TextPage = () => {
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <SplitterLayout vertical={true} percentage={true} secondaryInitialSize={25}>
                 {textFile && iceservers && <SplitterLayout percentage={true} secondaryInitialSize={60}>
-                    {fileExtension(textFile).startsWith('doc') ?
-                        <DocViewer textFile={textFile}/> : fileExtension(textFile) === 'pdf' ?
-                            <PdfViewer textFile={textFile}/> : null}
+                    <DocViewer textFile={textFile}/>
                     <SplitterLayout percentage={true} secondaryInitialSize={50}>
                         <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
                                      connectionType={connectionType}/>

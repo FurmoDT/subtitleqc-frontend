@@ -60,8 +60,8 @@ const PdfViewer = ({textFile}) => {
                     <MDBIcon fas icon="caret-right" color={'dark'} size={'lg'}/>
                 </MDBBtn>
             </div>
-            <MDBRange style={{display: 'flex'}} step={'10'} defaultValue={0}
-                      onChange={(event) => setScale(1 + parseFloat(`${event.target.value}`) / 100)}/>
+            <MDBRange style={{display: 'flex'}} step={'10'} defaultValue={50}
+                      onChange={(event) => setScale(0.5 + parseFloat(`${event.target.value}`) / 100)}/>
         </div>
     </>
 };

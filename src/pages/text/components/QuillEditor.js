@@ -38,7 +38,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
     const modules = useMemo(() => {
         return {
             toolbar: {
-                container: [[{size: ['normal', 'large']}], [{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
+                container: [[{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
                 handlers: {
                     undo: undoChange, redo: redoChange
                 }
@@ -46,6 +46,10 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
                 delay: 1000, userOnly: true
             }, cursors: true,
         }
+    }, [])
+
+    const formats = useMemo(() => {
+        return ['color', 'background', 'bold', 'italic', 'underline', 'strike']
     }, [])
 
     useEffect(() => {
@@ -111,7 +115,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
         if (initialSyncedRef.current) setForceRender(prevState => prevState + 1)
     }, [isOnline, connectionType, userState, initialSyncedRef])
 
-    return <ReactQuill ref={reactQuillRef} modules={modules} theme={'snow'} value={value} onChange={setValue}
+    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'} value={value} onChange={setValue}
                        style={{width: '100%', height: '100%'}}/>
 };
 

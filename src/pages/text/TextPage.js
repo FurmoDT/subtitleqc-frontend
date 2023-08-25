@@ -2,7 +2,7 @@ import MenuToolbar from "./components/MenuToolbar";
 import QuillEditor from "./components/QuillEditor";
 import SplitterLayout from "react-splitter-layout-react-v18";
 import DocViewer from "./components/DocViewer";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import axios from "../../utils/axios";
 import {fileExtension} from "../../utils/functions";
 import {useNavigate} from "react-router-dom";
@@ -16,6 +16,7 @@ const TextPage = () => {
     const [iceservers, setIceServers] = useState(null)
     const {isOnline} = useContext(WebsocketContext)
     const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
+    const viewerSplitterRef = useRef(null)
 
     useEffect(() => {
         if (!pathname.split('/')[2]) {
@@ -51,20 +52,31 @@ const TextPage = () => {
         }
     }, [])
 
+    useEffect(() => {
+        if (textFile && iceservers) {
+            const handleMouseMove = viewerSplitterRef.current.handleMouseMove
+            viewerSplitterRef.current.handleMouseMove = (e) => {
+                handleMouseMove.call(viewerSplitterRef.current, e)
+                e.preventDefault()
+            }
+        }
+    }, [textFile, iceservers])
+
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
         <MenuToolbar/>
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <SplitterLayout vertical={true} percentage={true} secondaryInitialSize={25}>
-                {textFile && iceservers && <SplitterLayout percentage={true} secondaryInitialSize={60}>
-                    <DocViewer textFile={textFile}/>
-                    <SplitterLayout percentage={true} secondaryInitialSize={50}>
-                        <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
-                                     connectionType={connectionType}/>
-                        {['test', 'pm', 'pd', 'qc'].includes(authority) &&
-                            <QuillEditor editorType={'review'} iceservers={iceservers} isOnline={isOnline}
-                                         connectionType={connectionType}/>}
-                    </SplitterLayout>
-                </SplitterLayout>}
+                {textFile && iceservers &&
+                    <SplitterLayout ref={viewerSplitterRef} percentage={true} secondaryInitialSize={60}>
+                        <DocViewer viewerSplitterRef={viewerSplitterRef} textFile={textFile}/>
+                        <SplitterLayout percentage={true} secondaryInitialSize={50}>
+                            <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
+                                         connectionType={connectionType}/>
+                            {['test', 'pm', 'pd', 'qc'].includes(authority) &&
+                                <QuillEditor editorType={'review'} iceservers={iceservers} isOnline={isOnline}
+                                             connectionType={connectionType}/>}
+                        </SplitterLayout>
+                    </SplitterLayout>}
                 <div/>
             </SplitterLayout>
         </div>

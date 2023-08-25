@@ -1,7 +1,7 @@
 import {useEffect, useRef} from "react";
 import WebViewer from '@pdftron/webviewer';
 
-const DocViewer = ({textFile}) => {
+const DocViewer = ({textFile, viewerSplitterRef}) => {
     const viewer = useRef(null);
 
     useEffect(() => {
@@ -12,7 +12,11 @@ const DocViewer = ({textFile}) => {
         }, viewer.current,).then((instance) => {
             const {documentViewer} = instance.Core;
             instance.UI.loadDocument(textFile, {withCredentials: true})
-            // you can now call WebViewer APIs here...
+            instance.UI.setZoomLevel(1)
+            documentViewer.getAnnotationManager().enableReadOnlyMode()
+            documentViewer.addEventListener('mouseEnter', () => { // splitter resizing assistance
+                if (viewerSplitterRef.current.state.resizing) viewerSplitterRef.current.handleMouseUp()
+            })
         });
     }, [textFile]);
 

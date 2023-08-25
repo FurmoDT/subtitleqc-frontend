@@ -18,7 +18,7 @@ const DocViewer = ({textFile, viewerSplitterRef}) => {
                 if (viewerSplitterRef.current.state.resizing) viewerSplitterRef.current.handleMouseUp()
             })
         });
-    }, [textFile]);
+    }, [textFile, viewerSplitterRef]);
 
     return <>
         <div className="MyComponent" style={{width: '100%', height: '100%'}}>

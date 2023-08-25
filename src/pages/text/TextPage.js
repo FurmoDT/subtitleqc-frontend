@@ -57,7 +57,7 @@ const TextPage = () => {
             const handleMouseMove = viewerSplitterRef.current.handleMouseMove
             viewerSplitterRef.current.handleMouseMove = (e) => {
                 handleMouseMove.call(viewerSplitterRef.current, e)
-                e.preventDefault()
+                if (viewerSplitterRef.current.state.resizing) e.preventDefault()
             }
         }
     }, [textFile, iceservers])

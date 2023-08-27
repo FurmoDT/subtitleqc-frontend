@@ -14,9 +14,6 @@ const DocViewer = ({textFile, viewerSplitterRef}) => {
             instance.UI.loadDocument(textFile, {withCredentials: true})
             instance.UI.setZoomLevel(1)
             documentViewer.getAnnotationManager().enableReadOnlyMode()
-            documentViewer.addEventListener('mouseEnter', () => { // splitter resizing assistance
-                if (viewerSplitterRef.current.state.resizing) viewerSplitterRef.current.handleMouseUp()
-            })
         });
     }, [textFile, viewerSplitterRef]);
 

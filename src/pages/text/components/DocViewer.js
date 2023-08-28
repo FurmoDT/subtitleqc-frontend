@@ -1,7 +1,7 @@
 import {useEffect, useRef} from "react";
 import WebViewer from '@pdftron/webviewer';
 
-const DocViewer = ({textFile, viewerSplitterRef}) => {
+const DocViewer = ({textFile}) => {
     const viewer = useRef(null);
 
     useEffect(() => {
@@ -15,7 +15,7 @@ const DocViewer = ({textFile, viewerSplitterRef}) => {
             instance.UI.setZoomLevel(1)
             documentViewer.getAnnotationManager().enableReadOnlyMode()
         });
-    }, [textFile, viewerSplitterRef]);
+    }, [textFile]);
 
     return <>
         <div className="MyComponent" style={{width: '100%', height: '100%'}}>

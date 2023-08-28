@@ -57,15 +57,23 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'no', name: 'No', width: 60},
             {key: 'pm', name: 'PM'},
             {key: 'taskName', name: '태스크명'},
-            {key: 'type', name: '소재'},
-            {key: 'sourceLanguage', name: '출발어'},
-            {key: 'targetLanguage', name: '도착어'},
+            {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
             {key: 'requestedAt', name: '의뢰일'},
             {key: 'endedAt', name: '완료일'},
             {key: 'dueDate', name: '납품기한'},
             {key: 'memo', name: '메모'},
             {key: 'status', name: '상태'},
-            {key: '-', name: ''},
+            {
+                key: '-',
+                name: '',
+                renderCell: (row) => <><MDBBtn color={'link'} onClick={() => {
+                    navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)
+                }} disabled={!row.row.taskType}>이동하기</MDBBtn>
+                </>,
+                width: 210,
+                maxWidth: 210,
+                minWidth: 210
+            }
         ];
     } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
         const WorkGrid = ({hashedId}) => {
@@ -157,6 +165,20 @@ const TaskGridComponent = ({startAt, endAt}) => {
     useEffect(() => {
         setInitialized(false)
         if (userState.user.userRole === 'client') {
+            axios.get('v1/project/task/client', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
+                setRows(response.data.map((item, index) => {
+                    return {
+                        no: index + 1,
+                        pm: item.pm_name,
+                        taskName: `${item.task_name}_${item.task_episode}`,
+                        taskType: fileType(item.task_file_name),
+                        requestedAt: formatTimestamp(item.task_created_at),
+                        dueDate: formatTimestamp(item.task_due_date),
+                        memo: item.task_memo,
+                        extra: {hashedId: item.task_hashed_id}
+                    }
+                }))
+            })
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
             axios.get('v1/project/task/pm', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
                 setTaskAndWork(groupBy(response.data, (item) => item.task_hashed_id))

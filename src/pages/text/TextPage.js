@@ -53,7 +53,7 @@ const TextPage = () => {
     }, [])
 
     const EditorComponent = () => {
-        if (['test', 'pm', 'pd', 'qc'].includes(authority)) {
+        if (['test', 'pm', 'pd', 'qc', 'client'].includes(authority)) {
             return <Split horizontal={false} initialPrimarySize={'50%'} splitterSize={'5px'}>
                 <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
                              connectionType={connectionType}/>
@@ -69,8 +69,8 @@ const TextPage = () => {
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <Split horizontal={true} initialPrimarySize={'75%'} splitterSize={'5px'}>
                 {textFile && iceservers &&
-                    <Split ref={viewerSplitterRef} initialPrimarySize={'40%'} splitterSize={'5px'}>
-                        <DocViewer viewerSplitterRef={viewerSplitterRef} textFile={textFile}/>
+                    <Split initialPrimarySize={'40%'} splitterSize={'5px'}>
+                        <DocViewer textFile={textFile}/>
                         <EditorComponent/>
                     </Split>}
             </Split>

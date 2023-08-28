@@ -1,7 +1,7 @@
 import MenuToolbar from "./components/MenuToolbar";
 import QuillEditor from "./components/QuillEditor";
 import DocViewer from "./components/DocViewer";
-import {useContext, useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "../../utils/axios";
 import {fileExtension} from "../../utils/functions";
 import {useNavigate} from "react-router-dom";
@@ -16,7 +16,6 @@ const TextPage = () => {
     const [iceservers, setIceServers] = useState(null)
     const {isOnline} = useContext(WebsocketContext)
     const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
-    const viewerSplitterRef = useRef(null)
 
     useEffect(() => {
         if (!pathname.split('/')[2]) {

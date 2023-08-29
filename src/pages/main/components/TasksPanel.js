@@ -15,7 +15,7 @@ const TasksPanel = () => {
         if (userState.user.userRole === 'client') {
             return <RequestModal/>
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
-            return <><RegisterModal/></>
+            return <RegisterModal/>
         } else return null
     }
 

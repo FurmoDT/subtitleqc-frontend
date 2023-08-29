@@ -9,7 +9,7 @@ export const CustomOption = (props) => {
     </>;
 };
 
-export const CustomControl = (props) => {
+export const CustomPdControl = (props) => {
     return <>
         <components.Control {...props}>
             <label className={'text-muted'} style={{marginLeft: '0.5rem'}}>*PD</label>
@@ -18,8 +18,18 @@ export const CustomControl = (props) => {
     </>;
 };
 
+export const CustomPmControl = (props) => {
+    return <>
+        <components.Control {...props}>
+            <label className={'text-muted'} style={{marginLeft: '0.5rem'}}>*PM 이름</label>
+            {props.children}
+        </components.Control>
+    </>;
+};
+
 export const customStyle = {
     container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap'}),
+    clearIndicator: base => ({...base, padding: '0 0.5rem'}),
     dropdownIndicator: base => ({...base, padding: 0}),
     menu: base => ({...base, width: 'auto'}),
     valueContainer: base => ({...base, padding: '0 0.5rem', fontSize: '0.8rem'}),

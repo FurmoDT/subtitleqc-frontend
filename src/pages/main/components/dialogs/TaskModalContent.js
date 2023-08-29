@@ -14,7 +14,7 @@ import {
 } from 'mdb-react-ui-kit';
 import Select from "react-select";
 import axios from "../../../../utils/axios";
-import {CustomControl, customMultiStyle, CustomOption, customStyle} from "../../../../utils/customSelect";
+import {customMultiStyle, CustomOption, CustomPdControl, customStyle} from "../../../../utils/customSelect";
 import DatePicker from "react-datepicker";
 import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
 import TaskDropzone from "../TaskDropzone";
@@ -181,13 +181,12 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol style={{display: 'flex'}}>
-                                {task.pd.length &&
-                                    <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
-                                            components={{Option: CustomOption, Control: CustomControl}}
-                                            isMulti isClearable={false} defaultValue={task.pd}
-                                            onChange={(newValue) => {
-                                                setTask(prevState => ({...prevState, pd: newValue}))
-                                            }}/>}
+                                <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
+                                        components={{Option: CustomOption, Control: CustomPdControl}}
+                                        isMulti isClearable={false} defaultValue={task.pd}
+                                        onChange={(newValue) => {
+                                            setTask(prevState => ({...prevState, pd: newValue}))
+                                        }}/>
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>

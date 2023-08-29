@@ -26,7 +26,7 @@ function redoChange() {
     this.quill.history.redo();
 }
 
-const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
+const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled}) => {
     const taskHashedId = window.location.pathname.split('/')[2]
     const {userState} = useContext(AuthContext);
     const reactQuillRef = useRef(null)
@@ -115,8 +115,20 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType}) => {
         if (initialSyncedRef.current) setForceRender(prevState => prevState + 1)
     }, [isOnline, connectionType, userState, initialSyncedRef])
 
-    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'} value={value} onChange={setValue}
-                       style={{width: '100%', height: '100%'}}/>
+    useEffect(() => {
+        if (!disabled) return
+        reactQuillRef.current.editor.container.parentNode.addEventListener("mousedown", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        })
+        reactQuillRef.current.editor.container.parentNode.addEventListener("keydown", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        })
+    }, [disabled])
+
+    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={disabled ? 'bubble' : 'snow'}
+                       value={value} onChange={setValue} style={{width: '100%', height: '100%'}}/>
 };
 
 export default QuillEditor

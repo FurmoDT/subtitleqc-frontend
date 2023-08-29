@@ -55,23 +55,22 @@ const TextPage = () => {
         if (['test', 'pm', 'pd', 'qc', 'client'].includes(authority)) {
             return <Split horizontal={false} initialPrimarySize={'50%'} splitterSize={'5px'}>
                 <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
-                             connectionType={connectionType}/>
+                             connectionType={connectionType} disabled={!['test'].includes(authority)}/>
                 <QuillEditor editorType={'review'} iceservers={iceservers} isOnline={isOnline}
-                             connectionType={connectionType}/>
+                             connectionType={connectionType} disabled={['client'].includes(authority)}/>
             </Split>
         } else return <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
-                                   connectionType={connectionType}/>
+                                   connectionType={connectionType} disabled={false}/>
     }
 
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
         <MenuToolbar/>
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <Split horizontal={true} initialPrimarySize={'75%'} splitterSize={'5px'}>
-                {textFile && iceservers &&
-                    <Split initialPrimarySize={'40%'} splitterSize={'5px'}>
-                        <DocViewer textFile={textFile}/>
-                        <EditorComponent/>
-                    </Split>}
+                {textFile && iceservers && <Split initialPrimarySize={'40%'} splitterSize={'5px'}>
+                    <DocViewer textFile={textFile}/>
+                    <EditorComponent/>
+                </Split>}
             </Split>
         </div>
     </div>

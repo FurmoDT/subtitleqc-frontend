@@ -127,7 +127,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         })
     }, [disabled])
 
-    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={disabled ? 'bubble' : 'snow'}
+    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'}
                        value={value} onChange={setValue} style={{width: '100%', height: '100%'}}/>
 };
 

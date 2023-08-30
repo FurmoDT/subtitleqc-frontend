@@ -372,7 +372,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                         axios.post('v1/project/task/initialize', null, {
                                                             params: {
                                                                 task_id: taskId,
-                                                                file_version: task.fileVersion + 1,
+                                                                file_version: fileVersion,
                                                                 file_format: fileExtension(uploadedFiles[0].name)
                                                             }
                                                         }).then(() => {

@@ -20,6 +20,7 @@ import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../
 import TaskDropzone from "../TaskDropzone";
 import {AuthContext} from "../../../../utils/authContext";
 import {s3Upload} from "../../../../utils/awsS3Upload";
+import {fileExtension} from "../../../../utils/functions";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
@@ -181,12 +182,13 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol style={{display: 'flex'}}>
-                                {task.pd.length ? <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
-                                        components={{Option: CustomOption, Control: CustomPdControl}}
-                                        isMulti isClearable={false} defaultValue={task.pd}
-                                        onChange={(newValue) => {
-                                            setTask(prevState => ({...prevState, pd: newValue}))
-                                        }}/> : null}
+                                {task.pd.length ?
+                                    <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
+                                            components={{Option: CustomOption, Control: CustomPdControl}}
+                                            isMulti isClearable={false} defaultValue={task.pd}
+                                            onChange={(newValue) => {
+                                                setTask(prevState => ({...prevState, pd: newValue}))
+                                            }}/> : null}
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>
@@ -367,8 +369,16 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                         })
                                                     }).then()
                                                     s3Upload(taskId, fileVersion, uploadedFiles).then(() => {
-                                                        toggleShow()
-                                                        modifySpinnerRef.current.style.display = 'none'
+                                                        axios.post('v1/project/task/initialize', null, {
+                                                            params: {
+                                                                task_id: taskId,
+                                                                file_version: task.fileVersion + 1,
+                                                                file_format: fileExtension(uploadedFiles[0].name)
+                                                            }
+                                                        }).then(() => {
+                                                            toggleShow()
+                                                            modifySpinnerRef.current.style.display = 'none'
+                                                        })
                                                     })
                                                 })
                                             }}>확인</MDBBtn>
@@ -439,8 +449,17 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                     }).then()
                                                     if (fileUpdated) {
                                                         s3Upload(taskId, task.fileVersion + 1, uploadedFiles).then(() => {
-                                                            modifySpinnerRef.current.style.display = 'none'
-                                                            toggleShow()
+                                                            console.log(taskId, task.fileVersion + 1, fileExtension(uploadedFiles[0].name))
+                                                            axios.post('v1/project/task/initialize', null, {
+                                                                params: {
+                                                                    task_id: taskId,
+                                                                    file_version: task.fileVersion + 1,
+                                                                    file_format: fileExtension(uploadedFiles[0].name)
+                                                                }
+                                                            }).then(() => {
+                                                                toggleShow()
+                                                                modifySpinnerRef.current.style.display = 'none'
+                                                            })
                                                         })
                                                     } else {
                                                         modifySpinnerRef.current.style.display = 'none'

@@ -181,12 +181,12 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol style={{display: 'flex'}}>
-                                <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
+                                {task.pd.length ? <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
                                         components={{Option: CustomOption, Control: CustomPdControl}}
                                         isMulti isClearable={false} defaultValue={task.pd}
                                         onChange={(newValue) => {
                                             setTask(prevState => ({...prevState, pd: newValue}))
-                                        }}/>
+                                        }}/> : null}
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>

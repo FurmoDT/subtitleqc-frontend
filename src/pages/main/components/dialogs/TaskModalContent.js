@@ -449,7 +449,6 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                     }).then()
                                                     if (fileUpdated) {
                                                         s3Upload(taskId, task.fileVersion + 1, uploadedFiles).then(() => {
-                                                            console.log(taskId, task.fileVersion + 1, fileExtension(uploadedFiles[0].name))
                                                             axios.post('v1/project/task/initialize', null, {
                                                                 params: {
                                                                     task_id: taskId,

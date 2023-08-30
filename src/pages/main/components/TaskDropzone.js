@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useRef} from 'react';
 import {MDBBtn, MDBListGroup, MDBListGroupItem,} from 'mdb-react-ui-kit';
+import {fileType} from "../../../utils/functions";
 
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem', color: 'black'}
 const baseStyle = {borderStyle: 'none', height: '6rem', overflowY: 'auto', backgroundColor: 'white'};
@@ -10,6 +11,19 @@ let counter = 0
 const TaskDropzone = ({uploadedFiles, setUploadedFiles, multiple}) => {
     const dropzoneRef = useRef(null)
     const fileInputRef = useRef(null)
+
+    const uploadFilesHandler = useCallback((files) => {
+        Array.from(files).forEach((file) => {
+            if (!fileType(file.name)) return
+            setUploadedFiles(prev => {
+                if (prev.map(value => value.name).includes(file.name)) return prev
+                else {
+                    if (multiple) return [...prev, file]
+                    else return [file]
+                }
+            })
+        })
+    }, [multiple, setUploadedFiles])
 
     const handleDragEnter = useCallback((e) => {
         e.preventDefault();
@@ -36,16 +50,8 @@ const TaskDropzone = ({uploadedFiles, setUploadedFiles, multiple}) => {
         e.stopPropagation();
         counter--
         Object.assign(dropzoneRef.current.style, baseStyle);
-        Array.from(e.dataTransfer.files).forEach((file) => {
-            setUploadedFiles(prev => {
-                if (prev.map(value => value.name).includes(file.name)) return prev
-                else {
-                    if (multiple) return [...prev, file]
-                    else return [file]
-                }
-            })
-        })
-    }, [multiple, setUploadedFiles])
+        uploadFilesHandler(e.dataTransfer.files)
+    }, [uploadFilesHandler])
     const handleClick = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -79,15 +85,7 @@ const TaskDropzone = ({uploadedFiles, setUploadedFiles, multiple}) => {
         </MDBListGroup>
         <input ref={fileInputRef} style={{display: 'none'}} multiple={multiple} type={'file'}
                onChange={(e) => {
-                   Array.from(e.target.files).forEach((file) => {
-                       setUploadedFiles(prev => {
-                           if (prev.map(value => value.name).includes(file.name)) return prev
-                           else {
-                               if (multiple) return [...prev, file]
-                               else return [file]
-                           }
-                       })
-                   })
+                   uploadFilesHandler(e.target.files)
                }}/>
     </>
 }

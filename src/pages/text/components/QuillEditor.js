@@ -5,6 +5,7 @@ import {IndexeddbPersistence} from 'y-indexeddb'
 import {WebrtcProvider} from 'y-webrtc'
 import {useContext, useEffect, useMemo, useRef, useState} from "react";
 import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css';
 import QuillCursors from 'quill-cursors'
 import {AuthContext} from "../../../utils/authContext";
 import {WebsocketContext} from "../../../utils/websocketContext";
@@ -127,7 +128,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         })
     }, [disabled])
 
-    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'}
+    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={disabled ? 'bubble' : 'snow'}
                        value={value} onChange={setValue} style={{width: '100%', height: '100%'}}/>
 };
 

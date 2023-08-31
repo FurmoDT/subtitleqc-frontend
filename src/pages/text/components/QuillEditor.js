@@ -124,7 +124,8 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     }, [isOnline, connectionType, userState, initialSyncedRef])
 
     return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'} readOnly={disabled}
-                       value={value} onChange={setValue} style={{width: '100%', height: '100%'}}/>
+                       value={value} onChange={setValue}
+                       style={{width: '100%', height: '100%', backgroundColor: disabled ? '#DDDDDD' : ''}}/>
 };
 
 export default QuillEditor

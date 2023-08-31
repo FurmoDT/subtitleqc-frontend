@@ -143,7 +143,6 @@ const TimelineWindow = (props) => {
                     if (props.hotRef.current.getDataAtCell(row, 0) !== start) cells.push([row, 0, start])
                     if (props.hotRef.current.getDataAtCell(row, 1) !== end) cells.push([row, 1, end])
                     props.hotRef.current.setDataAtCell(cells)
-                    event.segment.update()
                 })
                 peaks.on("segments.click", (event) => {
                     if (props.selectedSegment.current === event.segment) {
@@ -155,6 +154,7 @@ const TimelineWindow = (props) => {
                     props.selectedSegment.current?.update({color: 'white', editable: false})
                     props.selectedSegment.current = event.segment
                     props.selectedSegment.current.update({color: 'red', editable: !props.tcLockRef.current})
+                    event.evt.target.style.cursor = 'move'
                 })
                 peaks.on('peaks.ready', () => {
                     if (props.playerRef.current.getInternalPlayer()?.src !== props.video) {
@@ -223,14 +223,10 @@ const TimelineWindow = (props) => {
                              onChange={(event) => event.target.blur()}/>
             </div>
         </div>
-        <div style={{backgroundColor: 'black'}} onClick={() => {
-            props.focusedRef.current = props.waveformRef.current
-        }}>
+        <div style={{backgroundColor: 'black'}} onClick={() => props.focusedRef.current = props.waveformRef.current}>
             <div ref={statusRef} className={'text-center'}>
                 <MDBSpinner ref={spinnerRef} style={{
-                    width: `${props.size.height / 3}px`,
-                    height: `${props.size.height / 3}px`,
-                    marginTop: '10px'
+                    width: `${props.size.height / 3}px`, height: `${props.size.height / 3}px`, marginTop: '10px'
                 }}/>
                 <MDBBtn ref={warningRef} style={{marginTop: '10px'}} size={'sm'} color={'link'} disabled>
                     <MDBIcon fas icon="exclamation-circle" size={'3x'} color={'white'}/>

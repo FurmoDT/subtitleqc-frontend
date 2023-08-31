@@ -12,6 +12,7 @@ import {WebsocketContext} from "../../../utils/websocketContext";
 import {fromUint8Array, toUint8Array} from "js-base64";
 import {localWsUrl, wsUrl} from "../../../utils/config";
 import axios from "../../../utils/axios";
+import Delta from "quill-delta";
 
 const icons = ReactQuill.Quill.import("ui/icons");
 ReactQuill.Quill.register('modules/cursors', QuillCursors)
@@ -37,6 +38,25 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     const [forceRender, setForceRender] = useState(0)
     const initialSyncedRef = useRef(false)
 
+    function preserveSizeFormat(node, delta) {
+        const match = node.className.match(/ql-size-(.*)/)
+        const fontSize = node.style['font-size']
+        const styleMatch = fontSize && fontSize !== '16px'
+        if (match || styleMatch) {
+            delta.map(function (op) {
+                if (!op.attributes) op.attributes = {}
+                if (match) {
+                    op.attributes.size = match[1]
+                } else if (styleMatch) {
+                    const large = fontSize <= '13px' || fontSize <= '0.8125rem'
+                    op.attributes.size = large ? 'large' : 'huge'
+                }
+                return op
+            })
+        }
+        return delta
+    }
+
     const modules = useMemo(() => {
         if (disabled) {
             return {toolbar: {container: [['viewer']], handlers: {viewer: () => null}}, cursors: true}
@@ -49,7 +69,11 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
                     }
                 }, history: {
                     delay: 1000, userOnly: true
-                }, cursors: true,
+                }, cursors: true, clipboard: {
+                    matchers: [[Node.ELEMENT_NODE, function (node, delta) {
+                        return delta.compose(new Delta().retain(delta.length()));
+                    }], ['span', preserveSizeFormat]]
+                },
             }
 
         }

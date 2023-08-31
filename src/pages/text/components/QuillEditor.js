@@ -18,6 +18,7 @@ ReactQuill.Quill.register('modules/cursors', QuillCursors)
 
 icons['undo'] = '<svg viewBox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10" /><path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"/></svg>'
 icons["redo"] = '<svg viewbox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon><path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path></svg>'
+icons["viewer"] = '<label style="width: auto">VIEW&nbsp;MODE</label>'
 
 function undoChange() {
     this.quill.history.undo();
@@ -37,20 +38,25 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     const initialSyncedRef = useRef(false)
 
     const modules = useMemo(() => {
-        return {
-            toolbar: {
-                container: [[{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
-                handlers: {
-                    undo: undoChange, redo: redoChange
-                }
-            }, history: {
-                delay: 1000, userOnly: true
-            }, cursors: true,
+        if (disabled) {
+            return {toolbar: {container: [['viewer']], handlers: {viewer: () => null}}, cursors: true}
+        } else {
+            return {
+                toolbar: {
+                    container: [[{'size': ['small', false, 'large']}], [{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
+                    handlers: {
+                        undo: undoChange, redo: redoChange
+                    }
+                }, history: {
+                    delay: 1000, userOnly: true
+                }, cursors: true,
+            }
+
         }
-    }, [])
+    }, [disabled])
 
     const formats = useMemo(() => {
-        return ['color', 'background', 'bold', 'italic', 'underline', 'strike']
+        return ['size', 'color', 'background', 'bold', 'italic', 'underline', 'strike']
     }, [])
 
     useEffect(() => {
@@ -67,6 +73,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         })
         const persistence = new IndexeddbPersistence(editorType, yDoc)
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
+        if (disabled) provider.awareness.setLocalState(null)
         const binding = new QuillBinding(yText, reactQuillRef.current.getEditor(), provider.awareness)
 
         const ws = provider.signalingConns[0].ws
@@ -110,25 +117,13 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             binding.destroy()
             yDoc.destroy()
         }
-    }, [taskHashedId, editorType, userState, wsRef, iceservers, forceRender])
+    }, [taskHashedId, editorType, userState, wsRef, iceservers, forceRender, disabled])
 
     useEffect(() => {
         if (initialSyncedRef.current) setForceRender(prevState => prevState + 1)
     }, [isOnline, connectionType, userState, initialSyncedRef])
 
-    useEffect(() => {
-        if (!disabled) return
-        reactQuillRef.current.editor.container.parentNode.addEventListener("mousedown", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        })
-        reactQuillRef.current.editor.container.parentNode.addEventListener("keydown", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        })
-    }, [disabled])
-
-    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={disabled ? 'bubble' : 'snow'}
+    return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'} readOnly={disabled}
                        value={value} onChange={setValue} style={{width: '100%', height: '100%'}}/>
 };
 

@@ -14,7 +14,7 @@ const SignupPage = () => {
     const passwordInputRef = useRef(null)
     const confirmPasswordInputRef = useRef(null)
     const errorLabelRef = useRef(null)
-    const {setAccessToken} = useContext(AuthContext);
+    const {updateAccessToken} = useContext(AuthContext);
     return <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <div className={'auth-container'}>
             <div className={'auth-title'}>회원가입</div>
@@ -52,12 +52,11 @@ const SignupPage = () => {
                         user_email: emailInputRef.current.value,
                         user_password: passwordInputRef.current.value
                     }, user: {
-                        user_name: nameInputRef.current.value,
-                        user_birthday: birthInputRef.current.value
+                        user_name: nameInputRef.current.value, user_birthday: birthInputRef.current.value
                     }
                 }).then((response) => {
                     if (response.status === HttpStatusCode.Ok) {
-                        setAccessToken(response.data.access_token)
+                        updateAccessToken(response.data.access_token)
                         navigate('/')
                     }
                 }).catch((reason) => {

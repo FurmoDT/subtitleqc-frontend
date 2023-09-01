@@ -74,7 +74,7 @@ const TimelineWindow = (props) => {
                 playheadColor: 'white',
                 formatPlayheadTime: (seconds) => secToTc(seconds),
                 formatAxisTime: (seconds) => secToTc(seconds),
-                playheadClickTolerance: -1
+                playheadClickTolerance: -1 // uncaught
             },
             overview: {
                 container: overviewRef.current,
@@ -145,6 +145,7 @@ const TimelineWindow = (props) => {
                     props.hotRef.current.setDataAtCell(cells)
                 })
                 peaks.on("segments.click", (event) => {
+                    peaks.views.getView('zoomview')?.enableSegmentDragging(false)
                     if (props.selectedSegment.current === event.segment) {
                         event.evt.target.style.cursor = 'default'
                         props.selectedSegment.current.update({color: 'white', editable: false})
@@ -154,6 +155,7 @@ const TimelineWindow = (props) => {
                     props.selectedSegment.current?.update({color: 'white', editable: false})
                     props.selectedSegment.current = event.segment
                     props.selectedSegment.current.update({color: 'red', editable: !props.tcLockRef.current})
+                    peaks.views.getView('zoomview')?.enableSegmentDragging(true)
                     event.evt.target.style.cursor = 'move'
                 })
                 peaks.on('peaks.ready', () => {
@@ -166,7 +168,6 @@ const TimelineWindow = (props) => {
                 })
                 amplitudeScale.current = 2
                 peaks.views.getView('zoomview')?.setAmplitudeScale(amplitudeScale.current)
-                peaks.views.getView('zoomview')?.enableSegmentDragging(true)
                 peaks.views.getView('zoomview')?.setSegmentDragMode('no-overlap')
             }
         })

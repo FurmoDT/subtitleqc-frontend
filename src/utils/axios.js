@@ -4,10 +4,9 @@ import {useContext, useEffect} from "react";
 import {AuthContext} from "./authContext";
 
 const axios = Axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? localApiUrl : apiUrl
+    baseURL: process.env.NODE_ENV === 'development' ? localApiUrl : apiUrl,
+    withCredentials: true
 });
-
-axios.defaults.withCredentials = true;
 
 function AxiosInterceptor({children}) {
     const {updateAccessToken} = useContext(AuthContext);

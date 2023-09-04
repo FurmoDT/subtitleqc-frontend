@@ -62,7 +62,11 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'endedAt', name: '완료일'},
             {key: 'dueDate', name: '납품기한'},
             {key: 'memo', name: '메모'},
-            {key: 'status', name: '상태'},
+            {
+                key: 'status',
+                name: '상태',
+                renderCell: (row) => <div>{row.row.extra.work.length ? '🟡진행중' : '신규'}</div>
+            },
             {
                 key: '-',
                 name: '',
@@ -90,11 +94,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 colSpan: (args) => args.type === 'ROW' && args.row.type === 'DETAIL' ? 17 : undefined,
                 cellClass: (row) => row.type === 'DETAIL' ? 'rdg-detail-cell' : undefined,
                 renderCell: ({row, tabIndex, onRowChange}) => {
-                    if (row.type === 'DETAIL') {
-                        return <WorkGrid hashedId={row.hashedId}/>
-                    }
-                    return <div><span onClick={() => onRowChange({...row, expanded: !row.expanded})}>
-                        <span tabIndex={tabIndex}>{row.expanded ? '\u25BC' : '\u25B6'}</span></span></div>
+                    if (row.type === 'DETAIL') return <WorkGrid hashedId={row.hashedId}/>
+                    return taskAndWork[row.extra.hashedId].work.length ?
+                        <div><span tabIndex={tabIndex} onClick={() => onRowChange({...row, expanded: !row.expanded})}>
+                            {row.expanded ? '\u25BC' : '\u25B6'}</span></div> : null
                 }
             },
             {key: 'no', name: 'No', width: 60},
@@ -111,7 +114,11 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {key: 'endedAt', name: '완료일'},
             {key: 'dueDate', name: '납품기한'},
             {key: 'memo', name: '메모'},
-            {key: 'status', name: '상태'},
+            {
+                key: 'status',
+                name: '상태',
+                renderCell: (row) => <div>{taskAndWork[row.row.extra.hashedId]?.work?.length ? '🟡진행중' : '신규'}</div>
+            },
             {
                 key: '-',
                 name: '',
@@ -175,7 +182,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         requestedAt: formatTimestamp(item.task_created_at),
                         dueDate: formatTimestamp(item.task_due_date),
                         memo: item.task_memo,
-                        extra: {hashedId: item.task_hashed_id}
+                        extra: {hashedId: item.task_hashed_id, work: item.work}
                     }
                 }))
             })
@@ -210,7 +217,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
         if (!taskAndWork) return
         setRows(Object.values(taskAndWork).reduce((result, current, currentIndex) => {
             result.push({...current.task, expanded: true, type: 'MASTER', no: currentIndex + 1})
-            result.push({type: 'DETAIL', hashedId: current.task.extra.hashedId})
+            current.work.length && result.push({type: 'DETAIL', hashedId: current.task.extra.hashedId})
             return result
         }, []))
     }, [taskAndWork])

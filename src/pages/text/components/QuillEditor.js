@@ -151,12 +151,12 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     }, [isOnline, connectionType, userState, initialSyncedRef])
 
     useEffect(() => {
-        grammarly().then(r => {
+        !disabled && grammarly().then(r => {
             r.addPlugin(reactQuillRef.current.editor.root, {
                 documentDialect: "american",
             })
         })
-    }, [])
+    }, [disabled])
 
     return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'} readOnly={disabled}
                        value={value} onChange={setValue}

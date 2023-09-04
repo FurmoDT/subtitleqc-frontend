@@ -13,6 +13,7 @@ import {fromUint8Array, toUint8Array} from "js-base64";
 import {localWsUrl, wsUrl} from "../../../utils/config";
 import axios from "../../../utils/axios";
 import Delta from "quill-delta";
+import * as Grammarly from "@grammarly/editor-sdk";
 
 const icons = ReactQuill.Quill.import("ui/icons");
 ReactQuill.Quill.register('modules/cursors', QuillCursors)
@@ -28,6 +29,8 @@ function undoChange() {
 function redoChange() {
     this.quill.history.redo();
 }
+
+const grammarly = async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn")
 
 const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled}) => {
     const taskHashedId = window.location.pathname.split('/')[2]
@@ -146,6 +149,14 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     useEffect(() => {
         if (initialSyncedRef.current) setForceRender(prevState => prevState + 1)
     }, [isOnline, connectionType, userState, initialSyncedRef])
+
+    useEffect(() => {
+        grammarly().then(r => {
+            r.addPlugin(reactQuillRef.current.editor.root, {
+                documentDialect: "american",
+            })
+        })
+    }, [])
 
     return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'} readOnly={disabled}
                        value={value} onChange={setValue}

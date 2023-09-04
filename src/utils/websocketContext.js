@@ -49,9 +49,6 @@ export const WebsocketProvider = ({children}) => {
 
     useEffect(() => {
         if (isOnline) connect().then(() => setIsInitialized(true))
-        return () => {
-            wsRef.current?.close()
-        }
     }, [connect, isOnline])
 
     return isInitialized && <WebsocketContext.Provider value={{wsRef, isOnline}}>

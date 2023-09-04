@@ -105,7 +105,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
 
         const ws = provider.signalingConns[0].ws
 
-        ws.addEventListener('message', (evt) => {
+        taskHashedId && ws.addEventListener('message', (evt) => {
             const initializeContent = () => {
                 axios.get('v1/project/task/content', {
                     params: {hashed_id: taskHashedId, room_type: editorType}

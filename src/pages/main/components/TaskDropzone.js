@@ -3,7 +3,7 @@ import {MDBBtn, MDBListGroup, MDBListGroupItem,} from 'mdb-react-ui-kit';
 import {fileType} from "../../../utils/functions";
 
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem', color: 'black'}
-const baseStyle = {borderStyle: 'none', height: '6rem', overflowY: 'auto', backgroundColor: 'white'};
+const baseStyle = {borderStyle: 'none'};
 const dragStyle = {borderStyle: 'dashed', borderColor: '#2196f3'};
 
 let counter = 0
@@ -74,7 +74,13 @@ const TaskDropzone = ({uploadedFiles, setUploadedFiles, multiple}) => {
     }, [handleDragEnter, handleDragOver, handleDragLeave, handleDrop, handleClick])
 
     return <>
-        <MDBListGroup ref={dropzoneRef} numbered={multiple} style={{textAlign: 'left'}}>
+        <MDBListGroup ref={dropzoneRef} numbered={multiple} style={{
+            height: '6rem',
+            backgroundColor: 'white',
+            borderRadius: '0.25rem',
+            textAlign: 'left',
+            overflowY: 'auto'
+        }}>
             {uploadedFiles.length ? uploadedFiles.map((value) => <MDBListGroupItem
                     key={value.name} style={{padding: '0 0.75rem'}}>{value.name}
                     <MDBBtn className='btn-close' color='none'

@@ -368,18 +368,23 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                             }
                                                         })
                                                     }).then()
-                                                    s3Upload(taskId, fileVersion, uploadedFiles).then(() => {
-                                                        axios.post('v1/project/task/initialize', null, {
-                                                            params: {
-                                                                task_id: taskId,
-                                                                file_version: fileVersion,
-                                                                file_format: fileExtension(uploadedFiles[0].name)
-                                                            }
-                                                        }).then(() => {
-                                                            toggleShow()
-                                                            modifySpinnerRef.current.style.display = 'none'
+                                                    if (uploadedFiles.length) {
+                                                        s3Upload(taskId, fileVersion, uploadedFiles).then(() => {
+                                                            axios.post('v1/project/task/initialize', null, {
+                                                                params: {
+                                                                    task_id: taskId,
+                                                                    file_version: fileVersion,
+                                                                    file_format: fileExtension(uploadedFiles[0].name)
+                                                                }
+                                                            }).then(() => {
+                                                                toggleShow()
+                                                                modifySpinnerRef.current.style.display = 'none'
+                                                            })
                                                         })
-                                                    })
+                                                    } else {
+                                                        modifySpinnerRef.current.style.display = 'none'
+                                                        toggleShow()
+                                                    }
                                                 })
                                             }}>확인</MDBBtn>
                                             <MDBBtn color='dark' onClick={submitToggleShow}>취소</MDBBtn>

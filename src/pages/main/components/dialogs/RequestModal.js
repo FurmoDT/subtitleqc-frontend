@@ -139,10 +139,11 @@ const RequestModal = () => {
                                                                 project_id: response.data.project_id,
                                                                 task_name: task.title,
                                                                 task_due_date: task.dueDate,
+                                                                task_memo: task.memo,
                                                                 task_file_name: file.name
                                                             }).then((taskResponse) => {
                                                                 const [taskId, fileVersion] = taskResponse.data
-                                                                s3Upload(taskId, fileVersion, file).then(() => {
+                                                                s3Upload(taskId, fileVersion, [file]).then(() => {
                                                                     axios.post('v1/project/task/initialize', null, {
                                                                         params: {
                                                                             task_id: taskId,

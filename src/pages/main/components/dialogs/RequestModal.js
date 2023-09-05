@@ -134,8 +134,7 @@ const RequestModal = () => {
                                                     modifySpinnerRef.current.style.display = ''
                                                     submitToggleShow()
                                                     axios.get('v1/project/empty').then((response) => {
-                                                        uploadedFiles.map((file, index) => {
-                                                            axios.post('v1/project/task', {
+                                                        uploadedFiles.map((file, index) => axios.post('v1/project/task', {
                                                                 pm_id: task.pm.value,
                                                                 project_id: response.data.project_id,
                                                                 task_name: task.title,
@@ -158,7 +157,7 @@ const RequestModal = () => {
                                                                     })
                                                                 })
                                                             })
-                                                        })
+                                                        )
                                                     })
                                                 }}>확인</MDBBtn>
                                                 <MDBBtn color='dark' onClick={submitToggleShow}>취소</MDBBtn>

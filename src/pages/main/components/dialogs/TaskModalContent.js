@@ -43,7 +43,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
 
     const inputValidation = () => {
         let error = false
-        if (!(task.dueDate && task.pd && task.programName && task.episode)) {
+        if (!(task.dueDate && task.pd.length && task.programName && task.episode)) {
             taskValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
             error = true
         } else taskValidationLabelRef.current.innerText = ''
@@ -172,7 +172,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             <MDBCol style={{minWidth: '155px', maxWidth: '155px'}}>
                                 <MDBInput ref={projectCodeRef} style={inputStyle} label={'프로젝트 코드'}
                                           labelStyle={labelStyle} defaultValue={task.projectInfo?.projectCode}
-                                          onBlur={(event) => setProjectInfo(event.target.value)}/>
+                                          onBlur={(event) => setProjectInfo(event.target.value.trim())}/>
                             </MDBCol>
                             <MDBCol>
                                 <MDBInput label={'클라이언트명'} labelStyle={labelStyle} disabled tabIndex={-1}
@@ -182,13 +182,12 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol style={{display: 'flex'}}>
-                                {task.pd.length ?
-                                    <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
-                                            components={{Option: CustomOption, Control: CustomPdControl}}
-                                            isMulti isClearable={false} defaultValue={task.pd}
-                                            onChange={(newValue) => {
-                                                setTask(prevState => ({...prevState, pd: newValue}))
-                                            }}/> : null}
+                                <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
+                                        components={{Option: CustomOption, Control: CustomPdControl}}
+                                        isMulti isClearable={false} defaultValue={task.pd}
+                                        onChange={(newValue) => {
+                                            setTask(prevState => ({...prevState, pd: newValue}))
+                                        }}/>
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>
@@ -202,7 +201,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             <MDBCol size={3}>
                                 <MDBInput style={inputStyle} label={'프로젝트 그룹'}
                                           labelStyle={labelStyle} defaultValue={task.projectGroup}
-                                          onBlur={(event) => task.projectGroup = event.target.value}
+                                          onBlur={(event) => task.projectGroup = event.target.value.trim()}
                                 />
                             </MDBCol>
                         </MDBRow>
@@ -210,12 +209,12 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             <MDBCol>
                                 <MDBInput style={inputStyle} label={'*프로그램명'}
                                           labelStyle={labelStyle} defaultValue={task.programName}
-                                          onBlur={(event) => task.programName = event.target.value}/>
+                                          onBlur={(event) => task.programName = event.target.value.trim()}/>
                             </MDBCol>
                             <MDBCol size={3}>
                                 <MDBInput style={inputStyle} label={'*에피소드'} labelStyle={labelStyle}
                                           defaultValue={task.episode}
-                                          onBlur={(event) => task.episode = event.target.value}/>
+                                          onBlur={(event) => task.episode = event.target.value.trim()}/>
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>
@@ -302,7 +301,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             <MDBInput style={inputStyle} labelStyle={labelStyle} label={'요청 사항'}
                                       defaultValue={workers[index].memo}
                                       onChange={(event) => {
-                                          workers[index].memo = event.target.value
+                                          workers[index].memo = event.target.value.trim()
                                       }}/>
                         </MDBCol>
                         <MDBBtn className='btn-close' color='none'

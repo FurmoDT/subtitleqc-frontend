@@ -54,14 +54,14 @@ const TaskGridComponent = ({startAt, endAt}) => {
     const defaultColumns = {
         no: {key: 'no', name: 'No', width: 60},
         pm: {key: 'pm', name: 'PM'}, pd: {key: 'pd', name: 'PD'}, client: {key: 'client', name: 'Client'},
-        taskName: {key: 'taskName', name: '태스크명'},
+        taskName: {key: 'taskName', name: '태스크명', renderCell: (row) => <div>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</div>},
         taskType: {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
         requestedAt: {key: 'requestedAt', name: '의뢰일'}, createdAt: {key: 'createdAt', name: '생성일'},
         endedAt: {key: 'endedAt', name: '완료일'}, dueDate: {key: 'dueDate', name: '납품기한'},
         memo: {
             key: 'memo',
             name: '메모',
-            renderCell: row => <div style={{textOverflow: 'ellipsis', overflow: 'hidden'}}>{row.row.memo}</div>,
+            renderCell: row => <div style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>{row.row.memo}</div>,
             width: 100
         },
         status: {

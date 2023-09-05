@@ -35,6 +35,16 @@ const RequestModal = () => {
     const toggleShow = () => setShow(!show);
     const submitToggleShow = () => setSubmitModal(!submitModal);
 
+    const inputValidation = () => {
+        let error = false
+        if (!(task.pm && task.title && task.dueDate && uploadedFiles.length)) {
+            error = true
+        }
+        if (error) return
+        submitToggleShow()
+    }
+
+
     const CustomInput = forwardRef(({value, onClick, label}, ref) => {
         return <MDBInput style={inputStyle} label={label} labelStyle={labelStyle} onClick={onClick} value={value}/>
     })
@@ -77,7 +87,7 @@ const RequestModal = () => {
                                         }}/>
                             </MDBCol>
                             <MDBCol>
-                                <MDBInput style={inputStyle} label={'작업 제목'} labelStyle={labelStyle}
+                                <MDBInput style={inputStyle} label={'*작업 제목'} labelStyle={labelStyle}
                                           onBlur={(event) => task.title = event.target.value.trim()}/>
                             </MDBCol>
                             <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
@@ -103,7 +113,7 @@ const RequestModal = () => {
                         </MDBRow>
                     </MDBModalBody>
                     <MDBModalFooter style={{borderTop: 'none', justifyContent: 'center'}}>
-                        <MDBBtn color={'dark'} size={'sm'} onClick={submitToggleShow}>의뢰하기</MDBBtn>
+                        <MDBBtn color={'dark'} size={'sm'} onClick={inputValidation}>의뢰하기</MDBBtn>
                         <MDBModal show={submitModal} setShow={setSubmitModal} tabIndex='-1'>
                             <MDBModalDialog centered>
                                 <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
@@ -133,12 +143,12 @@ const RequestModal = () => {
                                                                 task_file_name: file.name
                                                             }).then((taskResponse) => {
                                                                 const [taskId, fileVersion] = taskResponse.data
-                                                                s3Upload(taskId, fileVersion, uploadedFiles).then(() => {
+                                                                s3Upload(taskId, fileVersion, file).then(() => {
                                                                     axios.post('v1/project/task/initialize', null, {
                                                                         params: {
                                                                             task_id: taskId,
                                                                             file_version: fileVersion,
-                                                                            file_format: fileExtension(uploadedFiles[0].name)
+                                                                            file_format: fileExtension(file.name)
                                                                         }
                                                                     }).then(() => {
                                                                         if (index === uploadedFiles.length - 1) {

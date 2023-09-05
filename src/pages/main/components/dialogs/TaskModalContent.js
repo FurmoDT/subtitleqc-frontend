@@ -223,7 +223,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             <MDBCol>
                                 <DatePicker customInput={<CustomInput label={'*납품기한'}/>}
                                             selected={task.dueDate} showTimeSelect
-                                            timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
+                                            timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'} timeIntervals={60}
                                             onChange={(date) => setTask(prevState => ({
                                                 ...prevState, dueDate: date.getTime()
                                             }))}/>
@@ -289,7 +289,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
                             <DatePicker customInput={<CustomInput label={'*마감일'}/>}
                                         selected={workers[index].dueDate} showTimeSelect
-                                        timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
+                                        timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'} timeIntervals={60}
                                         onChange={(date) => {
                                             setWorkers(prevState => {
                                                 prevState[index].dueDate = date.getTime()

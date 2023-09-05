@@ -23,9 +23,9 @@ import {HttpStatusCode} from "axios";
 export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
     const {userState, updateAccessToken} = useContext(AuthContext);
-    const [activeNav, setActiveNav] = useState(null)
+    const [activeNav, setActiveNav] = useState('')
     const navigate = useNavigate()
-    useEffect(()=>{
+    useEffect(() => {
         setActiveNav(window.location.pathname)
     }, [navigate])
     return <>
@@ -46,14 +46,14 @@ export default function Navbar(props) {
                             }, [navigate])}>MAIN</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink active={activeNav === '/video'} onClick={useCallback(() => {
-                                navigate('/video')
-                            }, [navigate])}>VIDEO</MDBNavbarLink>
+                            <MDBNavbarLink active={activeNav.startsWith('/video')} onClick={useCallback(() => {
+                                if (!activeNav.startsWith('/video')) navigate('/video')
+                            }, [navigate, activeNav])}>VIDEO</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink active={activeNav === '/text'} onClick={useCallback(() => {
-                                navigate('/text')
-                            }, [navigate])}>TEXT</MDBNavbarLink>
+                            <MDBNavbarLink active={activeNav.startsWith('/text')} onClick={useCallback(() => {
+                                if (!activeNav.startsWith('/text')) navigate('/text')
+                            }, [navigate, activeNav])}>TEXT</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink

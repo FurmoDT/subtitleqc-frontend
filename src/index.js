@@ -8,14 +8,17 @@ import 'react-data-grid/lib/styles.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import {AuthProvider} from "./utils/authContext";
 import {WebsocketProvider} from "./utils/websocketContext";
+import {SessionProvider} from "./utils/sessionContext";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<React.StrictMode>
-    <AuthProvider>
-        <WebsocketProvider>
-            <App/>
-        </WebsocketProvider>
-    </AuthProvider>
+    <SessionProvider>
+        <AuthProvider>
+            <WebsocketProvider>
+                <App/>
+            </WebsocketProvider>
+        </AuthProvider>
+    </SessionProvider>
 </React.StrictMode>);
 
 // If you want to start measuring performance in your app, pass a function

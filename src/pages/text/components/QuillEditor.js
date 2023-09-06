@@ -14,6 +14,7 @@ import {localWsUrl, wsUrl} from "../../../utils/config";
 import axios from "../../../utils/axios";
 import Delta from "quill-delta";
 import * as Grammarly from "@grammarly/editor-sdk";
+import {SessionContext} from "../../../utils/sessionContext";
 
 const icons = ReactQuill.Quill.import("ui/icons");
 ReactQuill.Quill.register('modules/cursors', QuillCursors)
@@ -33,6 +34,7 @@ function redoChange() {
 const grammarly = async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn")
 
 const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled}) => {
+    const {sessionId} = useContext(SessionContext)
     const taskHashedId = window.location.pathname.split('/')[2]
     const {userState} = useContext(AuthContext);
     const reactQuillRef = useRef(null)
@@ -87,10 +89,6 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     }, [])
 
     useEffect(() => {
-        window.indexedDB.deleteDatabase(editorType)
-    }, [editorType])
-
-    useEffect(() => {
         const yDoc = new Y.Doc()
         const yText = yDoc.getText('quill')
         const provider = new WebrtcProvider(`${taskHashedId}-${editorType}`, yDoc, {
@@ -98,7 +96,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             maxConns: 20,
             peerOpts: {config: {iceServers: iceservers}}
         })
-        const persistence = new IndexeddbPersistence(editorType, yDoc)
+        const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${taskHashedId}-${editorType}`, yDoc)
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
         if (disabled) provider.awareness.setLocalState(null)
         const binding = new QuillBinding(yText, reactQuillRef.current.getEditor(), provider.awareness)
@@ -144,7 +142,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             binding.destroy()
             yDoc.destroy()
         }
-    }, [taskHashedId, editorType, userState, wsRef, iceservers, forceRender, disabled])
+    }, [sessionId, taskHashedId, editorType, userState, wsRef, iceservers, forceRender, disabled])
 
     useEffect(() => {
         if (initialSyncedRef.current) setForceRender(prevState => prevState + 1)

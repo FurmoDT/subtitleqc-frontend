@@ -68,7 +68,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         } else {
             return {
                 toolbar: {
-                    container: [[{'size': ['small', false, 'large']}], [{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
+                    container: [[{'size': ['small', false, 'large']}], [{'align': ['justify', 'center', 'right']}], [{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
                     handlers: {
                         undo: undoChange, redo: redoChange
                     }
@@ -85,7 +85,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     }, [disabled])
 
     const formats = useMemo(() => {
-        return ['size', 'color', 'background', 'bold', 'italic', 'underline', 'strike']
+        return ['size', 'color', 'background', 'bold', 'italic', 'underline', 'strike', 'align']
     }, [])
 
     useEffect(() => {

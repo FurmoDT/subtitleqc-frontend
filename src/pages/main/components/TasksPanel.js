@@ -1,6 +1,6 @@
 import {useContext, useState} from "react";
 import DatePickerComponent from "./DatePickerComponent";
-import {addDays} from 'date-fns'
+import {addMonths} from 'date-fns'
 import {MDBCol, MDBRow} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../utils/authContext";
 import RequestModal from "./dialogs/RequestModal";
@@ -9,7 +9,7 @@ import TaskGridComponent from "./TaskGridComponent";
 
 const TasksPanel = () => {
     const [startAt, setStartAt] = useState(new Date().setHours(0, 0, 0, 0));
-    const [endAt, setEndAt] = useState(addDays(new Date(), 7).setHours(23, 59, 59, 999));
+    const [endAt, setEndAt] = useState(addMonths(new Date(), 1).setHours(23, 59, 59, 999));
     const {userState} = useContext(AuthContext)
     const ModalComponent = () => {
         if (userState.user.userRole === 'client') {

@@ -115,7 +115,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
             setUploadedFiles([])
             return
         }
-        if (hashedId) {
+        if (hashedId && pmListOption.length) {
             axios.get('/v1/project/task', {params: {hashed_id: hashedId}}).then((response) => {
                 setTask({
                     pd: pmListOption.filter(value => Object.keys(JSON.parse(response.data.pd)).includes(`${value.value}`)),

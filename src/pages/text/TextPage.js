@@ -1,7 +1,7 @@
 import MenuToolbar from "./components/MenuToolbar";
 import QuillEditor from "./components/QuillEditor";
 import DocViewer from "./components/DocViewer";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import axios from "../../utils/axios";
 import {fileExtension} from "../../utils/functions";
 import {useNavigate} from "react-router-dom";
@@ -16,6 +16,7 @@ const TextPage = () => {
     const [iceservers, setIceServers] = useState(null)
     const {isOnline} = useContext(WebsocketContext)
     const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
+    const menuToolbarRef = useRef(null)
 
     useEffect(() => {
         if (!pathname.split('/')[2]) {
@@ -55,16 +56,19 @@ const TextPage = () => {
         if (['test', 'pm', 'pd', 'qc', 'client'].includes(authority)) {
             return <Split horizontal={false} initialPrimarySize={'50%'} splitterSize={'5px'}>
                 <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
-                             connectionType={connectionType} disabled={!['test'].includes(authority)}/>
+                             connectionType={connectionType} disabled={!['test'].includes(authority)}
+                             onSave={menuToolbarRef.current.showSavingStatus}/>
                 <QuillEditor editorType={'review'} iceservers={iceservers} isOnline={isOnline}
-                             connectionType={connectionType} disabled={['client'].includes(authority)}/>
+                             connectionType={connectionType} disabled={['client'].includes(authority)}
+                             onSave={menuToolbarRef.current.showSavingStatus}/>
             </Split>
         } else return <QuillEditor editorType={'original'} iceservers={iceservers} isOnline={isOnline}
-                                   connectionType={connectionType} disabled={false}/>
+                                   connectionType={connectionType} disabled={false}
+                                   onSave={menuToolbarRef.current.showSavingStatus}/>
     }
 
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
-        <MenuToolbar/>
+        <MenuToolbar ref={menuToolbarRef}/>
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <Split horizontal={true} initialPrimarySize={'75%'} splitterSize={'5px'}>
                 {textFile && iceservers && <Split initialPrimarySize={'40%'} splitterSize={'5px'}>

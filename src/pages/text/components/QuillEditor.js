@@ -33,7 +33,7 @@ function redoChange() {
 
 const grammarly = async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn")
 
-const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled}) => {
+const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled, onSave}) => {
     const {sessionId} = useContext(SessionContext)
     const [, , taskHashedId, taskWorkId] = window.location.pathname.split('/')
     const {userState} = useContext(AuthContext);
@@ -111,11 +111,13 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             }
         })
 
-        yDoc.on('update', (update, origin) => {
+        yDoc.on('update', (update, origin, doc, tr) => {
             if (wsRef.current?.readyState === 1 && origin && !origin.peerId && taskHashedId) {
                 wsRef.current.send(JSON.stringify({
                     room_id: `${taskHashedId}-${editorType}`, update: fromUint8Array(update)
                 }))
+                if (origin.constructor === QuillBinding) onSave(false)
+                else onSave(true)
             }
         })
 
@@ -126,7 +128,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             binding.destroy()
             yDoc.destroy()
         }
-    }, [sessionId, taskHashedId, editorType, userState, wsRef, iceservers, forceRender, disabled])
+    }, [sessionId, taskHashedId, editorType, userState, wsRef, iceservers, forceRender, disabled, onSave])
 
     useEffect(() => {
         if (initializedRef.current) setForceRender(prevState => prevState + 1)

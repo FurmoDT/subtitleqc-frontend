@@ -23,13 +23,13 @@ const TextPage = () => {
             setTextFile('https://subtitleqc.s3.ap-northeast-2.amazonaws.com/sample.pdf')
             return
         }
-        axios.get(`v1/project/task/work`, {
+        axios.get(`v1/project/task/access`, {
             params: {
-                hashed_id: pathname.split('/')[2], work_type: pathname.split('/')[3]
+                hashed_id: pathname.split('/')[2], work_hashed_id: pathname.split('/')[3]
             }
-        }).then((respond) => {
-            setAuthority(respond.data.authority)
-            const task = respond.data.task
+        }).then((response) => {
+            setAuthority(response.data.authority)
+            const task = response.data.task
             setTextFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
         }).catch(() => navigate('/error'))
     }, [pathname, navigate])

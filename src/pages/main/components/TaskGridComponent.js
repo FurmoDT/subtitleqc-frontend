@@ -140,7 +140,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {
                 ...defaultColumns.buttons,
                 renderCell: (row) => <><MDBBtn color={'link'}
-                                               onClick={() => navigate(`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.workType}`)}
+                                               onClick={() => navigate(`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`)}
                                                disabled={!row.row.taskType}>이동하기</MDBBtn>
                     <div className={'mx-1'}/>
                     <MDBBtn color={'link'} onClick={() => {
@@ -188,7 +188,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         createdAt: formatTimestamp(item.work_created_at),
                         dueDate: formatTimestamp(item.work_due_date),
                         memo: item.work_memo,
-                        extra: {hashedId: item.task_hashed_id, pd: pd}
+                        extra: {hashedId: item.task_hashed_id, workHashedId: item.work_hashed_id, pd: pd}
                     }
                 }))
             })

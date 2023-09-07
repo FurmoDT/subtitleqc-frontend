@@ -35,7 +35,7 @@ const grammarly = async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98S
 
 const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled}) => {
     const {sessionId} = useContext(SessionContext)
-    const taskHashedId = window.location.pathname.split('/')[2]
+    const [, , taskHashedId, taskWorkId] = window.location.pathname.split('/')
     const {userState} = useContext(AuthContext);
     const reactQuillRef = useRef(null)
     const [value, setValue] = useState('');
@@ -149,12 +149,18 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     }, [isOnline, connectionType, userState, initialSyncedRef])
 
     useEffect(() => {
-        !disabled && grammarly().then(r => {
-            r.addPlugin(reactQuillRef.current.editor.root, {
-                documentDialect: "american",
+        if (!disabled && taskWorkId) {
+            axios.get('v1/project/task/work', {params: {hashed_id: taskHashedId, work_hashed_id: taskWorkId}}).then((response) => {
+                if (response.data.work_target_language === 'enUS') {
+                    grammarly().then(r => {
+                        r.addPlugin(reactQuillRef.current.getEditor().root, {
+                            documentDialect: "american",
+                        })
+                    })
+                }
             })
-        })
-    }, [disabled])
+        }
+    }, [disabled, taskHashedId, taskWorkId])
 
     return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'} readOnly={disabled}
                        value={value} onChange={setValue}

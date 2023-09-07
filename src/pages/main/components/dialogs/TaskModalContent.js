@@ -354,7 +354,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                     task_file_name: uploadedFiles[0]?.name
                                                 }).then((response) => {
                                                     const [taskId, fileVersion] = response.data
-                                                    workers.length && axios.post('v1/project/work', {
+                                                    workers.length && axios.post('v1/project/task/work', {
                                                         task_id: taskId,
                                                         works: workers.map((value) => {
                                                             return {
@@ -438,7 +438,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                     task_file_version: task.fileVersion + (fileUpdated ? 1 : 0)
                                                 }).then((response) => {
                                                     const taskId = response.data
-                                                    axios.put('v1/project/work', {
+                                                    axios.put('v1/project/task/work', {
                                                         task_hashed_id: hashedId,
                                                         works: workers.map((value) => {
                                                             return {

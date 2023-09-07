@@ -40,8 +40,8 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     const reactQuillRef = useRef(null)
     const [value, setValue] = useState('');
     const {wsRef} = useContext(WebsocketContext)
+    const initializedRef = useRef(false)
     const [forceRender, setForceRender] = useState(0)
-    const initialSyncedRef = useRef(false)
 
     function preserveSizeFormat(node, delta) {
         const match = node.className.match(/ql-size-(.*)/)
@@ -101,30 +101,14 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         if (disabled) provider.awareness.setLocalState(null)
         const binding = new QuillBinding(yText, reactQuillRef.current.getEditor(), provider.awareness)
 
-        const ws = provider.signalingConns[0].ws
-
-        taskHashedId && ws.addEventListener('message', (evt) => {
-            const initializeContent = () => {
+        persistence.once('synced', () => {
+            if (taskHashedId) {
                 axios.get('v1/project/task/content', {
                     params: {hashed_id: taskHashedId, room_type: editorType}
                 }).then((r) => {
                     if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
-                }).finally(() => initialSyncedRef.current = true)
+                }).finally(() => initializedRef.current = true)
             }
-            if (JSON.parse(evt.data).clients <= 1) {
-                initializeContent()
-            } else {
-                let synced = false
-                provider.once('synced', () => {
-                    synced = true
-                })
-                setTimeout(() => {
-                    if (!synced) initializeContent()
-                }, 1000)
-            }
-        }, {once: true})
-
-        persistence.once('synced', () => {
         })
 
         yDoc.on('update', (update, origin) => {
@@ -136,7 +120,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         })
 
         return () => {
-            initialSyncedRef.current = false
+            initializedRef.current = false
             provider.disconnect()
             provider.destroy()
             binding.destroy()
@@ -145,12 +129,17 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     }, [sessionId, taskHashedId, editorType, userState, wsRef, iceservers, forceRender, disabled])
 
     useEffect(() => {
-        if (initialSyncedRef.current) setForceRender(prevState => prevState + 1)
-    }, [isOnline, connectionType, userState, initialSyncedRef])
+        if (initializedRef.current) setForceRender(prevState => prevState + 1)
+    }, [isOnline, connectionType])
 
     useEffect(() => {
         if (!disabled && taskWorkId) {
-            axios.get('v1/project/task/work', {params: {hashed_id: taskHashedId, work_hashed_id: taskWorkId}}).then((response) => {
+            axios.get('v1/project/task/work', {
+                params: {
+                    hashed_id: taskHashedId,
+                    work_hashed_id: taskWorkId
+                }
+            }).then((response) => {
                 if (response.data.work_target_language === 'enUS') {
                     grammarly().then(r => {
                         r.addPlugin(reactQuillRef.current.getEditor().root, {

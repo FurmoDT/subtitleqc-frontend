@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import 'react-phone-number-input/style.css'
 import ProfilePanel from './components/ProfilePanel'
 import AdminPanel from "./components/AdminPanel";
-import {AuthContext} from "../../utils/authContext";
+import {AuthContext} from "../../contexts/authContext";
 
 const UserPage = () => {
     const pathname = window.location.pathname;

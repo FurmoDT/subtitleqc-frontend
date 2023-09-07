@@ -16,7 +16,7 @@ import {
 } from 'mdb-react-ui-kit';
 import {Outlet, useNavigate} from "react-router-dom";
 import {useCallback, useContext, useEffect, useState} from "react";
-import {AuthContext} from "../utils/authContext";
+import {AuthContext} from "../contexts/authContext";
 import axios from "../utils/axios";
 import {HttpStatusCode} from "axios";
 

@@ -18,7 +18,7 @@ import {customMultiStyle, CustomOption, CustomPdControl, customStyle} from "../.
 import DatePicker from "react-datepicker";
 import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
 import TaskDropzone from "../TaskDropzone";
-import {AuthContext} from "../../../../utils/authContext";
+import {AuthContext} from "../../../../contexts/authContext";
 import {s3Upload} from "../../../../utils/awsS3Upload";
 import {fileExtension} from "../../../../utils/functions";
 

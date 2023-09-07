@@ -2,7 +2,7 @@ import {useContext, useState} from "react";
 import DatePickerComponent from "./DatePickerComponent";
 import {addMonths} from 'date-fns'
 import {MDBCol, MDBRow} from "mdb-react-ui-kit";
-import {AuthContext} from "../../../utils/authContext";
+import {AuthContext} from "../../../contexts/authContext";
 import RequestModal from "./dialogs/RequestModal";
 import RegisterModal from "./dialogs/RegisterModal";
 import TaskGridComponent from "./TaskGridComponent";

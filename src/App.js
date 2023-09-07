@@ -7,7 +7,7 @@ import Manual from "./pages/Manual";
 import LoginPage from "./pages/auth/LoginPage";
 import {googleClientId, publicUrl} from "./utils/config";
 import {AxiosInterceptor} from "./utils/axios";
-import {AuthContext} from "./utils/authContext";
+import {AuthContext} from "./contexts/authContext";
 import SignupPage from "./pages/auth/SignupPage";
 import UserPage from "./pages/user/UserPage";
 import {GoogleOAuthProvider} from "@react-oauth/google";

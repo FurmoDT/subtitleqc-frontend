@@ -7,14 +7,14 @@ import {useContext, useEffect, useMemo, useRef, useState} from "react";
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
 import QuillCursors from 'quill-cursors'
-import {AuthContext} from "../../../utils/authContext";
-import {WebsocketContext} from "../../../utils/websocketContext";
+import {AuthContext} from "../../../contexts/authContext";
+import {WebsocketContext} from "../../../contexts/websocketContext";
 import {fromUint8Array, toUint8Array} from "js-base64";
 import {localWsUrl, wsUrl} from "../../../utils/config";
 import axios from "../../../utils/axios";
 import Delta from "quill-delta";
 import * as Grammarly from "@grammarly/editor-sdk";
-import {SessionContext} from "../../../utils/sessionContext";
+import {SessionContext} from "../../../contexts/sessionContext";
 
 const icons = ReactQuill.Quill.import("ui/icons");
 ReactQuill.Quill.register('modules/cursors', QuillCursors)

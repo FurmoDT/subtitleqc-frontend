@@ -1,7 +1,7 @@
 import {MDBBtn, MDBInput} from "mdb-react-ui-kit";
 import {useContext, useRef} from "react";
 import axios from "../../utils/axios";
-import {AuthContext} from "../../utils/authContext";
+import {AuthContext} from "../../contexts/authContext";
 import {useNavigate} from "react-router-dom";
 import {HttpStatusCode} from "axios";
 import {birthdayValidator} from "../../utils/functions";

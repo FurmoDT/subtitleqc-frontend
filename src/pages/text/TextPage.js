@@ -5,7 +5,7 @@ import {useContext, useEffect, useState} from "react";
 import axios from "../../utils/axios";
 import {fileExtension} from "../../utils/functions";
 import {useNavigate} from "react-router-dom";
-import {WebsocketContext} from "../../utils/websocketContext";
+import {WebsocketContext} from "../../contexts/websocketContext";
 import {Split} from "@geoffcox/react-splitter";
 
 const TextPage = () => {

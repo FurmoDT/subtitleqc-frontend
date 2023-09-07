@@ -1,7 +1,7 @@
 import Axios, {HttpStatusCode} from "axios";
 import {apiUrl, localApiUrl} from "./config";
 import {useContext, useEffect} from "react";
-import {AuthContext} from "./authContext";
+import {AuthContext} from "../contexts/authContext";
 
 const axios = Axios.create({
     baseURL: process.env.NODE_ENV === 'development' ? localApiUrl : apiUrl,

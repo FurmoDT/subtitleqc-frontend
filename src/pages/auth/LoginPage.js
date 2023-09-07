@@ -4,7 +4,7 @@ import {HttpStatusCode} from "axios";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {naverClientId} from "../../utils/config";
 import {useCallback, useContext, useEffect, useRef, useState} from "react";
-import {AuthContext} from "../../utils/authContext";
+import {AuthContext} from "../../contexts/authContext";
 import {useGoogleLogin} from "@react-oauth/google";
 
 const {naver} = window

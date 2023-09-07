@@ -3,7 +3,7 @@ import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
 import {fileType, formatTimestamp} from "../../../utils/functions";
 import {MDBBtn} from "mdb-react-ui-kit";
-import {AuthContext} from "../../../utils/authContext";
+import {AuthContext} from "../../../contexts/authContext";
 import {useNavigate} from "react-router-dom";
 import {languageCodes, workType} from "../../../utils/config";
 import ModifyModal from "./dialogs/ModifyModal";

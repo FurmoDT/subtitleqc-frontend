@@ -117,7 +117,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         })
 
         yDoc.on('update', (update, origin, doc, tr) => {
-            if (websocketConnected === 1 && origin && !origin.peerId && taskHashedId) {
+            if (websocketConnected && origin && !origin.peerId && taskHashedId) {
                 wsRef.current.send(JSON.stringify({
                     room_id: `${taskHashedId}-${editorType}`, update: fromUint8Array(update)
                 }))

@@ -56,16 +56,3 @@
     padding: 1rem;
     background-color: #e5e5e5;
 }
-
-.ql-toolbar {
-    display: flex;
-}
-
-.ql-formats {
-    display: flex !important;
-    flex-wrap: nowrap;
-}
-
-.ql-container {
-    height: calc(100% - 42px) !important;
-}

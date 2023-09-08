@@ -1,0 +1,44 @@
+.ql-toolbar {
+    display: flex;
+}
+
+.ql-formats {
+    display: flex !important;
+    flex-wrap: nowrap;
+}
+
+.ql-container {
+    height: calc(100% - 42px) !important;
+}
+
+.ql-size .ql-picker-label[data-value="13px"]::before {
+    content: "10" !important;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="13px"]::before {
+    content: "10";
+}
+
+.ql-size .ql-picker-label[data-value="16px"]::before {
+    content: "12" !important;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before {
+    content: "12";
+}
+
+.ql-size .ql-picker-label[data-value="20px"]::before {
+    content: "15" !important;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before {
+    content: "15";
+}
+
+.ql-size .ql-picker-label[data-value="24px"]::before {
+    content: "18" !important;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
+    content: "18";
+}

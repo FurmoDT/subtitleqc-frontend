@@ -6,6 +6,7 @@ import {WebrtcProvider} from 'y-webrtc'
 import {useContext, useEffect, useMemo, useRef, useState} from "react";
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
+import '../../../css/Quill.css'
 import QuillCursors from 'quill-cursors'
 import {AuthContext} from "../../../contexts/authContext";
 import {WebsocketContext} from "../../../contexts/websocketContext";
@@ -18,6 +19,10 @@ import {SessionContext} from "../../../contexts/sessionContext";
 
 const icons = ReactQuill.Quill.import("ui/icons");
 ReactQuill.Quill.register('modules/cursors', QuillCursors)
+const fontSizes = ['13px', '16px', '20px', '24px'];
+const size = ReactQuill.Quill.import('attributors/style/size');
+size.whitelist = fontSizes;
+ReactQuill.Quill.register(size, true);
 
 icons['undo'] = '<svg viewBox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10" /><path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"/></svg>'
 icons["redo"] = '<svg viewbox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon><path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path></svg>'
@@ -44,19 +49,17 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     const [forceRender, setForceRender] = useState(0)
 
     function preserveSizeFormat(node, delta) {
-        const match = node.className.match(/ql-size-(.*)/)
         const fontSize = node.style['font-size']
-        const styleMatch = fontSize && fontSize !== '16px'
-        if (match || styleMatch) {
+        if (fontSize) {
             delta.map(function (op) {
                 if (!op.attributes) op.attributes = {}
-                if (match) {
-                    op.attributes.size = match[1]
-                } else if (styleMatch) {
-                    const large = fontSize <= '13px' || fontSize <= '0.8125rem'
-                    op.attributes.size = large ? 'large' : 'huge'
-                }
+                op.attributes.size = fontSize
                 return op
+            })
+        } else {
+            delta.map(function (op) {
+                if (!op.attributes) op.attributes = {}
+                op.attributes.size = '13px'
             })
         }
         return delta
@@ -68,7 +71,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         } else {
             return {
                 toolbar: {
-                    container: [[{'size': ['small', false, 'large']}], [{'align': ['justify', 'center', 'right']}], [{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
+                    container: [[{'size': fontSizes}], [{'align': ['justify', 'center', 'right']}], [{'color': []}, {'background': []}], ['bold', 'italic', 'underline', 'strike'], ['clean'], ['undo', 'redo']],
                     handlers: {
                         undo: undoChange, redo: redoChange
                     }
@@ -100,6 +103,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
         if (disabled) provider.awareness.setLocalState(null)
         const binding = new QuillBinding(yText, reactQuillRef.current.getEditor(), provider.awareness)
+        reactQuillRef.current.getEditor().format('size', '13px')
 
         persistence.once('synced', () => {
             if (taskHashedId) {

@@ -10,6 +10,7 @@ const MainPage = () => {
     const [activeMenu, setActiveMenu] = useState(null)
     const navigate = useNavigate()
     useEffect(()=>{
+        navigate('/tasks')
         setActiveMenu(pathname)
     }, [navigate, pathname])
 
@@ -24,7 +25,7 @@ const MainPage = () => {
             }}>
                 <MenuItem disabled={true}/>
                 <MenuItem active={activeMenu === '/'} onClick={() => setActiveMenu('/')}
-                          component={<Link to={'/'}/>}>
+                          component={<Link to={'/'}/>} disabled>
                     <MdDashboard size={25} color={'white'}/>
                 </MenuItem>
                 <MenuItem active={activeMenu === '/tasks'} onClick={() => setActiveMenu('/tasks')}

@@ -44,7 +44,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
     const {userState} = useContext(AuthContext);
     const reactQuillRef = useRef(null)
     const [value, setValue] = useState('');
-    const {wsRef} = useContext(WebsocketContext)
+    const {wsRef, websocketConnected} = useContext(WebsocketContext)
     const initializedRef = useRef(false)
     const [forceRender, setForceRender] = useState(0)
 
@@ -117,7 +117,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
         })
 
         yDoc.on('update', (update, origin, doc, tr) => {
-            if (wsRef.current?.readyState === 1 && origin && !origin.peerId && taskHashedId) {
+            if (websocketConnected === 1 && origin && !origin.peerId && taskHashedId) {
                 wsRef.current.send(JSON.stringify({
                     room_id: `${taskHashedId}-${editorType}`, update: fromUint8Array(update)
                 }))
@@ -133,7 +133,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             binding.destroy()
             yDoc.destroy()
         }
-    }, [sessionId, taskHashedId, editorType, userState, wsRef, iceservers, forceRender, disabled, onSave])
+    }, [sessionId, taskHashedId, editorType, userState, wsRef, websocketConnected, iceservers, forceRender, disabled, onSave])
 
     useEffect(() => {
         if (initializedRef.current) setForceRender(prevState => prevState + 1)

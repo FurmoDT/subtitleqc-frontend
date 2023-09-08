@@ -7,8 +7,8 @@ import {HttpStatusCode} from "axios";
 export const WebsocketContext = createContext(null);
 
 export const WebsocketProvider = ({children}) => {
-    const [isInitialized, setIsInitialized] = useState(false)
     const [isOnline, setIsOnline] = useState(navigator.onLine)
+    const [websocketConnected, setWebsocketConnected] = useState(false)
     const {userState, accessTokenRef, updateAccessToken} = useContext(AuthContext)
     const wsRef = useRef(null)
     const connect = useCallback(() => {
@@ -19,7 +19,7 @@ export const WebsocketProvider = ({children}) => {
                 return
             }
             if (wsRef.current) {
-                resolve()
+                reject()
                 return
             }
             wsRef.current = new WebSocket(`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/ws`)
@@ -33,7 +33,13 @@ export const WebsocketProvider = ({children}) => {
                 if (event.code !== 4000) axios.post('/v1/auth/refresh').then((response) => {
                     if (response.status === HttpStatusCode.Ok) return updateAccessToken(response.data.access_token).then(() => setTimeout(connect, 10000))
                 })
+                setWebsocketConnected(false)
                 console.log('ws closed')
+            }
+            wsRef.current.onerror = (error) => {
+                wsRef.current = null
+                setWebsocketConnected(false)
+                console.log('ws closed on error')
             }
         })
     }, [userState, accessTokenRef, updateAccessToken])
@@ -52,10 +58,11 @@ export const WebsocketProvider = ({children}) => {
     }, [])
 
     useEffect(() => {
-        if (isOnline) connect().then().catch(() => null).finally(() => setIsInitialized(true))
+        if (isOnline) connect().then(() => setWebsocketConnected(true)).catch(() => null)
+        else wsRef.current?.onerror(new Error('offline'))
     }, [connect, isOnline, userState])
 
-    return isInitialized && <WebsocketContext.Provider value={{wsRef, isOnline}}>
+    return <WebsocketContext.Provider value={{wsRef, isOnline, websocketConnected}}>
         {children}
     </WebsocketContext.Provider>;
 };

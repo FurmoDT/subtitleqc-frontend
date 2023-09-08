@@ -60,6 +60,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             delta.map(function (op) {
                 if (!op.attributes) op.attributes = {}
                 op.attributes.size = '13px'
+                return op
             })
         }
         return delta

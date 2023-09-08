@@ -19,8 +19,7 @@ const MenuToolbar = forwardRef((props, ref) => {
             saveStatusTimer = setTimeout(() => {
                 saveStatusDivRef.current.style.display = 'none'
             }, 3000)
-        }
-        else {
+        } else {
             setIsSaving(true)
             saveStatusTimer = setTimeout(() => {
                 setIsSaving(false)
@@ -35,7 +34,7 @@ const MenuToolbar = forwardRef((props, ref) => {
 
     return <div style={{height: '40px', display: 'flex', alignItems: 'center', backgroundColor: '#b7b7b7ff'}}>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Show Diff'>
-            <MDBBtn size={"sm"} className={'mx-1'} outline={true}> show diff </MDBBtn>
+            <MDBBtn size={"sm"} className={'mx-1'} outline={true} disabled> - </MDBBtn>
         </MDBTooltip>
         <div style={{display: 'none', alignItems: 'center', fontSize: '0.8rem'}} ref={saveStatusDivRef}>
             {isSaving && <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/>

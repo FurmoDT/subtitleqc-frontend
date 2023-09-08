@@ -81,7 +81,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
                 }, cursors: true, clipboard: {
                     matchers: [[Node.ELEMENT_NODE, function (node, delta) {
                         return delta.compose(new Delta().retain(delta.length()));
-                    }], ['span', preserveSizeFormat]]
+                    }], ['p', preserveSizeFormat]]
                 },
             }
 

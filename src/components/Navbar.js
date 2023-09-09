@@ -14,7 +14,7 @@ import {
     MDBNavbarNav,
     MDBNavbarToggler,
 } from 'mdb-react-ui-kit';
-import {Outlet, useNavigate} from "react-router-dom";
+import {Link, Outlet, useNavigate} from "react-router-dom";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {AuthContext} from "../contexts/authContext";
 import axios from "../utils/axios";
@@ -25,9 +25,11 @@ export default function Navbar(props) {
     const {userState, updateAccessToken} = useContext(AuthContext);
     const [activeNav, setActiveNav] = useState('')
     const navigate = useNavigate()
+
     useEffect(() => {
         setActiveNav(window.location.pathname)
     }, [navigate])
+
     return <>
         <MDBNavbar expand={'lg'} dark style={{backgroundColor: '#121212ff', padding: 0, minHeight: '50px'}}>
             <MDBContainer fluid style={{paddingLeft: 5}}>
@@ -41,19 +43,15 @@ export default function Navbar(props) {
                 <MDBCollapse navbar show={showNavNoTogglerSecond}>
                     <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
                         <MDBNavbarItem>
-                            <MDBNavbarLink active={activeNav === '/'} onClick={useCallback(() => {
-                                navigate('/')
-                            }, [navigate])}>MAIN</MDBNavbarLink>
+                            <Link className={`nav-link ${activeNav === '/tasks' ? 'active' : ''}`} to={'/'}>MAIN</Link>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink active={activeNav.startsWith('/video')} onClick={useCallback(() => {
-                                if (!activeNav.startsWith('/video')) navigate('/video')
-                            }, [navigate, activeNav])}>VIDEO</MDBNavbarLink>
+                            <Link className={`nav-link ${activeNav.startsWith('/video') ? 'active' : ''}`}
+                                  to={activeNav.startsWith('/video') ? null : '/video'}>VIDEO</Link>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink active={activeNav.startsWith('/text')} onClick={useCallback(() => {
-                                if (!activeNav.startsWith('/text')) navigate('/text')
-                            }, [navigate, activeNav])}>TEXT</MDBNavbarLink>
+                            <Link className={`nav-link ${activeNav.startsWith('/text') ? 'active' : ''}`}
+                                  to={activeNav.startsWith('/text') ? null : '/text'}>TEXT</Link>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
                             <MDBNavbarLink

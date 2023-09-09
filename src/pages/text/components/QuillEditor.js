@@ -108,7 +108,7 @@ const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, ices
         persistence.once('synced', () => {
             if (taskHashedId) {
                 axios.get('v1/project/task/content', {
-                    params: {hashed_id: taskHashedId, room_type: editorType}
+                    params: {hashed_id: taskHashedId, room_type: editorType, target_language: targetLanguage}
                 }).then((r) => {
                     if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
                 }).finally(() => initializedRef.current = true)
@@ -118,7 +118,7 @@ const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, ices
         yDoc.on('update', (update, origin, doc, tr) => {
             if (websocketConnected && origin && !origin.peerId && taskHashedId) {
                 wsRef.current.send(JSON.stringify({
-                    room_id: `${taskHashedId}-${editorType}`, update: fromUint8Array(update)
+                    room_id: `${taskHashedId}-${editorType}-${targetLanguage}`, update: fromUint8Array(update)
                 }))
                 if (origin.constructor === QuillBinding) onSave(false)
                 else onSave(true)
@@ -140,20 +140,11 @@ const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, ices
 
     useEffect(() => {
         if (!disabled && taskWorkId) {
-            axios.get('v1/project/task/work', {
-                params: {
-                    hashed_id: taskHashedId,
-                    work_hashed_id: taskWorkId
-                }
-            }).then((response) => {
-                if (response.data.work_target_language === 'enUS') {
-                    grammarly().then(r => {
-                        r.addPlugin(reactQuillRef.current.getEditor().root, {
-                            documentDialect: "american",
-                        })
-                    })
-                }
-            })
+            if (targetLanguage === 'enUS') {
+                grammarly().then(r => {
+                    r.addPlugin(reactQuillRef.current.getEditor().root, {documentDialect: "american",})
+                })
+            }
         }
     }, [disabled, taskHashedId, taskWorkId])
 

@@ -43,3 +43,13 @@ export const customMultiStyle = {
     valueContainer: base => ({...base, padding: '0 0.5rem', fontSize: '1rem'}),
     control: base => ({...base, minHeight: '36px'}),
 }
+
+
+export const customTaskLanguageStyle = {
+    container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap', fontSize: '0.8rem'}),
+    dropdownIndicator: base => ({...base, padding: 0}),
+    menu: base => ({...base, width: 'auto'}),
+    valueContainer: base => ({...base, padding: '0 0.5rem'}),
+    control: base => ({...base, minHeight: '1.75rem', maxHeight: '1.75rem'}),
+    input: base => ({...base, margin: '0 2px'}),
+}

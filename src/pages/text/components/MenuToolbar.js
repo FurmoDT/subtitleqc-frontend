@@ -1,6 +1,8 @@
 import {MDBBtn, MDBSpinner, MDBTooltip} from "mdb-react-ui-kit";
 import {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import {BsCloudCheck} from "react-icons/bs";
+import Select from "react-select";
+import {CustomOption, customTaskLanguageStyle} from "../../../utils/customSelect";
 
 const MenuToolbar = forwardRef((props, ref) => {
     const saveStatusDivRef = useRef(null)
@@ -36,6 +38,11 @@ const MenuToolbar = forwardRef((props, ref) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Show Diff'>
             <MDBBtn size={"sm"} className={'mx-1'} outline={true} disabled> - </MDBBtn>
         </MDBTooltip>
+        {!props.taskWorkId && <div className={'mx-1'}>
+            {props.targetLanguage &&
+                <Select styles={customTaskLanguageStyle} options={props.languageOptions} placeholder={null}
+                        defaultValue={props.targetLanguage} components={{Option: CustomOption}}/>}
+        </div>}
         <div style={{display: 'none', alignItems: 'center', fontSize: '0.8rem'}} ref={saveStatusDivRef}>
             {isSaving && <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/>
                 <span>저장 중...</span></>}

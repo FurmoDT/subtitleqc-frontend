@@ -38,13 +38,12 @@ function redoChange() {
 
 const grammarly = async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn")
 
-const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled, onSave}) => {
+const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, iceservers, connectionType, disabled, onSave}) => {
     const {sessionId} = useContext(SessionContext)
-    const [, , taskHashedId, taskWorkId] = window.location.pathname.split('/')
     const {userState} = useContext(AuthContext);
     const reactQuillRef = useRef(null)
     const [value, setValue] = useState('');
-    const {wsRef, websocketConnected} = useContext(WebsocketContext)
+    const {wsRef, isOnline, websocketConnected} = useContext(WebsocketContext)
     const initializedRef = useRef(false)
     const [forceRender, setForceRender] = useState(0)
 
@@ -100,7 +99,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             maxConns: 20,
             peerOpts: {config: {iceServers: iceservers}}
         })
-        const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${taskHashedId}-${editorType}`, yDoc)
+        const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${taskHashedId}-${editorType}-${targetLanguage}`, yDoc)
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
         if (disabled) provider.awareness.setLocalState(null)
         const binding = new QuillBinding(yText, reactQuillRef.current.getEditor(), provider.awareness)
@@ -133,7 +132,7 @@ const QuillEditor = ({editorType, iceservers, isOnline, connectionType, disabled
             binding.destroy()
             yDoc.destroy()
         }
-    }, [sessionId, taskHashedId, editorType, userState, wsRef, websocketConnected, iceservers, forceRender, disabled, onSave])
+    }, [sessionId, userState, wsRef, websocketConnected, editorType, taskHashedId, targetLanguage, iceservers, forceRender, disabled, onSave])
 
     useEffect(() => {
         if (initializedRef.current) setForceRender(prevState => prevState + 1)

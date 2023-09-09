@@ -54,14 +54,20 @@ const TaskGridComponent = ({startAt, endAt}) => {
     const defaultColumns = {
         no: {key: 'no', name: 'No', width: 60},
         pm: {key: 'pm', name: 'PM'}, pd: {key: 'pd', name: 'PD'}, client: {key: 'client', name: 'Client'},
-        taskName: {key: 'taskName', name: '태스크명', renderCell: (row) => <div>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</div>},
+        taskName: {
+            key: 'taskName',
+            name: '태스크명',
+            renderCell: (row) =>
+                <div>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</div>
+        },
         taskType: {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
         requestedAt: {key: 'requestedAt', name: '의뢰일'}, createdAt: {key: 'createdAt', name: '생성일'},
         endedAt: {key: 'endedAt', name: '완료일'}, dueDate: {key: 'dueDate', name: '납품기한'},
         memo: {
             key: 'memo',
             name: '메모',
-            renderCell: row => <div style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>{row.row.memo}</div>,
+            renderCell: row =>
+                <div style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>{row.row.memo}</div>,
             width: 100
         },
         status: {
@@ -85,7 +91,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {
                 ...defaultColumns.buttons,
                 renderCell: (row) => <MDBBtn onClick={() => navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)}
-                                             color={'link'} disabled={!row.row.taskType}>이동하기</MDBBtn>
+                                             color={'link'}
+                                             disabled={!row.row.taskType || !row.row.extra.work.length}>이동하기</MDBBtn>
             }
         ];
     } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
@@ -122,7 +129,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 ...defaultColumns.buttons,
                 renderCell: (row) => row.row.type === 'MASTER' && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ?
                     <><MDBBtn color={'link'} onClick={() => navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)}
-                              disabled={!row.row.taskType}>이동하기</MDBBtn>
+                              disabled={!row.row.taskType || !taskAndWork[row.row.extra.hashedId]?.work?.length}>이동하기</MDBBtn>
                         <div className={'mx-1'}/>
                         <MDBBtn color={'link'}
                                 onClick={() => setModifyTaskHashedId(row.row.extra.hashedId)}>수정하기</MDBBtn>

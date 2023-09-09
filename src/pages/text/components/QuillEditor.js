@@ -38,7 +38,7 @@ function redoChange() {
 
 const grammarly = async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn")
 
-const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, iceservers, connectionType, disabled, onSave}) => {
+const QuillEditor = ({editorType, taskHashedId, targetLanguage, iceservers, connectionType, disabled, onSave}) => {
     const {sessionId} = useContext(SessionContext)
     const {userState} = useContext(AuthContext);
     const reactQuillRef = useRef(null)
@@ -94,12 +94,13 @@ const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, ices
     useEffect(() => {
         const yDoc = new Y.Doc()
         const yText = yDoc.getText('quill')
-        const provider = new WebrtcProvider(`${taskHashedId}-${editorType}`, yDoc, {
+        const roomId = `${taskHashedId}-${editorType}-${targetLanguage.value}`
+        const provider = new WebrtcProvider(roomId, yDoc, {
             signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`],
             maxConns: 20,
             peerOpts: {config: {iceServers: iceservers}}
         })
-        const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${taskHashedId}-${editorType}-${targetLanguage}`, yDoc)
+        const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
         provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
         if (disabled) provider.awareness.setLocalState(null)
         const binding = new QuillBinding(yText, reactQuillRef.current.getEditor(), provider.awareness)
@@ -108,7 +109,7 @@ const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, ices
         persistence.once('synced', () => {
             if (taskHashedId) {
                 axios.get('v1/project/task/content', {
-                    params: {hashed_id: taskHashedId, room_type: editorType, target_language: targetLanguage}
+                    params: {hashed_id: taskHashedId, room_type: editorType, target_language: targetLanguage.value}
                 }).then((r) => {
                     if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
                 }).finally(() => initializedRef.current = true)
@@ -118,7 +119,7 @@ const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, ices
         yDoc.on('update', (update, origin, doc, tr) => {
             if (websocketConnected && origin && !origin.peerId && taskHashedId) {
                 wsRef.current.send(JSON.stringify({
-                    room_id: `${taskHashedId}-${editorType}-${targetLanguage}`, update: fromUint8Array(update)
+                    room_id: `${roomId}`, update: fromUint8Array(update)
                 }))
                 if (origin.constructor === QuillBinding) onSave(false)
                 else onSave(true)
@@ -139,14 +140,14 @@ const QuillEditor = ({editorType, taskHashedId, taskWorkId, targetLanguage, ices
     }, [isOnline, connectionType])
 
     useEffect(() => {
-        if (!disabled && taskWorkId) {
-            if (targetLanguage === 'enUS') {
+        if (!disabled) {
+            if (targetLanguage.value === 'enUS') {
                 grammarly().then(r => {
                     r.addPlugin(reactQuillRef.current.getEditor().root, {documentDialect: "american",})
                 })
             }
         }
-    }, [disabled, taskHashedId, taskWorkId])
+    }, [disabled, targetLanguage])
 
     return <ReactQuill ref={reactQuillRef} modules={modules} formats={formats} theme={'snow'} readOnly={disabled}
                        value={value} onChange={setValue}

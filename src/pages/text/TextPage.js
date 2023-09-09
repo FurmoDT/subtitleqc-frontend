@@ -23,6 +23,7 @@ const TextPage = () => {
         if (!taskHashedId) {
             setAuthority('test')
             setTextFile('https://subtitleqc.s3.ap-northeast-2.amazonaws.com/sample.pdf')
+            setLanguageOptions([{value: '', label: ''}])
             return
         }
         axios.get(`v1/project/task/access`, {
@@ -59,18 +60,18 @@ const TextPage = () => {
     const EditorComponent = () => {
         if (['test', 'pm', 'pd', 'qc', 'client'].includes(authority)) {
             return <Split horizontal={false} initialPrimarySize={'50%'} splitterSize={'5px'}>
-                <QuillEditor editorType={'original'} taskHashedId={taskHashedId} taskWorkId={taskWorkId}
-                             targetLanguage={targetLanguage} iceservers={iceservers} connectionType={connectionType}
+                <QuillEditor editorType={'original'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
+                             iceservers={iceservers} connectionType={connectionType}
                              disabled={!['test'].includes(authority)}
                              onSave={menuToolbarRef.current.showSavingStatus}/>
-                <QuillEditor editorType={'review'} taskHashedId={taskHashedId} taskWorkId={taskWorkId}
-                             targetLanguage={targetLanguage} iceservers={iceservers} connectionType={connectionType}
+                <QuillEditor editorType={'review'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
+                             iceservers={iceservers} connectionType={connectionType}
                              disabled={['client'].includes(authority)}
                              onSave={menuToolbarRef.current.showSavingStatus}/>
             </Split>
         } else {
-            return <QuillEditor editorType={'original'} taskHashedId={taskHashedId} taskWorkId={taskWorkId}
-                                targetLanguage={targetLanguage} iceservers={iceservers} connectionType={connectionType}
+            return <QuillEditor editorType={'original'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
+                                iceservers={iceservers} connectionType={connectionType}
                                 disabled={false}
                                 onSave={menuToolbarRef.current.showSavingStatus}/>
         }
@@ -81,10 +82,10 @@ const TextPage = () => {
                      targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage}/>
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <Split horizontal={true} initialPrimarySize={'75%'} splitterSize={'5px'}>
-                {textFile && iceservers && <Split initialPrimarySize={'40%'} splitterSize={'5px'}>
-                    <DocViewer textFile={textFile}/>
-                    <EditorComponent/>
-                </Split>}
+                {textFile && iceservers && targetLanguage &&
+                    <Split initialPrimarySize={'40%'} splitterSize={'5px'}>
+                        <DocViewer textFile={textFile}/>
+                        <EditorComponent/></Split>}
             </Split>
         </div>
     </div>

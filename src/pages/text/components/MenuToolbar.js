@@ -41,7 +41,10 @@ const MenuToolbar = forwardRef((props, ref) => {
         {!props.taskWorkId && <div className={'mx-1'}>
             {props.targetLanguage &&
                 <Select styles={customTaskLanguageStyle} options={props.languageOptions} placeholder={null}
-                        defaultValue={props.targetLanguage} components={{Option: CustomOption}}/>}
+                        defaultValue={props.targetLanguage} components={{Option: CustomOption}}
+                        onChange={(newValue) => {
+                            props.setTargetLanguage(newValue)
+                        }}/>}
         </div>}
         <div style={{display: 'none', alignItems: 'center', fontSize: '0.8rem'}} ref={saveStatusDivRef}>
             {isSaving && <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/>

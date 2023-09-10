@@ -7,6 +7,7 @@ import {fileExtension} from "../../utils/functions";
 import {useNavigate} from "react-router-dom";
 import {Split} from "@geoffcox/react-splitter";
 import {languageCodes} from "../../utils/config";
+import {Sidebar, sidebarClasses} from "react-pro-sidebar";
 
 const TextPage = () => {
     const [, , taskHashedId, taskWorkId] = window.location.pathname.split('/')
@@ -18,6 +19,7 @@ const TextPage = () => {
     const [languageOptions, setLanguageOptions] = useState([])
     const [targetLanguage, setTargetLanguage] = useState(null)
     const menuToolbarRef = useRef(null)
+    const [showDiff, setShowDiff] = useState(false)
 
     useEffect(() => {
         if (!taskHashedId) {
@@ -79,13 +81,25 @@ const TextPage = () => {
 
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
         <MenuToolbar ref={menuToolbarRef} languageOptions={languageOptions} taskWorkId={taskWorkId}
-                     targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage}/>
+                     targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage}
+                     showDiff={showDiff} setShowDiff={setShowDiff}/>
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <Split horizontal={true} initialPrimarySize={'75%'} splitterSize={'5px'}>
                 {textFile && iceservers && targetLanguage &&
-                    <Split initialPrimarySize={'40%'} splitterSize={'5px'}>
-                        <DocViewer textFile={textFile}/>
-                        <EditorComponent/></Split>}
+                    <div style={{width: '100%', height: '100%', display: 'flex'}}>
+                        <Split initialPrimarySize={'40%'} splitterSize={'5px'}>
+                            <DocViewer textFile={textFile}/>
+                            <EditorComponent/></Split>
+                        <Sidebar width={'50vw'} collapsedWidth={'0px'} collapsed={!showDiff} rootStyles={{
+                            [`.${sidebarClasses.container}`]: {
+                                width: '100%', height: '100%'
+                            }
+                        }}>
+                            <div>diff view</div>
+                        </Sidebar>
+                    </div>
+                }
+
             </Split>
         </div>
     </div>

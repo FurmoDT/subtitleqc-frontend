@@ -8,6 +8,9 @@ import {useNavigate} from "react-router-dom";
 import {Split} from "@geoffcox/react-splitter";
 import {languageCodes} from "../../utils/config";
 import {Sidebar, sidebarClasses} from "react-pro-sidebar";
+import ReactDiffViewer from 'react-diff-viewer-continued';
+import * as Y from 'yjs'
+import {toUint8Array} from "js-base64";
 
 const TextPage = () => {
     const [, , taskHashedId, taskWorkId] = window.location.pathname.split('/')
@@ -20,6 +23,27 @@ const TextPage = () => {
     const [targetLanguage, setTargetLanguage] = useState(null)
     const menuToolbarRef = useRef(null)
     const [showDiff, setShowDiff] = useState(false)
+    const [originalText, setOriginalText] = useState('')
+    const [reviewText, setReviewText] = useState('')
+
+    useEffect(() => {
+        if (showDiff && taskHashedId && targetLanguage.value) {
+            axios.get(`v1/project/task/content`, {
+                params: {hashed_id: taskHashedId, room_type: 'original', target_language: targetLanguage.value}
+            }).then((response) => {
+                const yDoc = new Y.Doc()
+                Y.applyUpdate(yDoc, toUint8Array(response.data.task_crdt))
+                setOriginalText(yDoc.getText('quill').toString().replace("\uFEFF", ""))
+            })
+            axios.get(`v1/project/task/content`, {
+                params: {hashed_id: taskHashedId, room_type: 'review', target_language: targetLanguage.value}
+            }).then((response) => {
+                const yDoc = new Y.Doc()
+                Y.applyUpdate(yDoc, toUint8Array(response.data.task_crdt))
+                setReviewText(yDoc.getText('quill').toString().replace("\uFEFF", ""))
+            })
+        }
+    }, [showDiff, taskHashedId, targetLanguage])
 
     useEffect(() => {
         if (!taskHashedId) {
@@ -80,9 +104,9 @@ const TextPage = () => {
     }
 
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
-        <MenuToolbar ref={menuToolbarRef} languageOptions={languageOptions} taskWorkId={taskWorkId}
-                     targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage}
-                     showDiff={showDiff} setShowDiff={setShowDiff}/>
+        {authority && <MenuToolbar ref={menuToolbarRef} languageOptions={languageOptions} taskWorkId={taskWorkId}
+                                   targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage}
+                                   authority={authority} showDiff={showDiff} setShowDiff={setShowDiff}/>}
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <Split horizontal={true} initialPrimarySize={'75%'} splitterSize={'5px'}>
                 {textFile && iceservers && targetLanguage &&
@@ -95,7 +119,15 @@ const TextPage = () => {
                                 width: '100%', height: '100%'
                             }
                         }}>
-                            <div>diff view</div>
+                            <ReactDiffViewer oldValue={originalText} newValue={reviewText} splitView={true}
+                                             hideLineNumbers={true} leftTitle={'Original'} rightTitle={'Review'}
+                                             styles={{
+                                                 diffRemoved: {backgroundColor: '#FFCCCC'},
+                                                 diffAdded: {backgroundColor: 'lightgreen'},
+                                                 wordRemoved: {backgroundColor: 'lightcoral'},
+                                                 wordAdded: {backgroundColor: '#00CC00'}
+                                             }}
+                            />
                         </Sidebar>
                     </div>
                 }

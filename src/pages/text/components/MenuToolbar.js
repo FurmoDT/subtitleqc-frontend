@@ -53,12 +53,12 @@ const MenuToolbar = forwardRef((props, ref) => {
             </div>
         </div>
         <div>
-            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Show Diff'>
+            {props.authority !== 'client' && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Show Diff'>
                 <MDBBtn size={"sm"} className={'mx-1'} color={'link'}
                         onClick={() => props.setShowDiff(!props.showDiff)}>
                     <MdCompare size={25} color={'black'}>Diff</MdCompare>
                 </MDBBtn>
-            </MDBTooltip>
+            </MDBTooltip>}
         </div>
     </div>
 })

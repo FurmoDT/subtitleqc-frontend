@@ -118,7 +118,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             defaultColumns.status,
             {
                 ...defaultColumns.buttons,
-                renderCell: (row) => <MDBBtn onClick={() => navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)}
+                renderCell: (row) => <MDBBtn href={`/${row.row.taskType}/${row.row.extra.hashedId}`}
                                              color={'link'}
                                              disabled={!row.row.taskType || !row.row.extra.work.length}>이동하기</MDBBtn>
             }
@@ -155,7 +155,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {
                 ...defaultColumns.buttons,
                 renderCell: (row) => row.row.type === 'MASTER' && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ?
-                    <><MDBBtn color={'link'} onClick={() => navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)}
+                    <><MDBBtn color={'link'} href={`/${row.row.taskType}/${row.row.extra.hashedId}`}
                               disabled={!row.row.taskType || !taskAndWork[row.row.extra.hashedId]?.work?.length}>이동하기</MDBBtn>
                         <div className={'mx-1'}/>
                         <MDBBtn color={'link'}
@@ -174,7 +174,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             {
                 ...defaultColumns.buttons,
                 renderCell: (row) => <><MDBBtn color={'link'}
-                                               onClick={() => navigate(`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`)}
+                                               href={`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`}
                                                disabled={!row.row.taskType}>이동하기</MDBBtn>
                     <div className={'mx-1'}/>
                     <MDBBtn color={'link'} onClick={() => {

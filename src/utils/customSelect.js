@@ -44,7 +44,6 @@ export const multiStyle = {
     control: base => ({...base, minHeight: '36px'}),
 }
 
-
 export const taskLanguageStyle = {
     container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap', fontSize: '0.8rem'}),
     dropdownIndicator: base => ({...base, padding: 0}),

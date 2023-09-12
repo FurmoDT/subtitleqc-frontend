@@ -14,7 +14,7 @@ import {
     MDBTextArea,
 } from 'mdb-react-ui-kit';
 import TaskDropzone from "../TaskDropzone";
-import {customMultiStyle, CustomOption, CustomPmControl} from "../../../../utils/customSelect";
+import {multiStyle, PmControl, UserOption} from "../../../../utils/customSelect";
 import Select from "react-select";
 import axios from "../../../../utils/axios";
 import DatePicker from "react-datepicker";
@@ -80,8 +80,8 @@ const RequestModal = () => {
                     <MDBModalBody>
                         <MDBRow className={'mb-3'}>
                             <MDBCol size={3}>
-                                <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
-                                        components={{Option: CustomOption, Control: CustomPmControl}}
+                                <Select styles={multiStyle} options={pmListOption} placeholder={null}
+                                        components={{Option: UserOption, Control: PmControl}}
                                         onChange={(newValue) => {
                                             setTask(prevState => ({...prevState, pm: newValue}))
                                         }}/>

@@ -2,7 +2,7 @@ import {MDBBtn, MDBSpinner, MDBTooltip} from "mdb-react-ui-kit";
 import {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import {BsCloudCheck} from "react-icons/bs";
 import Select from "react-select";
-import {CustomOption, customTaskLanguageStyle} from "../../../utils/customSelect";
+import {taskLanguageStyle} from "../../../utils/customSelect";
 import {MdCompare} from "react-icons/md";
 
 const MenuToolbar = forwardRef((props, ref) => {
@@ -39,11 +39,8 @@ const MenuToolbar = forwardRef((props, ref) => {
                 style={{height: '40px', backgroundColor: '#b7b7b7ff'}}>
         <div style={{display: 'flex'}}>
             {!props.taskWorkId && props.targetLanguage && <div className={'mx-1'}>
-                <Select styles={customTaskLanguageStyle} options={props.languageOptions} placeholder={null}
-                        defaultValue={props.targetLanguage} components={{Option: CustomOption}}
-                        onChange={(newValue) => {
-                            props.setTargetLanguage(newValue)
-                        }}/>
+                <Select styles={taskLanguageStyle} options={props.languageOptions} placeholder={null}
+                        defaultValue={props.targetLanguage} onChange={(newValue) => props.setTargetLanguage(newValue)}/>
             </div>}
             <div style={{display: 'none', alignItems: 'center', fontSize: '0.8rem'}} ref={saveStatusDivRef}>
                 {isSaving && <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/>

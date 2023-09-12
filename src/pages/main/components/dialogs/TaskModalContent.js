@@ -14,7 +14,7 @@ import {
 } from 'mdb-react-ui-kit';
 import Select from "react-select";
 import axios from "../../../../utils/axios";
-import {customMultiStyle, CustomOption, CustomPdControl, customStyle} from "../../../../utils/customSelect";
+import {multiStyle, PdControl, singleStyle, UserOption} from "../../../../utils/customSelect";
 import DatePicker from "react-datepicker";
 import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../utils/config";
 import TaskDropzone from "../TaskDropzone";
@@ -182,8 +182,8 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol style={{display: 'flex'}}>
-                                <Select styles={customMultiStyle} options={pmListOption} placeholder={null}
-                                        components={{Option: CustomOption, Control: CustomPdControl}}
+                                <Select styles={multiStyle} options={pmListOption} placeholder={null}
+                                        components={{Option: UserOption, Control: PdControl}}
                                         isMulti isClearable={false} defaultValue={task.pd}
                                         onChange={(newValue) => {
                                             setTask(prevState => ({...prevState, pd: newValue}))
@@ -231,7 +231,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <Select styles={customStyle} options={genreSelectOption}
+                                <Select styles={singleStyle} options={genreSelectOption}
                                         placeholder={'장르'}
                                         value={genreSelectOption.find(value => value.value === task.genre)}
                                         onChange={(newValue) => {
@@ -248,7 +248,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                 {workers.map((value, index) => {
                     return <MDBRow key={index} className={'mb-3 align-items-center m-0 p-0'}>
                         <MDBCol style={{display: 'flex'}}>
-                            <Select className={'me-2'} styles={customStyle} options={workTypeSelectOption}
+                            <Select className={'me-2'} styles={singleStyle} options={workTypeSelectOption}
                                     placeholder={'*유형'}
                                     value={workTypeSelectOption.find(value => value.value === workers[index].workType)}
                                     onChange={(newValue) => {
@@ -258,7 +258,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                         })
                                     }}/>
                             {/^(sync|transcribe)$/.test(workers[index].workType) ? null :
-                                <Select className={'me-2'} styles={customStyle}
+                                <Select className={'me-2'} styles={singleStyle}
                                         options={languageSelectOption} placeholder={'*언어'}
                                         value={languageSelectOption.find(value => value.value === workers[index].sourceLanguage)}
                                         onChange={(newValue) => {
@@ -267,7 +267,7 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                 return [...prevState]
                                             })
                                         }}/>}
-                            <Select className={'me-2'} styles={customStyle} options={languageSelectOption}
+                            <Select className={'me-2'} styles={singleStyle} options={languageSelectOption}
                                     value={languageSelectOption.find(value => value.value === workers[index].targetLanguage)}
                                     placeholder={'*언어'} onChange={(newValue) => {
                                 setWorkers(prevState => {
@@ -277,9 +277,9 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                             }}/>
                         </MDBCol>
                         <MDBCol size={2}>
-                            <Select styles={customStyle} options={workerListOption} placeholder={'*작업자 이름'}
+                            <Select styles={singleStyle} options={workerListOption} placeholder={'*작업자 이름'}
                                     value={workerListOption.find(value => value.value === workers[index].workerId)}
-                                    components={{Option: CustomOption}} onChange={(newValue) => {
+                                    components={{Option: UserOption}} onChange={(newValue) => {
                                 setWorkers(prevState => {
                                     prevState[index].workerId = newValue.value
                                     return [...prevState]

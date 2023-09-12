@@ -1,6 +1,6 @@
 import {components} from "react-select";
 
-export const CustomOption = (props) => {
+export const UserOption = (props) => {
     return <>
         <components.Option {...props}>
             <p className='fw-bold mb-1'>{props.children}</p>
@@ -9,7 +9,7 @@ export const CustomOption = (props) => {
     </>;
 };
 
-export const CustomPdControl = (props) => {
+export const PdControl = (props) => {
     return <>
         <components.Control {...props}>
             <label className={'text-muted'} style={{marginLeft: '0.5rem'}}>*PD</label>
@@ -18,7 +18,7 @@ export const CustomPdControl = (props) => {
     </>;
 };
 
-export const CustomPmControl = (props) => {
+export const PmControl = (props) => {
     return <>
         <components.Control {...props}>
             <label className={'text-muted'} style={{marginLeft: '0.5rem'}}>*PM 이름</label>
@@ -27,7 +27,7 @@ export const CustomPmControl = (props) => {
     </>;
 };
 
-export const customStyle = {
+export const singleStyle = {
     container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap'}),
     clearIndicator: base => ({...base, padding: '0 0.5rem'}),
     dropdownIndicator: base => ({...base, padding: 0}),
@@ -36,7 +36,7 @@ export const customStyle = {
     control: base => ({...base, minHeight: '36px'}),
 }
 
-export const customMultiStyle = {
+export const multiStyle = {
     container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap'}),
     dropdownIndicator: base => ({...base, padding: 0}),
     menu: base => ({...base, width: 'auto'}),
@@ -45,7 +45,7 @@ export const customMultiStyle = {
 }
 
 
-export const customTaskLanguageStyle = {
+export const taskLanguageStyle = {
     container: base => ({...base, minWidth: '5rem', textAlign: 'left', whiteSpace: 'nowrap', fontSize: '0.8rem'}),
     dropdownIndicator: base => ({...base, padding: 0}),
     menu: base => ({...base, width: 'auto'}),

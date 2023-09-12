@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
 import {fileType, formatTimestamp} from "../../../utils/functions";
@@ -8,6 +8,8 @@ import {useNavigate} from "react-router-dom";
 import {languageCodes, workType} from "../../../utils/config";
 import ModifyModal from "./dialogs/ModifyModal";
 
+const FilterContext = createContext(undefined);
+
 const TaskGridComponent = ({startAt, endAt}) => {
     const [initialized, setInitialized] = useState(false)
     const {userState} = useContext(AuthContext)
@@ -16,6 +18,22 @@ const TaskGridComponent = ({startAt, endAt}) => {
     const [rows, setRows] = useState(null)
     const [taskAndWork, setTaskAndWork] = useState(null)
     const [modifyTaskHashedId, setModifyTaskHashedId] = useState(null)
+    const [filters, setFilters] = useState({status: 'All'})
+
+    const FilterRenderer = ({tabIndex, column, children}) => {
+        return <>
+            <div>{column.name}</div>
+            <div>{children({tabIndex, filters})}</div>
+        </>
+    }
+
+    const filteredRows = useMemo(() => {
+        if (!rows) return
+        return rows.filter((r) => {
+            return filters.status !== 'All' ? r.status === filters.status : true
+        });
+    }, [rows, filters]);
+
 
     const groupBy = (arr, keyFunc) => {
         return arr.reduce((result, current) => {
@@ -35,6 +53,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         createdAt: formatTimestamp(current.task_created_at),
                         dueDate: formatTimestamp(current.task_due_date),
                         memo: current.task_memo,
+                        status: current.work_id ? 'Ing' : 'New',
                         extra: {hashedId: current.task_hashed_id, pmId: current.pm_id, pd: pd},
                     },
                     work: []
@@ -73,10 +92,19 @@ const TaskGridComponent = ({startAt, endAt}) => {
         status: {
             key: 'status',
             name: '상태',
-            renderCell: (row) => <div>{taskAndWork[row.row.extra.hashedId]?.work?.length ? '🟡진행중' : '신규'}</div>,
-            width: 80,
-            maxWidth: 80,
-            minWidth: 80
+            renderHeaderCell: (p) => {
+                return <FilterRenderer {...p}>
+                    {({filters, ...rest}) => {
+                        return <select {...rest} value={filters.status} className={'mx-1'}
+                                       onChange={(e) => setFilters({...filters, status: e.target.value})}>
+                            <option value={'All'}>전체</option>
+                            <option value={'New'}>신규</option>
+                            <option value={'Ing'}>🟡진행중</option>
+                        </select>
+                    }}
+                </FilterRenderer>
+            },
+            renderCell: (row) => <div>{row.row.status === 'New' ? '신규' : '🟡진행중'}</div>
         },
         buttons: {key: 'buttons', name: '', width: 210, maxWidth: 210, minWidth: 210}
     }
@@ -87,7 +115,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             defaultColumns.taskName, defaultColumns.taskType,
             defaultColumns.requestedAt, defaultColumns.endedAt, defaultColumns.dueDate,
             defaultColumns.memo,
-            {...defaultColumns.status, renderCell: (row) => <div>{row.row.extra.work.length ? '🟡진행중' : '신규'}</div>},
+            defaultColumns.status,
             {
                 ...defaultColumns.buttons,
                 renderCell: (row) => <MDBBtn onClick={() => navigate(`/${row.row.taskType}/${row.row.extra.hashedId}`)}
@@ -112,8 +140,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 renderCell: ({row, tabIndex, onRowChange}) => {
                     if (row.type === 'DETAIL') return <WorkGrid hashedId={row.hashedId}/>
                     return taskAndWork[row.extra.hashedId].work.length ?
-                        <div><span tabIndex={tabIndex} onClick={() => onRowChange({...row, expanded: !row.expanded})}>
-                            {row.expanded ? '\u25BC' : '\u25B6'}</span></div> : null
+                        <div><span tabIndex={tabIndex} style={{userSelect: 'none'}}
+                                   onClick={() => onRowChange({...row, expanded: !row.expanded})}>
+                            {row.expanded ? '\u25BC' : '\u25B6'}</span>
+                        </div> : null
                 }
             },
             defaultColumns.no, defaultColumns.client, defaultColumns.pm, defaultColumns.pd,
@@ -121,10 +151,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             defaultColumns.taskName, defaultColumns.taskType,
             defaultColumns.requestedAt, defaultColumns.createdAt, defaultColumns.endedAt, defaultColumns.dueDate,
             defaultColumns.memo,
-            {
-                ...defaultColumns.status,
-                renderCell: (row) => <div>{taskAndWork[row.row.extra.hashedId]?.work?.length ? '🟡진행중' : '신규'}</div>
-            },
+            defaultColumns.status,
             {
                 ...defaultColumns.buttons,
                 renderCell: (row) => row.row.type === 'MASTER' && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ?
@@ -171,6 +198,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         requestedAt: formatTimestamp(item.task_created_at),
                         dueDate: formatTimestamp(item.task_due_date),
                         memo: item.task_memo,
+                        status: item.work.length ? 'Ing' : 'New',
                         extra: {hashedId: item.task_hashed_id, work: item.work}
                     }
                 }))
@@ -206,7 +234,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
         if (!taskAndWork) return
         setRows(Object.values(taskAndWork).reduce((result, current, currentIndex) => {
             result.push({...current.task, expanded: true, type: 'MASTER', no: currentIndex + 1})
-            current.work.length && result.push({type: 'DETAIL', hashedId: current.task.extra.hashedId})
+            current.work.length &&
+            result.push({type: 'DETAIL', hashedId: current.task.extra.hashedId, status: current.task.status})
             return result
         }, []))
     }, [taskAndWork])
@@ -221,7 +250,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
             if (row.expanded) {
                 rows.splice(indexes[0] + 1, 0, {
                     type: 'DETAIL',
-                    hashedId: row.extra.hashedId
+                    hashedId: row.extra.hashedId,
+                    status: row.status
                 })
             } else {
                 rows.splice(indexes[0] + 1, 1);
@@ -231,9 +261,11 @@ const TaskGridComponent = ({startAt, endAt}) => {
     }
 
     return initialized && <>
-        <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={rows}
-                  rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45}
-                  onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
+        <FilterContext.Provider value={filters}>
+            <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={filteredRows}
+                      rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45}
+                      onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
+        </FilterContext.Provider>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId}/>
     </>
 }

@@ -21,10 +21,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
     const [filters, setFilters] = useState({status: 'All'})
 
     const FilterRenderer = ({tabIndex, column, children}) => {
-        return <>
+        return <div style={{width: '100%'}}>
             <div>{column.name}</div>
             <div>{children({tabIndex, filters})}</div>
-        </>
+        </div>
     }
 
     const filteredRows = useMemo(() => {
@@ -92,10 +92,11 @@ const TaskGridComponent = ({startAt, endAt}) => {
         status: {
             key: 'status',
             name: '상태',
+            headerCellClass: 'rdg-header-filter',
             renderHeaderCell: (p) => {
                 return <FilterRenderer {...p}>
                     {({filters, ...rest}) => {
-                        return <select {...rest} value={filters.status} className={'mx-1'}
+                        return <select {...rest} value={filters.status} style={{inlineSize: '100%'}}
                                        onChange={(e) => setFilters({...filters, status: e.target.value})}>
                             <option value={'All'}>전체</option>
                             <option value={'New'}>신규</option>
@@ -104,7 +105,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
                     }}
                 </FilterRenderer>
             },
-            renderCell: (row) => <div>{row.row.status === 'New' ? '신규' : '🟡진행중'}</div>
+            renderCell: (row) => <div>{row.row.status === 'New' ? '신규' : '🟡진행중'}</div>,
+            width: 90,
+            maxWidth: 90,
+            minWidth: 90
         },
         buttons: {key: 'buttons', name: '', width: 210, maxWidth: 210, minWidth: 210}
     }
@@ -264,6 +268,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
         <FilterContext.Provider value={filters}>
             <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={filteredRows}
                       rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45}
+                      headerRowHeight={50}
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId}/>

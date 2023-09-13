@@ -3,7 +3,8 @@ import {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import {BsCloudCheck} from "react-icons/bs";
 import Select from "react-select";
 import {taskLanguageStyle} from "../../../utils/customSelect";
-import {MdCompare} from "react-icons/md";
+import {GrCompare} from "react-icons/gr";
+import SubmitModal from "./dialogs/SubmitModal";
 
 const MenuToolbar = forwardRef((props, ref) => {
     const saveStatusDivRef = useRef(null)
@@ -51,10 +52,13 @@ const MenuToolbar = forwardRef((props, ref) => {
         </div>
         <div>
             {props.authority !== 'client' && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Show Diff'>
-                <MDBBtn size={"sm"} className={'mx-1'} color={'link'}
+                <MDBBtn size={'sm'} className={'mx-1'} color={'link'}
                         onClick={() => props.setShowDiff(!props.showDiff)}>
-                    <MdCompare size={25} color={'black'}>Diff</MdCompare>
+                    <GrCompare size={25} color={'black'}/>
                 </MDBBtn>
+            </MDBTooltip>}
+            {props.taskWorkId && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
+                <SubmitModal/>
             </MDBTooltip>}
         </div>
     </div>

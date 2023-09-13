@@ -4,7 +4,6 @@ import axios from "../../../utils/axios";
 import {fileType, formatTimestamp} from "../../../utils/functions";
 import {MDBBtn} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../contexts/authContext";
-import {useNavigate} from "react-router-dom";
 import {languageCodes, workType} from "../../../utils/config";
 import ModifyModal from "./dialogs/ModifyModal";
 
@@ -13,7 +12,6 @@ const FilterContext = createContext(undefined);
 const TaskGridComponent = ({startAt, endAt}) => {
     const [initialized, setInitialized] = useState(false)
     const {userState} = useContext(AuthContext)
-    const navigate = useNavigate()
     let columns
     const [rows, setRows] = useState(null)
     const [taskAndWork, setTaskAndWork] = useState(null)

@@ -60,9 +60,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
             if (current.work_id) result[key].work.push({
                 workType: workType[current.work_type],
                 worker: current.worker_name,
-                workDueDate: formatTimestamp(current.work_due_date),
                 sourceLanguage: languageCodes[current.work_source_language],
                 targetLanguage: languageCodes[current.work_target_language],
+                workEndedAt: formatTimestamp(current.work_ended_at),
+                workDueDate: formatTimestamp(current.work_due_date),
                 workMemo: current.work_memo
             });
             return result;
@@ -129,6 +130,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                                             rows={work} rowHeight={() => 45} columns={[
                 {key: 'workType', name: '작업'}, {key: 'worker', name: '작업자'},
                 {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
+                {key: 'workEndedAt', name: '완료일'},
                 {key: 'workDueDate', name: '마감일'}, {key: 'workMemo', name: '메모'}]}/>) : null
         }
         columns = [
@@ -194,6 +196,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         taskName: `${item.task_name}_${item.task_episode}`,
                         taskType: fileType(item.task_file_name),
                         createdAt: formatTimestamp(item.task_created_at),
+                        endedAt: formatTimestamp(null),
                         dueDate: formatTimestamp(item.task_due_date),
                         memo: item.task_memo,
                         status: item.work.length ? 'Ing' : 'New',
@@ -219,6 +222,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         sourceLanguage: languageCodes[item.work_source_language],
                         targetLanguage: languageCodes[item.work_target_language],
                         createdAt: formatTimestamp(item.work_created_at),
+                        endedAt: formatTimestamp(item.work_ended_at),
                         dueDate: formatTimestamp(item.work_due_date),
                         memo: item.work_memo,
                         extra: {hashedId: item.task_hashed_id, workHashedId: item.work_hashed_id, pd: pd}

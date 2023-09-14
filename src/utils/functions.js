@@ -45,6 +45,7 @@ export const birthdayValidator = (value) => {
 }
 
 export const formatTimestamp = (timestamp) => {
+    if (!timestamp) return null
     const date = new Date(timestamp);
 
     const year = date.getFullYear();

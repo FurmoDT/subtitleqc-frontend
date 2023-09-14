@@ -11,7 +11,7 @@ import {
 } from 'mdb-react-ui-kit';
 import {FaUserCheck} from "react-icons/fa6";
 import {BsCheckCircleFill} from "react-icons/bs";
-import axios from "axios";
+import axios from "../../../../utils/axios";
 
 const SubmitModal = ({workId}) => {
     const [basicModal, setBasicModal] = useState(false);
@@ -34,9 +34,11 @@ const SubmitModal = ({workId}) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleShow}>취소</MDBBtn>
                         <MDBBtn onClick={() => {
-                            axios.post('v1/project/task/work/done', {work_id: workId}).then((response) => {
-                            })
-                        }} disabled>확인</MDBBtn>
+                            axios.post('v1/project/task/work/done', {
+                                work_hashed_id: workId,
+                                work_ended_at: new Date().getTime()
+                            }).then()
+                        }}>확인</MDBBtn>
                     </MDBModalFooter>
                 </MDBModalContent>
             </MDBModalDialog>

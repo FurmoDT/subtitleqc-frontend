@@ -58,7 +58,7 @@ const MenuToolbar = forwardRef((props, ref) => {
                 </MDBBtn>
             </MDBTooltip>}
             {props.taskWorkId && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
-                <SubmitModal/>
+                <SubmitModal workId={props.taskWorkId}/>
             </MDBTooltip>}
         </div>
     </div>

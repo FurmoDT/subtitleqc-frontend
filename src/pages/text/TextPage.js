@@ -21,6 +21,7 @@ const TextPage = () => {
     const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
     const [languageOptions, setLanguageOptions] = useState([])
     const [targetLanguage, setTargetLanguage] = useState(null)
+    const [workEndedAt, setWorkEndedAt] = useState(null)
     const menuToolbarRef = useRef(null)
     const [showDiff, setShowDiff] = useState(false)
     const [originalText, setOriginalText] = useState('')
@@ -59,6 +60,7 @@ const TextPage = () => {
             const task = response.data.task
             setTextFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
             setLanguageOptions(response.data.target_languages.map(v => ({value: v, label: languageCodes[v]})))
+            setWorkEndedAt(response.data.ended_at)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, taskWorkId, navigate])
 
@@ -92,13 +94,13 @@ const TextPage = () => {
                              onSave={menuToolbarRef.current.showSavingStatus}/>
                 <QuillEditor editorType={'review'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
                              iceservers={iceservers} connectionType={connectionType}
-                             disabled={['client'].includes(authority)}
+                             disabled={['client'].includes(authority) || workEndedAt}
                              onSave={menuToolbarRef.current.showSavingStatus}/>
             </Split>
         } else {
             return <QuillEditor editorType={'original'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
                                 iceservers={iceservers} connectionType={connectionType}
-                                disabled={false}
+                                disabled={workEndedAt}
                                 onSave={menuToolbarRef.current.showSavingStatus}/>
         }
     }

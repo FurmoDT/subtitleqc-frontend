@@ -2,15 +2,20 @@ import {Menu, MenuItem, Sidebar, sidebarClasses} from 'react-pro-sidebar';
 import {MdDashboard, MdFolderOpen} from "react-icons/md";
 import DashboardPanel from "./components/DashboardPanel";
 import {Link, useNavigate} from "react-router-dom";
-import TasksPanel from "./components/TasksPanel";
-import {useEffect, useState} from "react";
+import TaskPanel from "./components/TaskPanel";
+import {useContext, useEffect, useState} from "react";
+import ProjectPanel from "./components/ProjectPanel";
+import {BsListTask} from "react-icons/bs";
+import {AuthContext} from "../../contexts/authContext";
 
 const MainPage = () => {
     const pathname = window.location.pathname
     const [activeMenu, setActiveMenu] = useState(null)
     const navigate = useNavigate()
-    useEffect(()=>{
-        navigate('/tasks')
+    const {userState} = useContext(AuthContext)
+
+    useEffect(() => {
+        if (pathname === '/') navigate('/tasks') // before dashboard
         setActiveMenu(pathname)
     }, [navigate, pathname])
 
@@ -30,11 +35,17 @@ const MainPage = () => {
                 </MenuItem>
                 <MenuItem active={activeMenu === '/tasks'} onClick={() => setActiveMenu('/tasks')}
                           component={<Link to={'/tasks'}/>}>
-                    <MdFolderOpen size={25} color={'white'}/>
+                    <BsListTask size={25} color={'white'}/>
                 </MenuItem>
+                {/^(admin|pm)$/.test(userState.user.userRole) &&
+                    <MenuItem active={activeMenu === '/projects'} onClick={() => setActiveMenu('/projects')}
+                              component={<Link to={'/projects'}/>}>
+                        <MdFolderOpen size={25} color={'white'}/>
+                    </MenuItem>}
             </Menu>
         </Sidebar>
-        {pathname === '/' ? <DashboardPanel/> : pathname === '/tasks' ? <TasksPanel/> : null}
+        {pathname === '/' ? <DashboardPanel/> : pathname === '/tasks' ? <TaskPanel/> : pathname === '/projects' ?
+            <ProjectPanel/> : null}
     </div>
 };
 

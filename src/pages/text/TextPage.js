@@ -16,12 +16,12 @@ const TextPage = () => {
     const [, , taskHashedId, taskWorkId] = window.location.pathname.split('/')
     const navigate = useNavigate()
     const [textFile, setTextFile] = useState(null)
-    const [authority, setAuthority] = useState(null)
+    const [authority, setAuthority] = useState('')
     const [iceservers, setIceServers] = useState(null)
     const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
     const [languageOptions, setLanguageOptions] = useState([])
     const [targetLanguage, setTargetLanguage] = useState(null)
-    const [workEndedAt, setWorkEndedAt] = useState(null)
+    const [endedAt, setEndedAt] = useState(null)
     const menuToolbarRef = useRef(null)
     const [showDiff, setShowDiff] = useState(false)
     const [originalText, setOriginalText] = useState('')
@@ -60,7 +60,7 @@ const TextPage = () => {
             const task = response.data.task
             setTextFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
             setLanguageOptions(response.data.target_languages.map(v => ({value: v, label: languageCodes[v]})))
-            setWorkEndedAt(response.data.ended_at)
+            setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, taskWorkId, navigate])
 
@@ -86,21 +86,21 @@ const TextPage = () => {
     }, [])
 
     const EditorComponent = () => {
-        if (['test', 'pm', 'pd', 'qc', 'client'].includes(authority)) {
+        if (/^(test|pm|pd|qc|client)$/.test(authority)) {
             return <Split horizontal={false} initialPrimarySize={'50%'} splitterSize={'5px'}>
                 <QuillEditor editorType={'original'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
                              iceservers={iceservers} connectionType={connectionType}
-                             disabled={!['test'].includes(authority)}
+                             disabled={authority !== 'test'}
                              onSave={menuToolbarRef.current.showSavingStatus}/>
                 <QuillEditor editorType={'review'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
                              iceservers={iceservers} connectionType={connectionType}
-                             disabled={['client'].includes(authority) || workEndedAt}
+                             disabled={authority === 'client' || endedAt}
                              onSave={menuToolbarRef.current.showSavingStatus}/>
             </Split>
         } else {
             return <QuillEditor editorType={'original'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
                                 iceservers={iceservers} connectionType={connectionType}
-                                disabled={workEndedAt}
+                                disabled={endedAt}
                                 onSave={menuToolbarRef.current.showSavingStatus}/>
         }
     }

@@ -6,6 +6,9 @@ import {MDBBtn} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../contexts/authContext";
 import {languageCodes, workType} from "../../../utils/config";
 import ModifyModal from "./dialogs/ModifyModal";
+import {MdDone, MdRemove} from "react-icons/md";
+import TaskDoneModal from "./dialogs/TaskDoneModal";
+import WorkUndoneModal from "./dialogs/WorkUndoneModal";
 
 const FilterContext = createContext(undefined);
 
@@ -16,6 +19,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
     const [rows, setRows] = useState(null)
     const [taskAndWork, setTaskAndWork] = useState(null)
     const [modifyTaskHashedId, setModifyTaskHashedId] = useState(null)
+    const [taskDoneHashedId, setTaskDoneHashedId] = useState(null)
+    const [workUndoneHashedId, setWorkUndoneHashedId] = useState(null)
     const [filters, setFilters] = useState({status: 'All'})
 
     const FilterRenderer = ({tabIndex, column, children}) => {
@@ -31,7 +36,6 @@ const TaskGridComponent = ({startAt, endAt}) => {
             return filters.status !== 'All' ? r.status === filters.status : true
         });
     }, [rows, filters]);
-
 
     const groupBy = (arr, keyFunc) => {
         return arr.reduce((result, current) => {
@@ -49,6 +53,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         taskName: `${current.task_name}_${current.task_episode}`,
                         taskType: fileType(current.task_file_name),
                         createdAt: formatTimestamp(current.task_created_at),
+                        endedAt: formatTimestamp(current.task_ended_at),
                         dueDate: formatTimestamp(current.task_due_date),
                         memo: current.task_memo,
                         status: current.work_id ? 'Ing' : 'New',
@@ -58,6 +63,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 };
             }
             if (current.work_id) result[key].work.push({
+                workHashedId: current.work_hashed_id,
                 workType: workType[current.work_type],
                 worker: current.worker_name,
                 sourceLanguage: languageCodes[current.work_source_language],
@@ -69,6 +75,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
             return result;
         }, {});
     }
+
     const defaultColumns = {
         no: {key: 'no', name: 'No', width: 60},
         pm: {key: 'pm', name: 'PM'}, pd: {key: 'pd', name: 'PD'}, client: {key: 'client', name: 'Client'},
@@ -130,7 +137,16 @@ const TaskGridComponent = ({startAt, endAt}) => {
                                             rows={work} rowHeight={() => 45} columns={[
                 {key: 'workType', name: '작업'}, {key: 'worker', name: '작업자'},
                 {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
-                {key: 'workEndedAt', name: '완료일'},
+                {
+                    key: 'workEndedAt',
+                    name: '완료일',
+                    renderCell: (row) => <div><span className={'d-inline-block'}>{row.row.workEndedAt}</span>
+                        {row.row.workEndedAt && <div className={'d-inline-block'}>
+                            <MDBBtn size={'sm'} className={'mx-1'} color={'warning'} floating>
+                                <MdRemove size={20} onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}/>
+                            </MDBBtn></div>}
+                    </div>
+                },
                 {key: 'workDueDate', name: '마감일'}, {key: 'workMemo', name: '메모'}]}/>) : null
         }
         columns = [
@@ -149,9 +165,13 @@ const TaskGridComponent = ({startAt, endAt}) => {
             },
             defaultColumns.no, defaultColumns.client, defaultColumns.pm, defaultColumns.pd,
             {key: 'projectCode', name: '프로젝트 코드'}, {key: 'projectName', name: '프로젝트명'}, {key: 'group', name: '그룹'},
-            defaultColumns.taskName, defaultColumns.taskType,
-            defaultColumns.createdAt, defaultColumns.endedAt, defaultColumns.dueDate,
-            defaultColumns.memo, defaultColumns.status,
+            defaultColumns.taskName, defaultColumns.taskType, defaultColumns.createdAt, {
+                ...defaultColumns.endedAt,
+                renderCell: (row) => row.row.endedAt ? <div>{row.row.endedAt}</div> :
+                    <MDBBtn size={'sm'} className={'mx-1'} color={'success'} floating>
+                        <MdDone size={20} onClick={() => setTaskDoneHashedId(row.row.extra.hashedId)}/>
+                    </MDBBtn>
+            }, defaultColumns.dueDate, defaultColumns.memo, defaultColumns.status,
             {
                 ...defaultColumns.buttons,
                 renderCell: (row) => row.row.type === 'MASTER' && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ?
@@ -196,7 +216,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                         taskName: `${item.task_name}_${item.task_episode}`,
                         taskType: fileType(item.task_file_name),
                         createdAt: formatTimestamp(item.task_created_at),
-                        endedAt: formatTimestamp(null),
+                        endedAt: formatTimestamp(item.task_ended_at),
                         dueDate: formatTimestamp(item.task_due_date),
                         memo: item.task_memo,
                         status: item.work.length ? 'Ing' : 'New',
@@ -269,6 +289,8 @@ const TaskGridComponent = ({startAt, endAt}) => {
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId}/>
+        <TaskDoneModal hashedId={taskDoneHashedId} setHashedId={setTaskDoneHashedId}/>
+        <WorkUndoneModal hashedId={workUndoneHashedId} setHashedId={setWorkUndoneHashedId}/>
     </>
 }
 

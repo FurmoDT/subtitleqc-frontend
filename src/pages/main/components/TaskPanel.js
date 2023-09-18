@@ -7,7 +7,7 @@ import RequestModal from "./dialogs/RequestModal";
 import RegisterModal from "./dialogs/RegisterModal";
 import TaskGridComponent from "./TaskGridComponent";
 
-const TasksPanel = () => {
+const TaskPanel = () => {
     const [startAt, setStartAt] = useState(new Date().setHours(0, 0, 0, 0));
     const [endAt, setEndAt] = useState(addMonths(new Date(), 1).setHours(23, 59, 59, 999));
     const {userState} = useContext(AuthContext)
@@ -37,4 +37,4 @@ const TasksPanel = () => {
     </div>
 };
 
-export default TasksPanel
+export default TaskPanel

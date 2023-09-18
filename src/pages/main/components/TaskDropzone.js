@@ -56,6 +56,7 @@ const TaskDropzone = ({uploadedFiles, setUploadedFiles, multiple}) => {
         e.preventDefault();
         e.stopPropagation();
         if (e.target.className.includes('btn-close')) {
+            fileInputRef.current.files = new DataTransfer().files
             setUploadedFiles(prevState => [...prevState.filter((value) => value.name !== e.target.parentElement.innerText)])
             return
         }

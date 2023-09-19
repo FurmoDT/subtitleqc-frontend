@@ -9,6 +9,7 @@ import ModifyModal from "./dialogs/ModifyModal";
 import {MdDone, MdRemove} from "react-icons/md";
 import TaskDoneModal from "./dialogs/TaskDoneModal";
 import WorkUndoneModal from "./dialogs/WorkUndoneModal";
+import TaskUndoneModal from "./dialogs/TaskUndoneModal";
 
 const FilterContext = createContext(undefined);
 
@@ -20,6 +21,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const [taskAndWork, setTaskAndWork] = useState(null)
     const [modifyTaskHashedId, setModifyTaskHashedId] = useState(null)
     const [taskDoneHashedId, setTaskDoneHashedId] = useState(null)
+    const [taskUndoneHashedId, setTaskUndoneHashedId] = useState(null)
     const [workUndoneHashedId, setWorkUndoneHashedId] = useState(null)
     const [filters, setFilters] = useState({status: 'All'})
 
@@ -142,8 +144,8 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     name: '완료일',
                     renderCell: (row) => <div><span className={'d-inline-block'}>{row.row.workEndedAt}</span>
                         {row.row.workEndedAt && (taskAndWork[hashedId].task.extra.pmId === userState.user.userId || Object.keys(taskAndWork[hashedId].task.extra.pd).includes(`${userState.user.userId}`)) &&
-                            <div className={'d-inline-block'}>
-                                <div className={'d-inline-block me-1'}/>
+                            <div className={'d-inline-block ms-1'}>
+                                <div className={'d-inline-block'}/>
                                 <MDBBtn size={'sm'} color={'warning'} floating>
                                     <MdRemove size={20} onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}/>
                                 </MDBBtn></div>}
@@ -169,11 +171,22 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             {key: 'projectCode', name: '프로젝트 코드'}, {key: 'projectName', name: '프로젝트명'}, {key: 'group', name: '그룹'},
             defaultColumns.taskName, defaultColumns.taskType, defaultColumns.createdAt, {
                 ...defaultColumns.endedAt,
-                renderCell: (row) => row.row.endedAt ? <div>{row.row.endedAt}</div> :
-                    (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ?
-                        <MDBBtn size={'sm'} className={'mx-1'} color={'success'} floating>
+                renderCell: (row) => {
+                    const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
+                    if (row.row.endedAt) {
+                        return <div><span className={'d-inline-block'}>{row.row.endedAt}</span>
+                            {authorized && <div className={'d-inline-block ms-1'}>
+                                <MDBBtn size={'sm'} color={'warning'} floating>
+                                    <MdRemove size={20} onClick={() => setTaskUndoneHashedId(row.row.extra.hashedId)}/>
+                                </MDBBtn>
+                            </div>}
+                        </div>
+                    } else {
+                        return authorized && <MDBBtn size={'sm'} className={'mx-1'} color={'success'} floating>
                             <MdDone size={20} onClick={() => setTaskDoneHashedId(row.row.extra.hashedId)}/>
-                        </MDBBtn> : null
+                        </MDBBtn>
+                    }
+                }
             }, defaultColumns.dueDate, defaultColumns.memo, defaultColumns.status,
             {
                 ...defaultColumns.buttons,
@@ -293,6 +306,8 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         </FilterContext.Provider>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId} forceRenderer={forceRenderer}/>
         <TaskDoneModal hashedId={taskDoneHashedId} setHashedId={setTaskDoneHashedId} forceRenderer={forceRenderer}/>
+        <TaskUndoneModal hashedId={taskUndoneHashedId} setHashedId={setTaskUndoneHashedId}
+                         forceRenderer={forceRenderer}/>
         <WorkUndoneModal hashedId={workUndoneHashedId} setHashedId={setWorkUndoneHashedId}
                          forceRenderer={forceRenderer}/>
     </>

@@ -141,10 +141,12 @@ const TaskGridComponent = ({startAt, endAt}) => {
                     key: 'workEndedAt',
                     name: '완료일',
                     renderCell: (row) => <div><span className={'d-inline-block'}>{row.row.workEndedAt}</span>
-                        {row.row.workEndedAt && <div className={'d-inline-block'}>
-                            <MDBBtn size={'sm'} className={'mx-1'} color={'warning'} floating>
-                                <MdRemove size={20} onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}/>
-                            </MDBBtn></div>}
+                        {row.row.workEndedAt && (taskAndWork[hashedId].task.extra.pmId === userState.user.userId || Object.keys(taskAndWork[hashedId].task.extra.pd).includes(`${userState.user.userId}`)) &&
+                            <div className={'d-inline-block'}>
+                                <div className={'d-inline-block me-1'}/>
+                                <MDBBtn size={'sm'} color={'warning'} floating>
+                                    <MdRemove size={20} onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}/>
+                                </MDBBtn></div>}
                     </div>
                 },
                 {key: 'workDueDate', name: '마감일'}, {key: 'workMemo', name: '메모'}]}/>) : null
@@ -168,9 +170,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
             defaultColumns.taskName, defaultColumns.taskType, defaultColumns.createdAt, {
                 ...defaultColumns.endedAt,
                 renderCell: (row) => row.row.endedAt ? <div>{row.row.endedAt}</div> :
-                    <MDBBtn size={'sm'} className={'mx-1'} color={'success'} floating>
-                        <MdDone size={20} onClick={() => setTaskDoneHashedId(row.row.extra.hashedId)}/>
-                    </MDBBtn>
+                    (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ?
+                        <MDBBtn size={'sm'} className={'mx-1'} color={'success'} floating>
+                            <MdDone size={20} onClick={() => setTaskDoneHashedId(row.row.extra.hashedId)}/>
+                        </MDBBtn> : null
             }, defaultColumns.dueDate, defaultColumns.memo, defaultColumns.status,
             {
                 ...defaultColumns.buttons,

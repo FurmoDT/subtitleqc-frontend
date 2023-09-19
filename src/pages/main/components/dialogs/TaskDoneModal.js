@@ -9,14 +9,12 @@ import {
     MDBModalHeader,
     MDBModalTitle,
 } from 'mdb-react-ui-kit';
-import {useNavigate} from 'react-router-dom';
 import {BsCheckCircleFill} from "react-icons/bs";
 import axios from "../../../../utils/axios";
 
-const TaskDoneModal = ({hashedId, setHashedId}) => {
+const TaskDoneModal = ({hashedId, setHashedId, forceRenderer}) => {
     const [show, setShow] = useState(false)
     const toggleShow = () => setShow(!show)
-    const navigate = useNavigate()
 
     useEffect(() => {
         if (hashedId) setShow(true)
@@ -44,7 +42,10 @@ const TaskDoneModal = ({hashedId, setHashedId}) => {
                             axios.post('v1/project/task/done', {
                                 task_hashed_id: hashedId,
                                 task_ended_at: new Date().getTime()
-                            }).then(() => navigate('/'))
+                            }).then(() => {
+                                toggleShow()
+                                forceRenderer()
+                            })
                         }}>확인</MDBBtn>
                     </MDBModalFooter>
                 </MDBModalContent>

@@ -3,7 +3,7 @@ import TaskModalContent from "./TaskModalContent";
 import {MDBBtn, MDBModal, MDBModalDialog} from "mdb-react-ui-kit";
 
 
-const RegisterModal = () => {
+const RegisterModal = ({forceRender}) => {
     const [show, setShow] = useState(false);
     const toggleShow = () => setShow(!show)
 
@@ -13,7 +13,7 @@ const RegisterModal = () => {
         </MDBBtn>
         <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'xl'} centered style={{minWidth: '900px'}}>
-                <TaskModalContent toggleShow={toggleShow} show={show}/>
+                <TaskModalContent toggleShow={toggleShow} show={show} forceRenderer={forceRender}/>
             </MDBModalDialog>
         </MDBModal>
     </>

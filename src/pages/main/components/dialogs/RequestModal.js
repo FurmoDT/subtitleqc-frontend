@@ -22,7 +22,7 @@ import DatePicker from "react-datepicker";
 const inputStyle = {backgroundColor: 'white'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem', color: 'black'}
 
-const RequestModal = () => {
+const RequestModal = ({forceRender}) => {
     const [initialized, setInitialized] = useState(false)
     const [show, setShow] = useState(false)
     const [task, setTask] = useState({})
@@ -143,6 +143,7 @@ const RequestModal = () => {
                                                                 if (index === uploadedFiles.length - 1) {
                                                                     modifySpinnerRef.current.style.display = 'none'
                                                                     toggleShow()
+                                                                    forceRender()
                                                                 }
                                                             })
                                                         )

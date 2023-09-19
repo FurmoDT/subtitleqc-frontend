@@ -1,4 +1,4 @@
-import {useContext, useState} from "react";
+import {useCallback, useContext, useState} from "react";
 import DatePickerComponent from "./DatePickerComponent";
 import {addMonths} from 'date-fns'
 import {MDBCol, MDBRow} from "mdb-react-ui-kit";
@@ -11,11 +11,17 @@ const TaskPanel = () => {
     const [startAt, setStartAt] = useState(new Date().setHours(0, 0, 0, 0));
     const [endAt, setEndAt] = useState(addMonths(new Date(), 1).setHours(23, 59, 59, 999));
     const {userState} = useContext(AuthContext)
+    const [forceRender, setForceRender] = useState(0)
+
+    const forceRenderer = useCallback(()=> {
+        setForceRender(prevState => prevState + 1)
+    }, [])
+
     const ModalComponent = () => {
         if (userState.user.userRole === 'client') {
-            return <RequestModal/>
+            return <RequestModal forceRender={forceRenderer}/>
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
-            return <RegisterModal/>
+            return <RegisterModal forceRender={forceRenderer}/>
         } else return null
     }
 
@@ -32,7 +38,7 @@ const TaskPanel = () => {
             </MDBCol>
         </MDBRow>
         <div style={{height: 'calc(100% - 5rem)'}}>
-            <TaskGridComponent startAt={startAt} endAt={endAt}/>
+            <TaskGridComponent startAt={startAt} endAt={endAt} forceRender={forceRender} forceRenderer={forceRenderer}/>
         </div>
     </div>
 };

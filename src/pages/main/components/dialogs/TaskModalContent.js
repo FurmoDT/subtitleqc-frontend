@@ -24,7 +24,7 @@ import {fileExtension} from "../../../../utils/functions";
 
 const inputStyle = {backgroundColor: 'white', color: 'black'}
 const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
-const TaskModalContent = ({toggleShow, show, hashedId}) => {
+const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [initialized, setInitialized] = useState(false)
     const [task, setTask] = useState({})
     const [workers, setWorkers] = useState([])
@@ -376,13 +376,15 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                                     file_format: fileExtension(uploadedFiles[0].name)
                                                                 }
                                                             }).then(() => {
-                                                                toggleShow()
                                                                 modifySpinnerRef.current.style.display = 'none'
+                                                                toggleShow()
+                                                                forceRenderer()
                                                             })
                                                         })
                                                     } else {
                                                         modifySpinnerRef.current.style.display = 'none'
                                                         toggleShow()
+                                                        forceRenderer()
                                                     }
                                                 })
                                             }}>확인</MDBBtn>
@@ -460,13 +462,15 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                                                     file_format: fileExtension(uploadedFiles[0].name)
                                                                 }
                                                             }).then(() => {
-                                                                toggleShow()
                                                                 modifySpinnerRef.current.style.display = 'none'
+                                                                toggleShow()
+                                                                forceRenderer()
                                                             })
                                                         })
                                                     } else {
                                                         modifySpinnerRef.current.style.display = 'none'
                                                         toggleShow()
+                                                        forceRenderer()
                                                     }
                                                 })
                                             }}>확인</MDBBtn>
@@ -499,12 +503,14 @@ const TaskModalContent = ({toggleShow, show, hashedId}) => {
                                             margin: '1rem 5rem'
                                         }}>
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
-                                                deleteToggleShow()
-                                                toggleShow()
                                                 axios.put('v1/project/task', {
                                                     task_hashed_id: hashedId,
                                                     task_deactivated: true
-                                                }).then()
+                                                }).then(()=>{
+                                                    deleteToggleShow()
+                                                    toggleShow()
+                                                    forceRenderer()
+                                                })
                                             }}>확인</MDBBtn>
                                             <MDBBtn color={'dark'} onClick={deleteToggleShow}>취소</MDBBtn>
                                         </div>

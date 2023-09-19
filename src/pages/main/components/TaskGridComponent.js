@@ -12,7 +12,7 @@ import WorkUndoneModal from "./dialogs/WorkUndoneModal";
 
 const FilterContext = createContext(undefined);
 
-const TaskGridComponent = ({startAt, endAt}) => {
+const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const [initialized, setInitialized] = useState(false)
     const {userState} = useContext(AuthContext)
     let columns
@@ -253,7 +253,7 @@ const TaskGridComponent = ({startAt, endAt}) => {
                 }))
             })
         }
-    }, [userState.user.userRole, startAt, endAt])
+    }, [userState.user.userRole, startAt, endAt, forceRender])
 
     useEffect(() => {
         if (!taskAndWork) return
@@ -291,9 +291,10 @@ const TaskGridComponent = ({startAt, endAt}) => {
                       rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45}
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>
-        <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId}/>
-        <TaskDoneModal hashedId={taskDoneHashedId} setHashedId={setTaskDoneHashedId}/>
-        <WorkUndoneModal hashedId={workUndoneHashedId} setHashedId={setWorkUndoneHashedId}/>
+        <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId} forceRenderer={forceRenderer}/>
+        <TaskDoneModal hashedId={taskDoneHashedId} setHashedId={setTaskDoneHashedId} forceRenderer={forceRenderer}/>
+        <WorkUndoneModal hashedId={workUndoneHashedId} setHashedId={setWorkUndoneHashedId}
+                         forceRenderer={forceRenderer}/>
     </>
 }
 

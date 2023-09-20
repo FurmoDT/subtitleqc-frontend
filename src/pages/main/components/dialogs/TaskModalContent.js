@@ -28,6 +28,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [initialized, setInitialized] = useState(false)
     const [task, setTask] = useState({})
     const [workers, setWorkers] = useState([])
+    const [removedWorkers, setRemovedWorkers] = useState([])
     const [uploadedFiles, setUploadedFiles] = useState([])
     const [workerListOption, setWorkerListOption] = useState([])
     const [pmListOption, setPmListOption] = useState([])
@@ -112,6 +113,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
             setInitialized(false)
             setTask({})
             setWorkers([])
+            setRemovedWorkers([])
             setUploadedFiles([])
             return
         }
@@ -136,10 +138,12 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
             })
             axios.get('v1/project/task/works', {params: {hashed_id: hashedId}}).then((response) => {
                 setWorkers(response.data.map((value) => ({
+                    workHashedId: value.work_hashed_id,
                     workType: value.work_type,
                     sourceLanguage: value.work_source_language,
                     targetLanguage: value.work_target_language,
                     workerId: value.worker_id,
+                    endedAt: value.work_ended_at,
                     dueDate: value.work_due_date,
                     memo: value.work_memo
                 })))
@@ -307,6 +311,8 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                         <MDBBtn className='btn-close' color='none'
                                 style={{marginRight: 'calc(0.75rem + 1px)'}}
                                 onClick={() => setWorkers(prevState => {
+                                    const worker = workers[index]
+                                    if (worker.workHashedId) setRemovedWorkers(prevState => [...prevState, worker])
                                     prevState.splice(index, 1)
                                     return [...prevState]
                                 })}/>
@@ -440,18 +446,41 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     task_file_version: task.fileVersion + (fileUpdated ? 1 : 0)
                                                 }).then((response) => {
                                                     const taskId = response.data
-                                                    axios.put('v1/project/task/work', {
-                                                        task_hashed_id: hashedId,
-                                                        works: workers.map((value) => {
-                                                            return {
+                                                    const newWorks = []
+                                                    const updateWorks = []
+                                                    const updateWorkParser = (value, remove) => ({
+                                                        work_hashed_id: value.workHashedId,
+                                                        work_deactivated: remove,
+                                                        worker_id: value.workerId,
+                                                        work_type: value.workType,
+                                                        work_source_language: value.sourceLanguage,
+                                                        work_target_language: value.targetLanguage,
+                                                        work_ended_at: value.endDate,
+                                                        work_due_date: value.dueDate,
+                                                        work_memo: value.memo,
+                                                    })
+                                                    workers.forEach((value) => {
+                                                        if (value.workHashedId) {
+                                                            updateWorks.push(updateWorkParser(value, false))
+                                                        } else {
+                                                            newWorks.push({
                                                                 worker_id: value.workerId,
                                                                 work_type: value.workType,
                                                                 work_source_language: value.sourceLanguage,
                                                                 work_target_language: value.targetLanguage,
                                                                 work_due_date: value.dueDate,
                                                                 work_memo: value.memo,
-                                                            }
-                                                        })
+                                                            })
+                                                        }
+                                                    })
+                                                    removedWorkers.forEach((value) => {
+                                                        updateWorks.push(updateWorkParser(value, true))
+                                                    })
+                                                    newWorks.length && axios.post('v1/project/task/work', {
+                                                        task_id: taskId, works: newWorks
+                                                    }).then()
+                                                    updateWorks.length && axios.put('v1/project/task/work', {
+                                                        task_hashed_id: hashedId, works: updateWorks
                                                     }).then()
                                                     if (fileUpdated) {
                                                         s3Upload(taskId, task.fileVersion + 1, uploadedFiles).then(() => {
@@ -506,7 +535,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                 axios.put('v1/project/task', {
                                                     task_hashed_id: hashedId,
                                                     task_deactivated: true
-                                                }).then(()=>{
+                                                }).then(() => {
                                                     deleteToggleShow()
                                                     toggleShow()
                                                     forceRenderer()

@@ -13,13 +13,14 @@ import * as Y from 'yjs'
 import {toUint8Array} from "js-base64";
 
 const TextPage = () => {
-    const [, , taskHashedId, taskWorkId] = window.location.pathname.split('/')
+    const [, , taskHashedId, workHashedId] = window.location.pathname.split('/')
     const navigate = useNavigate()
     const [textFile, setTextFile] = useState(null)
     const [authority, setAuthority] = useState('')
     const [iceservers, setIceServers] = useState(null)
     const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
     const [languageOptions, setLanguageOptions] = useState([])
+    const [taskName, setTaskName] = useState('')
     const [targetLanguage, setTargetLanguage] = useState(null)
     const [endedAt, setEndedAt] = useState(null)
     const menuToolbarRef = useRef(null)
@@ -54,15 +55,16 @@ const TextPage = () => {
             return
         }
         axios.get(`v1/project/task/access`, {
-            params: {hashed_id: taskHashedId, work_hashed_id: taskWorkId}
+            params: {hashed_id: taskHashedId, work_hashed_id: workHashedId}
         }).then((response) => {
             setAuthority(response.data.authority)
             const task = response.data.task
             setTextFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
             setLanguageOptions(response.data.target_languages.map(v => ({value: v, label: languageCodes[v]})))
+            setTaskName(`${task.task_name}_${task.task_episode}`)
             setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
         }).catch(() => navigate('/error'))
-    }, [taskHashedId, taskWorkId, navigate])
+    }, [taskHashedId, workHashedId, navigate])
 
     useEffect(() => {
         setTargetLanguage(languageOptions[0])
@@ -106,9 +108,10 @@ const TextPage = () => {
     }
 
     return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
-        {authority && <MenuToolbar ref={menuToolbarRef} languageOptions={languageOptions} taskWorkId={taskWorkId}
-                                   targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage}
-                                   authority={authority} showDiff={showDiff} setShowDiff={setShowDiff}/>}
+        {authority &&
+            <MenuToolbar ref={menuToolbarRef} languageOptions={languageOptions} taskWorkId={workHashedId}
+                         targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage} taskName={taskName}
+                         authority={authority} showDiff={showDiff} setShowDiff={setShowDiff}/>}
         <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
             <Split horizontal={true} initialPrimarySize={'75%'} splitterSize={'5px'}>
                 {textFile && iceservers && targetLanguage &&

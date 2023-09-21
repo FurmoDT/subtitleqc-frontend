@@ -5,11 +5,11 @@ import {fileType, formatTimestamp} from "../../../utils/functions";
 import {MDBBtn} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../contexts/authContext";
 import {languageCodes, workType} from "../../../utils/config";
-import ModifyModal from "./dialogs/ModifyModal";
+import ModifyModal from "./dialogs/task/ModifyModal";
 import {MdDone, MdRemove} from "react-icons/md";
-import TaskDoneModal from "./dialogs/TaskDoneModal";
-import WorkUndoneModal from "./dialogs/WorkUndoneModal";
-import TaskUndoneModal from "./dialogs/TaskUndoneModal";
+import TaskDoneModal from "./dialogs/task/TaskDoneModal";
+import WorkUndoneModal from "./dialogs/task/WorkUndoneModal";
+import TaskUndoneModal from "./dialogs/task/TaskUndoneModal";
 
 const FilterContext = createContext(undefined);
 

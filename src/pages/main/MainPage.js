@@ -7,6 +7,7 @@ import {useContext, useEffect, useState} from "react";
 import ProjectPanel from "./components/ProjectPanel";
 import {BsListTask} from "react-icons/bs";
 import {AuthContext} from "../../contexts/authContext";
+import "../../css/ReactDataGrid.css";
 
 const MainPage = () => {
     const pathname = window.location.pathname

@@ -35,29 +35,3 @@
 .ag-header-container {
     background-color: #f28720ff;
 }
-
-.rdg-header-row {
-    background-color: #f28720ff;
-    text-align: center;
-}
-
-.rdg-cell {
-    white-space: pre !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.rdg-row {
-    line-height: normal;
-}
-
-.rdg-detail-cell {
-    padding: 1rem;
-    background-color: #e5e5e5;
-}
-
-.rdg-header-filter {
-    line-height: 1.25rem;
-    padding-inline: 0.125rem;
-}

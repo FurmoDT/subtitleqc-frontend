@@ -33,9 +33,8 @@ export default function Navbar(props) {
     return <>
         <MDBNavbar expand={'lg'} dark style={{backgroundColor: '#121212ff', padding: 0, minHeight: '50px'}}>
             <MDBContainer fluid style={{paddingLeft: 5}}>
-                <MDBNavbarBrand href={`${props.basename}`}
-                                style={{width: '40px', height: '35px', backgroundColor: 'white'}}>
-                    <img src='/furmo-logo.png' width={'40'} height={'33'} alt='' style={{margin: '0 auto'}}/>
+                <MDBNavbarBrand href={`${props.basename}`} style={{width: '40px', height: '35px'}}>
+                    <img src='/furmo-logo.png' width={'35'} height={'28'} alt='' style={{margin: '0 auto'}}/>
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={() => setShowNavNoTogglerSecond(!showNavNoTogglerSecond)}>
                     <MDBIcon icon='bars' fas/>

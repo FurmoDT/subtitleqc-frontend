@@ -3,6 +3,7 @@ import {addMonths} from 'date-fns'
 import {MDBCol, MDBRow} from "mdb-react-ui-kit";
 import DatePickerComponent from "./DatePickerComponent";
 import ProjectGridComponent from "./ProjectGridComponent";
+import RegisterModal from "./dialogs/project/RegisterModal";
 
 const ProjectPanel = () => {
     const [startAt, setStartAt] = useState(new Date().setHours(0, 0, 0, 0));
@@ -12,7 +13,7 @@ const ProjectPanel = () => {
     return <div style={{padding: '5rem', width: 'calc(100vw - 50px)', height: '100%', textAlign: 'center'}}>
         <MDBRow style={{marginBottom: '0.5rem'}}>
             <MDBCol sm={4} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'end'}}>
-                {/*<ModalComponent/>*/}
+                <RegisterModal/>
             </MDBCol>
             <MDBCol sm={4} style={{display: 'flex', justifyContent: 'center', alignItems: 'end'}}>
                 <div style={{fontWeight: 'bold'}}>태스크 리스트</div>

@@ -1,4 +1,4 @@
-import {forwardRef, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {
     MDBBtn,
     MDBCol,
@@ -21,9 +21,8 @@ import TaskDropzone from "../../TaskDropzone";
 import {AuthContext} from "../../../../../contexts/authContext";
 import {s3Upload} from "../../../../../utils/awsS3Upload";
 import {fileExtension} from "../../../../../utils/functions";
+import {CustomInput, inputStyle, labelStyle} from "../../../../../components/ModalStyle";
 
-const inputStyle = {backgroundColor: 'white', color: 'black'}
-const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
 const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [initialized, setInitialized] = useState(false)
     const [task, setTask] = useState({})
@@ -55,10 +54,6 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
         if (error) return
         submitToggleShow()
     }
-
-    const CustomInput = forwardRef(({value, onClick, label}, ref) => {
-        return <MDBInput style={inputStyle} label={label} labelStyle={labelStyle} onClick={onClick} value={value}/>
-    })
 
     const setProjectInfo = useCallback((value) => {
         const reset = () => {
@@ -166,8 +161,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
             <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
         </MDBModalHeader>
         <MDBModalBody>
-            <MDBRow className={'mb-1'}
-                    style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
+            <MDBRow className={'mb-1'} style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
                 <label className={'mb-3'} style={{textAlign: 'left', fontWeight: 'bold'}}>
                     태스크 정보<label ref={taskValidationLabelRef} className={'input-error-label'}/></label>
                 <MDBRow>

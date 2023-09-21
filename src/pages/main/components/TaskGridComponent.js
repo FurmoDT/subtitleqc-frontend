@@ -58,7 +58,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         endedAt: formatTimestamp(current.task_ended_at),
                         dueDate: formatTimestamp(current.task_due_date),
                         memo: current.task_memo,
-                        status: current.work_id ? 'Ing' : 'New',
+                        status: current.task_ended_at ? 'Done' : current.work_id ? 'Ing' : 'New',
                         extra: {hashedId: current.task_hashed_id, pmId: current.pm_id, pd: pd},
                     },
                     work: []
@@ -109,11 +109,12 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                             <option value={'All'}>전체</option>
                             <option value={'New'}>신규</option>
                             <option value={'Ing'}>🟡진행중</option>
+                            <option value={'Done'}>🟢완료</option>
                         </select>
                     }}
                 </FilterRenderer>
             },
-            renderCell: (row) => <div>{row.row.status === 'New' ? '신규' : '🟡진행중'}</div>,
+            renderCell: (row) => <div>{{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status]}</div>,
         },
         buttons: {key: 'buttons', name: '', width: 210, maxWidth: 210, minWidth: 210}
     }
@@ -235,7 +236,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         endedAt: formatTimestamp(item.task_ended_at),
                         dueDate: formatTimestamp(item.task_due_date),
                         memo: item.task_memo,
-                        status: item.work.length ? 'Ing' : 'New',
+                        status: item.task_ended_at ? 'Done' : item.work.length ? 'Ing' : 'New',
                         extra: {hashedId: item.task_hashed_id, work: item.work}
                     }
                 }))

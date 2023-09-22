@@ -44,6 +44,12 @@ export const birthdayValidator = (value) => {
     return year + month + day
 }
 
+export const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
+
+export const thousandSeperator = (value) => {
+    return removeNonNumeric(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
 export const formatTimestamp = (timestamp) => {
     if (!timestamp) return null
     const date = new Date(timestamp);

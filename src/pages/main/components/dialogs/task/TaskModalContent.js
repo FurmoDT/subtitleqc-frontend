@@ -21,7 +21,7 @@ import TaskDropzone from "../../TaskDropzone";
 import {AuthContext} from "../../../../../contexts/authContext";
 import {s3Upload} from "../../../../../utils/awsS3Upload";
 import {fileExtension} from "../../../../../utils/functions";
-import {CustomInput, inputStyle, labelStyle} from "../../../../../components/ModalStyle";
+import {DateInput, inputStyle, labelStyle} from "../../../../../components/ModalStyle";
 
 const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [initialized, setInitialized] = useState(false)
@@ -219,7 +219,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                     <MDBCol style={{minWidth: '13.5rem', maxWidth: '13.5rem'}}>
                         <MDBRow className={'mb-3'}>
                             <MDBCol>
-                                <DatePicker customInput={<CustomInput label={'*납품기한'}/>}
+                                <DatePicker customInput={<DateInput label={'*납품기한'}/>}
                                             selected={task.dueDate} showTimeSelect
                                             timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'} timeIntervals={60}
                                             onChange={(date) => setTask(prevState => ({
@@ -285,7 +285,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                             }}/>
                         </MDBCol>
                         <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
-                            <DatePicker customInput={<CustomInput label={'*마감일'}/>}
+                            <DatePicker customInput={<DateInput label={'*마감일'}/>}
                                         selected={workers[index].dueDate} showTimeSelect
                                         timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'} timeIntervals={60}
                                         onChange={(date) => {

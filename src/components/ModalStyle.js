@@ -1,7 +1,7 @@
 import {forwardRef} from "react";
 import {MDBInput} from "mdb-react-ui-kit";
 
-export const inputStyle = {backgroundColor: 'white', color: 'black'}
+export const inputStyle = {backgroundColor: 'white'}
 export const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem'}
 
 export const CustomInput = forwardRef(({value, onClick, label}, ref) => {

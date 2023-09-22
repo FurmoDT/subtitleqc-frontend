@@ -1,4 +1,4 @@
-import {forwardRef, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
     MDBBtn,
     MDBCol,
@@ -18,9 +18,7 @@ import {multiStyle, PmControl, UserOption} from "../../../../../utils/customSele
 import Select from "react-select";
 import axios from "../../../../../utils/axios";
 import DatePicker from "react-datepicker";
-
-const inputStyle = {backgroundColor: 'white'}
-const labelStyle = {fontSize: '0.8rem', lineHeight: '1.5rem', color: 'black'}
+import {CustomInput, inputStyle, labelStyle} from "../../../../../components/ModalStyle";
 
 const RequestModal = ({forceRender}) => {
     const [initialized, setInitialized] = useState(false)
@@ -41,12 +39,6 @@ const RequestModal = ({forceRender}) => {
         if (error) return
         submitToggleShow()
     }
-
-
-    const CustomInput = forwardRef(({value, onClick, label}, ref) => {
-        return <MDBInput style={inputStyle} label={label} labelStyle={labelStyle} onClick={onClick} value={value}/>
-    })
-
 
     useEffect(() => {
         if (!show) {

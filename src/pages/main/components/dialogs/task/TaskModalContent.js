@@ -216,7 +216,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                             </MDBCol>
                         </MDBRow>
                     </MDBCol>
-                    <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
+                    <MDBCol style={{minWidth: '13.5rem', maxWidth: '13.5rem'}}>
                         <MDBRow className={'mb-3'}>
                             <MDBCol>
                                 <DatePicker customInput={<CustomInput label={'*납품기한'}/>}

@@ -16,7 +16,12 @@ export const placeholderStyle = {
     pointerEvents: 'none'
 }
 
-export const placeholderDisplayHandler = () => {
+export const placeholderDisplayHandler = (inputElement) => {
+    if (inputElement.value) {
+        inputElement.parentElement.getElementsByTagName('label')[0].style.display = 'none'
+    } else {
+        inputElement.parentElement.getElementsByTagName('label')[0].style.display = ''
+    }
 
 }
 

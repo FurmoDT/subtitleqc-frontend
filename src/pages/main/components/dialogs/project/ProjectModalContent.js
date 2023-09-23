@@ -1,15 +1,7 @@
 import {
-    MDBBtn,
-    MDBCol,
-    MDBInput,
-    MDBListGroup,
-    MDBListGroupItem,
-    MDBModalBody,
-    MDBModalContent,
-    MDBModalHeader,
-    MDBRow,
+    MDBBtn, MDBCol, MDBInput, MDBListGroup, MDBListGroupItem, MDBModalBody, MDBModalContent, MDBModalHeader, MDBRow,
 } from 'mdb-react-ui-kit';
-import {DateInput, inputStyle, placeholderStyle} from "../../../../../components/ModalStyle";
+import {DateInput, inputStyle, placeholderDisplayHandler, placeholderStyle} from "../../../../../components/ModalStyle";
 import DatePicker from "react-datepicker";
 import {useEffect, useState} from 'react';
 import {removeNonNumeric, thousandSeperator} from "../../../../../utils/functions";
@@ -94,17 +86,20 @@ const ProjectModalContent = ({show, toggleShow}) => {
                             <MDBRow><MDBCol><label className={'fw-bold mx-1 input-header-label'}>
                                 거래처 담당자</label></MDBCol></MDBRow>
                             <MDBCol className={'position-relative'}>
-                                <MDBInput style={inputStyle}>
+                                <MDBInput style={inputStyle}
+                                          onChange={event => placeholderDisplayHandler(event.target)}>
                                     <label style={placeholderStyle}>이름</label>
                                 </MDBInput>
                             </MDBCol>
                             <MDBCol className={'position-relative'}>
-                                <MDBInput style={inputStyle}>
+                                <MDBInput style={inputStyle}
+                                          onChange={event => placeholderDisplayHandler(event.target)}>
                                     <label style={placeholderStyle}>이메일</label>
                                 </MDBInput>
                             </MDBCol>
                             <MDBCol className={'position-relative'}>
-                                <MDBInput style={inputStyle}>
+                                <MDBInput style={inputStyle}
+                                          onChange={event => placeholderDisplayHandler(event.target)}>
                                     <label style={placeholderStyle}>전화번호</label>
                                 </MDBInput>
                             </MDBCol>
@@ -113,17 +108,20 @@ const ProjectModalContent = ({show, toggleShow}) => {
                             <MDBRow><MDBCol><label className={'fw-bold mx-1 input-header-label'}>
                                 거래처 정산 담당자</label></MDBCol></MDBRow>
                             <MDBCol className={'position-relative'}>
-                                <MDBInput style={inputStyle}>
+                                <MDBInput style={inputStyle}
+                                          onChange={event => placeholderDisplayHandler(event.target)}>
                                     <label style={placeholderStyle}>이름</label>
                                 </MDBInput>
                             </MDBCol>
                             <MDBCol className={'position-relative'}>
-                                <MDBInput style={inputStyle}>
+                                <MDBInput style={inputStyle}
+                                          onChange={event => placeholderDisplayHandler(event.target)}>
                                     <label style={placeholderStyle}>이메일</label>
                                 </MDBInput>
                             </MDBCol>
                             <MDBCol className={'position-relative'}>
-                                <MDBInput style={inputStyle}>
+                                <MDBInput style={inputStyle}
+                                          onChange={event => placeholderDisplayHandler(event.target)}>
                                     <label style={placeholderStyle}>전화번호</label>
                                 </MDBInput>
                             </MDBCol>
@@ -133,13 +131,9 @@ const ProjectModalContent = ({show, toggleShow}) => {
                                 작업내용</label></MDBCol></MDBRow>
                             <MDBCol>
                                 <MDBListGroup className={'rounded'} style={{
-                                    height: 'calc(4.8rem + 4px)',
-                                    overflowY: 'auto',
-                                    backgroundColor: 'white'
-                                }}>
-                                    {[1, 2, 3, 4].map(value => (
-                                        <MDBListGroupItem className={'px-2 py-0'}
-                                                          key={value}>Task {value}</MDBListGroupItem>))}
+                                    height: 'calc(4.8rem + 4px)', overflowY: 'auto', backgroundColor: 'white'
+                                }}>{[1, 2, 3, 4].map(value => (<MDBListGroupItem className={'px-2 py-0'}
+                                                                                 key={value}>Task {value}</MDBListGroupItem>))}
                                 </MDBListGroup>
                             </MDBCol>
                         </MDBRow>

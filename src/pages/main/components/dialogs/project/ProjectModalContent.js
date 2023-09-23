@@ -1,6 +1,5 @@
 import {
     MDBBtn,
-    MDBCheckbox,
     MDBCol,
     MDBInput,
     MDBListGroup,
@@ -38,7 +37,7 @@ const ProjectModalContent = ({show, toggleShow}) => {
         </MDBModalHeader>
         <MDBModalBody>
             <MDBRow style={{backgroundColor: '#f3f3f3ff'}} className={'mx-0 py-2'}>
-                <MDBCol className={'d-flex flex-column'}>
+                <MDBCol className={'d-flex flex-column align-items-center'}>
                     <label className={'fw-bold mb-1'}>프로젝트 등록</label>
                     <MDBRow className={'text-start py-3 mx-0 flex-fill'}
                             style={{backgroundColor: '#f28720ff', color: 'black'}}>
@@ -154,8 +153,9 @@ const ProjectModalContent = ({show, toggleShow}) => {
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>
+                    <MDBBtn className={'mt-2'} color={'dark'}>등록 완료</MDBBtn>
                 </MDBCol>
-                <MDBCol className={'d-flex flex-column'}>
+                <MDBCol className={'d-flex flex-column align-items-center'}>
                     <label className={'fw-bold mb-1'}>견적서 등록</label>
                     <MDBRow className={'text-start py-3 mx-0 mb-1'}
                             style={{backgroundColor: '#f28720ff', color: 'black'}}>
@@ -217,6 +217,7 @@ const ProjectModalContent = ({show, toggleShow}) => {
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>
+                    <MDBBtn className={'mt-2'} color={'dark'}>견적서 미리보기</MDBBtn>
                 </MDBCol>
             </MDBRow>
         </MDBModalBody>

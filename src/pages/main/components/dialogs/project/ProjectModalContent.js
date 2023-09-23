@@ -14,12 +14,22 @@ import DatePicker from "react-datepicker";
 import {useEffect, useState} from 'react';
 import {removeNonNumeric, thousandSeperator} from "../../../../../utils/functions";
 
-const ProjectModalContent = ({toggleShow}) => {
+const ProjectModalContent = ({show, toggleShow}) => {
     const [project, setProject] = useState({})
+    const [items, setItems] = useState([])
 
     useEffect(() => {
         console.log(project)
     }, [project])
+
+    useEffect(() => {
+        if (!show) {
+            setProject({})
+            setItems([])
+            return
+        }
+        setItems([{}])
+    }, [show])
 
     return <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
         <MDBModalHeader className={'border-bottom-0'}>
@@ -163,33 +173,41 @@ const ProjectModalContent = ({toggleShow}) => {
                     </MDBRow>
                     <MDBRow className={'text-start py-3 mx-0 flex-fill flex-column'}
                             style={{backgroundColor: '#f28720ff', color: 'black'}}>
-                        <MDBRow className={'mx-0 px-0 mb-1'}>
-                            <MDBCol size={2}>
-                                <label className={'fw-bold mx-1 input-header-label'}>항목</label>
-                                <MDBInput style={inputStyle}/>
-                            </MDBCol>
-                            <MDBCol style={{minWidth: '7rem', maxWidth: '7rem'}}>
-                                <label className={'fw-bold mx-1 input-header-label'}>단가</label>
-                                <MDBInput style={inputStyle}/>
-                            </MDBCol>
-                            <MDBCol style={{minWidth: '5rem', maxWidth: '5rem'}}>
-                                <label className={'fw-bold mx-1 input-header-label'}>수량</label>
-                                <MDBInput style={inputStyle}/>
-                            </MDBCol>
-                            <MDBCol style={{minWidth: '8.5rem', maxWidth: '8.5rem'}}>
-                                <label className={'fw-bold mx-1 input-header-label'}>금액</label>
-                                <MDBInput style={inputStyle}/>
-                            </MDBCol>
-                            <MDBCol>
-                                <label className={'fw-bold mx-1 input-header-label'}>비고</label>
-                                <MDBInput style={inputStyle}/>
-                            </MDBCol>
-                        </MDBRow>
+                        {items.map((value, index) => {
+                            return <MDBRow key={index} className={'mx-0 px-0 mb-1 align-items-center'}>
+                                <MDBCol size={2}>
+                                    <label className={'fw-bold mx-1 input-header-label'}>항목</label>
+                                    <MDBInput style={inputStyle}/>
+                                </MDBCol>
+                                <MDBCol style={{minWidth: '7rem', maxWidth: '7rem'}}>
+                                    <label className={'fw-bold mx-1 input-header-label'}>단가</label>
+                                    <MDBInput style={inputStyle}/>
+                                </MDBCol>
+                                <MDBCol style={{minWidth: '5rem', maxWidth: '5rem'}}>
+                                    <label className={'fw-bold mx-1 input-header-label'}>수량</label>
+                                    <MDBInput style={inputStyle}/>
+                                </MDBCol>
+                                <MDBCol style={{minWidth: '8.5rem', maxWidth: '8.5rem'}}>
+                                    <label className={'fw-bold mx-1 input-header-label'}>금액</label>
+                                    <MDBInput style={inputStyle}/>
+                                </MDBCol>
+                                <MDBCol>
+                                    <label className={'fw-bold mx-1 input-header-label'}>비고</label>
+                                    <MDBInput style={inputStyle}/>
+                                </MDBCol>
+                                <MDBBtn className='btn-close' color='none'
+                                        style={{marginTop: '1.6rem', marginRight: '0.75rem'}}
+                                        onClick={() => setItems(prevState => {
+                                            prevState.splice(index, 1)
+                                            return [...prevState]
+                                        })}/>
+                            </MDBRow>
+                        })}
                         <MDBRow className={'mx-0 px-0'}>
                             <label className={'fw-bold mx-1 input-header-label pe-none'}>&nbsp;</label>
                             <MDBCol>
-                                <MDBBtn className={'mb-1 mx-0'} color={'link'} style={{backgroundColor: 'white'}}>
-                                    + 추가하기</MDBBtn>
+                                <MDBBtn className={'mb-1 mx-0'} color={'link'} style={{backgroundColor: 'white'}}
+                                        onClick={() => setItems(prevState => [...prevState, {}])}> + 추가하기</MDBBtn>
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>

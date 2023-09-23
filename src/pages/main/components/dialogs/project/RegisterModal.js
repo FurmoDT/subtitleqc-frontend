@@ -12,8 +12,8 @@ const RegisterModal = ({forceRender}) => {
             프로젝트 등록
         </MDBBtn>
         <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>
-            <MDBModalDialog size={'xl'} centered style={{minWidth: '900px'}}>
-                <ProjectModalContent toggleShow={toggleShow} show={show}/>
+            <MDBModalDialog size={'xl'} centered style={{minWidth: '1200px'}}>
+                <ProjectModalContent show={show} toggleShow={toggleShow}/>
             </MDBModalDialog>
         </MDBModal>
     </>

@@ -1,5 +1,14 @@
 import {
-    MDBBtn, MDBCol, MDBInput, MDBListGroup, MDBListGroupItem, MDBModalBody, MDBModalContent, MDBModalHeader, MDBRow,
+    MDBBtn,
+    MDBCheckbox,
+    MDBCol,
+    MDBInput,
+    MDBListGroup,
+    MDBListGroupItem,
+    MDBModalBody,
+    MDBModalContent,
+    MDBModalHeader,
+    MDBRow,
 } from 'mdb-react-ui-kit';
 import {DateInput, inputStyle, placeholderDisplayHandler, placeholderStyle} from "../../../../../components/ModalStyle";
 import DatePicker from "react-datepicker";
@@ -153,15 +162,18 @@ const ProjectModalContent = ({show, toggleShow}) => {
                         <MDBRow className={'mx-0 mb-1 px-0'}>
                             <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>총계</label>
-                                <MDBInput style={inputStyle}/>
+                                <MDBInput style={inputStyle} disabled/>
                             </MDBCol>
                             <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>소계</label>
-                                <MDBInput style={inputStyle}/>
+                                <MDBInput style={inputStyle} disabled/>
                             </MDBCol>
                             <MDBCol>
-                                <label className={'fw-bold mx-1 input-header-label'}>VAT</label>
-                                <MDBInput style={inputStyle}/>
+                                <label className={'fw-bold mx-1 input-header-label position-relative'}>VAT
+                                    <input type={'checkbox'}
+                                           className={'mx-1 position-absolute top-50 translate-middle-y'}/>
+                                </label>
+                                <MDBInput style={inputStyle} disabled/>
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>

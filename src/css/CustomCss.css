@@ -1,3 +1,7 @@
+.app-container {
+    font-family: 'Nanum Gothic', sans-serif;
+}
+
 .yellow {
     background-color: yellow;
     color: black

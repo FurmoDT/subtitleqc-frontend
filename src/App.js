@@ -21,7 +21,8 @@ function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
     const {userState} = useContext(AuthContext);
 
-    return <div style={{overflow: 'hidden', width: '100vw', height: '100vh', backgroundColor: '#f3f3f3ff'}}>
+    return <div className={'app-container'}
+                style={{overflow: 'hidden', width: '100vw', height: '100vh', backgroundColor: '#f3f3f3ff'}}>
         <AxiosInterceptor>
             <BrowserRouter basename={basename}>
                 <Routes>

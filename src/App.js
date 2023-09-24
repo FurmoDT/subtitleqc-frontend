@@ -13,9 +13,9 @@ import UserPage from "./pages/user/UserPage";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {useContext} from "react";
 import MainPage from "./pages/main/MainPage";
-import AuthComponent from "./utils/authComponent";
+import AuthComponent from "./components/AuthComponent";
 import TextPage from "./pages/text/TextPage";
-import AWSSignedComponent from "./utils/awsSignedComponent";
+import AwsSignedComponent from "./components/AwsSignedComponent";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
@@ -31,9 +31,9 @@ function App() {
                         <Route index element={<MainPage/>}/>
                         <Route path={'/*'} element={<MainPage/>}/>
                         <Route path={"/video"} element={<Production/>}/>
-                        <Route path={"/video/*"} element={<AWSSignedComponent component={Production} type={'video'}/>}/>
-                        <Route path={"/text"} element={<AWSSignedComponent component={TextPage} type={'text'}/>}/>
-                        <Route path={"/text/*"} element={<AWSSignedComponent component={TextPage} type={'text'}/>}/>
+                        <Route path={"/video/*"} element={<AwsSignedComponent component={Production} type={'video'}/>}/>
+                        <Route path={"/text"} element={<AwsSignedComponent component={TextPage} type={'text'}/>}/>
+                        <Route path={"/text/*"} element={<AwsSignedComponent component={TextPage} type={'text'}/>}/>
                         <Route path={"/qc"} element={<QualityControl/>}/>
                         <Route path={"/manual"} element={<Manual/>}/>
                         <Route path={"/user/*"} element={<AuthComponent component={UserPage}/>}/>

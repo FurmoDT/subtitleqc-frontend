@@ -9,7 +9,7 @@ import {
     MDBModalHeader,
     MDBRow,
 } from 'mdb-react-ui-kit';
-import {DateInput, inputStyle, placeholderDisplayHandler, placeholderStyle} from "../../../../../components/ModalStyle";
+import {DateInput, inputStyle, placeholderDisplayHandler, placeholderStyle} from "../../../../../utils/customInput";
 import DatePicker from "react-datepicker";
 import {useEffect, useState} from 'react';
 import {removeNonNumeric, thousandSeperator} from "../../../../../utils/functions";

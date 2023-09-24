@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
-import axios from "./axios";
+import axios from "../utils/axios";
 
-const AWSSignedComponent = ({component: Component, ...props}) => {
+const AwsSignedComponent = ({component: Component, ...props}) => {
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
@@ -11,4 +11,4 @@ const AWSSignedComponent = ({component: Component, ...props}) => {
     return isInitialized && <Component/>;
 };
 
-export default AWSSignedComponent;
+export default AwsSignedComponent;

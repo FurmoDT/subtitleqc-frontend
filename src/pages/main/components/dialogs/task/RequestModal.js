@@ -18,7 +18,7 @@ import {multiStyle, PmControl, UserOption} from "../../../../../utils/customSele
 import Select from "react-select";
 import axios from "../../../../../utils/axios";
 import DatePicker from "react-datepicker";
-import {DateInput, inputStyle, labelStyle} from "../../../../../components/ModalStyle";
+import {DateInput, inputStyle, labelStyle} from "../../../../../utils/customInput";
 
 const RequestModal = ({forceRender}) => {
     const [initialized, setInitialized] = useState(false)

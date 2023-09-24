@@ -21,7 +21,7 @@ import TaskDropzone from "../../TaskDropzone";
 import {AuthContext} from "../../../../../contexts/authContext";
 import {s3Upload} from "../../../../../utils/awsS3Upload";
 import {fileExtension} from "../../../../../utils/functions";
-import {DateInput, inputStyle, labelStyle} from "../../../../../components/ModalStyle";
+import {DateInput, inputStyle, labelStyle} from "../../../../../utils/customInput";
 
 const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [initialized, setInitialized] = useState(false)

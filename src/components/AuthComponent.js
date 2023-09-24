@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import axios from "./axios";
+import axios from "../utils/axios";
 
 const AuthComponent = ({component: Component}) => {
     const [isInitialized, setIsInitialized] = useState(false);

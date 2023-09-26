@@ -18,6 +18,8 @@
     "axios": "^1.4.0",
     "buffer": "^6.0.3",
     "detect-file-encoding-and-language": "^2.4.0",
+    "exceljs": "^4.3.0",
+    "file-saver": "^2.0.5",
     "gh-pages": "^5.0.0",
     "handsontable": "^6.2.2",
     "js-base64": "^3.7.5",

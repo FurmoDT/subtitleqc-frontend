@@ -13,6 +13,7 @@ import {DateInput, inputStyle, placeholderDisplayHandler, placeholderStyle} from
 import DatePicker from "react-datepicker";
 import {useEffect, useState} from 'react';
 import {removeNonNumeric, thousandSeperator} from "../../../../../utils/functions";
+import {estimateXlsxReader, estimateXlsxWriter} from "../../../../../utils/xlsxHandler";
 
 const ProjectModalContent = ({show, toggleShow}) => {
     const [project, setProject] = useState({})
@@ -217,7 +218,10 @@ const ProjectModalContent = ({show, toggleShow}) => {
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>
-                    <MDBBtn className={'mt-2'} color={'dark'}>견적서 미리보기</MDBBtn>
+                    <MDBBtn className={'mt-2'} color={'dark'} onClick={async () => {
+                        const {rowsData, mergedCells} = await estimateXlsxReader()
+                        await estimateXlsxWriter(rowsData, mergedCells)
+                    }}>견적서 미리보기</MDBBtn>
                 </MDBCol>
             </MDBRow>
         </MDBModalBody>

@@ -244,8 +244,7 @@ const ProjectModalContent = ({show, toggleShow}) => {
                         </MDBRow>
                     </MDBRow>
                     <MDBBtn className={'mt-2'} color={'dark'} onClick={async () => {
-                        const {rowsData, mergedCells} = await estimateXlsxReader()
-                        await estimateXlsxWriter(rowsData, mergedCells)
+                        await estimateXlsxWriter(project, estimateItems)
                     }}>견적서 미리보기</MDBBtn>
                 </MDBCol>
             </MDBRow>

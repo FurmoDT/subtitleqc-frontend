@@ -17,7 +17,7 @@ import {estimateXlsxReader, estimateXlsxWriter} from "../../../../../utils/xlsxH
 
 const ProjectModalContent = ({show, toggleShow}) => {
     const [project, setProject] = useState({})
-    const [items, setItems] = useState([])
+    const [estimateItems, setEstimateItems] = useState([])
 
     useEffect(() => {
         console.log(project)
@@ -26,10 +26,10 @@ const ProjectModalContent = ({show, toggleShow}) => {
     useEffect(() => {
         if (!show) {
             setProject({})
-            setItems([])
+            setEstimateItems([])
             return
         }
-        setItems([{}])
+        setEstimateItems([{}])
     }, [show])
 
     return <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
@@ -178,25 +178,42 @@ const ProjectModalContent = ({show, toggleShow}) => {
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>
-                    <MDBRow className={'text-start py-3 mx-0 flex-fill flex-column'}
+                    <MDBRow className={'text-start py-3 mx-0 w-100 flex-fill flex-column'}
                             style={{backgroundColor: '#f28720ff', color: 'black'}}>
-                        {items.map((value, index) => {
+                        {estimateItems.map((value, index) => {
                             return <MDBRow key={index} className={'mx-0 px-0 mb-1 align-items-center'}>
                                 <MDBCol size={2}>
                                     <label className={'fw-bold mx-1 input-header-label'}>항목</label>
-                                    <MDBInput style={inputStyle}/>
+                                    <MDBInput style={inputStyle} value={value.name || ''}
+                                              onChange={(event) => setEstimateItems(prevState => {
+                                                  prevState[index].name = event.target.value
+                                                  return [...prevState]
+                                              })}
+                                              onBlur={(event) => setEstimateItems(prevState => {
+                                                  prevState[index].name = prevState[index].name?.trim()
+                                                  return [...prevState]
+                                              })}/>
                                 </MDBCol>
                                 <MDBCol style={{minWidth: '7rem', maxWidth: '7rem'}}>
                                     <label className={'fw-bold mx-1 input-header-label'}>단가</label>
-                                    <MDBInput style={inputStyle}/>
+                                    <MDBInput style={inputStyle} value={thousandSeperator(value.price || '')}
+                                              onChange={(event) => setEstimateItems(prevState => {
+                                                  prevState[index].price = removeNonNumeric(event.target.value)
+                                                  return [...prevState]
+                                              })}/>
                                 </MDBCol>
                                 <MDBCol style={{minWidth: '5rem', maxWidth: '5rem'}}>
                                     <label className={'fw-bold mx-1 input-header-label'}>수량</label>
-                                    <MDBInput style={inputStyle}/>
+                                    <MDBInput style={inputStyle} value={thousandSeperator(value.count || '')}
+                                              onChange={(event) => setEstimateItems(prevState => {
+                                                  prevState[index].count = removeNonNumeric(event.target.value)
+                                                  return [...prevState]
+                                              })}/>
                                 </MDBCol>
                                 <MDBCol style={{minWidth: '8.5rem', maxWidth: '8.5rem'}}>
                                     <label className={'fw-bold mx-1 input-header-label'}>금액</label>
-                                    <MDBInput style={inputStyle}/>
+                                    <MDBInput style={inputStyle} disabled={true}
+                                              value={thousandSeperator(parseInt(value.price) * parseInt(value.count)) || ''}/>
                                 </MDBCol>
                                 <MDBCol>
                                     <label className={'fw-bold mx-1 input-header-label'}>비고</label>
@@ -204,7 +221,7 @@ const ProjectModalContent = ({show, toggleShow}) => {
                                 </MDBCol>
                                 <MDBBtn className='btn-close' color='none'
                                         style={{marginTop: '1.6rem', marginRight: '0.75rem'}}
-                                        onClick={() => setItems(prevState => {
+                                        onClick={() => setEstimateItems(prevState => {
                                             prevState.splice(index, 1)
                                             return [...prevState]
                                         })}/>
@@ -214,7 +231,8 @@ const ProjectModalContent = ({show, toggleShow}) => {
                             <label className={'fw-bold mx-1 input-header-label pe-none'}>&nbsp;</label>
                             <MDBCol>
                                 <MDBBtn className={'mb-1 mx-0'} color={'link'} style={{backgroundColor: 'white'}}
-                                        onClick={() => setItems(prevState => [...prevState, {}])}> + 추가하기</MDBBtn>
+                                        onClick={() => setEstimateItems(prevState => [...prevState, {}])}>
+                                    + 추가하기</MDBBtn>
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>

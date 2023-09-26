@@ -17,6 +17,7 @@ import {estimateXlsxReader, estimateXlsxWriter} from "../../../../../utils/xlsxH
 
 const ProjectModalContent = ({show, toggleShow}) => {
     const [project, setProject] = useState({})
+    const [vatChecked, setVatChecked] = useState(false)
     const [estimateItems, setEstimateItems] = useState([])
 
     useEffect(() => {
@@ -31,6 +32,31 @@ const ProjectModalContent = ({show, toggleShow}) => {
         }
         setEstimateItems([{}])
     }, [show])
+
+    const EstimateTotalComponent = () => {
+        const subtotal = estimateItems.map(value => parseInt(value.price * value.count) || 0).reduce((partialSum, a) => partialSum + a, 0)
+        const vat = vatChecked ? Math.round(subtotal * 0.1) : 0
+
+        return <MDBRow className={'text-start py-3 mx-0 mb-1'} style={{backgroundColor: '#f28720ff', color: 'black'}}>
+            <MDBRow className={'mx-0 mb-1 px-0'}>
+                <MDBCol>
+                    <label className={'fw-bold mx-1 input-header-label'}>총계</label>
+                    <MDBInput style={inputStyle} disabled value={thousandSeperator(subtotal + vat) || ''}/>
+                </MDBCol>
+                <MDBCol>
+                    <label className={'fw-bold mx-1 input-header-label'}>소계</label>
+                    <MDBInput style={inputStyle} disabled value={thousandSeperator(subtotal) || ''}/>
+                </MDBCol>
+                <MDBCol>
+                    <label className={'fw-bold mx-1 input-header-label position-relative'}>VAT
+                        <input type={'checkbox'} className={'mx-1 position-absolute top-50 translate-middle-y'}
+                               checked={vatChecked} onChange={event => setVatChecked(event.target.checked)}/>
+                    </label>
+                    <MDBInput style={inputStyle} disabled value={thousandSeperator(vat) || ''}/>
+                </MDBCol>
+            </MDBRow>
+        </MDBRow>
+    }
 
     return <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
         <MDBModalHeader className={'border-bottom-0'}>
@@ -158,26 +184,7 @@ const ProjectModalContent = ({show, toggleShow}) => {
                 </MDBCol>
                 <MDBCol className={'d-flex flex-column align-items-center'}>
                     <label className={'fw-bold mb-1'}>견적서 등록</label>
-                    <MDBRow className={'text-start py-3 mx-0 mb-1'}
-                            style={{backgroundColor: '#f28720ff', color: 'black'}}>
-                        <MDBRow className={'mx-0 mb-1 px-0'}>
-                            <MDBCol>
-                                <label className={'fw-bold mx-1 input-header-label'}>총계</label>
-                                <MDBInput style={inputStyle} disabled/>
-                            </MDBCol>
-                            <MDBCol>
-                                <label className={'fw-bold mx-1 input-header-label'}>소계</label>
-                                <MDBInput style={inputStyle} disabled/>
-                            </MDBCol>
-                            <MDBCol>
-                                <label className={'fw-bold mx-1 input-header-label position-relative'}>VAT
-                                    <input type={'checkbox'}
-                                           className={'mx-1 position-absolute top-50 translate-middle-y'}/>
-                                </label>
-                                <MDBInput style={inputStyle} disabled/>
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBRow>
+                    <EstimateTotalComponent/>
                     <MDBRow className={'text-start py-3 mx-0 w-100 flex-fill flex-column'}
                             style={{backgroundColor: '#f28720ff', color: 'black'}}>
                         {estimateItems.map((value, index) => {

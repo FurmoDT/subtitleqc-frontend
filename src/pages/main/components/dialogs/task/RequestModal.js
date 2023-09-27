@@ -14,11 +14,11 @@ import {
     MDBTextArea,
 } from 'mdb-react-ui-kit';
 import TaskDropzone from "../../TaskDropzone";
-import {multiStyle, PmControl, UserOption} from "../../../../../utils/customSelect";
+import {multiStyle, PmControl, UserOption} from "../../../../../components/Selects";
 import Select from "react-select";
 import axios from "../../../../../utils/axios";
 import DatePicker from "react-datepicker";
-import {DateInput, inputStyle, labelStyle} from "../../../../../utils/customInput";
+import {DateInput, inputStyle, labelStyle} from "../../../../../components/Inputs";
 
 const RequestModal = ({forceRender}) => {
     const [initialized, setInitialized] = useState(false)

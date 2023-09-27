@@ -14,14 +14,14 @@ import {
 } from 'mdb-react-ui-kit';
 import Select from "react-select";
 import axios from "../../../../../utils/axios";
-import {multiStyle, PdControl, singleStyle, UserOption} from "../../../../../utils/customSelect";
+import {multiStyle, PdControl, singleStyle, UserOption} from "../../../../../components/Selects";
 import DatePicker from "react-datepicker";
 import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../../utils/config";
 import TaskDropzone from "../../TaskDropzone";
 import {AuthContext} from "../../../../../contexts/authContext";
 import {s3Upload} from "../../../../../utils/awsS3Upload";
 import {fileExtension} from "../../../../../utils/functions";
-import {DateInput, inputStyle, labelStyle} from "../../../../../utils/customInput";
+import {DateInput, inputStyle, labelStyle} from "../../../../../components/Inputs";
 
 const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [initialized, setInitialized] = useState(false)

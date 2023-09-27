@@ -16,13 +16,14 @@ export const placeholderStyle = {
     pointerEvents: 'none'
 }
 
+export const onBlurTrimHandler = (event) => event.target.value = event.target.value.trim()
+
 export const placeholderDisplayHandler = (inputElement) => {
     if (inputElement.value) {
         inputElement.parentElement.getElementsByTagName('label')[0].style.display = 'none'
     } else {
         inputElement.parentElement.getElementsByTagName('label')[0].style.display = ''
     }
-
 }
 
 export const DateInput = forwardRef(({value, onClick, label}, ref) => {

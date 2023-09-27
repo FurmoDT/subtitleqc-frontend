@@ -2,7 +2,7 @@ import {MDBBtn, MDBSpinner, MDBTooltip} from "mdb-react-ui-kit";
 import {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import {BsCloudCheck} from "react-icons/bs";
 import Select from "react-select";
-import {taskLanguageStyle} from "../../../utils/customSelect";
+import {taskLanguageStyle} from "../../../components/Selects";
 import {GrCompare} from "react-icons/gr";
 import SubmitModal from "./dialogs/SubmitModal";
 

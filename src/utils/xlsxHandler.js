@@ -26,9 +26,8 @@ export const estimateXlsxWriter = async (projectInfo, estimateItems) => {
     const colWidth = [1.5, 1.5, 18, 18, 12, 7, 12, 25, 1.5]
     const itemCounter = Math.max(estimateItems.length - 3, 0) // default item list size 3
     const rowsData = await (await fetch('estimateTemplate/rowsData.json')).json()
-    const mergedCells = await (await fetch('estimateTemplate/mergedCells.json')).json()
 
-    if (itemCounter) for (let i = 0; i <= itemCounter; i++) rowsData.splice(29, 0, JSON.parse(JSON.stringify(rowsData[29])))
+    if (itemCounter) for (let i = 0; i < itemCounter; i++) rowsData.splice(29, 0, JSON.parse(JSON.stringify(rowsData[29])))
 
     rowsData.forEach((rowData, index) => {
         if (index === 10) rowData.cellsData[7].value = formatTimestamp(Date.now()).replaceAll('-', '.').slice(0, 10)
@@ -65,11 +64,13 @@ export const estimateXlsxWriter = async (projectInfo, estimateItems) => {
         });
     });
 
-    for (const cellAddress in mergedCells) {
-        const cellInfo = mergedCells[cellAddress].model;
-        const {top, left, bottom, right} = cellInfo;
-        newWorksheet.mergeCells(top, left, bottom, right);
-    }
+    newWorksheet.mergeCells(5, 7, 7, 8)
+    newWorksheet.mergeCells(26, 3, 26, 8)
+    for (let i = 0; i <= itemCounter + 3; i++) newWorksheet.mergeCells(28 + i, 3, 28 + i, 4)
+    newWorksheet.mergeCells(32 + itemCounter, 3, 32 + itemCounter, 6)
+    newWorksheet.mergeCells(34 + itemCounter, 3, 34 + itemCounter, 6)
+    newWorksheet.mergeCells(35 + itemCounter, 3, 35 + itemCounter, 6)
+    newWorksheet.mergeCells(41 + itemCounter, 3, 41 + itemCounter, 8)
 
     for (let i = 1; i <= newWorksheet.columns.length; i++) newWorksheet.getColumn(i).width = colWidth[i - 1]
 

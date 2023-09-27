@@ -36,7 +36,7 @@ const SubmitModal = ({workId}) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleShow}>취소</MDBBtn>
                         <MDBBtn onClick={() => {
-                            axios.post('v1/project/task/work/done', {
+                            axios.post('v1/task/work/done', {
                                 work_hashed_id: workId,
                                 work_ended_at: new Date().getTime()
                             }).then(() => navigate('/'))

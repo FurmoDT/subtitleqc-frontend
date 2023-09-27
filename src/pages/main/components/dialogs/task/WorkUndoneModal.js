@@ -39,7 +39,7 @@ const WorkUndoneModal = ({hashedId, setHashedId, forceRenderer}) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleShow}>취소</MDBBtn>
                         <MDBBtn onClick={() => {
-                            axios.post('v1/project/task/work/done', {
+                            axios.post('v1/task/work/done', {
                                 work_hashed_id: hashedId,
                                 work_ended_at: null
                             }).then(() => {

@@ -66,7 +66,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
         } else {
             setEstimateItems([{}])
         }
-    }, [show, projectId])
+    }, [show, projectId, clientListOption])
 
     const setProjectInfo = (code) => {
         if (!/^\d{8}-\d{2}$/.test(code)) {
@@ -148,7 +148,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                             <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>클라이언트명</label>
                                 <Select styles={singleStyle} options={clientListOption} placeholder={null}
-                                        isClearable={false} value={project.client}
+                                        isClearable={false} value={project.client || null}
                                         onChange={(newValue) => setProject(prevState => ({
                                             ...prevState, client: newValue
                                         }))}/>
@@ -169,7 +169,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                             <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>PM</label>
                                 <Select styles={singleStyle} options={pmListOption} placeholder={null}
-                                        components={{Option: UserOption}} isClearable={false}
+                                        components={{Option: UserOption}} isClearable={false} value={project.pm || null}
                                         onChange={(newValue) => setProject(prevState => ({
                                             ...prevState, pm: newValue
                                         }))}/>

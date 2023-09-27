@@ -9,16 +9,39 @@ import {
     MDBModalHeader,
     MDBRow,
 } from 'mdb-react-ui-kit';
-import {DateInput, inputStyle, placeholderDisplayHandler, placeholderStyle} from "../../../../../utils/customInput";
+import {
+    DateInput,
+    inputStyle,
+    onBlurTrimHandler,
+    placeholderDisplayHandler,
+    placeholderStyle
+} from "../../../../../components/Inputs";
 import DatePicker from "react-datepicker";
 import {useEffect, useState} from 'react';
 import {removeNonNumeric, thousandSeperator} from "../../../../../utils/functions";
-import {estimateXlsxReader, estimateXlsxWriter} from "../../../../../utils/xlsxHandler";
+import {estimateXlsxWriter} from "../../../../../utils/xlsxHandler";
+import axios from "../../../../../utils/axios";
+import Select from "react-select";
+import {singleStyle, UserOption} from "../../../../../components/Selects";
 
-const ProjectModalContent = ({show, toggleShow}) => {
+const ProjectModalContent = ({show, toggleShow, projectId}) => {
     const [project, setProject] = useState({})
     const [vatChecked, setVatChecked] = useState(false)
     const [estimateItems, setEstimateItems] = useState([])
+    const [clientListOption, setClientListOption] = useState([])
+    const [pmListOption, setPmListOption] = useState([])
+
+    useEffect(() => {
+        if (!show) return
+        axios.get(`/v1/project/clients`).then((response) => {
+            setClientListOption(response.data.map(value => ({value: value.client_id, label: value.client_name})))
+        })
+        axios.get(`/v1/user/pm`).then((response) => {
+            setPmListOption(response.data.map(value => ({
+                value: value.user_id, label: value.user_name, email: value.user_email
+            })))
+        })
+    }, [show])
 
     useEffect(() => {
         console.log(project)
@@ -30,8 +53,35 @@ const ProjectModalContent = ({show, toggleShow}) => {
             setEstimateItems([])
             return
         }
-        setEstimateItems([{}])
-    }, [show])
+        if (projectId) {
+            axios.get('v1/project/', {params: {project_id: projectId}}).then((response) => {
+                setProject(prevState => ({
+                    ...prevState,
+                    projectCode: response.data.project_code,
+                    projectName: response.data.project_name,
+                    client: clientListOption.find(value => value.value === response.data.client_id)
+                }))
+                // setEstimateItems
+            })
+        } else {
+            setEstimateItems([{}])
+        }
+    }, [show, projectId])
+
+    const setProjectInfo = (code) => {
+        if (!/^\d{8}-\d{2}$/.test(code)) {
+            setProject(prevState => ({...prevState, projectCode: ''}))
+            return
+        }
+        axios.get(`/v1/project/`, {params: {project_code: code}}).then((response) => {
+            setProject(prevState => ({
+                ...prevState,
+                projectId: response.data.project_id,
+                projectName: response.data.project_name,
+                client: clientListOption.find(value => value.value === response.data.client_id),
+            }))
+        }).catch(() => null)
+    }
 
     const EstimateTotalComponent = () => {
         const subtotal = estimateItems.map(value => parseInt(value.price * value.count) || 0).reduce((partialSum, a) => partialSum + a, 0)
@@ -69,12 +119,13 @@ const ProjectModalContent = ({show, toggleShow}) => {
                     <MDBRow className={'text-start py-3 mx-0 flex-fill'}
                             style={{backgroundColor: '#f28720ff', color: 'black'}}>
                         <MDBRow className={'mx-0 mb-1 px-0'}>
-                            <MDBCol>
-                                <label className={'fw-bold mx-1 input-header-label'}>클라이언트명</label>
-                                <MDBInput style={inputStyle} value={project.clientName}
+                            <MDBCol style={{minWidth: '9.5rem', maxWidth: '9.5rem'}}>
+                                <label className={'fw-bold mx-1 input-header-label'}>프로젝트 코드</label>
+                                <MDBInput style={inputStyle} value={project.projectCode || ''}
                                           onChange={(event) => setProject(prevState => ({
-                                              ...prevState, clientName: event.target.value
-                                          }))}/>
+                                              ...prevState, projectCode: event.target.value
+                                          }))}
+                                          onBlur={(event) => setProjectInfo(onBlurTrimHandler(event))}/>
                             </MDBCol>
                             <MDBCol style={{minWidth: '13.5rem', maxWidth: '13.5rem'}}>
                                 <label className={'fw-bold mx-1 input-header-label'}>납품기한</label>
@@ -85,7 +136,7 @@ const ProjectModalContent = ({show, toggleShow}) => {
                                                 ...prevState, dueDate: date.getTime()
                                             }))}/>
                             </MDBCol>
-                            <MDBCol style={{minWidth: '9rem', maxWidth: '9rem'}}>
+                            <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>매출(\)</label>
                                 <MDBInput style={inputStyle} value={thousandSeperator(project.sales || '')}
                                           onChange={(event) => setProject(prevState => ({
@@ -95,24 +146,35 @@ const ProjectModalContent = ({show, toggleShow}) => {
                         </MDBRow>
                         <MDBRow className={'mx-0 mb-1 px-0'}>
                             <MDBCol>
+                                <label className={'fw-bold mx-1 input-header-label'}>클라이언트명</label>
+                                <Select styles={singleStyle} options={clientListOption} placeholder={null}
+                                        isClearable={false} value={project.client}
+                                        onChange={(newValue) => setProject(prevState => ({
+                                            ...prevState, client: newValue
+                                        }))}/>
+                            </MDBCol>
+                            <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>프로젝트명</label>
-                                <MDBInput style={inputStyle}/>
+                                <MDBInput style={inputStyle} value={project.projectName || ''}
+                                          onChange={(event) => setProject(prevState => ({
+                                              ...prevState, projectName: event.target.value
+                                          }))} onBlur={onBlurTrimHandler}/>
                             </MDBCol>
                         </MDBRow>
                         <MDBRow className={'mx-0 mb-1 px-0'}>
-                            <MDBCol size={2}>
+                            <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>구분</label>
                                 <MDBInput style={inputStyle}/>
                             </MDBCol>
-                            <MDBCol size={3}>
+                            <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>PM</label>
-                                <MDBInput style={inputStyle}/>
+                                <Select styles={singleStyle} options={pmListOption} placeholder={null}
+                                        components={{Option: UserOption}} isClearable={false}
+                                        onChange={(newValue) => setProject(prevState => ({
+                                            ...prevState, pm: newValue
+                                        }))}/>
                             </MDBCol>
-                            <MDBCol size={4}>
-                                <label className={'fw-bold mx-1 input-header-label'}>PD</label>
-                                <MDBInput style={inputStyle}/>
-                            </MDBCol>
-                            <MDBCol size={3}>
+                            <MDBCol>
                                 <label className={'fw-bold mx-1 input-header-label'}>편집자</label>
                                 <MDBInput style={inputStyle}/>
                             </MDBCol>
@@ -195,11 +257,7 @@ const ProjectModalContent = ({show, toggleShow}) => {
                                               onChange={(event) => setEstimateItems(prevState => {
                                                   prevState[index].name = event.target.value
                                                   return [...prevState]
-                                              })}
-                                              onBlur={(event) => setEstimateItems(prevState => {
-                                                  prevState[index].name = prevState[index].name?.trim()
-                                                  return [...prevState]
-                                              })}/>
+                                              })} onBlur={onBlurTrimHandler}/>
                                 </MDBCol>
                                 <MDBCol style={{minWidth: '7rem', maxWidth: '7rem'}}>
                                     <label className={'fw-bold mx-1 input-header-label'}>단가</label>

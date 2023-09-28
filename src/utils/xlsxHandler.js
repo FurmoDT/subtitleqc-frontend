@@ -45,6 +45,7 @@ export const estimateXlsxWriter = async (projectInfo, estimateItems) => {
             rowData.cellsData[4].value = parseInt(price)
             rowData.cellsData[5].value = parseInt(count)
             rowData.cellsData[6].value = (price && count && {"formula": `E${index + 1}*F${index + 1}`}) || null
+            rowData.cellsData[7].value = estimateItems[index - 28]?.memo
         } else if (index === 31 + itemCounter) rowData.cellsData[6].value = {"formula": `SUM(G29:G${31 + itemCounter})`}
         else if (index === 33 + itemCounter) rowData.cellsData[6].value = {"formula": `G${32 + itemCounter}*0.1`}
         else if (index === 34 + itemCounter) rowData.cellsData[6].value = {"formula": `G${32 + itemCounter}+G${34 + itemCounter}`}

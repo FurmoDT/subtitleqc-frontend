@@ -68,19 +68,8 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
         }
     }, [show, projectId, clientListOption])
 
-    const setProjectInfo = (code) => {
-        if (!/^\d{8}-\d{2}$/.test(code)) {
-            setProject(prevState => ({...prevState, projectCode: ''}))
-            return
-        }
-        axios.get(`/v1/project/`, {params: {project_code: code}}).then((response) => {
-            setProject(prevState => ({
-                ...prevState,
-                projectId: response.data.project_id,
-                projectName: response.data.project_name,
-                client: clientListOption.find(value => value.value === response.data.client_id),
-            }))
-        }).catch(() => null)
+    const projectCodeValidator = (code) => {
+        if (!/^\d{8}-\d{2}$/.test(code)) setProject(prevState => ({...prevState, projectCode: ''}))
     }
 
     const EstimateTotalComponent = () => {
@@ -125,7 +114,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                                           onChange={(event) => setProject(prevState => ({
                                               ...prevState, projectCode: event.target.value
                                           }))}
-                                          onBlur={(event) => setProjectInfo(onBlurTrimHandler(event))}/>
+                                          onBlur={(event) => projectCodeValidator(onBlurTrimHandler(event))}/>
                             </MDBCol>
                             <MDBCol style={{minWidth: '13.5rem', maxWidth: '13.5rem'}}>
                                 <label className={'fw-bold mx-1 input-header-label'}>납품기한</label>
@@ -282,7 +271,10 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                                 </MDBCol>
                                 <MDBCol>
                                     <label className={'fw-bold mx-1 input-header-label'}>비고</label>
-                                    <MDBInput style={inputStyle}/>
+                                    <MDBInput style={inputStyle} onChange={(event) => setEstimateItems(prevState => {
+                                        prevState[index].memo = event.target.value
+                                        return [...prevState]
+                                    })} onBlur={onBlurTrimHandler}/>
                                 </MDBCol>
                                 <MDBBtn className='btn-close' color='none'
                                         style={{marginTop: '1.6rem', marginRight: '0.75rem'}}

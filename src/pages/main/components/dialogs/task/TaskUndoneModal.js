@@ -9,8 +9,8 @@ import {
     MDBModalHeader,
     MDBModalTitle,
 } from 'mdb-react-ui-kit';
-import {BsCheckCircleFill} from "react-icons/bs";
 import axios from "../../../../../utils/axios";
+import {MdRemove} from "react-icons/md";
 
 const TaskUndoneModal = ({hashedId, setHashedId, forceRenderer}) => {
     const [show, setShow] = useState(false)
@@ -30,7 +30,7 @@ const TaskUndoneModal = ({hashedId, setHashedId, forceRenderer}) => {
                 <MDBModalContent>
                     <MDBModalHeader>
                         <MDBModalTitle className={'d-flex align-items-center'}>
-                            <BsCheckCircleFill size={25} color={'green'}/>
+                            <MdRemove size={25} color={'red'}/>
                             <label style={{fontSize: '1.125rem'}} className={'mx-1 fw-bold'}>태스크 취소</label>
                         </MDBModalTitle>
                         <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>

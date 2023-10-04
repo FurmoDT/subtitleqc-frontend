@@ -17,12 +17,14 @@ import {
     placeholderStyle
 } from "../../../../../components/Inputs";
 import DatePicker from "react-datepicker";
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {removeNonNumeric, thousandSeperator} from "../../../../../utils/functions";
 import {estimateXlsxWriter} from "../../../../../utils/xlsxHandler";
 import axios from "../../../../../utils/axios";
 import Select from "react-select";
 import {singleStyle, UserOption} from "../../../../../components/Selects";
+import {AuthContext} from "../../../../../contexts/authContext";
+import {AiFillPrinter} from "react-icons/ai";
 
 const ProjectModalContent = ({show, toggleShow, projectId}) => {
     const [project, setProject] = useState({})
@@ -30,6 +32,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
     const [estimateItems, setEstimateItems] = useState([])
     const [clientListOption, setClientListOption] = useState([])
     const [pmListOption, setPmListOption] = useState([])
+    const {userState} = useContext(AuthContext)
 
     useEffect(() => {
         if (!show) return
@@ -48,12 +51,18 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
     }, [project])
 
     useEffect(() => {
+        if (!projectId && pmListOption.length) setProject(prevState => ({
+            ...prevState, pm: [pmListOption.find(value => value.value === userState.user.userId)]
+        }))
+    }, [pmListOption, projectId, userState])
+
+    useEffect(() => {
         if (!show) {
             setProject({})
             setEstimateItems([])
             return
         }
-        if (projectId) {
+        if (projectId && clientListOption.length) {
             axios.get('v1/project/', {params: {project_id: projectId}}).then((response) => {
                 setProject(prevState => ({
                     ...prevState,
@@ -231,7 +240,6 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>
-                    <MDBBtn className={'mt-2'} color={'dark'}>등록 완료</MDBBtn>
                 </MDBCol>
                 <MDBCol className={'d-flex flex-column align-items-center'}>
                     <label className={'fw-bold mb-1'}>견적서 등록</label>
@@ -292,11 +300,16 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                                     + 추가하기</MDBBtn>
                             </MDBCol>
                         </MDBRow>
+                        <MDBRow className={'d-flex justify-content-end'}>
+                            <MDBBtn className={'mt-2'} color={'white'} floating
+                                    onClick={async () => await estimateXlsxWriter(project, estimateItems)}>
+                                <AiFillPrinter color={'black'} size={25}/></MDBBtn>
+                        </MDBRow>
                     </MDBRow>
-                    <MDBBtn className={'mt-2'} color={'dark'} onClick={async () => {
-                        await estimateXlsxWriter(project, estimateItems)
-                    }}>견적서 미리보기</MDBBtn>
                 </MDBCol>
+                <MDBRow className={'d-flex justify-content-center m-0'}>
+                    <MDBBtn className={'mt-2 w-auto'} color={'dark'}>등록 완료</MDBBtn>
+                </MDBRow>
             </MDBRow>
         </MDBModalBody>
     </MDBModalContent>

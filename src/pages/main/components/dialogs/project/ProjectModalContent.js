@@ -1,20 +1,8 @@
 import {
-    MDBBtn,
-    MDBCol,
-    MDBInput,
-    MDBListGroup,
-    MDBListGroupItem,
-    MDBModalBody,
-    MDBModalContent,
-    MDBModalHeader,
-    MDBRow,
+    MDBBtn, MDBCol, MDBInput, MDBListGroup, MDBListGroupItem, MDBModalBody, MDBModalContent, MDBModalHeader, MDBRow,
 } from 'mdb-react-ui-kit';
 import {
-    DateInput,
-    inputStyle,
-    onBlurTrimHandler,
-    placeholderDisplayHandler,
-    placeholderStyle
+    DateInput, inputStyle, onBlurTrimHandler, placeholderDisplayHandler, placeholderStyle
 } from "../../../../../components/Inputs";
 import DatePicker from "react-datepicker";
 import {useContext, useEffect, useState} from 'react';
@@ -28,7 +16,7 @@ import {AiFillPrinter} from "react-icons/ai";
 
 const ProjectModalContent = ({show, toggleShow, projectId}) => {
     const [project, setProject] = useState({})
-    const [vatChecked, setVatChecked] = useState(false)
+    const [vatChecked, setVatChecked] = useState(true)
     const [estimateItems, setEstimateItems] = useState([])
     const [clientListOption, setClientListOption] = useState([])
     const [pmListOption, setPmListOption] = useState([])
@@ -52,7 +40,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
 
     useEffect(() => {
         if (!projectId && pmListOption.length) setProject(prevState => ({
-            ...prevState, pm: [pmListOption.find(value => value.value === userState.user.userId)]
+            ...prevState, pm: pmListOption.find(value => value.value === userState.user.userId)
         }))
     }, [pmListOption, projectId, userState])
 
@@ -301,7 +289,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                         </MDBRow>
                         <MDBRow className={'d-flex justify-content-end'}>
                             <MDBBtn className={'mt-2'} color={'white'} floating
-                                    onClick={async () => await estimateXlsxWriter(project, estimateItems)}>
+                                    onClick={async () => await estimateXlsxWriter(project, estimateItems, vatChecked)}>
                                 <AiFillPrinter color={'black'} size={25}/></MDBBtn>
                         </MDBRow>
                     </MDBRow>

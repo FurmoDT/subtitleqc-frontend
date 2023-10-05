@@ -100,7 +100,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
 
     useEffect(() => {
         if (!show || hashedId || pmListOption.length === 0) return
-        setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userState.user.userId)]}))
+        setTask(prevState => ({...prevState, pd: pmListOption.find(value => value.value === userState.user.userId)}))
     }, [show, hashedId, pmListOption, userState])
 
     useEffect(() => {

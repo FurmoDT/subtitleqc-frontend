@@ -20,7 +20,7 @@ import {formatTimestamp} from "./functions";
 //     return {rowsData, mergedCells}
 // }
 
-export const estimateXlsxWriter = async (projectInfo, estimateItems) => {
+export const estimateXlsxWriter = async (projectInfo, estimateItems, vatChecked) => {
     const newWorkbook = new Excel.Workbook();
     const newWorksheet = newWorkbook.addWorksheet('견적', {views: [{showGridLines: false}]})
     const colWidth = [1.5, 1.5, 18, 18, 12, 7, 12, 25, 1.5]
@@ -31,14 +31,14 @@ export const estimateXlsxWriter = async (projectInfo, estimateItems) => {
 
     rowsData.forEach((rowData, index) => {
         if (index === 10) rowData.cellsData[7].value = formatTimestamp(Date.now()).replaceAll('-', '.').slice(0, 10)
-        else if (index === 11) rowData.cellsData[7].value = '클라이언트명'
+        else if (index === 11) rowData.cellsData[7].value = projectInfo.client?.label
         else if (index === 12) rowData.cellsData[7].value = '클라이언트담당자명'
         else if (index === 13) rowData.cellsData[7].value = '클라이언트담당자전화번호'
         else if (index === 14) {
-            rowData.cellsData[3].value = '담당자이메일'
+            rowData.cellsData[3].value = projectInfo.pm?.email
             rowData.cellsData[7].value = '클라이언트담당자이메일'
-        } else if (index === 15) rowData.cellsData[3].value = 'PM이름'
-        else if (index === 19) rowData.cellsData[3].value = '프로젝트명'
+        } else if (index === 15) rowData.cellsData[3].value = projectInfo.pm?.label
+        else if (index === 19) rowData.cellsData[3].value = projectInfo.projectName
         else if (28 <= index && index <= 30 + itemCounter) {
             const price = estimateItems[index - 28]?.price, count = estimateItems[index - 28]?.count
             rowData.cellsData[2].value = estimateItems[index - 28]?.name
@@ -47,7 +47,7 @@ export const estimateXlsxWriter = async (projectInfo, estimateItems) => {
             rowData.cellsData[6].value = (price && count && {"formula": `E${index + 1}*F${index + 1}`}) || null
             rowData.cellsData[7].value = estimateItems[index - 28]?.memo
         } else if (index === 31 + itemCounter) rowData.cellsData[6].value = {"formula": `SUM(G29:G${31 + itemCounter})`}
-        else if (index === 33 + itemCounter) rowData.cellsData[6].value = {"formula": `G${32 + itemCounter}*0.1`}
+        else if (index === 33 + itemCounter) rowData.cellsData[6].value = {"formula": `G${32 + itemCounter}*${vatChecked ? 0.1 : 0}`}
         else if (index === 34 + itemCounter) rowData.cellsData[6].value = {"formula": `G${32 + itemCounter}+G${34 + itemCounter}`}
 
         const newRow = newWorksheet.addRow(rowData.cellsData.map((cellData) => {

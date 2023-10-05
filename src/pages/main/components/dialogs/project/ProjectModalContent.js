@@ -85,8 +85,8 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
         const subtotal = estimateItems.map(value => parseInt(value.price * value.count) || 0).reduce((partialSum, a) => partialSum + a, 0)
         const vat = vatChecked ? Math.round(subtotal * 0.1) : 0
 
-        return <MDBRow className={'text-start py-3 mx-0 mb-1'}>
-            <MDBRow className={'mx-0 mb-1 px-0'}>
+        return <MDBRow className={'text-start py-3 mx-0'} style={{borderBottom: '0.5rem solid #f28720ff'}}>
+            <MDBRow className={'mx-0 px-0'}>
                 <MDBCol>
                     <label className={'fw-bold mx-1 input-header-label'}>총계</label>
                     <MDBInput style={inputStyle} disabled value={thousandSeperator(subtotal + vat) || ''}/>
@@ -112,8 +112,8 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
         </MDBModalHeader>
         <MDBModalBody>
             <MDBRow style={{backgroundColor: '#f3f3f3ff'}} className={'mx-0 py-2'}>
-                <MDBCol className={'d-flex flex-column align-items-center'}>
-                    <label className={'fw-bold mb-1'}>프로젝트 등록</label>
+                <MDBCol className={'d-flex flex-column align-items-center px-0'}>
+                    <label className={'fw-bold'}>프로젝트 등록</label>
                     <MDBRow className={'text-start py-3 mx-0 flex-fill'}>
                         <MDBRow className={'mx-0 mb-1 px-0'}>
                             <MDBCol style={{minWidth: '9.5rem', maxWidth: '9.5rem'}}>
@@ -241,10 +241,10 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                     </MDBRow>
                 </MDBCol>
                 <MDBCol className={'mx-0 my-n2 px-0'} style={{maxWidth: '1px', borderRight: '0.5rem solid #f28720ff'}}/>
-                <MDBCol className={'d-flex flex-column align-items-center'}>
-                    <label className={'fw-bold mb-1'}>견적서 등록</label>
+                <MDBCol className={'d-flex flex-column align-items-center px-0'}>
+                    <label className={'fw-bold'}>견적서 등록</label>
                     <EstimateTotalComponent/>
-                    <MDBRow className={'text-start py-3 mx-0 w-100 flex-fill flex-column'}>
+                    <MDBRow className={'text-start pt-1 pb-3 mx-0 w-100 flex-fill flex-column'}>
                         {estimateItems.map((value, index) => {
                             return <MDBRow key={index} className={'mx-0 px-0 mb-1 align-items-center'}>
                                 <MDBCol size={2}>

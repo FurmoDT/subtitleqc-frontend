@@ -1,4 +1,4 @@
-import {useCallback, useContext, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import DatePickerComponent from "./DatePickerComponent";
 import {addMonths} from 'date-fns'
 import {MDBCol, MDBRow} from "mdb-react-ui-kit";
@@ -8,10 +8,23 @@ import RegisterModal from "./dialogs/task/RegisterModal";
 import TaskGridComponent from "./TaskGridComponent";
 
 const TaskPanel = () => {
-    const [startAt, setStartAt] = useState(new Date().setHours(0, 0, 0, 0));
-    const [endAt, setEndAt] = useState(addMonths(new Date(), 1).setHours(23, 59, 59, 999));
+    const [startAt, setStartAt] = useState(null);
+    const [endAt, setEndAt] = useState(null);
     const {userState} = useContext(AuthContext)
     const [forceRender, setForceRender] = useState(0)
+
+    useEffect(()=>{
+        setStartAt(parseInt(window.sessionStorage.getItem('task-start-at')) || new Date().setHours(0, 0, 0, 0))
+        setEndAt(parseInt(window.sessionStorage.getItem('task-end-at')) || addMonths(new Date(), 1).setHours(23, 59, 59, 999))
+    }, [])
+
+    useEffect(()=>{
+        startAt && window.sessionStorage.setItem('task-start-at', `${startAt}`);
+    }, [startAt])
+
+    useEffect(()=>{
+        endAt && window.sessionStorage.setItem('task-end-at', `${endAt}`);
+    }, [endAt])
 
     const forceRenderer = useCallback(()=> {
         setForceRender(prevState => prevState + 1)

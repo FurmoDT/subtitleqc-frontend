@@ -202,6 +202,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     }
 
     useEffect(() => {
+        if (!startAt || !endAt) return
         setInitialized(false)
         if (userState.user.userRole === 'client') {
             axios.get('v1/task/client', {params: {start_date: startAt, end_date: endAt}}).then((response) => {

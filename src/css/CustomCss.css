@@ -24,6 +24,17 @@
     color: black;
 }
 
+.button-active {
+    color: black !important;
+    border-color: #f28720ff !important;
+}
+
+.button-disabled {
+    color: black !important;
+    border-style: none !important;
+    pointer-events: none;
+}
+
 .horizontal-divider {
     border-bottom: solid;
     border-width: thick;

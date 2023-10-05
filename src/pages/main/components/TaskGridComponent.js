@@ -141,10 +141,10 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     {key: 'workEndedAt', name: '완료일'}, {key: 'workDueDate', name: '마감일'},
                     {key: 'workMemo', name: '메모'}, {
                     key: 'workStatus', name: '상태', renderCell: (row) => {
-                        return row.row.workEndedAt &&
-                            <MDBBtn color={'white'}
-                                    disabled={!(taskAndWork[hashedId].task.extra.pmId === userState.user.userId || Object.keys(taskAndWork[hashedId].task.extra.pd).includes(`${userState.user.userId}`))}
-                                    onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}>🟢완료</MDBBtn>
+                        return row.row.workEndedAt ? <MDBBtn outline
+                                                             className={`${(taskAndWork[hashedId].task.extra.pmId === userState.user.userId || Object.keys(taskAndWork[hashedId].task.extra.pd).includes(`${userState.user.userId}`)) ? 'button-active' : 'button-disabled'}`}
+                                                             onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}>🟢완료</MDBBtn> :
+                            <MDBBtn outline className={'button-disabled'}>🟡진행중</MDBBtn>
                     }
                 }]}/>) : null
         }
@@ -168,9 +168,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             defaultColumns.dueDate, defaultColumns.memo, {
                 ...defaultColumns.status, renderCell: (row) => {
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
-                    return <MDBBtn color={'white'} disabled={!authorized} onClick={() => {
-                        row.row.endedAt ? setTaskUndoneHashedId(row.row.extra.hashedId) : setTaskDoneHashedId(row.row.extra.hashedId)
-                    }}>{{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status]}</MDBBtn>
+                    return <MDBBtn outline className={`${authorized ? 'button-active' : 'button-disabled'}`}
+                                   onClick={() => row.row.endedAt ? setTaskUndoneHashedId(row.row.extra.hashedId) : setTaskDoneHashedId(row.row.extra.hashedId)}>
+                        {{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status]}</MDBBtn>
                 }
             }, {
                 ...defaultColumns.buttons,

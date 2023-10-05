@@ -205,26 +205,23 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         if (!startAt || !endAt) return
         setInitialized(false)
         if (userState.user.userRole === 'client') {
-            axios.get('v1/task/client', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
-                setRows(response.data.map((item, index) => {
-                    return {
-                        no: index + 1,
-                        pm: item.pm_name,
-                        taskName: `${item.task_name}_${item.task_episode}`,
-                        taskType: fileType(item.task_file_name),
-                        createdAt: formatTimestamp(item.task_created_at),
-                        endedAt: formatTimestamp(item.task_ended_at),
-                        dueDate: formatTimestamp(item.task_due_date),
-                        memo: item.task_memo,
-                        status: item.task_ended_at ? 'Done' : item.work.length ? 'Ing' : 'New',
-                        extra: {hashedId: item.task_hashed_id, work: item.work}
-                    }
-                }))
-            })
+            axios.get('v1/task/client', {params: {start_date: startAt, end_date: endAt}}).then((response) =>
+                setRows(response.data.map((item, index) => ({
+                    no: index + 1,
+                    pm: item.pm_name,
+                    taskName: `${item.task_name}_${item.task_episode}`,
+                    taskType: fileType(item.task_file_name),
+                    createdAt: formatTimestamp(item.task_created_at),
+                    endedAt: formatTimestamp(item.task_ended_at),
+                    dueDate: formatTimestamp(item.task_due_date),
+                    memo: item.task_memo,
+                    status: item.task_ended_at ? 'Done' : item.work.length ? 'Ing' : 'New',
+                    extra: {hashedId: item.task_hashed_id, work: item.work}
+                }))))
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
-            axios.get('v1/task/pm', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
+            axios.get('v1/task/pm', {params: {start_date: startAt, end_date: endAt}}).then((response) =>
                 setTaskAndWork(groupBy(response.data, (item) => item.task_hashed_id))
-            })
+            )
         } else {
             axios.get('v1/task/worker', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
                 setRows(response.data.map((item, index) => {

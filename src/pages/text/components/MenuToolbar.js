@@ -39,7 +39,6 @@ const MenuToolbar = forwardRef((props, ref) => {
     return <div className={'d-flex justify-content-between align-items-center'}
                 style={{height: '40px', backgroundColor: '#b7b7b7ff'}}>
         <div style={{display: 'flex'}}>
-            <label className={'mx-1 fw-bold'}>{props.taskName}</label>
             {!props.taskWorkId && props.targetLanguage && <div className={'mx-1'}>
                 <Select styles={taskLanguageStyle} options={props.languageOptions} placeholder={null}
                         defaultValue={props.targetLanguage} onChange={(newValue) => props.setTargetLanguage(newValue)}/>
@@ -50,6 +49,9 @@ const MenuToolbar = forwardRef((props, ref) => {
                 {!isSaving && <><BsCloudCheck size={20} className={'mx-1'}/>
                     <span>저장 완료</span></>}
             </div>
+        </div>
+        <div>
+            <label className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</label>
         </div>
         <div>
             {props.authority !== 'client' && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Show Diff'>

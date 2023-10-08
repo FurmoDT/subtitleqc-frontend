@@ -426,7 +426,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
                                                 const fileUpdated = uploadedFiles[0] instanceof File
-                                                axios.put('v1/task', {
+                                                axios.put('v1/task/', {
                                                     task_hashed_id: hashedId,
                                                     project_id: task.projectInfo.projectId,
                                                     pd_ids: task.pd.map(value => value.value),

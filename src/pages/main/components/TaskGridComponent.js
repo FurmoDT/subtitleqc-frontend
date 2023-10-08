@@ -62,7 +62,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     }, work: []
                 };
             }
-            if (current.work_id) result[key].work.push({
+            if (current.work_id && !current.work_deactivated) result[key].work.push({
                 workHashedId: current.work_hashed_id,
                 workType: workType[current.work_type],
                 worker: current.worker_name,

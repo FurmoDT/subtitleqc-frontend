@@ -342,7 +342,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
-                                                axios.post('v1/task', {
+                                                axios.post('v1/task/', {
                                                     project_id: task.projectInfo?.projectId,
                                                     pm_id: userState.user.userId,
                                                     pd_ids: task.pd.map(value => value.value),
@@ -372,7 +372,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                             axios.post(`v1/task/initialize/${taskId}`, {
                                                                 file_version: fileVersion,
                                                                 file_format: fileExtension(uploadedFiles[0].name),
-                                                                source_language: workers.filter(value => value.workType === 'translate').map(value => value.sourceLanguage).pop(),
+                                                                source_language: workers.filter(value => value.workType === 'translate').map(value => value.sourceLanguage).pop() || '',
                                                                 target_languages: workers.filter(value => value.workType === 'translate').map(value => value.targetLanguage)
                                                             }).then(() => {
                                                                 modifySpinnerRef.current.style.display = 'none'

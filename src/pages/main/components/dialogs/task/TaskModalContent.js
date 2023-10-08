@@ -100,7 +100,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
 
     useEffect(() => {
         if (!show || hashedId || pmListOption.length === 0) return
-        setTask(prevState => ({...prevState, pd: pmListOption.find(value => value.value === userState.user.userId)}))
+        setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userState.user.userId)]}))
     }, [show, hashedId, pmListOption, userState])
 
     useEffect(() => {
@@ -369,12 +369,11 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     }).then()
                                                     if (uploadedFiles.length) {
                                                         s3Upload(taskId, fileVersion, uploadedFiles).then(() => {
-                                                            axios.post('v1/task/initialize', null, {
-                                                                params: {
-                                                                    task_id: taskId,
-                                                                    file_version: fileVersion,
-                                                                    file_format: fileExtension(uploadedFiles[0].name)
-                                                                }
+                                                            axios.post(`v1/task/initialize/${taskId}`, {
+                                                                file_version: fileVersion,
+                                                                file_format: fileExtension(uploadedFiles[0].name),
+                                                                source_language: workers.filter(value => value.workType === 'translate').map(value => value.sourceLanguage).pop(),
+                                                                target_languages: workers.filter(value => value.workType === 'translate').map(value => value.targetLanguage)
                                                             }).then(() => {
                                                                 modifySpinnerRef.current.style.display = 'none'
                                                                 toggleShow()
@@ -478,12 +477,11 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     }).then()
                                                     if (fileUpdated) {
                                                         s3Upload(taskId, task.fileVersion + 1, uploadedFiles).then(() => {
-                                                            axios.post('v1/task/initialize', null, {
-                                                                params: {
-                                                                    task_id: taskId,
-                                                                    file_version: task.fileVersion + 1,
-                                                                    file_format: fileExtension(uploadedFiles[0].name)
-                                                                }
+                                                            axios.post(`v1/task/initialize/${taskId}`, {
+                                                                file_version: task.fileVersion + 1,
+                                                                file_format: fileExtension(uploadedFiles[0].name),
+                                                                source_language: workers.filter(value => value.workType === 'translate').map(value => value.sourceLanguage).pop(),
+                                                                target_languages: workers.filter(value => value.workType === 'translate').map(value => value.targetLanguage)
                                                             }).then(() => {
                                                                 modifySpinnerRef.current.style.display = 'none'
                                                                 toggleShow()

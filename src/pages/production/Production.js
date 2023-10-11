@@ -148,10 +148,10 @@ const Production = () => {
 
     useEffect(() => {
         if (!pathname.split('/')[2]) return
-        axios.get(`v1/task/work`, {params: {hashed_id: pathname.split('/')[2], work_type: pathname.split('/')[3]}}).then((respond) => {
-            const task = respond.data.task
-            setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
-        }).catch(() => navigate('/error'))
+        // axios.get(`v1/task/work`, {params: {hashed_id: pathname.split('/')[2], work_type: pathname.split('/')[3]}}).then((respond) => {
+        //     const task = respond.data.task
+        //     setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
+        // }).catch(() => navigate('/error'))
     }, [pathname, navigate])
 
     return <>

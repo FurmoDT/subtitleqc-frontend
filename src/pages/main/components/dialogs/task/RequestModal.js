@@ -124,7 +124,7 @@ const RequestModal = ({forceRender}) => {
                                                     modifySpinnerRef.current.style.display = ''
                                                     submitToggleShow()
                                                     axios.get('v1/project/empty').then((response) => {
-                                                        uploadedFiles.map((file, index) => axios.post('v1/task', {
+                                                        uploadedFiles.map((file, index) => axios.post('v1/task/tasks', {
                                                                 pm_id: task.pm.value,
                                                                 project_id: response.data.project_id,
                                                                 task_name: task.title,

@@ -113,7 +113,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
             return
         }
         if (hashedId && pmListOption.length) {
-            axios.get(`v1/task/${hashedId}`).then((response) => {
+            axios.get(`v1/task/tasks/${hashedId}`).then((response) => {
                 setTask({
                     pd: pmListOption.filter(value => Object.keys(JSON.parse(response.data.pd)).includes(`${value.value}`)),
                     projectInfo: {

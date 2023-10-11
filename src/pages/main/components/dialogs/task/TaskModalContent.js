@@ -67,7 +67,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
             reset()
             return
         }
-        axios.get(`/v1/project/`, {params: {project_code: value}}).then((response) => {
+        axios.get(`/v1/project/info/${value}`).then((response) => {
             setTask(prevState => ({
                 ...prevState,
                 projectInfo: {

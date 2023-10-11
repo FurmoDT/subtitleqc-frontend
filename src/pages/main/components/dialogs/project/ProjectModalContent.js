@@ -51,7 +51,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
             return
         }
         if (projectId && clientListOption.length) {
-            axios.get('v1/project/', {params: {project_id: projectId}}).then((response) => {
+            axios.get(`v1/project/info/${projectId}`).then((response) => {
                 setProject(prevState => ({
                     ...prevState,
                     projectCode: response.data.project_code,

@@ -46,7 +46,7 @@ const SignupPage = () => {
                     errorLabelRef.current.innerText = '비밀번호가 일치하지 않습니다.'
                     return
                 }
-                axios.post(`/v1/auth/register`, {
+                axios.post(`v1/auth/register`, {
                     auth: {
                         auth_type: 'email',
                         user_email: emailInputRef.current.value,

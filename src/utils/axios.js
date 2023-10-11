@@ -17,7 +17,7 @@ function AxiosInterceptor({children}) {
         };
         const errInterceptor = (error) => {
             if (error.response.status === HttpStatusCode.Unauthorized) {
-                return axios.post(`/v1/auth/refresh`).then((response) => {
+                return axios.post(`v1/auth/refresh`).then((response) => {
                     if (response.status === HttpStatusCode.Ok) {
                         return updateAccessToken(response.data.access_token).then((accessToken) => {
                             error.config.headers.Authorization = `Bearer ${accessToken}`

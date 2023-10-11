@@ -14,7 +14,7 @@ export const AuthProvider = ({children}) => {
             if (accessToken) {
                 accessTokenRef.current = accessToken
                 axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-                return axios.get('/v1/auth/get_current_user').then((response) => {
+                return axios.get('v1/auth/get_current_user').then((response) => {
                     setUserState({
                         isAuthenticated: true,
                         user: {
@@ -35,7 +35,7 @@ export const AuthProvider = ({children}) => {
     }, []);
 
     useEffect(() => {
-        axios.post('/v1/auth/refresh').then((response) => {
+        axios.post('v1/auth/refresh').then((response) => {
             if (response.status === HttpStatusCode.Ok) return updateAccessToken(response.data.access_token).then()
         }).catch(() => null).finally(() => setIsInitialized(true))
     }, [updateAccessToken])

@@ -32,7 +32,7 @@ const LoginPage = () => {
     }, [userState, navigate])
 
     const authenticate = useCallback((data) => {
-        axios.post(`/v1/auth/login`, data).then((response) => {
+        axios.post(`v1/auth/login`, data).then((response) => {
             if (response.status === HttpStatusCode.Ok) {
                 updateAccessToken(response.data.access_token).then()
             }
@@ -41,7 +41,7 @@ const LoginPage = () => {
                 errorLabelRef.current.innerText = '유효하지 않은 이메일입니다.'
             } else if (reason.response.status === HttpStatusCode.NotFound) {
                 if (data.auth.auth_type !== 'email') {
-                    axios.post(`/v1/auth/register`, {
+                    axios.post(`v1/auth/register`, {
                         ...data, user: {}
                     }).then((registerResponse) => {
                         updateAccessToken(registerResponse.data.access_token).then()

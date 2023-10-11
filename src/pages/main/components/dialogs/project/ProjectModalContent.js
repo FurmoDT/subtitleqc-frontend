@@ -1,8 +1,20 @@
 import {
-    MDBBtn, MDBCol, MDBInput, MDBListGroup, MDBListGroupItem, MDBModalBody, MDBModalContent, MDBModalHeader, MDBRow,
+    MDBBtn,
+    MDBCol,
+    MDBInput,
+    MDBListGroup,
+    MDBListGroupItem,
+    MDBModalBody,
+    MDBModalContent,
+    MDBModalHeader,
+    MDBRow,
 } from 'mdb-react-ui-kit';
 import {
-    DateInput, inputStyle, onBlurTrimHandler, placeholderDisplayHandler, placeholderStyle
+    DateInput,
+    inputStyle,
+    onBlurTrimHandler,
+    placeholderDisplayHandler,
+    placeholderStyle
 } from "../../../../../components/Inputs";
 import DatePicker from "react-datepicker";
 import {useContext, useEffect, useState} from 'react';
@@ -24,10 +36,10 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
 
     useEffect(() => {
         if (!show) return
-        axios.get(`/v1/project/clients`).then((response) => {
+        axios.get(`v1/project/clients`).then((response) => {
             setClientListOption(response.data.map(value => ({value: value.client_id, label: value.client_name})))
         })
-        axios.get(`/v1/user/pm`).then((response) => {
+        axios.get(`v1/user/pm`).then((response) => {
             setPmListOption(response.data.map(value => ({
                 value: value.user_id, label: value.user_name, email: value.user_email
             })))
@@ -51,7 +63,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
             return
         }
         if (projectId && clientListOption.length) {
-            axios.get(`v1/project/info/${projectId}`).then((response) => {
+            axios.get(`v1/project/projects/${projectId}`).then((response) => {
                 setProject(prevState => ({
                     ...prevState,
                     projectCode: response.data.project_code,

@@ -5,7 +5,7 @@ const AuthComponent = ({component: Component}) => {
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-        axios.get('/v1/auth/get_current_user').then((response) => {
+        axios.get('v1/auth/get_current_user').then((response) => {
             setIsInitialized(true)
         });
     }, []);

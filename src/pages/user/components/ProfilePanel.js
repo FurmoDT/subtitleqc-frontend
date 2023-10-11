@@ -25,7 +25,7 @@ const ProfilePanel = ({userInfoRef}) => {
         if (value === basicActive) return;
         if (update) {
             if (!(birthInputRef.current.value?.match(/^\d{4}-\d{2}-\d{2}$/) && new Date(birthInputRef.current.value).valueOf())) return
-            axios.post(`/v1/user/me`, {
+            axios.post(`v1/user/me`, {
                 user: {
                     user_birthday: birthInputRef.current.value, user_phone: phoneInputValue,
                 }

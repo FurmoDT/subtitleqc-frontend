@@ -47,7 +47,7 @@ const RequestModal = ({forceRender}) => {
             setUploadedFiles([])
             return
         }
-        axios.get(`/v1/user/pm`).then((response) => {
+        axios.get(`v1/user/pm`).then((response) => {
             setPmListOption(response.data.map(value => ({
                 value: value.user_id,
                 label: value.user_name,

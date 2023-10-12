@@ -55,3 +55,8 @@
 .ag-header-container {
     background-color: #f28720ff;
 }
+
+.default-splitter {
+  --default-splitter-line-margin: 0px !important; /* Override margin to 0 */
+  --default-splitter-line-size: 5px !important;
+}

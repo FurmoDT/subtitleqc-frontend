@@ -16,7 +16,7 @@ import {
 } from 'mdb-react-ui-kit';
 import {ReactSortable} from "react-sortablejs";
 import {languageCodes} from "../../../../utils/config";
-import {MdLanguage} from "react-icons/md";
+import {GrLanguage} from "react-icons/gr";
 import {FaBars} from "react-icons/fa";
 
 const LanguagesModal = (props) => {
@@ -48,9 +48,9 @@ const LanguagesModal = (props) => {
     }, [props.languages, props.fnLanguages, props.fnToggle])
 
     return <>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='언어 설정'>
-            <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
-                <MdLanguage color={'black'} size={20}/>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Languages'>
+            <MDBBtn className={'ms-1'} size={'sm'} color={'link'} onClick={toggleShow}>
+                <GrLanguage color={'black'} size={19}/>
             </MDBBtn>
         </MDBTooltip>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
@@ -61,23 +61,20 @@ const LanguagesModal = (props) => {
                         <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
                     </MDBModalHeader>
                     <MDBModalBody>
-                        <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>
+                        <MDBDropdown className={'d-flex justify-content-end'}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Add Languages</MDBDropdownToggle>
-                            <MDBDropdownMenu>
-                                {addLanguageItem}
-                            </MDBDropdownMenu>
+                            <MDBDropdownMenu>{addLanguageItem}</MDBDropdownMenu>
                         </MDBDropdown>
                         <ReactSortable animation={200} easing={"ease-out"} list={languages} setList={setLanguages}>
                             {languages.map((item) => {
-                                return <div style={{
-                                    borderBottom: 'solid', borderWidth: 'thin', margin: '10px', paddingLeft: '3px',
-                                    fontSize: '15px', display: 'flex', alignItems: 'center'
-                                }} key={`${item.code}_${item.counter}`}>{item.name}
+                                return <div className={'d-flex align-items-center m-2 ps-1'}
+                                            style={{borderBottom: 'solid', borderWidth: 'thin', fontSize: '0.9rem'}}
+                                            key={`${item.code}_${item.counter}`}>{item.name}
                                     <FaBars className={'ms-auto'} style={{cursor: 'pointer'}}/>
                                 </div>
                             })}
                         </ReactSortable>
-                        <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>
+                        <MDBDropdown className={'d-flex justify-content-end'}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Remove Languages</MDBDropdownToggle>
                             <MDBDropdownMenu>
                                 {languages.map((item, index) => {
@@ -100,15 +97,11 @@ const LanguagesModal = (props) => {
                             toggleShow()
                             if (!props.fnToggle) {
                                 props.setLanguages([...languages.map((value) => ({
-                                    code: value.code,
-                                    name: value.name,
-                                    counter: value.counter
+                                    code: value.code, name: value.name, counter: value.counter
                                 }))])
                             } else {
                                 props.setFnLanguages([...languages.map((value) => ({
-                                    code: value.code,
-                                    name: value.name,
-                                    counter: value.counter
+                                    code: value.code, name: value.name, counter: value.counter
                                 }))])
                             }
                         }}>Save changes</MDBBtn>

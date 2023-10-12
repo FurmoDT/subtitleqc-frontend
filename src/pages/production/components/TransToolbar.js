@@ -31,8 +31,7 @@ const TransToolbar = (props) => {
                     }
                 }}><CgTranscript color={'black'} size={15}/></MDBBtn></MDBTooltip>
         </MDBBtnGroup>
-        <MDBInput wrapperStyle={{width: '3.5rem'}} size={'sm'} type='number'
-                  defaultValue={13} min={10} max={25}
+        <MDBInput wrapperStyle={{width: '3.5rem'}} size={'sm'} type='number' defaultValue={13} min={10} max={25}
                   onChange={(event) => props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')}/>
         <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>

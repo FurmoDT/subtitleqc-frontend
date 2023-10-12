@@ -113,12 +113,8 @@ const Production = () => {
     useEffect(() => {
         if (languageFile) {
             if (languageFile.fn || languageFile.fx) { // fspx
-                cellDataRef.current = languageFile.subtitle.map(v => {
-                    return {...v, rowId: v.rowId || v4()}
-                })
-                fnRef.current = (languageFile.fn || languageFile.fx).map(v => {
-                    return {...v, rowId: v.rowId || v4()}
-                })
+                cellDataRef.current = languageFile.subtitle.map(v => ({...v, rowId: v.rowId || v4()}))
+                fnRef.current = (languageFile.fn || languageFile.fx).map(v => ({...v, rowId: v.rowId || v4()}))
                 localStorage.setItem('subtitle', JSON.stringify(cellDataRef.current))
                 localStorage.setItem('fn', JSON.stringify(fnRef.current))
                 setLanguages(languageFile.language)
@@ -175,7 +171,7 @@ const Production = () => {
                                      subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                         <InformationWindow/>
                     </Split>
-                    <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
+                    <div className={'w-100 h-100 d-flex flex-column'}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       fnToggle={fnToggle} setFnToggle={setFnToggle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef}

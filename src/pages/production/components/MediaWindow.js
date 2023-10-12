@@ -103,16 +103,8 @@ const MediaWindow = (props) => {
         subtitleLabelRef.current.innerHTML = ''
         fnLabelRef.current.innerHTML = ''
     }, [props.mediaFile])
-    return <div style={{
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'end',
-        display: 'flex',
-        borderStyle: 'solid',
-        borderWidth: 'thin',
-        overflow: 'hidden'
-    }} onClick={(event) => {
+    return <div className={'w-100 h-100 d-flex justify-content-center align-items-end position-relative'}
+                style={{borderStyle: 'solid', borderWidth: 'thin', overflow: 'hidden'}} onClick={(event) => {
         const video = props.playerRef.current?.getInternalPlayer()
         if (video && event.target.tagName === 'VIDEO') video.paused ? video.play() : video.pause()
     }}>
@@ -128,16 +120,14 @@ const MediaWindow = (props) => {
                              }
                          }
                      }}/>
-        <label style={{
-            position: 'absolute', color: 'white', pointerEvents: 'none', top: 0, left: 0, fontSize: 13,
-            marginLeft: 5
-        }}>{props.mediaInfo?.media?.track?.filter((value) => value['@type'] === 'General')[0]?.FrameRate}{'fps'}</label>
-        <label ref={fnLabelRef}
-               style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre', top: 0}}/>
-        <label ref={subtitleLabelRef}
-               style={{position: 'absolute', color: 'white', pointerEvents: 'none', whiteSpace: 'pre'}}/>
-        <div style={{position: 'absolute', top: 0, right: 0}}>
-            <MDBDropdown style={{display: 'flex', justifyContent: 'flex-end'}}>
+        <label className={'position-absolute pe-none top-0 start-0 ms-1'} style={{color: 'white', fontSize: '0.8rem'}}>
+            {props.mediaInfo?.media?.track?.filter((value) => value['@type'] === 'General')[0]?.FrameRate}{'fps'}</label>
+        <label ref={fnLabelRef} className={'position-absolute pe-none top-0'}
+               style={{color: 'white', whiteSpace: 'pre'}}/>
+        <label ref={subtitleLabelRef} className={'position-absolute pe-none'}
+               style={{color: 'white', whiteSpace: 'pre'}}/>
+        <div className={'position-absolute top-0 end-0'}>
+            <MDBDropdown className={'d-flex justify-content-end'}>
                 <MDBDropdownToggle color={'link'}>
                     <MDBBtn tag='a' color={'none'}>
                         <MDBIcon fas icon='globe' color={'white'} size={'lg'}/>
@@ -152,7 +142,7 @@ const MediaWindow = (props) => {
                     })}
                 </MDBDropdownMenu>
             </MDBDropdown>
-            <div className="form-check" style={{display: 'flex', alignItems: 'center'}}>
+            <div className="form-check d-flex align-items-center">
                 <input className="form-check-input" type="checkbox" id="fnSwitch" onChange={(event) => {
                     setShowFn(event.target.checked)
                 }}/>

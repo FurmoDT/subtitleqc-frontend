@@ -4,14 +4,13 @@ import MediaWindow from "./components/MediaWindow";
 import MenuToolbar from "./components/MenuToolbar";
 import TimelineWindow from "./components/TimelineWindow";
 import {useCallback, useEffect, useRef, useState} from "react";
-import "../../css/Splitter.css"
 import TransToolbar from "./components/TransToolbar";
 import {defaultLanguage, defaultProjectDetail, defaultSubtitle} from "../../utils/config";
 import FileUploadModal from "./components/dialogs/FileUploadModal";
 import Dropzone from "./components/Dropzone";
 import {createSegment, fileExtension, tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
-import SplitterLayout from 'react-splitter-layout-react-v18';
+import {Split} from "@geoffcox/react-splitter";
 import axios from "../../utils/axios";
 import {useNavigate} from "react-router-dom";
 
@@ -20,8 +19,6 @@ const Production = () => {
     const navigate = useNavigate()
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
-    const languageSplitter = useRef(null)
-    const timelineSplitter = useRef(null)
     const [languageWindowSize, setLanguageWindowSize] = useState({width: 0, height: 0})
     const [timelineWindowSize, setTimelineWindowSize] = useState({height: 320})
     const [mediaFile, setMediaFile] = useState(null)
@@ -136,17 +133,6 @@ const Production = () => {
     }, [languageFile])
 
     useEffect(() => {
-        const observer = new ResizeObserver(() => {
-            setLanguageWindowSize({
-                width: languageSplitter.current.container.lastChild.offsetWidth,
-                height: languageSplitter.current.container.lastChild.offsetHeight - 40
-            })
-        });
-        observer.observe(dropzoneRef.current);
-        return () => observer.disconnect()
-    }, []);
-
-    useEffect(() => {
         if (!pathname.split('/')[2]) return
         // axios.get(`v1/task/work`, {params: {hashed_id: pathname.split('/')[2], work_type: pathname.split('/')[3]}}).then((respond) => {
         //     const task = respond.data.task
@@ -172,28 +158,23 @@ const Production = () => {
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef}>
-            <SplitterLayout ref={timelineSplitter} vertical={true} secondaryInitialSize={250} onDragEnd={() => {
-                setLanguageWindowSize({
-                    ...languageWindowSize,
-                    height: timelineSplitter.current.container.firstChild.offsetHeight - 40
-                })
-                setTimelineWindowSize({height: timelineSplitter.current.container.lastChild.offsetHeight + 70})
-            }}>
-                <SplitterLayout ref={languageSplitter} vertical={false} primaryIndex={1} secondaryInitialSize={480}
-                                onDragEnd={() => {
-                                    setTimeout(() => setLanguageWindowSize({
-                                        ...languageWindowSize,
-                                        width: languageSplitter.current.container.lastChild.offsetWidth
-                                    }), 100)
-                                }}>
-                    <SplitterLayout vertical={true} secondaryMinSize={200} secondaryInitialSize={300} primaryIndex={1}>
+            <Split horizontal={true} initialPrimarySize={`${dropzoneRef.current?.offsetHeight - 250}px`}
+                   splitterSize={'5px'}
+                   onMeasuredSizesChanged={(sizes) => {
+                       setLanguageWindowSize(prevState => ({...prevState, height: parseInt(`${sizes.primary}`) - 40}))
+                       setTimelineWindowSize({height: parseInt(`${sizes.secondary}`) + 70})
+                   }}>
+                <Split horizontal={false} initialPrimarySize={'480px'} splitterSize={'5px'}
+                       onMeasuredSizesChanged={(sizes) => setLanguageWindowSize(prevState => (
+                           {...prevState, width: parseInt(`${sizes.secondary}`)}))}>
+                    <Split horizontal={true} initialPrimarySize={'300px'} splitterSize={'5px'} minPrimarySize={'200px'}>
                         <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
                                      languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
                                      mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
                                      waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
                                      subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                         <InformationWindow/>
-                    </SplitterLayout>
+                    </Split>
                     <div style={{flexDirection: 'column', display: 'flex', width: '100%', height: '100%'}}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       fnToggle={fnToggle} setFnToggle={setFnToggle}
@@ -216,7 +197,7 @@ const Production = () => {
                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                     </div>
-                </SplitterLayout>
+                </Split>
                 <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
                                 isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                 waveformRef={waveformRef} mediaFile={mediaFile} video={video}
@@ -224,7 +205,7 @@ const Production = () => {
                                 tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                                 tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                 selectedSegment={selectedSegment}/>
-            </SplitterLayout>
+            </Split>
         </div>
     </>
 };

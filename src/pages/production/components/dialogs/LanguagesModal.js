@@ -5,7 +5,6 @@ import {
     MDBDropdownItem,
     MDBDropdownMenu,
     MDBDropdownToggle,
-    MDBIcon,
     MDBModal,
     MDBModalBody,
     MDBModalContent,
@@ -17,6 +16,8 @@ import {
 } from 'mdb-react-ui-kit';
 import {ReactSortable} from "react-sortablejs";
 import {languageCodes} from "../../../../utils/config";
+import {MdLanguage} from "react-icons/md";
+import {FaBars} from "react-icons/fa";
 
 const LanguagesModal = (props) => {
     const [languages, setLanguages] = useState([])
@@ -24,25 +25,32 @@ const LanguagesModal = (props) => {
     const toggleShow = () => setBasicModal(!basicModal);
     const addLanguageItem = Object.entries(languageCodes).map(([key, value]) => (
         <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value}</MDBDropdownItem>))
+
     addLanguageItem.splice(addLanguageItem.length - 2, 0, <MDBDropdownItem key={'languageDivider'} divider/>)
+
     const languageCounter = (code) => {
         const counter = languages.filter(value => value.code === code).map(value => value.counter)
         return counter.length ? Math.max(...counter) + 1 : 1
     }
+
     const handleAddClick = (code, name) => {
         const counter = languageCounter(code)
         setLanguages([...languages, {
-            code: code, name: name + (counter > 1 ? `(${counter})` : '') + (props.fnToggle ? 'FN': ''), counter: counter
+            code: code,
+            name: name + (counter > 1 ? `(${counter})` : '') + (props.fnToggle ? 'FN' : ''),
+            counter: counter
         }])
     }
+
     useEffect(() => {
         if (!props.fnToggle) setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
         else setLanguages([...props.fnLanguages.map((value) => (Object.assign({}, value)))])
     }, [props.languages, props.fnLanguages, props.fnToggle])
+
     return <>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='언어 설정'>
             <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
-                <MDBIcon fas icon='globe' size={'lg'}/>
+                <MdLanguage color={'black'} size={20}/>
             </MDBBtn>
         </MDBTooltip>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
@@ -65,7 +73,7 @@ const LanguagesModal = (props) => {
                                     borderBottom: 'solid', borderWidth: 'thin', margin: '10px', paddingLeft: '3px',
                                     fontSize: '15px', display: 'flex', alignItems: 'center'
                                 }} key={`${item.code}_${item.counter}`}>{item.name}
-                                    <MDBIcon fas icon="bars" style={{cursor: 'pointer', marginLeft: 'auto'}}/>
+                                    <FaBars className={'ms-auto'} style={{cursor: 'pointer'}}/>
                                 </div>
                             })}
                         </ReactSortable>

@@ -7,14 +7,13 @@ import {CgTranscript} from "react-icons/cg";
 import FindPopover from "./dialogs/FindPopover";
 import ReplacePopover from "./dialogs/ReplacePopover";
 import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
+import {MdOutlineGTranslate} from "react-icons/md";
 
 const TransToolbar = (props) => {
     const subtitleButtonRef = useRef(null)
     const fnButtonRef = useRef(null)
-    return <div style={{
-        flexDirection: 'row', display: 'flex', alignItems: 'center', height: '40px'
-    }}>
-        <MDBBtnGroup style={{marginLeft: '5px'}}>
+    return <div className={'d-flex flex-row align-items-center'} style={{height: '2.5rem'}}>
+        <MDBBtnGroup className={'mx-1'}>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='말자막'>
                 <MDBBtn ref={subtitleButtonRef} size={'sm'} color={'link'} outline onClick={() => {
                     if (props.fnToggle) {
@@ -23,7 +22,6 @@ const TransToolbar = (props) => {
                         props.setFnToggle(!props.fnToggle)
                     }
                 }}><MDBIcon fas icon="comments" color={'dark'}/></MDBBtn></MDBTooltip>
-            <div style={{margin: '1px'}}></div>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='화면자막'>
                 <MDBBtn ref={fnButtonRef} size={'sm'} color={'link'} onClick={() => {
                     if (!props.fnToggle) {
@@ -33,13 +31,14 @@ const TransToolbar = (props) => {
                     }
                 }}><CgTranscript color={'black'} size={15}/></MDBBtn></MDBTooltip>
         </MDBBtnGroup>
-        <MDBInput wrapperStyle={{marginLeft: '5px', width: '60px'}} size={'sm'} type='number'
+        <MDBInput wrapperStyle={{width: '3.5rem'}} size={'sm'} type='number'
                   defaultValue={13} min={10} max={25}
-                  onChange={(event) => {
-                      props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')
-                  }}/>
+                  onChange={(event) => props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')}/>
         <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Translate'>
+            <MDBBtn color={'link'} size={'sm'} onClick={() => {
+            }}><MdOutlineGTranslate color={'black'} size={20}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset Rest'>
             <MDBBtn ref={props.tcOffsetButtonRef} color={'link'} size={'sm'} onClick={() => {
                 if (props.tcLockRef.current || !props.selectedSegment.current) return

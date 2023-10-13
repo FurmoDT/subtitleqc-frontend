@@ -7,7 +7,7 @@ import {CgTranscript} from "react-icons/cg";
 import FindPopover from "./dialogs/FindPopover";
 import ReplacePopover from "./dialogs/ReplacePopover";
 import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
-import {MdOutlineGTranslate} from "react-icons/md";
+import axios from "../../../utils/axios";
 
 const TransToolbar = (props) => {
     const subtitleButtonRef = useRef(null)
@@ -31,13 +31,20 @@ const TransToolbar = (props) => {
                     }
                 }}><CgTranscript color={'black'} size={15}/></MDBBtn></MDBTooltip>
         </MDBBtnGroup>
-        <MDBInput wrapperStyle={{width: '3.5rem'}} size={'sm'} type='number' defaultValue={13} min={10} max={25}
+        <MDBInput type='number' defaultValue={13} min={10} max={25} size={'sm'}
+                  wrapperStyle={{width: '3.5rem', minWidth: '3.5rem'}}
                   onChange={(event) => props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')}/>
         <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Translate'>
             <MDBBtn color={'link'} size={'sm'} onClick={() => {
-            }}><MdOutlineGTranslate color={'black'} size={20}/></MDBBtn></MDBTooltip>
+                props.hotRef.current.colToProp(2).startsWith('koKR') && axios.post('v1/task/spns/subtitle_translation', {inputs: props.hotRef.current.getDataAtCol(2).map(value => value ? value : '')}).then((response) => {
+                    console.log(response)
+                })
+                // !props.fnToggle ? props.setLanguages(prevState => [...prevState, {
+                //     code: 'spns', name: 'SPNS', counter: 1
+                // }]) : props.setFnLanguages(prevState => [...prevState, {code: 'spns', name: 'SPNS', counter: 1}])
+            }}><img src={'/translate-icon.png'} alt={''} width={'25'}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset Rest'>
             <MDBBtn ref={props.tcOffsetButtonRef} color={'link'} size={'sm'} onClick={() => {
                 if (props.tcLockRef.current || !props.selectedSegment.current) return

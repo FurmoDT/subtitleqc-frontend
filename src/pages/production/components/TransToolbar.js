@@ -2,7 +2,7 @@ import {MDBBtn, MDBBtnGroup, MDBIcon, MDBInput, MDBTooltip} from "mdb-react-ui-k
 import LanguagesModal from "./dialogs/LanguagesModal";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
 import {secToTc, tcToSec} from "../../../utils/functions";
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import {CgTranscript} from "react-icons/cg";
 import FindPopover from "./dialogs/FindPopover";
 import ReplacePopover from "./dialogs/ReplacePopover";
@@ -12,6 +12,8 @@ import axios from "../../../utils/axios";
 const TransToolbar = (props) => {
     const subtitleButtonRef = useRef(null)
     const fnButtonRef = useRef(null)
+    const [isTranslating, setIsTranslating] = useState(false)
+
     return <div className={'d-flex flex-row align-items-center'} style={{height: '2.5rem'}}>
         <MDBBtnGroup className={'mx-1'}>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='말자막'>
@@ -37,13 +39,17 @@ const TransToolbar = (props) => {
         <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Translate'>
-            <MDBBtn color={'link'} size={'sm'} onClick={() => {
-                props.hotRef.current.colToProp(2).startsWith('koKR') && axios.post('v1/task/spns/subtitle_translation', {inputs: props.hotRef.current.getDataAtCol(2).map(value => value ? value : '')}).then((response) => {
-                    console.log(response)
-                })
-                // !props.fnToggle ? props.setLanguages(prevState => [...prevState, {
-                //     code: 'spns', name: 'SPNS', counter: 1
-                // }]) : props.setFnLanguages(prevState => [...prevState, {code: 'spns', name: 'SPNS', counter: 1}])
+            <MDBBtn disabled={isTranslating} color={'link'} size={'sm'} onClick={() => {
+                if (props.hotRef.current.colToProp(2).startsWith('koKR') && !Number.isInteger(props.hotRef.current.propToCol('spns_1'))) {
+                    setIsTranslating(true)
+                    axios.post('v1/task/spns/subtitle_translation', {inputs: props.hotRef.current.getDataAtCol(2).map(value => value ? value : '')}).then((response) => {
+                        props.hotRef.current.setDataAtCell((response.data.map((value, index) => ([index, props.hotRef.current.countCols() - 1, value]))))
+                        setIsTranslating(false)
+                    })
+                    !props.fnToggle ? props.setLanguages(prevState => [...prevState, {
+                        code: 'spns', name: 'SPNS', counter: 1
+                    }]) : props.setFnLanguages(prevState => [...prevState, {code: 'spns', name: 'SPNS', counter: 1}])
+                }
             }}><img src={'/translate-icon.png'} alt={''} width={'25'}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset Rest'>
             <MDBBtn ref={props.tcOffsetButtonRef} color={'link'} size={'sm'} onClick={() => {

@@ -60,10 +60,10 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
 
 export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.position = 'relative'
-    const label = document.createElement('label');
+    const span = document.createElement('span');
     if (v) {
         v = v.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
-        td.innerHTML = `<label style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</label>`
+        td.innerHTML = `<span style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</span>`
         const error = new Set()
         if (guideline.musicNote && (v.includes('♪') || v.includes('<i>') || v.includes('</i>'))) {
             let valid = true
@@ -123,31 +123,27 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
         }
         const [start, end] = instance.getDataAtRow(r).slice(0, 2)
         const cps = Math.ceil(v.length / (tcToSec(end) - tcToSec(start))) || 0
-        label.innerHTML = `<span class=${cps > language?.cps?.value ? LEVEL[language.cps.level] : ''}>cps: ${cps}</span>`
-        label.innerHTML += `&nbsp;`
-        label.innerHTML += v.split('\n').map(val => {
+        span.innerHTML = `<span class=${cps > language?.cps?.value ? LEVEL[language.cps.level] : ''}>cps: ${cps}</span>`
+        span.innerHTML += `&nbsp;`
+        span.innerHTML += v.split('\n').map(val => {
             const characters = val.length
             return `<span class=${characters > language?.maxCharacter?.value ? LEVEL[language.maxCharacter.level] : ''}>len: ${String(val.length).padStart(2, ' ')}<br/></span>`
         }) || '<span>len: 0</span>'
         if (error.size) td.setAttribute('title', [...error].join('\n'))
         else td.removeAttribute('title')
     } else {
-        label.innerHTML = '<span>cps: 0&nbsp;len: 0</span>'
+        span.innerHTML = '<span>cps: 0&nbsp;len: 0</span>'
     }
-    label.style.position = 'absolute'
-    label.style.top = 0
-    label.style.whiteSpace = 'pre'
-    label.style.fontSize = '10px'
-    label.style.color = 'lightgray'
-    label.style.textAlign = 'right'
-    label.style.paddingRight = '5px'
+    span.className = 'position-absolute top-0 text-end pe-1'
+    span.style.fontSize = '10px'
+    span.style.color = 'lightgray'
     if (instance.colToProp(c).startsWith('arAE')) {
         td.setAttribute('dir', "rtl")
-        label.style.left = 0
-        td.style.paddingLeft = '75px'
+        span.className += ' start-0'
+        td.style.paddingLeft = '4.75rem'
     } else {
-        label.style.right = 0
-        td.style.paddingRight = '75px'
+        span.className += ' end-0'
+        td.style.paddingRight = '4.75rem'
     }
-    td.appendChild(label);
+    td.appendChild(span);
 }

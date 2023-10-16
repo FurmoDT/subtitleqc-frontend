@@ -157,11 +157,13 @@ const Production = () => {
             <Split horizontal={true} initialPrimarySize={`${dropzoneRef.current?.offsetHeight - 250}px`}
                    splitterSize={'5px'}
                    onMeasuredSizesChanged={(sizes) => {
-                       setLanguageWindowSize(prevState => ({...prevState, height: parseInt(`${sizes.primary}`) - 40}))
-                       setTimelineWindowSize({height: parseInt(`${sizes.secondary}`) + 70})
+                       sizes.primary && setLanguageWindowSize(prevState => ({
+                           ...prevState, height: parseInt(`${sizes.primary}`) - 40
+                       }))
+                       sizes.secondary && setTimelineWindowSize({height: parseInt(`${sizes.secondary}`) + 70})
                    }}>
                 <Split horizontal={false} initialPrimarySize={'480px'} splitterSize={'5px'}
-                       onMeasuredSizesChanged={(sizes) => setLanguageWindowSize(prevState => (
+                       onMeasuredSizesChanged={(sizes) => sizes.secondary && setLanguageWindowSize(prevState => (
                            {...prevState, width: parseInt(`${sizes.secondary}`)}))}>
                     <Split horizontal={true} initialPrimarySize={'300px'} splitterSize={'5px'} minPrimarySize={'200px'}>
                         <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}

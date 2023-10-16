@@ -5,16 +5,17 @@ import {useEffect, useRef, useState} from "react";
 import axios from "../../utils/axios";
 import {fileExtension} from "../../utils/functions";
 import {useNavigate} from "react-router-dom";
-import {Split} from "@geoffcox/react-splitter";
 import {languageCodes} from "../../utils/config";
 import {Sidebar, sidebarClasses} from "react-pro-sidebar";
 import ReactDiffViewer from 'react-diff-viewer-continued';
 import * as Y from 'yjs'
 import {toUint8Array} from "js-base64";
+import {Allotment} from "allotment";
 
 const TextPage = () => {
     const [, , taskHashedId, workHashedId] = window.location.pathname.split('/')
     const navigate = useNavigate()
+    const containerRef = useRef(null)
     const [textFile, setTextFile] = useState(null)
     const [authority, setAuthority] = useState('')
     const [iceservers, setIceServers] = useState(null)
@@ -89,7 +90,7 @@ const TextPage = () => {
 
     const EditorComponent = () => {
         if (/^(test|pm|pd|qc|client)$/.test(authority)) {
-            return <Split horizontal={false} initialPrimarySize={'50%'} splitterSize={'5px'}>
+            return <Allotment>
                 <QuillEditor editorType={'original'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
                              iceservers={iceservers} connectionType={connectionType}
                              disabled={authority !== 'test'}
@@ -98,7 +99,7 @@ const TextPage = () => {
                              iceservers={iceservers} connectionType={connectionType}
                              disabled={authority === 'client' || endedAt}
                              onSave={menuToolbarRef.current.showSavingStatus}/>
-            </Split>
+            </Allotment>
         } else {
             return <QuillEditor editorType={'original'} taskHashedId={taskHashedId} targetLanguage={targetLanguage}
                                 iceservers={iceservers} connectionType={connectionType}
@@ -112,17 +113,16 @@ const TextPage = () => {
             <MenuToolbar ref={menuToolbarRef} languageOptions={languageOptions} taskWorkId={workHashedId}
                          targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage} taskName={taskName}
                          authority={authority} showDiff={showDiff} setShowDiff={setShowDiff}/>}
-        <div style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
-            <Split horizontal={true} initialPrimarySize={'75%'} splitterSize={'5px'}>
-                {textFile && iceservers && targetLanguage &&
-                    <div style={{width: '100%', height: '100%', display: 'flex'}}>
-                        <Split initialPrimarySize={'40%'} splitterSize={'5px'}>
-                            <DocViewer textFile={textFile}/>
-                            <EditorComponent/></Split>
+        <div ref={containerRef} style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
+            {textFile && iceservers && targetLanguage &&
+                <Allotment vertical={true}>
+                    <>
+                        <Allotment>
+                            <Allotment.Pane preferredSize={'35%'}><DocViewer textFile={textFile}/></Allotment.Pane>
+                            <EditorComponent/>
+                        </Allotment>
                         <Sidebar width={'50vw'} collapsedWidth={'0px'} collapsed={!showDiff} rootStyles={{
-                            [`.${sidebarClasses.container}`]: {
-                                width: '100%', height: '100%'
-                            }
+                            [`.${sidebarClasses.container}`]: {width: '100%', height: '100%'}
                         }}>
                             <ReactDiffViewer oldValue={originalText} newValue={reviewText} splitView={true}
                                              hideLineNumbers={true} leftTitle={'Original'} rightTitle={'Review'}
@@ -134,10 +134,10 @@ const TextPage = () => {
                                              }}
                             />
                         </Sidebar>
-                    </div>
-                }
-
-            </Split>
+                    </>
+                    <Allotment.Pane preferredSize={'200px'}/>
+                </Allotment>
+            }
         </div>
     </div>
 };

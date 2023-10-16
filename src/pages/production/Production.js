@@ -10,15 +10,17 @@ import FileUploadModal from "./components/dialogs/FileUploadModal";
 import Dropzone from "./components/Dropzone";
 import {createSegment, fileExtension, tcToSec} from "../../utils/functions";
 import {v4} from "uuid";
-import {Split} from "@geoffcox/react-splitter";
 import axios from "../../utils/axios";
 import {useNavigate} from "react-router-dom";
+import {Allotment} from "allotment";
+
 
 const Production = () => {
     const pathname = window.location.pathname
     const navigate = useNavigate()
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
+    const languageWindowRef = useRef(null)
     const [languageWindowSize, setLanguageWindowSize] = useState({width: 0, height: 0})
     const [timelineWindowSize, setTimelineWindowSize] = useState({height: 320})
     const [mediaFile, setMediaFile] = useState(null)
@@ -129,7 +131,19 @@ const Production = () => {
     }, [languageFile])
 
     useEffect(() => {
-        if (!pathname.split('/')[2]) return
+        const observer = new ResizeObserver((entries, observer) => {
+            setLanguageWindowSize({
+                width: languageWindowRef.current.offsetWidth,
+                height: languageWindowRef.current.offsetHeight - 40
+            })
+        });
+        observer.observe(dropzoneRef.current);
+        return () => observer.disconnect()
+    }, []);
+
+
+    useEffect(() => {
+        // if (!pathname.split('/')[2]) return
         // axios.get(`v1/task/work`, {params: {hashed_id: pathname.split('/')[2], work_type: pathname.split('/')[3]}}).then((respond) => {
         //     const task = respond.data.task
         //     setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
@@ -154,26 +168,27 @@ const Production = () => {
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef}>
-            <Split horizontal={true} initialPrimarySize={`${dropzoneRef.current?.offsetHeight - 250}px`}
-                   splitterSize={'5px'}
-                   onMeasuredSizesChanged={(sizes) => {
-                       sizes.primary && setLanguageWindowSize(prevState => ({
-                           ...prevState, height: parseInt(`${sizes.primary}`) - 40
-                       }))
-                       sizes.secondary && setTimelineWindowSize({height: parseInt(`${sizes.secondary}`) + 70})
-                   }}>
-                <Split horizontal={false} initialPrimarySize={'480px'} splitterSize={'5px'}
-                       onMeasuredSizesChanged={(sizes) => sizes.secondary && setLanguageWindowSize(prevState => (
-                           {...prevState, width: parseInt(`${sizes.secondary}`)}))}>
-                    <Split horizontal={true} initialPrimarySize={'300px'} splitterSize={'5px'} minPrimarySize={'200px'}>
-                        <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
-                                     languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
-                                     mediaFile={mediaFile} mediaInfo={mediaInfo} video={video} setVideo={setVideo}
-                                     waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                     subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
-                        <InformationWindow/>
-                    </Split>
-                    <div className={'w-100 h-100 d-flex flex-column'}>
+            <Allotment vertical={true} onDragEnd={sizes => {
+                setLanguageWindowSize(prevState => ({...prevState, height: sizes[0] - 40}))
+                setTimelineWindowSize({height: sizes[1] + 70})
+            }}>
+                <Allotment onDragEnd={sizes => setLanguageWindowSize(prevState => ({...prevState, width: sizes[1]}))}>
+                    <Allotment.Pane preferredSize={'480px'}>
+                        <Allotment vertical={true}>
+                            <Allotment.Pane minSize={200} preferredSize={'50'}>
+                                <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
+                                             languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
+                                             mediaFile={mediaFile} mediaInfo={mediaInfo} video={video}
+                                             setVideo={setVideo}
+                                             waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
+                                             subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
+                            </Allotment.Pane>
+                            <Allotment.Pane minSize={50}>
+                                <InformationWindow/>
+                            </Allotment.Pane>
+                        </Allotment>
+                    </Allotment.Pane>
+                    <Allotment.Pane ref={languageWindowRef}>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       fnToggle={fnToggle} setFnToggle={setFnToggle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef}
@@ -194,16 +209,18 @@ const Production = () => {
                                         isFromTimelineWindowRef={isFromTimelineWindowRef}
                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
-                    </div>
-                </Split>
-                <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
-                                isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
-                                waveformRef={waveformRef} mediaFile={mediaFile} video={video}
-                                resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}
-                                tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
-                                tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
-                                selectedSegment={selectedSegment}/>
-            </Split>
+                    </Allotment.Pane>
+                </Allotment>
+                <Allotment.Pane preferredSize={'250px'}>
+                    <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
+                                    isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
+                                    waveformRef={waveformRef} mediaFile={mediaFile} video={video}
+                                    resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}
+                                    tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
+                                    tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
+                                    selectedSegment={selectedSegment}/>
+                </Allotment.Pane>
+            </Allotment>
         </div>
     </>
 };

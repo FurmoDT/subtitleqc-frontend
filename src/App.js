@@ -1,4 +1,5 @@
 import "./css/AuthCss.css"
+import "./css/SplitterCss.css"
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Production from "./pages/production/Production";

@@ -168,14 +168,15 @@ const Production = () => {
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef}>
-            <Allotment vertical={true} onDragEnd={sizes => {
+            <Allotment vertical={true} defaultSizes={[window.innerHeight - 250 - 50 - 40, 250]} onDragEnd={sizes => {
                 setLanguageWindowSize(prevState => ({...prevState, height: sizes[0] - 40}))
                 setTimelineWindowSize({height: sizes[1] + 70})
             }}>
-                <Allotment onDragEnd={sizes => setLanguageWindowSize(prevState => ({...prevState, width: sizes[1]}))}>
-                    <Allotment.Pane preferredSize={'480px'}>
-                        <Allotment vertical={true}>
-                            <Allotment.Pane minSize={200} preferredSize={'50'}>
+                <Allotment proportionalLayout={false}
+                           onDragEnd={sizes => setLanguageWindowSize(prevState => ({...prevState, width: sizes[1]}))}>
+                    <Allotment.Pane preferredSize={480} minSize={300} snap>
+                        <Allotment vertical={true} proportionalLayout={false}>
+                            <Allotment.Pane preferredSize={300} minSize={200}>
                                 <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
                                              languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
                                              mediaFile={mediaFile} mediaInfo={mediaInfo} video={video}
@@ -188,7 +189,7 @@ const Production = () => {
                             </Allotment.Pane>
                         </Allotment>
                     </Allotment.Pane>
-                    <Allotment.Pane ref={languageWindowRef}>
+                    <Allotment.Pane ref={languageWindowRef} snap>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       fnToggle={fnToggle} setFnToggle={setFnToggle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef}
@@ -211,7 +212,7 @@ const Production = () => {
                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                     </Allotment.Pane>
                 </Allotment>
-                <Allotment.Pane preferredSize={'250px'}>
+                <Allotment.Pane preferredSize={250} minSize={250} snap>
                     <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
                                     isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                     waveformRef={waveformRef} mediaFile={mediaFile} video={video}

@@ -12,19 +12,19 @@ const InformationWindow = () => {
     };
 
     return <>
-        <MDBTabs className='mb-3'>
-            <MDBTabsItem>
+        <MDBTabs className='mb-3 d-flex flex-nowrap'>
+            <MDBTabsItem className={'text-nowrap'}>
                 <MDBTabsLink onClick={() => handleFillClick('tab1')} active={fillActive === 'tab1'}>전달사항</MDBTabsLink>
             </MDBTabsItem>
-            <MDBTabsItem>
+            <MDBTabsItem className={'text-nowrap'}>
                 <MDBTabsLink onClick={() => handleFillClick('tab2')} active={fillActive === 'tab2'}>사전</MDBTabsLink>
             </MDBTabsItem>
-            <MDBTabsItem>
+            <MDBTabsItem className={'text-nowrap'}>
                 <MDBTabsLink onClick={() => handleFillClick('tab3')} active={fillActive === 'tab3'}>가이드라인</MDBTabsLink>
             </MDBTabsItem>
         </MDBTabs>
 
-        <MDBTabsContent>
+        <MDBTabsContent className={'text-nowrap'}>
             <MDBTabsPane show={fillActive === 'tab1'}>Tab 1 content</MDBTabsPane>
             <MDBTabsPane show={fillActive === 'tab2'}>Tab 2 content</MDBTabsPane>
             <MDBTabsPane show={fillActive === 'tab3'}>Tab 3 content</MDBTabsPane>

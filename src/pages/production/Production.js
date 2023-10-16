@@ -131,10 +131,9 @@ const Production = () => {
     }, [languageFile])
 
     useEffect(() => {
-        const observer = new ResizeObserver((entries, observer) => {
+        const observer = new ResizeObserver(() => {
             setLanguageWindowSize({
-                width: languageWindowRef.current.offsetWidth,
-                height: languageWindowRef.current.offsetHeight - 40
+                width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
             })
         });
         observer.observe(dropzoneRef.current);
@@ -168,15 +167,16 @@ const Production = () => {
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef}>
-            <Allotment vertical={true} defaultSizes={[window.innerHeight - 250 - 50 - 40, 250]} onDragEnd={sizes => {
-                setLanguageWindowSize(prevState => ({...prevState, height: sizes[0] - 40}))
-                setTimelineWindowSize({height: sizes[1] + 70})
-            }}>
-                <Allotment proportionalLayout={false}
+            <Allotment vertical defaultSizes={[window.innerHeight - 250 - 50 - 40, 250]} onReset={() => null}
+                       onDragEnd={sizes => {
+                           setLanguageWindowSize(prevState => ({...prevState, height: sizes[0] - 40}))
+                           setTimelineWindowSize({height: sizes[1] + 70})
+                       }}>
+                <Allotment defaultSizes={[480, 0]} minSize={50} proportionalLayout={false} onReset={() => null}
                            onDragEnd={sizes => setLanguageWindowSize(prevState => ({...prevState, width: sizes[1]}))}>
-                    <Allotment.Pane preferredSize={480} minSize={300} snap>
-                        <Allotment vertical={true} proportionalLayout={false}>
-                            <Allotment.Pane preferredSize={300} minSize={200}>
+                    <Allotment.Pane snap>
+                        <Allotment vertical minSize={50} proportionalLayout={false} onReset={() => null}>
+                            <Allotment.Pane minSize={300}>
                                 <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
                                              languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
                                              mediaFile={mediaFile} mediaInfo={mediaInfo} video={video}
@@ -184,7 +184,7 @@ const Production = () => {
                                              waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
                                              subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                             </Allotment.Pane>
-                            <Allotment.Pane minSize={50}>
+                            <Allotment.Pane snap>
                                 <InformationWindow/>
                             </Allotment.Pane>
                         </Allotment>

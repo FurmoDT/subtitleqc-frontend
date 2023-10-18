@@ -79,15 +79,11 @@ const Production = () => {
         const source = fnToggleRef.current ? fnRef.current : cellDataRef.current
         source.forEach((value) => {
             const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-            if (0 <= start && end && start <= end) segments.push(createSegment(start, end, value.rowId))
+            if (0 <= start && end) segments.push(createSegment(start, end, value.rowId))
         })
         selectedSegment.current = null
         return segments
     }, [])
-
-    useEffect(() => {
-        resetSegmentsRef.current = resetSegments
-    }, [resetSegments])
 
     useEffect(() => {
         localStorage.setItem('language', JSON.stringify(languages))
@@ -101,10 +97,10 @@ const Production = () => {
         fnToggleRef.current = fnToggle
         if (waveformRef.current) {
             waveformRef.current.segments.removeAll()
-            waveformRef.current.segments.add(resetSegmentsRef.current())
+            waveformRef.current.segments.add(resetSegments())
             selectedSegment.current = null
         }
-    }, [fnToggle])
+    }, [fnToggle, resetSegments])
 
     useEffect(() => {
         tcLockRef.current = tcLock
@@ -214,7 +210,8 @@ const Production = () => {
                                         playerRef={playerRef} waveformRef={waveformRef} fnToggle={fnToggle}
                                         tcLock={tcLock} tcLockRef={tcLockRef} cellDataRef={cellDataRef}
                                         languages={languages} fnRef={fnRef} fnLanguages={fnLanguages}
-                                        guideline={projectDetail.guideline} resetSegments={resetSegments}
+                                        guideline={projectDetail.guideline}
+                                        resetSegments={resetSegments} selectedSegment={selectedSegment}
                                         isFromTimelineWindowRef={isFromTimelineWindowRef}
                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>

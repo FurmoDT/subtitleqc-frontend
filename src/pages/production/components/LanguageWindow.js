@@ -201,9 +201,12 @@ const LanguageWindow = (props) => {
                     if (tcChanges[0][2]) {
                         const {rowId} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
                         props.waveformRef.current.segments.removeById(rowId)
-                    } else if (tcChanges[0][3]) {
+                        props.selectedSegment.current = null
+                    }
+                    if (tcChanges[0][3]) {
                         const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
-                        props.waveformRef.current.segments.add(createSegment(tcToSec(start), tcToSec(end), rowId))
+                        const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
+                        0 <= startSec && endSec && props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
                     }
                 }
             }
@@ -245,7 +248,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, afterRenderPromise, props.subtitleIndexRef, props.fnIndexRef])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, props.fnIndexRef])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

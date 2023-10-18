@@ -11,10 +11,10 @@ export const bisect = (arr, target) => {
 };
 
 export const tcToSec = (tc) => {
-    try {
+    if (/^\d{2}:\d{2}:\d{2}[.,]\d{3}$/.test(tc)) {
         const t = tc.split(':')
         return Number((Number(t[0]) * 60 * 60 + Number(t[1]) * 60 + Number(t[2].replace(',', '.'))).toFixed(3))
-    } catch (error) {
+    } else {
         return NaN
     }
 }

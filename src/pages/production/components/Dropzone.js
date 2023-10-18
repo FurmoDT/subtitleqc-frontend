@@ -5,12 +5,6 @@ import {xml2json} from "xml-js";
 import {getInfo} from 'react-mediainfo'
 
 const baseStyle = {
-    display: 'flex',
-    flexDirection: "row",
-    justifyContent: 'center',
-    width: '100vw',
-    height: 'calc(100vh - 50px - 40px)',
-    position: 'relative',
     borderStyle: 'none',
 };
 

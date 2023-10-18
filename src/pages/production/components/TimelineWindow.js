@@ -226,7 +226,7 @@ const TimelineWindow = (props) => {
             </div>
         </div>
         <div style={{backgroundColor: 'black'}} onClick={() => props.focusedRef.current = props.waveformRef.current}>
-            <div ref={statusRef} className={'text-center'}>
+            <div ref={statusRef} className={'position-absolute start-50 translate-middle-x'}>
                 <MDBSpinner ref={spinnerRef} style={{
                     width: `${props.size.height / 3}px`, height: `${props.size.height / 3}px`, marginTop: '10px'
                 }}/>

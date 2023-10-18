@@ -20,7 +20,9 @@ const Production = () => {
     const navigate = useNavigate()
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
+    const containerRef = useRef(null)
     const languageWindowRef = useRef(null)
+    const timelineWindowRef = useRef(null)
     const [languageWindowSize, setLanguageWindowSize] = useState({width: 0, height: 0})
     const [timelineWindowSize, setTimelineWindowSize] = useState({height: 320})
     const [mediaFile, setMediaFile] = useState(null)
@@ -132,9 +134,12 @@ const Production = () => {
 
     useEffect(() => {
         const observer = new ResizeObserver(() => {
+            containerRef.current.resize([dropzoneRef.current.offsetHeight - timelineWindowRef.current.childNodes[1].offsetHeight, timelineWindowRef.current.childNodes[1].offsetHeight])
             setLanguageWindowSize({
-                width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
+                width: languageWindowRef.current.offsetWidth,
+                height: languageWindowRef.current.offsetHeight - 40
             })
+            setTimelineWindowSize(prevState => ({height: prevState.height}))
         });
         observer.observe(dropzoneRef.current);
         return () => observer.disconnect()
@@ -168,8 +173,9 @@ const Production = () => {
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef} className={'d-flex flex-row justify-content-center position-relative'}
              style={{width: '100vw', height: 'calc(100vh - 50px - 40px)'}}>
-            <Allotment defaultSizes={[window.innerHeight - timelineWindowSize.height, timelineWindowSize.height - 70]}
-                       vertical proportionalLayout={false} onReset={() => null} onDragEnd={sizes => {
+            <Allotment ref={containerRef} vertical proportionalLayout={false}
+                       defaultSizes={[window.innerHeight - timelineWindowSize.height, timelineWindowSize.height - 70]}
+                       onReset={() => null} onDragEnd={sizes => {
                 setLanguageWindowSize(prevState => ({width: prevState.width, height: sizes[0] - 40}))
                 setTimelineWindowSize({height: sizes[1] + 70})
             }}>
@@ -215,7 +221,7 @@ const Production = () => {
                                         subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
                     </Allotment.Pane>
                 </Allotment>
-                <Allotment.Pane minSize={250} snap>
+                <Allotment.Pane ref={timelineWindowRef} minSize={250} snap>
                     <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
                                     isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                     waveformRef={waveformRef} mediaFile={mediaFile} video={video}

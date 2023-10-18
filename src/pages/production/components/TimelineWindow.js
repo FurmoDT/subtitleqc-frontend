@@ -195,6 +195,7 @@ const TimelineWindow = (props) => {
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()
+        props.waveformRef.current?.views.getView('overview')?.fitToContainer()
     }, [props.size, props.waveformRef])
 
     useEffect(() => {

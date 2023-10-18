@@ -136,8 +136,7 @@ const Production = () => {
         const observer = new ResizeObserver(() => {
             containerRef.current.resize([dropzoneRef.current.offsetHeight - timelineWindowRef.current.childNodes[1].offsetHeight, timelineWindowRef.current.childNodes[1].offsetHeight])
             setLanguageWindowSize({
-                width: languageWindowRef.current.offsetWidth,
-                height: languageWindowRef.current.offsetHeight - 40
+                width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
             })
             setTimelineWindowSize(prevState => ({height: prevState.height}))
         });
@@ -173,7 +172,7 @@ const Production = () => {
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef} className={'d-flex flex-row justify-content-center position-relative'}
              style={{width: '100vw', height: 'calc(100vh - 50px - 40px)'}}>
-            <Allotment ref={containerRef} vertical proportionalLayout={false}
+            <Allotment ref={containerRef} vertical proportionalLayout={false} minSize={300}
                        defaultSizes={[window.innerHeight - timelineWindowSize.height, timelineWindowSize.height - 70]}
                        onReset={() => null} onDragEnd={sizes => {
                 setLanguageWindowSize(prevState => ({width: prevState.width, height: sizes[0] - 40}))

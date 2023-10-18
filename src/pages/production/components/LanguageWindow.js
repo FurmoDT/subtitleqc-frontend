@@ -3,7 +3,7 @@ import '../../../css/Handsontable.css'
 import * as Grammarly from '@grammarly/editor-sdk'
 import {useCallback, useEffect, useRef, useState} from "react";
 import {tcInValidator, tcOutValidator, textValidator} from "../../../utils/hotRenderer";
-import {tcToSec} from "../../../utils/functions";
+import {createSegment, tcToSec} from "../../../utils/functions";
 import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 
@@ -192,9 +192,20 @@ const LanguageWindow = (props) => {
                 return
             }
             if (!props.waveformRef.current) return
-            if (changes.filter((value) => value[1] === 'start' || value[1] === 'end').length) {
-                props.waveformRef.current.segments.removeAll()
-                props.waveformRef.current.segments.add(resetSegments.current())
+            const tcChanges = changes.filter((value) => value[1] === 'start' || value[1] === 'end')
+            if (tcChanges.length) {
+                if (tcChanges.length > 1) {
+                    props.waveformRef.current.segments.removeAll()
+                    props.waveformRef.current.segments.add(resetSegments.current())
+                } else {
+                    if (tcChanges[0][2]) {
+                        const {rowId} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
+                        props.waveformRef.current.segments.removeById(rowId)
+                    } else if (tcChanges[0][3]) {
+                        const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
+                        props.waveformRef.current.segments.add(createSegment(tcToSec(start), tcToSec(end), rowId))
+                    }
+                }
             }
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
@@ -243,7 +254,7 @@ const LanguageWindow = (props) => {
         props.hotRef.current.render()
     }, [props.tcLock, props.hotRef])
 
-    return <div className={'position-relative'}>
+    return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
         <div style={{zIndex: 0}} ref={containerMain} onClick={(event) => {
             props.focusedRef.current = props.hotRef.current
         }}/>

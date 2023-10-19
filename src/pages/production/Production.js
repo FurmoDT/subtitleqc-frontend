@@ -39,7 +39,7 @@ const Production = () => {
     const [fnLanguages, setFnLanguages] = useState(localStorage.fnLanguage ? JSON.parse(localStorage.fnLanguage) : defaultLanguage())
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
-    const [hotFontSize, setHotFontSize] = useState('13px')
+    const [hotFontSize, setHotFontSize] = useState('14px')
     const [fnToggle, setFnToggle] = useState(false)
     const fnToggleRef = useRef(fnToggle)
     const tcOffsetButtonRef = useRef(null)

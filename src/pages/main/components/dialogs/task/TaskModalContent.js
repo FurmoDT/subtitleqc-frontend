@@ -334,11 +334,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                 태스크를 생성하고 작업자 배정을 완료하시겠습니까?
                                             </MDBCol>
                                         </MDBRow>
-                                        <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            margin: '1rem 5rem'
-                                        }}>
+                                        <div className={'d-flex justify-content-between'} style={{margin: '1rem 5rem'}}>
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
@@ -515,11 +511,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                 태스크를 삭제하시겠습니까?
                                             </MDBCol>
                                         </MDBRow>
-                                        <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            margin: '1rem 5rem'
-                                        }}>
+                                        <div className={'d-flex justify-content-between'} style={{margin: '1rem 5rem'}}>
                                             <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
                                                 axios.put('v1/task/tasks', {
                                                     task_hashed_id: hashedId,

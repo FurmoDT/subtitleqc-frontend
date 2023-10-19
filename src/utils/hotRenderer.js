@@ -62,7 +62,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.position = 'relative'
     const span = document.createElement('span');
     if (v) {
-        v = v.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
+        // v = v.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         td.innerHTML = `<span style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</span>`
         const error = new Set()
         if (guideline.musicNote && (v.includes('♪') || v.includes('<i>') || v.includes('</i>'))) {

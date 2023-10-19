@@ -54,6 +54,11 @@ const LanguageWindow = (props) => {
 
         function textRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
+            td.innerHTML = `<span style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${props.hotFontSize}">${arguments[5]}</span>`
+        }
+
+        function textLanguageRenderer(instance, td) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments)
             textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
@@ -88,13 +93,13 @@ const LanguageWindow = (props) => {
                 ...(!props.fnToggle ? props.languages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
-                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text',
+                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer,
                         editor: customTextEditor
                     }
                 }) : props.fnLanguages.map((value) => {
                     return {
                         data: `${value.code}_${value.counter}`, type: 'text',
-                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textRenderer : 'text',
+                        renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer,
                         editor: customTextEditor
                     }
                 }))

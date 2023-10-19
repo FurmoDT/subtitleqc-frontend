@@ -13,7 +13,7 @@ const SignupPage = () => {
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)
     const confirmPasswordInputRef = useRef(null)
-    const errorLabelRef = useRef(null)
+    const errorSpanRef = useRef(null)
     const {updateAccessToken} = useContext(AuthContext);
     return <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <div className={'auth-container'}>
@@ -29,21 +29,21 @@ const SignupPage = () => {
             <MDBInput ref={confirmPasswordInputRef} wrapperClass={'auth-input'} label='비밀번호 확인'
                       type={'password'}/>
             <MDBBtn style={{marginBottom: 10, width: 300}} color={'success'} onClick={() => {
-                errorLabelRef.current.innerText = ''
+                errorSpanRef.current.innerText = ''
                 if (!(nameInputRef.current.value && emailInputRef.current.value && passwordInputRef.current.value && confirmPasswordInputRef.current.value)) {
-                    errorLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+                    errorSpanRef.current.innerText = '모든 필수 정보를 입력해주세요.'
                     return
                 }
                 if (!(birthInputRef.current.value?.match(/^\d{4}-\d{2}-\d{2}$/) && new Date(birthInputRef.current.value).valueOf())) {
-                    errorLabelRef.current.innerText = '올바른 생년월일을 입력해주세요.'
+                    errorSpanRef.current.innerText = '올바른 생년월일을 입력해주세요.'
                     return
                 }
                 if (passwordInputRef.current.value.length < 8) {
-                    errorLabelRef.current.innerText = '비밀번호는 영문+숫자 8자리 이상 입력해주세요.'
+                    errorSpanRef.current.innerText = '비밀번호는 영문+숫자 8자리 이상 입력해주세요.'
                     return
                 }
                 if (passwordInputRef.current.value !== confirmPasswordInputRef.current.value) {
-                    errorLabelRef.current.innerText = '비밀번호가 일치하지 않습니다.'
+                    errorSpanRef.current.innerText = '비밀번호가 일치하지 않습니다.'
                     return
                 }
                 axios.post(`v1/auth/register`, {
@@ -61,13 +61,13 @@ const SignupPage = () => {
                     }
                 }).catch((reason) => {
                     if (reason.response.status === HttpStatusCode.UnprocessableEntity) {
-                        errorLabelRef.current.innerText = '유효하지 않은 이메일입니다.'
+                        errorSpanRef.current.innerText = '유효하지 않은 이메일입니다.'
                     } else if (reason.response.status === HttpStatusCode.Conflict) {
-                        errorLabelRef.current.innerText = '이미 사용중인 이메일입니다.'
+                        errorSpanRef.current.innerText = '이미 사용중인 이메일입니다.'
                     }
                 })
             }}>회원가입</MDBBtn>
-            <label ref={errorLabelRef} className={'input-error-label'}/>
+            <span ref={errorSpanRef} className={'input-error-span'}/>
         </div>
     </div>
 };

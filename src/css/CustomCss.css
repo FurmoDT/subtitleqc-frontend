@@ -12,7 +12,7 @@
     color: white;
 }
 
-.input-error-label {
+.input-error-span {
     font-size: 0.75rem;
     color: red;
     font-weight: bold;

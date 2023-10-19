@@ -34,8 +34,8 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const {userState} = useContext(AuthContext)
     const modifySpinnerRef = useRef(null)
     const projectCodeRef = useRef(null)
-    const taskValidationLabelRef = useRef(null)
-    const workerValidationLabelRef = useRef(null)
+    const taskValidationSpanRef = useRef(null)
+    const workerValidationSpanRef = useRef(null)
     const [submitModal, setSubmitModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const submitToggleShow = () => setSubmitModal(!submitModal);
@@ -44,13 +44,13 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const inputValidation = () => {
         let error = false
         if (!(task.dueDate && task.pd.length && task.programName && task.episode)) {
-            taskValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+            taskValidationSpanRef.current.innerText = '모든 필수 정보를 입력해주세요.'
             error = true
-        } else taskValidationLabelRef.current.innerText = ''
+        } else taskValidationSpanRef.current.innerText = ''
         if (workers.filter(value => !(value.workType && (/^(sync|transcribe)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage) && value.workerId && value.dueDate)).length !== 0) {
-            workerValidationLabelRef.current.innerText = '모든 필수 정보를 입력해주세요.'
+            workerValidationSpanRef.current.innerText = '모든 필수 정보를 입력해주세요.'
             error = true
-        } else workerValidationLabelRef.current.innerText = ''
+        } else workerValidationSpanRef.current.innerText = ''
         if (error) return
         submitToggleShow()
     }
@@ -153,17 +153,17 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     }, [task])
 
     useEffect(() => {
-        if (initialized) taskValidationLabelRef.current.innerText = workerValidationLabelRef.current.innerText = ''
+        if (initialized) taskValidationSpanRef.current.innerText = workerValidationSpanRef.current.innerText = ''
     }, [initialized])
 
     return initialized && <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
-        <MDBModalHeader style={{borderBottom: 'none'}}>
+        <MDBModalHeader className={'border-bottom-0'}>
             <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
         </MDBModalHeader>
         <MDBModalBody>
             <MDBRow className={'mb-1'} style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
-                <label className={'mb-3'} style={{textAlign: 'left', fontWeight: 'bold'}}>
-                    태스크 정보<label ref={taskValidationLabelRef} className={'input-error-label'}/></label>
+                <span className={'mb-3 text-start fw-bold'}>
+                    태스크 정보<span ref={taskValidationSpanRef} className={'input-error-span'}/></span>
                 <MDBRow>
                     <MDBCol size={4}>
                         <MDBRow className={'mb-3'}>
@@ -241,8 +241,8 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                 </MDBRow>
             </MDBRow>
             <MDBRow className={'mb-3 m-0 py-3 px-0'} style={{backgroundColor: '#f3f3f3ff'}}>
-                <label className={'mb-3'} style={{textAlign: 'left', fontWeight: 'bold'}}>
-                    작업자 배정<label ref={workerValidationLabelRef} className={'input-error-label'}/></label>
+                <span className={'mb-3 text-start fw-bold'}>
+                    작업자 배정<span ref={workerValidationSpanRef} className={'input-error-span'}/></span>
                 {workers.map((value, index) => {
                     return <MDBRow key={index} className={'mb-3 align-items-center m-0 p-0'}>
                         <MDBCol style={{display: 'flex'}}>

@@ -82,24 +82,16 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
 
     useEffect(() => {
         if (!show) return
-        axios.get(`v1/user/workers`).then((response) => {
-            setWorkerListOption(response.data.map(value => ({
-                value: value.user_id,
-                label: value.user_name,
-                email: value.user_email
-            })))
-        })
-        axios.get(`v1/user/pm`).then((response) => {
-            setPmListOption(response.data.map(value => ({
-                value: value.user_id,
-                label: value.user_name,
-                email: value.user_email
-            })))
-        })
+        axios.get(`v1/user/workers`).then((response) => setWorkerListOption(response.data.map(value => ({
+            value: value.user_id, label: value.user_name, email: value.user_email
+        }))))
+        axios.get(`v1/user/pm`).then((response) => setPmListOption(response.data.map(value => ({
+            value: value.user_id, label: value.user_name, email: value.user_email
+        }))))
     }, [show])
 
     useEffect(() => {
-        if (!show || hashedId || pmListOption.length === 0) return
+        if (!show || hashedId || !pmListOption.length) return
         setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userState.user.userId)]}))
     }, [show, hashedId, pmListOption, userState])
 

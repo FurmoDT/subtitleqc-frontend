@@ -31,22 +31,22 @@ const TaskPanel = () => {
     }, [])
 
     const ModalComponent = () => {
-        if (userState.user.userRole === 'client') {
+        if (userState.user.userRole === 'client') { // TODO Modal rerender as accessToken refreshed
             return <RequestModal forceRender={forceRenderer}/>
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
             return <RegisterModal forceRender={forceRenderer}/>
         } else return null
     }
 
-    return <div style={{padding: '5rem', width: 'calc(100vw - 50px)', height: '100%', textAlign: 'center'}}>
-        <MDBRow style={{marginBottom: '0.5rem'}}>
-            <MDBCol sm={4} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'end'}}>
+    return <div className={'h-100 text-center py-5'} style={{width: 'calc(100vw - 50px)', padding: '5rem'}}>
+        <MDBRow className={'mb-2'}>
+            <MDBCol sm={4} className={'d-flex justify-content-start align-items-end'}>
                 <ModalComponent/>
             </MDBCol>
-            <MDBCol sm={4} style={{display: 'flex', justifyContent: 'center', alignItems: 'end'}}>
-                <div style={{fontWeight: 'bold'}}>태스크 리스트</div>
+            <MDBCol sm={4} className={'d-flex justify-content-center align-items-end'}>
+                <div className={'fw-bold'}>태스크 리스트</div>
             </MDBCol>
-            <MDBCol sm={4} style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <MDBCol sm={4} className={'d-flex justify-content-end'}>
                 <DatePickerComponent startAt={startAt} setStartAt={setStartAt} endAt={endAt} setEndAt={setEndAt}/>
             </MDBCol>
         </MDBRow>

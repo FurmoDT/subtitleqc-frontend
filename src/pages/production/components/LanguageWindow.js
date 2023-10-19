@@ -263,9 +263,8 @@ const LanguageWindow = (props) => {
     }, [props.tcLock, props.hotRef])
 
     return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
-        <div style={{zIndex: 0}} ref={containerMain} onClick={(event) => {
-            props.focusedRef.current = props.hotRef.current
-        }}/>
+        <div ref={containerMain} style={{fontFamily: '"Roboto", sans-serif', fontWeight: 100, zIndex: 0}}
+             onClick={(event) => props.focusedRef.current = props.hotRef.current}/>
         <MDBBtn className={'position-absolute'} style={{bottom: '1.5rem', right: '1.5rem', padding: '0.75rem'}}
                 color={'info'} rounded onClick={() => props.hotRef.current.scrollViewportTo(totalLines - 1)}>
             <MDBIcon fas icon="arrow-down"/>&nbsp;{totalLines}

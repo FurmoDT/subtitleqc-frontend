@@ -495,6 +495,7 @@
   font-family: inherit;
   line-height: 21px;
   font-size: inherit;
+  font-weight: inherit;
   box-shadow: 0 0 0 2px #5292F7 inset;
   resize: none;
   /*below are needed to overwrite stuff added by jQuery UI Bootstrap theme*/

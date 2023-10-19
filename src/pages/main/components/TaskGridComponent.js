@@ -57,7 +57,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         endedAt: formatTimestamp(current.task_ended_at),
                         dueDate: formatTimestamp(current.task_due_date),
                         memo: current.task_memo,
-                        status: current.task_ended_at ? 'Done' : current.work_id ? 'Ing' : 'New',
+                        status: current.task_ended_at ? 'Done' : null,
                         extra: {hashedId: current.task_hashed_id, pmId: current.pm_id, pd: pd},
                     }, work: []
                 };
@@ -170,7 +170,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
                     return <MDBBtn outline className={`${authorized ? 'button-active' : 'button-disabled'}`}
                                    onClick={() => row.row.endedAt ? setTaskUndoneHashedId(row.row.extra.hashedId) : setTaskDoneHashedId(row.row.extra.hashedId)}>
-                        {{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status]}</MDBBtn>
+                        {{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status || (taskAndWork[row.row.extra.hashedId].work.length ? 'Ing' : 'New')]}</MDBBtn>
                 }
             }, {
                 ...defaultColumns.buttons,

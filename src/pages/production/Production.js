@@ -125,7 +125,7 @@ const Production = () => {
                 }
             } else setFileUploadModalShow(true)
         }
-    }, [languageFile])
+    }, [languageFile, resetSegments])
 
     useEffect(() => {
         const observer = new ResizeObserver(() => {

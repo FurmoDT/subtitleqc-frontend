@@ -208,35 +208,33 @@ const TimelineWindow = (props) => {
     }, [props.mediaFile, props.waveformRef])
 
     return <>
-        <div style={{position: 'absolute', right: 0, zIndex: 1}}>
-            <div style={{display: 'flex', marginLeft: 'auto'}}>
-                <MDBCheckbox id='tcLock-checkbox' wrapperStyle={{display: 'flex', marginRight: 10}}
+        <div className={'position-absolute end-0'} style={{zIndex: 1}}>
+            <div className={'d-flex ms-auto'}>
+                <MDBCheckbox id='tcLock-checkbox' wrapperClass={'d-flex mx-2'}
                              label='TC Lock' labelStyle={checkboxLabelStyle} defaultChecked={true}
                              onChange={(event) => {
                                  props.setTcLock(event.target.checked)
                                  event.target.blur()
                              }}/>
-                <MDBCheckbox id='playheadCenter-checkbox'
-                             wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
+                <MDBCheckbox id='playheadCenter-checkbox' wrapperClass={'d-flex mx-2'}
                              label='Playhead Center' labelStyle={checkboxLabelStyle}
                              onChange={(event) => event.target.blur()}/>
-                <MDBCheckbox id='scrollView-checkbox' wrapperStyle={{display: 'flex', marginLeft: 10, marginRight: 10}}
+                <MDBCheckbox id='scrollView-checkbox' wrapperClass={'d-flex mx-2'}
                              label='Current Subtitle Center' labelStyle={checkboxLabelStyle}
                              onChange={(event) => event.target.blur()}/>
             </div>
         </div>
         <div style={{backgroundColor: 'black'}} onClick={() => props.focusedRef.current = props.waveformRef.current}>
             <div ref={statusRef} className={'position-absolute start-50 translate-middle-x'}>
-                <MDBSpinner ref={spinnerRef} style={{
-                    width: `${props.size.height / 3}px`, height: `${props.size.height / 3}px`, marginTop: '10px'
-                }}/>
-                <MDBBtn ref={warningRef} style={{marginTop: '10px'}} size={'sm'} color={'link'} disabled>
+                <MDBSpinner ref={spinnerRef} className={'mt-3'}
+                            style={{width: `${props.size.height / 3}px`, height: `${props.size.height / 3}px`}}/>
+                <MDBBtn ref={warningRef} className={'mt-3'} size={'sm'} color={'link'} disabled>
                     <MDBIcon fas icon="exclamation-circle" size={'3x'} color={'white'}/>
                 </MDBBtn>
             </div>
-            <div ref={waveformRef} style={{width: '100%', height: `${props.size.height - 100}px`}}
+            <div ref={waveformRef} className={'w-100'} style={{height: `${props.size.height - 100}px`}}
                  onClick={() => props.waveformRef.current?.player.pause()}/>
-            <div ref={overviewRef} style={{width: '100%', height: '30px'}}/>
+            <div ref={overviewRef} className={'w-100'} style={{height: '30px'}}/>
         </div>
     </>
 };

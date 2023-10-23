@@ -51,7 +51,6 @@ const Production = () => {
     const findButtonRef = useRef(null)
     const replaceButtonRef = useRef(null)
     const selectedSegment = useRef(null);
-    const resetSegmentsRef = useRef(null)
     const [tcLock, setTcLock] = useState(true)
     const tcLockRef = useRef(true)
     const isFromTimelineWindowRef = useRef(false)
@@ -122,7 +121,7 @@ const Production = () => {
                 setProjectDetail(languageFile.projectDetail)
                 if (waveformRef.current) {
                     waveformRef.current.segments.removeAll()
-                    waveformRef.current.segments.add(resetSegmentsRef.current())
+                    waveformRef.current.segments.add(resetSegments())
                 }
             } else setFileUploadModalShow(true)
         }

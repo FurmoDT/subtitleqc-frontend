@@ -113,7 +113,7 @@ const TextPage = () => {
             <MenuToolbar ref={menuToolbarRef} languageOptions={languageOptions} taskWorkId={workHashedId}
                          targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage} taskName={taskName}
                          authority={authority} showDiff={showDiff} setShowDiff={setShowDiff}/>}
-        <div ref={containerRef} style={{width: '100%', height: 'calc(100% - 40px)', position: 'relative'}}>
+        <div ref={containerRef} className={'w-100 position-relative'} style={{height: 'calc(100% - 40px)'}}>
             {textFile && iceservers && targetLanguage &&
                 <Allotment vertical={true}>
                     <>

@@ -20,7 +20,7 @@ import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../
 import TaskDropzone from "../../TaskDropzone";
 import {AuthContext} from "../../../../../contexts/authContext";
 import {s3Upload} from "../../../../../utils/awsS3Upload";
-import {fileExtension} from "../../../../../utils/functions";
+import {fileExtension, getFileInfo} from "../../../../../utils/functions";
 import {DateInput, inputStyle, labelStyle} from "../../../../../components/Inputs";
 
 const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
@@ -121,7 +121,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                     genre: response.data.task_genre,
                     fileVersion: response.data.task_file_version,
                 })
-                if (response.data.task_file_name) setUploadedFiles([{name: response.data.task_file_name}])
+                if (response.data.task_file_info) setUploadedFiles([{name: response.data.task_file_info.name}])
             })
             axios.get(`v1/task/${hashedId}/works`).then((response) => {
                 setWorkers(response.data.map((value) => ({
@@ -339,9 +339,9 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     task_genre: task.genre?.value,
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup,
-                                                    task_file_name: uploadedFiles[0]?.name
+                                                    task_file_info: getFileInfo(uploadedFiles[0])
                                                 }).then((response) => {
-                                                    const {taskId, fileVersion} = response.data
+                                                    const {task_id: taskId, task_file_version: fileVersion} = response.data
                                                     workers.length && axios.post(`v1/task/${taskId}/works`, {
                                                         works: workers.map((value) => ({
                                                             worker_id: value.workerId,
@@ -420,8 +420,8 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     task_genre: task.genre?.value,
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup,
-                                                    task_file_name: uploadedFiles[0]?.name,
-                                                    task_file_version: task.fileVersion + (fileUpdated ? 1 : 0)
+                                                    task_file_version: task.fileVersion + (fileUpdated ? 1 : 0),
+                                                    task_file_info: getFileInfo(uploadedFiles[0])
                                                 }).then((response) => {
                                                     const taskId = response.data
                                                     const newWorks = []

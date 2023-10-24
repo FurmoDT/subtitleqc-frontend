@@ -19,6 +19,7 @@ import Select from "react-select";
 import axios from "../../../../../utils/axios";
 import DatePicker from "react-datepicker";
 import {DateInput, inputStyle, labelStyle} from "../../../../../components/Inputs";
+import {getFileInfo} from "../../../../../utils/functions";
 
 const RequestModal = ({forceRender}) => {
     const [initialized, setInitialized] = useState(false)
@@ -130,7 +131,7 @@ const RequestModal = ({forceRender}) => {
                                                                 task_name: task.title,
                                                                 task_due_date: task.dueDate,
                                                                 task_memo: task.memo,
-                                                                task_file_name: file.name
+                                                                task_file_info: getFileInfo(file)
                                                             }).then(() => {
                                                                 if (index === uploadedFiles.length - 1) {
                                                                     modifySpinnerRef.current.style.display = 'none'

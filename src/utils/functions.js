@@ -75,3 +75,12 @@ export const fileType = (filename) => {
         return 'text'
     } else return null
 }
+
+export const getFileInfo = (file) => {
+    if (!file) return null
+    else if (fileType(file.name) === 'video') {
+        return JSON.stringify({name: file.name})
+    } else if (fileType(file.name) === 'text') {
+        return JSON.stringify({name: file.name})
+    }
+}

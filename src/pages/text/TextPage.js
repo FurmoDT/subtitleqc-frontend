@@ -63,7 +63,7 @@ const TextPage = () => {
             setTextFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info?.name)}`)
             setLanguageOptions(response.data.target_languages.map(v => ({value: v, label: languageCodes[v]})))
             setTaskName(`${task.task_name}_${task.task_episode}`)
-            setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
+            setEndedAt(task.task_ended_at || response.data.ended_at)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
 

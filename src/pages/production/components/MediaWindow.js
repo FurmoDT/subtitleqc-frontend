@@ -121,7 +121,7 @@ const MediaWindow = (props) => {
                          }
                      }}/>
         <label className={'position-absolute pe-none top-0 start-0 ms-1'} style={{color: 'white', fontSize: '0.8rem'}}>
-            {props.mediaInfo?.media?.track?.filter((value) => value['@type'] === 'General')[0]?.FrameRate}{'fps'}</label>
+            {props.mediaInfo?.framerate}{'fps'}</label>
         <label ref={fnLabelRef} className={'position-absolute pe-none top-0'}
                style={{color: 'white', whiteSpace: 'pre'}}/>
         <label ref={subtitleLabelRef} className={'position-absolute pe-none'}

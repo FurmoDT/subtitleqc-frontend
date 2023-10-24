@@ -341,7 +341,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     task_group_key: task.projectGroup,
                                                     task_file_name: uploadedFiles[0]?.name
                                                 }).then((response) => {
-                                                    const [taskId, fileVersion] = response.data
+                                                    const {taskId, fileVersion} = response.data
                                                     workers.length && axios.post(`v1/task/${taskId}/works`, {
                                                         works: workers.map((value) => ({
                                                             worker_id: value.workerId,

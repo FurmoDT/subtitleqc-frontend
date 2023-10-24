@@ -1,3 +1,5 @@
+import {getInfo} from 'react-mediainfo'
+
 export const bisect = (arr, target) => {
     let left = 0
     let right = arr.length - 1
@@ -76,10 +78,11 @@ export const fileType = (filename) => {
     } else return null
 }
 
-export const getFileInfo = (file) => {
+export const getFileInfo = async (file) => {
     if (!file) return null
     else if (fileType(file.name) === 'video') {
-        return JSON.stringify({name: file.name})
+        const videoInfo = (await getInfo(file))?.media?.track.find(track => track['@type'] === 'Video')
+        return JSON.stringify({name: file.name, framerate: videoInfo?.FrameRate, duration: videoInfo?.Duration})
     } else if (fileType(file.name) === 'text') {
         return JSON.stringify({name: file.name})
     }

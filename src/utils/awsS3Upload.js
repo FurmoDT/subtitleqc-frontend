@@ -21,6 +21,9 @@ export const s3Upload = (taskId, fileVersion, files) => {
                         },
                         service: s3,
                     });
+                    upload.on('httpUploadProgress', progress => {
+                        console.log(`Progress: ${(progress.loaded / progress.total * 100).toFixed()}%`);
+                    })
                     upload.promise().then((response) => {
                         console.log(response);
                         resolveUpload(response);

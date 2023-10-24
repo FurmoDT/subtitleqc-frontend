@@ -327,7 +327,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                             </MDBCol>
                                         </MDBRow>
                                         <div className={'d-flex justify-content-between'} style={{margin: '1rem 5rem'}}>
-                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={async () => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
                                                 axios.post('v1/task/tasks', {
@@ -339,9 +339,11 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     task_genre: task.genre?.value,
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup,
-                                                    task_file_info: getFileInfo(uploadedFiles[0])
+                                                    task_file_info: await getFileInfo(uploadedFiles[0])
                                                 }).then((response) => {
-                                                    const {task_id: taskId, task_file_version: fileVersion} = response.data
+                                                    const {
+                                                        task_id: taskId, task_file_version: fileVersion
+                                                    } = response.data
                                                     workers.length && axios.post(`v1/task/${taskId}/works`, {
                                                         works: workers.map((value) => ({
                                                             worker_id: value.workerId,
@@ -407,7 +409,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                             justifyContent: 'space-between',
                                             margin: '1rem 5rem'
                                         }}>
-                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={async () => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
                                                 const fileUpdated = uploadedFiles[0] instanceof File
@@ -421,7 +423,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup,
                                                     task_file_version: task.fileVersion + (fileUpdated ? 1 : 0),
-                                                    task_file_info: getFileInfo(uploadedFiles[0])
+                                                    task_file_info: await getFileInfo(uploadedFiles[0])
                                                 }).then((response) => {
                                                     const taskId = response.data
                                                     const newWorks = []

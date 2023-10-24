@@ -16,7 +16,10 @@ import {Allotment} from "allotment";
 
 
 const Production = () => {
-    const pathname = window.location.pathname
+    const [, , taskHashedId, workHashedId] = window.location.pathname.split('/')
+    const [authority, setAuthority] = useState('')
+    const [taskName, setTaskName] = useState('')
+    // const [endedAt, setEndedAt] = useState(null)
     const navigate = useNavigate()
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
@@ -50,7 +53,7 @@ const Production = () => {
     const mergeLineButtonRef = useRef(null)
     const findButtonRef = useRef(null)
     const replaceButtonRef = useRef(null)
-    const selectedSegment = useRef(null);
+    const selectedSegment = useRef(null)
     const [tcLock, setTcLock] = useState(true)
     const tcLockRef = useRef(true)
     const isFromTimelineWindowRef = useRef(false)
@@ -141,12 +144,20 @@ const Production = () => {
 
 
     useEffect(() => {
-        // if (!pathname.split('/')[2]) return
-        // axios.get(`v1/task/work`, {params: {hashed_id: pathname.split('/')[2], work_type: pathname.split('/')[3]}}).then((respond) => {
-        //     const task = respond.data.task
-        //     setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_name)}`)
-        // }).catch(() => navigate('/error'))
-    }, [pathname, navigate])
+        if (!taskHashedId) {
+            setAuthority('test')
+            return
+        }
+        axios.get(`v1/task/access`, {
+            params: {hashed_id: taskHashedId, work_hashed_id: workHashedId}
+        }).then((response) => {
+            setAuthority(response.data.authority)
+            const task = response.data.task
+            setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info?.name)}`)
+            setTaskName(`${task.task_name}_${task.task_episode}`)
+            // setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
+        }).catch(() => navigate('/error'))
+    }, [taskHashedId, workHashedId, navigate])
 
     return <>
         <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
@@ -159,7 +170,7 @@ const Production = () => {
         <MenuToolbar cellDataRef={cellDataRef} fnRef={fnRef} languages={languages} setLanguages={setLanguages}
                      fnLanguages={fnLanguages} setFnLanguages={setFnLanguages} hotRef={hotRef} focusedRef={focusedRef}
                      projectDetail={projectDetail} setProjectDetail={setProjectDetail} setTcLock={setTcLock}
-                     setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
+                     taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}

@@ -106,7 +106,7 @@ const MediaWindow = (props) => {
         className={'w-100 h-100 d-flex justify-content-center align-items-end position-relative overflow-hidden'}
         style={{borderStyle: 'solid', borderWidth: 'thin'}} onClick={(event) => {
         const video = props.playerRef.current?.getInternalPlayer()
-        if (video && event.target.tagName === 'VIDEO') video.paused ? video.play() : video.pause()
+        if (video && event.target.tagName === 'VIDEO') video.paused ? video.readyState && video.play() : video.pause()
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
                      controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
@@ -121,7 +121,7 @@ const MediaWindow = (props) => {
                          }
                      }}/>
         <span className={'position-absolute pe-none top-0 start-0 ms-1'} style={{color: 'white', fontSize: '0.8rem'}}>
-            {`${props.mediaInfo?.framerate} fps`}</span>
+            {props.mediaInfo?.framerate && `${props.mediaInfo.framerate} fps`}</span>
         <label ref={fnLabelRef} className={'position-absolute pe-none top-0'}
                style={{color: 'white', whiteSpace: 'pre'}}/>
         <label ref={subtitleLabelRef} className={'position-absolute pe-none'}

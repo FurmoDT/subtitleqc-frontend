@@ -33,6 +33,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [pmListOption, setPmListOption] = useState([])
     const {userState} = useContext(AuthContext)
     const modifySpinnerRef = useRef(null)
+    const [uploadProgress, setUploadProgress] = useState(0);
     const projectCodeRef = useRef(null)
     const taskValidationSpanRef = useRef(null)
     const workerValidationSpanRef = useRef(null)
@@ -353,7 +354,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                         }))
                                                     }).then()
                                                     if (uploadedFiles.length) {
-                                                        s3Upload(taskId, fileVersion, uploadedFiles).then(() => {
+                                                        s3Upload(taskId, fileVersion, uploadedFiles, setUploadProgress).then(() => {
                                                             axios.post(`v1/task/initialize/${taskId}`, {
                                                                 file_version: fileVersion,
                                                                 file_format: fileExtension(uploadedFiles[0].name),
@@ -383,6 +384,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                         <MDBSpinner role='status'>
                             <span className='visually-hidden'>Loading...</span>
                         </MDBSpinner>
+                        <span>{`${uploadProgress} %`}</span>
                     </div>
                 </MDBCol> : <MDBCol>
                     <MDBBtn color={'dark'} onClick={inputValidation}>수정</MDBBtn>
@@ -455,7 +457,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                         works: updateWorks
                                                     }).then()
                                                     if (fileUpdated) {
-                                                        s3Upload(taskId, task.fileVersion + 1, uploadedFiles).then(() => {
+                                                        s3Upload(taskId, task.fileVersion + 1, uploadedFiles, setUploadProgress).then(() => {
                                                             axios.post(`v1/task/initialize/${taskId}`, {
                                                                 file_version: task.fileVersion + 1,
                                                                 file_format: fileExtension(uploadedFiles[0].name),
@@ -485,6 +487,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                         <MDBSpinner role='status'>
                             <span className='visually-hidden'>Loading...</span>
                         </MDBSpinner>
+                        <span>{`${uploadProgress} %`}</span>
                     </div>
                     <MDBModal show={deleteModal} setShow={setDeleteModal} tabIndex='-1'>
                         <MDBModalDialog centered>

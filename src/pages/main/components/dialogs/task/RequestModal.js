@@ -59,13 +59,13 @@ const RequestModal = ({forceRender}) => {
     }, [show])
 
     return <>
-        <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black'}} onClick={toggleShow}>
+        <MDBBtn className={'bg-furmo'} style={{color: 'black'}} onClick={toggleShow}>
             새로운 작업 의뢰하기
         </MDBBtn>
         {initialized && <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'xl'} centered style={{minWidth: '900px'}}>
-                <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
-                    <MDBModalHeader style={{borderBottom: 'none'}}>
+                <MDBModalContent className={'bg-furmo'}>
+                    <MDBModalHeader className={'border-bottom-0'}>
                         <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
                     </MDBModalHeader>
                     <MDBModalBody>
@@ -107,21 +107,18 @@ const RequestModal = ({forceRender}) => {
                         <MDBBtn color={'dark'} size={'sm'} onClick={inputValidation}>의뢰하기</MDBBtn>
                         <MDBModal show={submitModal} setShow={setSubmitModal} tabIndex='-1'>
                             <MDBModalDialog centered>
-                                <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+                                <MDBModalContent className={'bg-furmo'}>
                                     <MDBModalBody>
-                                        <div style={{backgroundColor: 'white', margin: 'inherit', padding: '1rem 0'}}>
+                                        <div className={'bg-white px-0 py-3'} style={{margin: 'inherit'}}>
                                             <MDBRow>
                                                 <MDBCol>
                                                     <p>[{task.title}]</p>
                                                     작업 의뢰를 완료하시겠습니까?
                                                 </MDBCol>
                                             </MDBRow>
-                                            <div style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                margin: '1rem 5rem'
-                                            }}>
-                                                <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                            <div className={'d-flex justify-content-between'}
+                                                 style={{margin: '1rem 5rem'}}>
+                                                <MDBBtn className={'bg-furmo'} onClick={() => {
                                                     modifySpinnerRef.current.style.display = ''
                                                     submitToggleShow()
                                                     axios.get('v1/project/empty').then((response) => {

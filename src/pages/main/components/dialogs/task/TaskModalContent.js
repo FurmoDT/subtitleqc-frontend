@@ -148,12 +148,12 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
         if (initialized) taskValidationSpanRef.current.innerText = workerValidationSpanRef.current.innerText = ''
     }, [initialized])
 
-    return initialized && <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+    return initialized && <MDBModalContent className={'bg-furmo'}>
         <MDBModalHeader className={'border-bottom-0'}>
             <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
         </MDBModalHeader>
         <MDBModalBody>
-            <MDBRow className={'mb-1'} style={{backgroundColor: '#f3f3f3ff', margin: 'inherit', padding: '1rem 0'}}>
+            <MDBRow className={'mb-1 px-0 py-3'} style={{backgroundColor: '#f3f3f3ff', margin: 'inherit'}}>
                 <span className={'mb-3 text-start fw-bold'}>
                     태스크 정보<span ref={taskValidationSpanRef} className={'input-error-span'}/></span>
                 <MDBRow>
@@ -171,7 +171,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                             </MDBCol>
                         </MDBRow>
                         <MDBRow>
-                            <MDBCol style={{display: 'flex'}}>
+                            <MDBCol className={'d-flex'}>
                                 <Select styles={multiStyle} options={pmListOption} placeholder={null}
                                         components={{Option: UserOption, Control: PdControl}}
                                         isMulti isClearable={false} defaultValue={task.pd}
@@ -294,8 +294,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                           workers[index].memo = event.target.value.trim()
                                       }}/>
                         </MDBCol>
-                        <MDBBtn className='btn-close' color='none'
-                                style={{marginRight: 'calc(0.75rem + 1px)'}}
+                        <MDBBtn className='btn-close' color='none' style={{marginRight: 'calc(0.75rem + 1px)'}}
                                 onClick={() => setWorkers(prevState => {
                                     const worker = workers[index]
                                     if (worker.workHashedId) setRemovedWorkers(prevState => [...prevState, worker])
@@ -304,8 +303,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                 })}/>
                     </MDBRow>
                 })}
-                <MDBBtn color={'link'}
-                        style={{width: 'auto', backgroundColor: 'white', marginLeft: '0.75rem', marginBottom: '1rem'}}
+                <MDBBtn className={'w-auto mb-3 bg-white'} color={'link'} style={{marginLeft: '0.75rem'}}
                         onClick={() => setWorkers(prevState => [...prevState, {}])}>+ 추가하기</MDBBtn>
                 <MDBRow className={'mb-3 m-0 p-0'}>
                     <MDBCol>
@@ -317,9 +315,9 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                     <MDBBtn color={'dark'} onClick={inputValidation}>확인</MDBBtn>
                     <MDBModal show={submitModal} setShow={setSubmitModal} tabIndex='-1'>
                         <MDBModalDialog centered>
-                            <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+                            <MDBModalContent className={'bg-furmo'}>
                                 <MDBModalBody>
-                                    <div style={{backgroundColor: 'white', margin: 'inherit', padding: '1rem 0'}}>
+                                    <div className={'px-0 py-3 bg-white'} style={{margin: 'inherit'}}>
                                         <MDBRow>
                                             <MDBCol>
                                                 <p>[{task.programName}_{task.episode}]</p>
@@ -327,7 +325,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                             </MDBCol>
                                         </MDBRow>
                                         <div className={'d-flex justify-content-between'} style={{margin: '1rem 5rem'}}>
-                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={async () => {
+                                            <MDBBtn className={'bg-furmo'} onClick={async () => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
                                                 axios.post('v1/task/tasks', {
@@ -388,28 +386,22 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                     </div>
                 </MDBCol> : <MDBCol>
                     <MDBBtn color={'dark'} onClick={inputValidation}>수정</MDBBtn>
-                    <MDBBtn color={'link'}
-                            style={{color: '#808080', paddingLeft: '0.5rem', paddingRight: '0.5rem', margin: '0 1rem'}}
+                    <MDBBtn className={'px-2 mx-3'} color={'link'} style={{color: '#808080'}}
                             onClick={deleteToggleShow}>
-                        <MDBIcon fas icon="trash"/> 삭제
+                        <MDBIcon fas icon="trash"/>삭제
                     </MDBBtn>
                     <MDBModal show={submitModal} setShow={setSubmitModal} tabIndex='-1'>
                         <MDBModalDialog centered>
-                            <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+                            <MDBModalContent className={'bg-furmo'}>
                                 <MDBModalBody>
-                                    <div style={{backgroundColor: 'white', margin: 'inherit', padding: '1rem 0'}}>
+                                    <div className={'px-0 py-3 bg-white'} style={{margin: 'inherit'}}>
                                         <MDBRow>
                                             <MDBCol>
-                                                <p>[{task.programName}_{task.episode}]</p>
-                                                태스크를 수정하시겠습니까?
+                                                <p>[{task.programName}_{task.episode}]</p>태스크를 수정하시겠습니까?
                                             </MDBCol>
                                         </MDBRow>
-                                        <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            margin: '1rem 5rem'
-                                        }}>
-                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={async () => {
+                                        <div className={'d-flex justify-content-between'} style={{margin: '1rem 5rem'}}>
+                                            <MDBBtn className={'bg-furmo'} onClick={async () => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
                                                 const fileUpdated = uploadedFiles[0] instanceof File
@@ -496,9 +488,9 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                     </div>
                     <MDBModal show={deleteModal} setShow={setDeleteModal} tabIndex='-1'>
                         <MDBModalDialog centered>
-                            <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+                            <MDBModalContent className={'bg-furmo'}>
                                 <MDBModalBody>
-                                    <div style={{backgroundColor: 'white', margin: 'inherit', padding: '1rem 0'}}>
+                                    <div className={'bg-white'} style={{margin: 'inherit', padding: '1rem 0'}}>
                                         <MDBRow>
                                             <MDBCol>
                                                 <p>[{task.programName}_{task.episode}]</p>
@@ -506,7 +498,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                             </MDBCol>
                                         </MDBRow>
                                         <div className={'d-flex justify-content-between'} style={{margin: '1rem 5rem'}}>
-                                            <MDBBtn style={{backgroundColor: '#f28720ff'}} onClick={() => {
+                                            <MDBBtn className={'bg-furmo'} onClick={() => {
                                                 axios.put('v1/task/tasks', {
                                                     task_hashed_id: hashedId,
                                                     task_deactivated: true

@@ -62,15 +62,14 @@ const MediaWindow = (props) => {
         props.isFromLanguageWindowRef.current = false
     }, [props.cellDataRef, props.fnRef, props.isFromLanguageWindowRef, setLabel, props.subtitleIndexRef, props.fnIndexRef, props.waveformRef])
     const onProgress = useCallback((state) => {
-            const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[props.subtitleIndexRef.current]
-            const {start: fnStart, end: fnEnd} = props.fnRef.current[props.fnIndexRef.current]
-            setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), true, true, false)
-            setLabel(state.playedSeconds, tcToSec(fnStart), tcToSec(fnEnd), false, true, false)
-            if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
-            if (state.playedSeconds >= tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].end)) props.subtitleIndexRef.current += 1
-            if (state.playedSeconds >= tcToSec(props.fnRef.current[props.fnIndexRef.current].end)) props.fnIndexRef.current += 1
-        }, [props.cellDataRef, props.fnRef, setLabel, props.subtitleIndexRef, props.fnIndexRef, props.waveformRef]
-    )
+        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[props.subtitleIndexRef.current]
+        const {start: fnStart, end: fnEnd} = props.fnRef.current[props.fnIndexRef.current]
+        setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), true, true, false)
+        setLabel(state.playedSeconds, tcToSec(fnStart), tcToSec(fnEnd), false, true, false)
+        if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
+        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].end)) props.subtitleIndexRef.current += 1
+        if (state.playedSeconds >= tcToSec(props.fnRef.current[props.fnIndexRef.current].end)) props.fnIndexRef.current += 1
+    }, [props.cellDataRef, props.fnRef, setLabel, props.subtitleIndexRef, props.fnIndexRef, props.waveformRef])
     const onPlayPause = useCallback(() => {
         const curIndex = !props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current
         const [start, end] = props.hotRef.current.getDataAtRow(curIndex).slice(0, 2)
@@ -103,8 +102,9 @@ const MediaWindow = (props) => {
         subtitleLabelRef.current.innerHTML = ''
         fnLabelRef.current.innerHTML = ''
     }, [props.mediaFile])
-    return <div className={'w-100 h-100 d-flex justify-content-center align-items-end position-relative'}
-                style={{borderStyle: 'solid', borderWidth: 'thin', overflow: 'hidden'}} onClick={(event) => {
+    return <div
+        className={'w-100 h-100 d-flex justify-content-center align-items-end position-relative overflow-hidden'}
+        style={{borderStyle: 'solid', borderWidth: 'thin'}} onClick={(event) => {
         const video = props.playerRef.current?.getInternalPlayer()
         if (video && event.target.tagName === 'VIDEO') video.paused ? video.play() : video.pause()
     }}>
@@ -120,8 +120,8 @@ const MediaWindow = (props) => {
                              }
                          }
                      }}/>
-        <label className={'position-absolute pe-none top-0 start-0 ms-1'} style={{color: 'white', fontSize: '0.8rem'}}>
-            {props.mediaInfo?.framerate}{'fps'}</label>
+        <span className={'position-absolute pe-none top-0 start-0 ms-1'} style={{color: 'white', fontSize: '0.8rem'}}>
+            {`${props.mediaInfo?.framerate} fps`}</span>
         <label ref={fnLabelRef} className={'position-absolute pe-none top-0'}
                style={{color: 'white', whiteSpace: 'pre'}}/>
         <label ref={subtitleLabelRef} className={'position-absolute pe-none'}

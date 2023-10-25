@@ -10,6 +10,14 @@
     background-color: #b7b7b7ff;
 }
 
+.bg-furmo {
+    background-color: #f28720ff !important;
+}
+
+.bg-white {
+    background-color: white !important;
+}
+
 .yellow {
     background-color: yellow;
     color: black

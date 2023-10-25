@@ -75,25 +75,16 @@ const TaskDropzone = ({uploadedFiles, setUploadedFiles, multiple}) => {
     }, [handleDragEnter, handleDragOver, handleDragLeave, handleDrop, handleClick])
 
     return <>
-        <MDBListGroup ref={dropzoneRef} numbered={multiple} style={{
-            height: '6rem',
-            backgroundColor: 'white',
-            borderRadius: '0.25rem',
-            textAlign: 'left',
-            overflowY: 'auto'
-        }}>
+        <MDBListGroup ref={dropzoneRef} numbered={multiple} className={'bg-white text-start'}
+                      style={{height: '6rem', borderRadius: '0.25rem', overflowY: 'auto'}}>
             {uploadedFiles.length ? uploadedFiles.map((value) => <MDBListGroupItem
-                    key={value.name} style={{padding: '0 0.75rem'}}>{value.name}
-                    <MDBBtn className='btn-close' color='none'
-                            style={{position: 'absolute', right: 0}} onClick={handleClick}/>
-                </MDBListGroupItem>) :
-                <label style={{textAlign: 'left', paddingLeft: '0.75rem', ...labelStyle}}>
-                    파일 업로드 또는 드래그앤드롭</label>}
+                key={value.name} style={{padding: '0 0.75rem'}}>{value.name}
+                <MDBBtn className='btn-close position-absolute end-0' color='none' onClick={handleClick}/>
+            </MDBListGroupItem>) : <label className={'text-start'} style={{paddingLeft: '0.75rem', ...labelStyle}}>
+                파일 업로드 또는 드래그앤드롭</label>}
         </MDBListGroup>
         <input ref={fileInputRef} style={{display: 'none'}} multiple={multiple} type={'file'}
-               onChange={(e) => {
-                   uploadFilesHandler(e.target.files)
-               }}/>
+               onChange={(e) => uploadFilesHandler(e.target.files)}/>
     </>
 }
 

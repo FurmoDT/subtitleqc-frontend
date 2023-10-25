@@ -8,7 +8,7 @@ const RegisterModal = ({forceRender}) => {
     const toggleShow = () => setShow(!show)
 
     return <>
-        <MDBBtn style={{backgroundColor: '#f28720ff', color: 'black'}} onClick={toggleShow}>
+        <MDBBtn className={'bg-furmo'} style={{color: 'black'}} onClick={toggleShow}>
             신규 태스크 등록
         </MDBBtn>
         <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>

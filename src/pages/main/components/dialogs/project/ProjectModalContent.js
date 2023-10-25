@@ -106,7 +106,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
         </MDBRow>
     }
 
-    return <MDBModalContent style={{backgroundColor: '#f28720ff'}}>
+    return <MDBModalContent className={'bg-furmo'}>
         <MDBModalHeader className={'border-bottom-0'}>
             <MDBBtn className='btn-close' color='none' onClick={toggleShow}/>
         </MDBModalHeader>
@@ -224,8 +224,8 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                             <MDBRow><MDBCol><label className={'fw-bold mx-1 input-header-label'}>
                                 작업내용</label></MDBCol></MDBRow>
                             <MDBCol>
-                                <MDBListGroup className={'rounded'} style={{
-                                    height: 'calc(4.8rem + 4px)', overflowY: 'auto', backgroundColor: 'white'
+                                <MDBListGroup className={'rounded bg-white'} style={{
+                                    height: 'calc(4.8rem + 4px)', overflowY: 'auto'
                                 }}>{[1, 2, 3, 4].map(value => (<MDBListGroupItem className={'px-2 py-0'}
                                                                                  key={value}>Task {value}</MDBListGroupItem>))}
                                 </MDBListGroup>
@@ -294,7 +294,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                         <MDBRow className={'mx-0 px-0'}>
                             <label className={'fw-bold mx-1 input-header-label pe-none'}>&nbsp;</label>
                             <MDBCol>
-                                <MDBBtn className={'mb-1 mx-0'} color={'link'} style={{backgroundColor: 'white'}}
+                                <MDBBtn className={'mb-1 mx-0 bg-white'} color={'link'}
                                         onClick={() => setEstimateItems(prevState => [...prevState, {}])}>
                                     + 추가하기</MDBBtn>
                             </MDBCol>

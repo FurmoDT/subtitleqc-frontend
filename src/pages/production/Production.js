@@ -36,10 +36,10 @@ const Production = () => {
     const focusedRef = useRef(null)
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
-    const cellDataRef = useRef(localStorage.subtitle ? JSON.parse(localStorage.subtitle) : defaultSubtitle())
-    const fnRef = useRef(localStorage.fn ? JSON.parse(localStorage.fn) : defaultSubtitle())
-    const [languages, setLanguages] = useState(localStorage.language ? JSON.parse(localStorage.language) : defaultLanguage())
-    const [fnLanguages, setFnLanguages] = useState(localStorage.fnLanguage ? JSON.parse(localStorage.fnLanguage) : defaultLanguage())
+    const cellDataRef = useRef(defaultSubtitle())
+    const fnRef = useRef(defaultSubtitle())
+    const [languages, setLanguages] = useState(defaultLanguage())
+    const [fnLanguages, setFnLanguages] = useState(defaultLanguage())
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const [hotFontSize, setHotFontSize] = useState('14px')
@@ -88,12 +88,12 @@ const Production = () => {
     }, [])
 
     useEffect(() => {
-        localStorage.setItem('language', JSON.stringify(languages))
-    }, [languages])
+        if (!taskHashedId && languages.length) localStorage.setItem('language', JSON.stringify(languages))
+    }, [taskHashedId, languages])
 
     useEffect(() => {
-        localStorage.setItem('fnLanguage', JSON.stringify(fnLanguages))
-    }, [fnLanguages])
+        if (!taskHashedId && fnLanguages.length) localStorage.setItem('fnLanguage', JSON.stringify(fnLanguages))
+    }, [taskHashedId, fnLanguages])
 
     useEffect(() => {
         fnToggleRef.current = fnToggle
@@ -146,6 +146,10 @@ const Production = () => {
     useEffect(() => {
         if (!taskHashedId) {
             setAuthority('test')
+            if (localStorage.subtitle) cellDataRef.current = JSON.parse(localStorage.subtitle)
+            if (localStorage.fn) fnRef.current = JSON.parse(localStorage.fn)
+            if (localStorage.language?.length) setLanguages(JSON.parse(localStorage.language))
+            if (localStorage.fnLanguage?.length) setFnLanguages(JSON.parse(localStorage.fnLanguage))
             return
         }
         axios.get(`v1/task/access`, {
@@ -225,7 +229,8 @@ const Production = () => {
                                         resetSegments={resetSegments} selectedSegment={selectedSegment}
                                         isFromTimelineWindowRef={isFromTimelineWindowRef}
                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                        subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
+                                        subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}
+                                        taskHashedId={taskHashedId} workHashedId={workHashedId}/>
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={250} snap>

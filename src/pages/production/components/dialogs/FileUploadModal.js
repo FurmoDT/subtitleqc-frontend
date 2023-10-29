@@ -19,7 +19,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {languageCodes} from "../../../../utils/config";
 import {v4} from "uuid";
 
-const FileUploadModal = (props) => {
+const FileUploadModal = ({resetSegments, ...props}) => {
     const toggleShow = () => {
         props.setFileUploadModalShow(!props.fileUploadModalShow)
         setNewLanguages(null)
@@ -29,14 +29,10 @@ const FileUploadModal = (props) => {
             updateRadioRef.current.checked = false
         }
     };
-    const resetSegments = useRef(null)
     const [selectionActive, setSelectionActive] = useState(false)
     const [newLanguages, setNewLanguages] = useState(null)
     const remainRadioRef = useRef(null)
     const updateRadioRef = useRef(null)
-    useEffect(() => {
-        resetSegments.current = props.resetSegments
-    }, [props.resetSegments])
     const tcRadioElement = () => {
         return <>
             <MDBRadio inputRef={remainRadioRef} name='inlineRadio' id='remainRadio' label='REMAIN' inline/>
@@ -99,9 +95,9 @@ const FileUploadModal = (props) => {
         }
         if (props.waveformRef.current) {
             props.waveformRef.current.segments.removeAll()
-            props.waveformRef.current.segments.add(resetSegments.current())
+            props.waveformRef.current.segments.add(resetSegments())
         }
-    }, [props, newLanguages])
+    }, [props, newLanguages, resetSegments])
     return <>
         <MDBModal staticBackdrop show={props.fileUploadModalShow} setShow={props.setFileUploadModalShow} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>

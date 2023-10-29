@@ -177,9 +177,10 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             }
         })
         props.hotRef.current.addHook('afterChange', (changes, source) => {
+            console.log(changes)
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
-            !props.fnToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
+            !props.fnToggle && !props.taskHashedId ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
             if (props.isFromTimelineWindowRef.current) {
                 props.isFromTimelineWindowRef.current = false
                 return
@@ -209,12 +210,12 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 for (let i = index; i < index + amount; i++) {
                     props.cellDataRef.current[i].rowId = v4()
                 }
-                localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+                !props.taskHashedId && localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             } else {
                 for (let i = index; i < index + amount; i++) {
                     props.fnRef.current[i].rowId = v4()
                 }
-                localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
+                !props.taskHashedId && localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
             }
             props.hotRef.current.render()
             afterRenderPromise().then(() => {
@@ -233,7 +234,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         })
         props.hotRef.current.addHook('afterRemoveRow', () => {
             setTotalLines(getTotalLines())
-            !props.fnToggle ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
+            !props.fnToggle && !props.taskHashedId ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             props.hotSelectionRef.current.rowStart = Math.min(row, row2)
@@ -241,7 +242,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, props.fnIndexRef, resetSegments, getTotalLines, selectRows])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, props.fnIndexRef, resetSegments, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

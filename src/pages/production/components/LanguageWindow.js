@@ -10,15 +10,9 @@ import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
 
-const LanguageWindow = (props) => {
+const LanguageWindow = ({resetSegments, ...props}) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
-
-    const resetSegments = useRef(null)
-    useEffect(() => {
-        resetSegments.current = props.resetSegments
-    }, [props.resetSegments])
-
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const afterRenderCallback = () => {
@@ -28,16 +22,6 @@ const LanguageWindow = (props) => {
             props.hotRef.current?.addHookOnce('afterRender', afterRenderCallback)
         })
     }, [props.hotRef])
-    const getSelectedPairs = (rangeArray) => {
-        const allPairs = []
-        for (const range of rangeArray) {
-            const [startRow, startCol, endRow, endCol] = range
-            for (let row = startRow; row <= endRow; row++) {
-                for (let col = startCol; col <= endCol; col++) allPairs.push([row, col])
-            }
-        }
-        return allPairs
-    }
     const getTotalLines = useCallback(() => {
         const data = props.hotRef.current.getData()
         let totalLines = -1
@@ -59,6 +43,16 @@ const LanguageWindow = (props) => {
             }
         }
     }, [props.hotRef, props.fnToggle, props.subtitleIndexRef, props.fnIndexRef, props.playerRef])
+    const getSelectedPairs = (rangeArray) => {
+        const allPairs = []
+        for (const range of rangeArray) {
+            const [startRow, startCol, endRow, endCol] = range
+            for (let row = startRow; row <= endRow; row++) {
+                for (let col = startCol; col <= endCol; col++) allPairs.push([row, col])
+            }
+        }
+        return allPairs
+    }
 
 
     useEffect(() => {
@@ -195,7 +189,7 @@ const LanguageWindow = (props) => {
             if (tcChanges.length) {
                 if (tcChanges.length > 1) {
                     props.waveformRef.current.segments.removeAll()
-                    props.waveformRef.current.segments.add(resetSegments.current())
+                    props.waveformRef.current.segments.add(resetSegments())
                 } else {
                     if (tcChanges[0][2]) {
                         const {rowId} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
@@ -247,7 +241,7 @@ const LanguageWindow = (props) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, props.fnIndexRef, getTotalLines, selectRows])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, props.fnIndexRef, resetSegments, getTotalLines, selectRows])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

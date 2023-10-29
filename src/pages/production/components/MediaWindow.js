@@ -31,13 +31,13 @@ const MediaWindow = (props) => {
             if (curIndex.current !== targetIndex) {
                 curIndex.current = targetIndex
                 if (props.fnToggle ^ isSubtitle && forceSelect) {
-                    props.hotRef.current.selectRows(targetIndex)
+                    !props.hotRef.current.getActiveEditor()?._opened && props.hotRef.current.selectRows(targetIndex)
                     if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(viewPortToIndex)
                 }
             } else {
                 if (isSeek && props.fnToggle ^ isSubtitle && forceSelect) {
                     props.hotRef.current.selectRows(targetIndex)
-                    props.hotRef.current.scrollViewportTo(viewPortToIndex)
+                    // props.hotRef.current.scrollViewportTo(viewPortToIndex)
                 }
             }
             if (labelRef.current.innerHTML !== nextSubtitle) labelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
@@ -74,7 +74,7 @@ const MediaWindow = (props) => {
         const curIndex = !props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current
         const [start, end] = props.hotRef.current.getDataAtRow(curIndex).slice(0, 2)
         const currentTime = props.playerRef.current.getCurrentTime().toFixed(3)
-        if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end)) props.hotRef.current.selectRows(curIndex)
+        if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end) && !props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.selectRows(curIndex)
     }, [props.hotRef, props.fnToggle, props.subtitleIndexRef, props.fnIndexRef, props.playerRef])
     const onReady = useCallback(() => {
         if (props.video !== props.mediaFile) {

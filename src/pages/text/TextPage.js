@@ -135,7 +135,10 @@ const TextPage = () => {
                             />
                         </Sidebar>
                     </>
-                    <Allotment.Pane preferredSize={'200px'}/>
+                    <Allotment.Pane preferredSize={'200px'}>
+                        <>
+                        </>
+                    </Allotment.Pane>
                 </Allotment>
             }
         </div>

@@ -179,12 +179,12 @@ const Production = () => {
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <div ref={dropzoneRef} className={'d-flex flex-row justify-content-center position-relative'}
              style={{width: '100vw', height: 'calc(100vh - 50px - 40px)'}}>
-            <Allotment ref={containerRef} vertical proportionalLayout={false} minSize={300}
+            <Allotment ref={containerRef} vertical proportionalLayout={false} minSize={300} onReset={() => null}
                        defaultSizes={[window.innerHeight - timelineWindowSize.height, timelineWindowSize.height - 70]}
-                       onReset={() => null} onDragEnd={sizes => {
-                setLanguageWindowSize(prevState => ({width: prevState.width, height: sizes[0] - 40}))
-                setTimelineWindowSize({height: sizes[1] + 70})
-            }}>
+                       onDragEnd={sizes => {
+                           setLanguageWindowSize(prevState => ({width: prevState.width, height: sizes[0] - 40}))
+                           setTimelineWindowSize({height: sizes[1] + 70})
+                       }}>
                 <Allotment defaultSizes={[480, 0]} minSize={50} proportionalLayout={false} onReset={() => null}
                            onDragEnd={sizes => setLanguageWindowSize(prevState => ({
                                width: sizes[1], height: prevState.height

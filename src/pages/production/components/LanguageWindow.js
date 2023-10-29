@@ -159,7 +159,7 @@ const LanguageWindow = (props) => {
             if (props.playerRef.current.getInternalPlayer() && !props.hotRef.current.getActiveEditor()?._opened) {
                 const row = !props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current
                 const [start, end] = props.hotRef.current.getDataAtRow(row).slice(0, 2)
-                const currentTime = props.playerRef.current.getCurrentTime().toFixed(3)
+                const currentTime = props.playerRef.current.getCurrentTime()?.toFixed(3)
                 if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end)) {
                     if (!props.hotRef.current.getSelected()) props.hotRef.current.selectRows(row)
                 }

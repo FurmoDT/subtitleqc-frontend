@@ -59,11 +59,12 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
 }
 
 export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
+    td.style.fontSize = fontSize
     td.style.position = 'relative'
+    td.classList.add('td-custom')
     const span = document.createElement('span');
     if (v) {
         // v = v.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
-        td.innerHTML = `<span style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${fontSize}">${v}</span>`
         const error = new Set()
         if (guideline.musicNote && (v.includes('♪') || v.includes('<i>') || v.includes('</i>'))) {
             let valid = true

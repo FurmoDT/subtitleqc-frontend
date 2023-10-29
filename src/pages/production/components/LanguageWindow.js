@@ -55,7 +55,10 @@ const LanguageWindow = (props) => {
         function textRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
             const v = arguments[5]
-            if (v) td.innerHTML = `<span style="text-overflow: ellipsis; display: block; white-space: pre; overflow: hidden; font-size: ${props.hotFontSize}">${v}</span>`
+            if (v) {
+                td.style.fontSize = props.hotFontSize
+                td.classList.add('td-custom')
+            }
         }
 
         function textLanguageRenderer(instance, td) {

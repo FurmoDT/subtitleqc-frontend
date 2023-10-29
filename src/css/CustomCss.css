@@ -18,6 +18,12 @@
     background-color: white !important;
 }
 
+.td-custom {
+    white-space: pre !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .yellow {
     background-color: yellow;
     color: black

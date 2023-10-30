@@ -91,7 +91,7 @@ const QuillEditor = ({editorType, taskHashedId, targetLanguage, iceservers, conn
 
     useEffect(() => {
         const yDoc = new Y.Doc()
-        const yText = yDoc.getText('quill')
+        const yText = yDoc.getText(`${editorType}-${targetLanguage.value}`)
         const roomId = `${taskHashedId}-${editorType}-${targetLanguage.value}`
         const provider = new WebrtcProvider(roomId, yDoc, {
             signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`],

@@ -67,25 +67,17 @@ const TextPage = () => {
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
 
-    useEffect(() => {
-        setTargetLanguage(languageOptions[0])
-    }, [languageOptions])
+    useEffect(() => setTargetLanguage(languageOptions[0]), [languageOptions])
 
     useEffect(() => {
-        axios.get(`v1/twilio/iceservers`).then((response) => {
-            setIceServers(response.data)
-        })
+        axios.get(`v1/twilio/iceservers`).then((response) => setIceServers(response.data))
     }, [])
 
     useEffect(() => {
         const connection = navigator.connection
         const handleConnectionChange = () => setConnectionType(connection.effectiveType)
-
         navigator.connection.addEventListener('change', handleConnectionChange)
-
-        return () => {
-            navigator.connection.removeEventListener('change', handleConnectionChange)
-        }
+        return () => navigator.connection.removeEventListener('change', handleConnectionChange)
     }, [])
 
     const EditorComponent = () => {
@@ -108,7 +100,7 @@ const TextPage = () => {
         }
     }
 
-    return <div style={{width: '100vw', height: 'calc(100vh - 50px)'}}>
+    return <div className={'w-100'} style={{height: 'calc(100vh - 50px)'}}>
         {authority &&
             <MenuToolbar ref={menuToolbarRef} languageOptions={languageOptions} taskWorkId={workHashedId}
                          targetLanguage={targetLanguage} setTargetLanguage={setTargetLanguage} taskName={taskName}

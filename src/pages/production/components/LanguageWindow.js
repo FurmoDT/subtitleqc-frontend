@@ -54,7 +54,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         return allPairs
     }
 
-
     useEffect(() => {
         props.hotRef.current?.destroy()
 

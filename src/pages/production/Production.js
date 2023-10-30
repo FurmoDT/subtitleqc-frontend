@@ -161,6 +161,10 @@ const Production = () => {
             setMediaInfo({framerate: task.task_file_info.framerate})
             setTaskName(`${task.task_name}_${task.task_episode}`)
             // setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
+            axios.get(`https://s3.subtitleqc.ai/task/demo/${taskHashedId}.json`, {headers: {Authorization: null}}).then((response) => {
+                cellDataRef.current = response.data.cells
+                setLanguages(response.data.languages)
+            }).catch(() => null)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
 

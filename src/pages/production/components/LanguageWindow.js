@@ -176,7 +176,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             }
         })
         props.hotRef.current.addHook('afterChange', (changes, source) => {
-            console.log(changes)
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
             !props.fnToggle && !props.taskHashedId ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))

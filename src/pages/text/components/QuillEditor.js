@@ -87,9 +87,7 @@ const QuillEditor = ({editorType, taskHashedId, targetLanguage, iceservers, conn
         }
     }, [disabled])
 
-    const formats = useMemo(() => {
-        return ['size', 'color', 'background', 'bold', 'italic', 'underline', 'strike', 'align']
-    }, [])
+    const formats = useMemo(() => ['size', 'color', 'background', 'bold', 'italic', 'underline', 'strike', 'align'], [])
 
     useEffect(() => {
         const yDoc = new Y.Doc()
@@ -118,9 +116,7 @@ const QuillEditor = ({editorType, taskHashedId, targetLanguage, iceservers, conn
 
         yDoc.on('update', (update, origin, doc, tr) => {
             if (websocketConnected && origin && !origin.peerId && taskHashedId) {
-                wsRef.current.send(JSON.stringify({
-                    room_id: `${roomId}`, update: fromUint8Array(update)
-                }))
+                wsRef.current.send(JSON.stringify({room_id: `${roomId}`, update: fromUint8Array(update)}))
                 if (origin.constructor === QuillBinding) onSave(false)
                 else onSave(true)
             }

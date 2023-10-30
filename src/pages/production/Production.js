@@ -221,7 +221,7 @@ const Production = () => {
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
-                                      afterRenderPromise={afterRenderPromise}
+                                      afterRenderPromise={afterRenderPromise} cellDataRef={cellDataRef}
                                       languages={languages} setLanguages={setLanguages}
                                       fnLanguages={fnLanguages} setFnLanguages={setFnLanguages}/>
                         <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}

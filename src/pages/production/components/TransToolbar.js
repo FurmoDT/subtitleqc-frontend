@@ -8,6 +8,7 @@ import FindPopover from "./dialogs/FindPopover";
 import ReplacePopover from "./dialogs/ReplacePopover";
 import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 import axios from "../../../utils/axios";
+import {GrDocumentSound} from "react-icons/gr";
 
 const TransToolbar = (props) => {
     const subtitleButtonRef = useRef(null)
@@ -38,6 +39,15 @@ const TransToolbar = (props) => {
                   onChange={(event) => props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')}/>
         <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Speech To Text'>
+            <MDBBtn disabled={isTranslating} color={'link'} size={'sm'} onClick={() => {
+                axios.get(`https://s3.subtitleqc.ai/task/demo/stt.json`, {headers: {Authorization: null}}).then((response) => {
+                    setTimeout(()=>{
+                        props.cellDataRef.current = response.data.cells
+                        props.setLanguages(response.data.languages)
+                    }, 13000)
+                }).catch(() => null)
+            }}><GrDocumentSound color={'black'} size={20}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Translate'>
             <MDBBtn disabled={isTranslating} color={'link'} size={'sm'} onClick={() => {
                 if (props.hotRef.current.colToProp(2).startsWith('koKR') && !Number.isInteger(props.hotRef.current.propToCol('spns_1'))) {

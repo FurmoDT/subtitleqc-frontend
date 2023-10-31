@@ -80,6 +80,6 @@
 }
 
 .default-splitter {
-  --default-splitter-line-margin: 0px !important; /* Override margin to 0 */
-  --default-splitter-line-size: 5px !important;
+    --default-splitter-line-margin: 0px !important; /* Override margin to 0 */
+    --default-splitter-line-size: 5px !important;
 }

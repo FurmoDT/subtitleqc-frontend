@@ -109,7 +109,7 @@ const MediaWindow = (props) => {
         if (video && event.target.tagName === 'VIDEO') video.paused ? video.readyState && video.play() : video.pause()
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
-                     controls={true} progressInterval={1} url={props.mediaFile} onSeek={onSeek} onProgress={onProgress}
+                     controls={true} progressInterval={1} url={`${props.mediaFile}?t=${Date.now()}`} onSeek={onSeek} onProgress={onProgress}
                      onReady={onReady} onPlay={onPlayPause} onPause={onPlayPause}
                      config={{
                          file: {

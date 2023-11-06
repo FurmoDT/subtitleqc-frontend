@@ -156,7 +156,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     event.evt.target.style.cursor = 'move'
                 })
                 peaks.on('peaks.ready', () => {
-                    if (props.playerRef.current.getInternalPlayer()?.src !== props.video) {
+                    if (!props.playerRef.current.getInternalPlayer()?.src.startsWith(props.video)) {
                         props.waveformRef.current?.destroy()
                         props.waveformRef.current = null
                     } else {

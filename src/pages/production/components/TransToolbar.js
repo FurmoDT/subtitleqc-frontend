@@ -1,9 +1,8 @@
-import {MDBBtn, MDBBtnGroup, MDBIcon, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
+import {MDBBtn, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
 import LanguagesModal from "./dialogs/LanguagesModal";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
 import {secToTc, tcToSec} from "../../../utils/functions";
-import {useRef, useState} from "react";
-import {CgTranscript} from "react-icons/cg";
+import {useState} from "react";
 import FindPopover from "./dialogs/FindPopover";
 import ReplacePopover from "./dialogs/ReplacePopover";
 import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
@@ -11,29 +10,9 @@ import axios from "../../../utils/axios";
 import {GrDocumentSound} from "react-icons/gr";
 
 const TransToolbar = (props) => {
-    const subtitleButtonRef = useRef(null)
-    const fnButtonRef = useRef(null)
     const [isTranslating, setIsTranslating] = useState(false)
 
-    return <div className={'d-flex flex-row align-items-center'} style={{height: '2.5rem'}}>
-        <MDBBtnGroup className={'mx-1'}>
-            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='말자막'>
-                <MDBBtn ref={subtitleButtonRef} size={'sm'} color={'link'} outline onClick={() => {
-                    if (props.fnToggle) {
-                        subtitleButtonRef.current.className = subtitleButtonRef.current.className.replace('btn-link', 'btn-outline-link')
-                        fnButtonRef.current.className = fnButtonRef.current.className.replace('btn-outline-link', 'btn-link')
-                        props.setFnToggle(!props.fnToggle)
-                    }
-                }}><MDBIcon fas icon="comments" color={'dark'}/></MDBBtn></MDBTooltip>
-            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='화면자막'>
-                <MDBBtn ref={fnButtonRef} size={'sm'} color={'link'} onClick={() => {
-                    if (!props.fnToggle) {
-                        subtitleButtonRef.current.className = subtitleButtonRef.current.className.replace('btn-outline-link', 'btn-link')
-                        fnButtonRef.current.className = fnButtonRef.current.className.replace('btn-link', 'btn-outline-link')
-                        props.setFnToggle(!props.fnToggle)
-                    }
-                }}><CgTranscript color={'black'} size={15}/></MDBBtn></MDBTooltip>
-        </MDBBtnGroup>
+    return <div className={'d-flex flex-row align-items-center mx-1'} style={{height: '2.5rem'}}>
         <MDBInput type='number' defaultValue={14} min={10} max={25} size={'sm'}
                   wrapperStyle={{width: '3.5rem', minWidth: '3.5rem'}}
                   onChange={(event) => props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')}/>
@@ -41,12 +20,12 @@ const TransToolbar = (props) => {
                         fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Speech To Text'>
             <MDBBtn disabled={isTranslating} color={'link'} size={'sm'} onClick={() => {
-                axios.get(`https://s3.subtitleqc.ai/task/demo/stt.json`, {headers: {Authorization: null}}).then((response) => {
-                    setTimeout(()=>{
-                        props.cellDataRef.current = response.data.cells
-                        props.setLanguages(response.data.languages)
-                    }, 13000)
-                }).catch(() => null)
+                // axios.get(`https://s3.subtitleqc.ai/task/demo/stt.json`, {headers: {Authorization: null}}).then((response) => {
+                //     setTimeout(() => {
+                //         props.cellDataRef.current = response.data.cells
+                //         props.setLanguages(response.data.languages)
+                //     }, 13000)
+                // }).catch(() => null)
             }}><GrDocumentSound color={'black'} size={20}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Translate'>
             <MDBBtn disabled={isTranslating} color={'link'} size={'sm'} onClick={() => {

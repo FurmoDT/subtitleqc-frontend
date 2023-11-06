@@ -37,14 +37,10 @@ const Production = () => {
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
     const cellDataRef = useRef(defaultSubtitle())
-    const fnRef = useRef(defaultSubtitle())
     const [languages, setLanguages] = useState(defaultLanguage())
-    const [fnLanguages, setFnLanguages] = useState(defaultLanguage())
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
     const [hotFontSize, setHotFontSize] = useState('14px')
-    const [fnToggle, setFnToggle] = useState(false)
-    const fnToggleRef = useRef(fnToggle)
     const tcOffsetButtonRef = useRef(null)
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
@@ -59,7 +55,6 @@ const Production = () => {
     const isFromTimelineWindowRef = useRef(false)
     const isFromLanguageWindowRef = useRef(false)
     const subtitleIndexRef = useRef(0)
-    const fnIndexRef = useRef(0)
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const timeOut = setTimeout(() => {
@@ -78,8 +73,7 @@ const Production = () => {
     }, [])
     const resetSegments = useCallback(() => {
         const segments = []
-        const source = fnToggleRef.current ? fnRef.current : cellDataRef.current
-        source.forEach((value) => {
+        cellDataRef.current.forEach((value) => {
             const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
             if (0 <= start && end) segments.push(createSegment(start, end, value.rowId))
         })
@@ -92,19 +86,6 @@ const Production = () => {
     }, [taskHashedId, languages])
 
     useEffect(() => {
-        if (!taskHashedId && fnLanguages.length) localStorage.setItem('fnLanguage', JSON.stringify(fnLanguages))
-    }, [taskHashedId, fnLanguages])
-
-    useEffect(() => {
-        fnToggleRef.current = fnToggle
-        if (waveformRef.current) {
-            waveformRef.current.segments.removeAll()
-            waveformRef.current.segments.add(resetSegments())
-            selectedSegment.current = null
-        }
-    }, [fnToggle, resetSegments])
-
-    useEffect(() => {
         tcLockRef.current = tcLock
         if (selectedSegment.current) {
             selectedSegment.current.update({color: 'white', editable: false})
@@ -114,13 +95,10 @@ const Production = () => {
 
     useEffect(() => {
         if (languageFile) {
-            if (languageFile.fn || languageFile.fx) { // fspx
+            if (languageFile.projectDetail) { // fspx
                 cellDataRef.current = languageFile.subtitle.map(v => ({...v, rowId: v.rowId || v4()}))
-                fnRef.current = (languageFile.fn || languageFile.fx).map(v => ({...v, rowId: v.rowId || v4()}))
                 localStorage.setItem('subtitle', JSON.stringify(cellDataRef.current))
-                localStorage.setItem('fn', JSON.stringify(fnRef.current))
                 setLanguages(languageFile.language)
-                setFnLanguages(languageFile.fnLanguage || languageFile.fxLanguage)
                 setProjectDetail(languageFile.projectDetail)
                 if (waveformRef.current) {
                     waveformRef.current.segments.removeAll()
@@ -146,10 +124,8 @@ const Production = () => {
     useEffect(() => {
         if (!taskHashedId) {
             setAuthority('test')
-            if (localStorage.subtitle) cellDataRef.current = JSON.parse(localStorage.subtitle)
-            if (localStorage.fn) fnRef.current = JSON.parse(localStorage.fn)
             if (localStorage.language?.length) setLanguages(JSON.parse(localStorage.language))
-            if (localStorage.fnLanguage?.length) setFnLanguages(JSON.parse(localStorage.fnLanguage))
+            if (localStorage.subtitle) cellDataRef.current = JSON.parse(localStorage.subtitle)
             return
         }
         axios.get(`v1/task/access`, {
@@ -170,16 +146,13 @@ const Production = () => {
 
     return <>
         <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
-                  fnToggleRef={fnToggleRef} setLanguageFile={setLanguageFile}
-                  languages={languages} fnLanguages={fnLanguages}/>
+                  setLanguageFile={setLanguageFile} languages={languages}/>
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
-                         fnToggleRef={fnToggleRef} cellDataRef={cellDataRef} fnRef={fnRef} languageFile={languageFile}
-                         setLanguages={setLanguages} setFnLanguages={setFnLanguages} waveformRef={waveformRef}
-                         resetSegments={resetSegments}/>
-        <MenuToolbar cellDataRef={cellDataRef} fnRef={fnRef} languages={languages} setLanguages={setLanguages}
-                     fnLanguages={fnLanguages} setFnLanguages={setFnLanguages} hotRef={hotRef} focusedRef={focusedRef}
-                     projectDetail={projectDetail} setProjectDetail={setProjectDetail} setTcLock={setTcLock}
-                     taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
+                         cellDataRef={cellDataRef} languageFile={languageFile} setLanguages={setLanguages}
+                         waveformRef={waveformRef} resetSegments={resetSegments}/>
+        <MenuToolbar cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages} hotRef={hotRef}
+                     focusedRef={focusedRef} projectDetail={projectDetail} setProjectDetail={setProjectDetail}
+                     setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
@@ -200,12 +173,10 @@ const Production = () => {
                     <Allotment.Pane snap>
                         <Allotment vertical proportionalLayout={false} onReset={() => null}>
                             <Allotment.Pane minSize={300}>
-                                <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} fnRef={fnRef} fnToggle={fnToggle}
-                                             languages={languages} fnLanguages={fnLanguages} playerRef={playerRef}
-                                             mediaFile={mediaFile} mediaInfo={mediaInfo} video={video}
-                                             setVideo={setVideo}
+                                <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} languages={languages}
+                                             playerRef={playerRef} mediaFile={mediaFile} mediaInfo={mediaInfo}
                                              waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                             subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}/>
+                                             video={video} setVideo={setVideo} subtitleIndexRef={subtitleIndexRef}/>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={50} snap>
                                 <InformationWindow/>
@@ -214,7 +185,6 @@ const Production = () => {
                     </Allotment.Pane>
                     <Allotment.Pane ref={languageWindowRef} snap>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
-                                      fnToggle={fnToggle} setFnToggle={setFnToggle}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef}
                                       tcLockRef={tcLockRef} selectedSegment={selectedSegment}
                                       tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
@@ -222,22 +192,19 @@ const Production = () => {
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                                       afterRenderPromise={afterRenderPromise} cellDataRef={cellDataRef}
-                                      languages={languages} setLanguages={setLanguages}
-                                      fnLanguages={fnLanguages} setFnLanguages={setFnLanguages}/>
+                                      languages={languages} setLanguages={setLanguages}/>
                         <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}
-                                        hotFontSize={hotFontSize} hotSelectionRef={hotSelectionRef}
-                                        playerRef={playerRef} waveformRef={waveformRef} fnToggle={fnToggle}
+                                        hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
                                         tcLock={tcLock} tcLockRef={tcLockRef} cellDataRef={cellDataRef}
-                                        languages={languages} fnRef={fnRef} fnLanguages={fnLanguages}
-                                        guideline={projectDetail.guideline}
-                                        resetSegments={resetSegments} selectedSegment={selectedSegment}
+                                        hotSelectionRef={hotSelectionRef} languages={languages}
+                                        guideline={projectDetail.guideline} resetSegments={resetSegments}
+                                        selectedSegment={selectedSegment} subtitleIndexRef={subtitleIndexRef}
                                         isFromTimelineWindowRef={isFromTimelineWindowRef}
                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                        subtitleIndexRef={subtitleIndexRef} fnIndexRef={fnIndexRef}
                                         taskHashedId={taskHashedId} workHashedId={workHashedId}/>
                     </Allotment.Pane>
                 </Allotment>
-                <Allotment.Pane ref={timelineWindowRef} minSize={250} snap>
+                <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>
                     <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
                                     isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
                                     waveformRef={waveformRef} mediaFile={mediaFile} video={video}

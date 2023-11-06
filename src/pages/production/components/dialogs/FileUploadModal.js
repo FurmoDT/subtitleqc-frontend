@@ -44,7 +44,7 @@ const FileUploadModal = ({resetSegments, ...props}) => {
             const counter = Math.max(...props.languageFile.prevLanguages.filter(v => v.code === code).map(v => v.counter + 1), 1)
             setNewLanguages([{
                 code: code,
-                name: name + (counter > 1 ? `(${counter})` : '') + (props.fnToggleRef.current ? 'FN' : ''),
+                name: name + (counter > 1 ? `(${counter})` : ''),
                 counter: counter
             }])
         }
@@ -63,36 +63,25 @@ const FileUploadModal = ({resetSegments, ...props}) => {
             if (props.languageFile.newLanguages === 'srt') {
                 setSelectionActive(true)
             } else {
-                setNewLanguages(props.languageFile.newLanguages?.map(v => {
-                    if (props.fnToggleRef.current) v.name += 'FN'
-                    return v
-                }))
+                setNewLanguages(props.languageFile.newLanguages)
             }
         }
-    }, [props.languageFile, props.fnToggleRef])
+    }, [props.languageFile])
     const setFile = useCallback((update) => {
         const subtitle = [];
-        const l1 = (!props.fnToggleRef.current ? props.cellDataRef.current.length : props.fnRef.current.length)
+        const l1 = props.cellDataRef.current.length
         const l2 = props.languageFile.subtitle.length
         const maxLength = Math.max(l1, l2)
         for (let i = 0; i < maxLength; i++) {
-            const {start: startA, end: endA, ...subtitleA} = (
-                !props.fnToggleRef.current ? props.cellDataRef.current[i] : props.fnRef.current[i]
-            ) || {}
+            const {start: startA, end: endA, ...subtitleA} = props.cellDataRef.current[i] || {}
             const {start: startB, end: endB, ...subtitleB} = props.languageFile.subtitle[i] || {}
             const start = update ? startB : startA
             const end = update ? endB : endA
             subtitle.push(Object.assign({}, {rowId: v4(), ...(start ? {start} : {}), ...(end ? {end} : {})}, subtitleA, subtitleB))
         }
-        if (!props.fnToggleRef.current) {
-            props.cellDataRef.current = subtitle
-            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            props.setLanguages(props.languageFile.prevLanguages.concat(newLanguages))
-        } else {
-            props.fnRef.current = subtitle
-            localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
-            props.setFnLanguages(props.languageFile.prevLanguages.concat(newLanguages))
-        }
+        props.cellDataRef.current = subtitle
+        localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+        props.setLanguages(props.languageFile.prevLanguages.concat(newLanguages))
         if (props.waveformRef.current) {
             props.waveformRef.current.segments.removeAll()
             props.waveformRef.current.segments.add(resetSegments())

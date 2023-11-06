@@ -16,7 +16,6 @@ const MenuToolbar = (props) => {
                                  setTcLock={props.setTcLock}
                                  setMediaFile={props.setMediaFile} setMediaInfo={props.setMediaInfo}
                                  setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
-                                 setFnLanguages={props.setFnLanguages} fnRef={props.fnRef}
                                  setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
             </MDBTooltip>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
@@ -40,8 +39,6 @@ const MenuToolbar = (props) => {
                             projectDetail: props.projectDetail,
                             language: props.languages,
                             subtitle: props.cellDataRef.current,
-                            fnLanguage: props.fnLanguages,
-                            fn: props.fnRef.current
                         })
                     }}>.fspx</MDBDropdownItem>
                     <MDBDropdownItem link onClick={() => {
@@ -49,12 +46,6 @@ const MenuToolbar = (props) => {
                             downloadSrt({
                                 name: `${props.projectDetail.name}(${value.name})`,
                                 subtitle: toSrt(props.cellDataRef.current, `${value.code}_${value.counter}`)
-                            })
-                        })
-                        props.fnLanguages.forEach((value) => {
-                            downloadSrt({
-                                name: `${props.projectDetail.name}(${value.name})`,
-                                subtitle: toSrt(props.fnRef.current, `${value.code}_${value.counter}`)
                             })
                         })
                     }}>.srt</MDBDropdownItem>
@@ -65,13 +56,10 @@ const MenuToolbar = (props) => {
                     }} disabled>.vtt</MDBDropdownItem>
                     <MDBDropdownItem link onClick={() => {
                         const language = props.languages.map(value => `${value.code}_${value.counter}`)
-                        const fnLanguage = props.fnLanguages.map(value => `${value.code}_${value.counter}`)
                         downloadXlsx({
                             name: props.projectDetail.name || '-',
                             language: language,
                             subtitle: props.cellDataRef.current.map(obj => (['start', 'end'].concat(language)).map(key => obj[key])),
-                            fnLanguage: fnLanguage,
-                            fn: props.fnRef.current.map(obj => (['start', 'end'].concat(language)).map(key => obj[key]))
                         })
                     }}>.xlsx</MDBDropdownItem>
                     <MDBDropdownItem link onClick={() => {
@@ -80,12 +68,6 @@ const MenuToolbar = (props) => {
                             name: props.projectDetail.name || '-',
                             language: language,
                             subtitle: props.cellDataRef.current.map(obj => (['start', 'end'].concat(language)).map(key => `"${obj[key]?.replaceAll('"', '""')}"`).join(',')).join('\n')
-                        })
-                        const fnLanguage = props.fnLanguages.map(value => `${value.code}_${value.counter}`)
-                        downloadCsv({
-                            name: `${props.projectDetail.name}FN`,
-                            language: fnLanguage,
-                            subtitle: props.fnRef.current.map(obj => (['start', 'end'].concat(fnLanguage)).map(key => `"${obj[key]?.replaceAll('"', '""')}"`).join(',')).join('\n')
                         })
                     }}>.csv</MDBDropdownItem>
                 </MDBDropdownMenu>

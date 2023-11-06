@@ -16,9 +16,8 @@ const NewProjectModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
     return <>
-        <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
-            toggleShow()
-        }}><MDBIcon far icon="file" size={'2x'}/></MDBBtn>
+        <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
+            <MDBIcon far icon="file" size={'2x'}/></MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>
                 <MDBModalContent>
@@ -33,9 +32,7 @@ const NewProjectModal = (props) => {
                             Promise.all([
                                 props.setProjectDetail(defaultProjectDetail()),
                                 props.cellDataRef.current = defaultSubtitle(),
-                                props.fnRef.current = defaultSubtitle(),
                                 props.setLanguages(defaultLanguage()),
-                                props.setFnLanguages(defaultLanguage()),
                                 props.setLanguageFile(null),
                                 props.setMediaFile(null),
                                 props.setMediaInfo(null),
@@ -46,8 +43,6 @@ const NewProjectModal = (props) => {
                                 localStorage.removeItem('projectDetail')
                                 localStorage.removeItem('language')
                                 localStorage.removeItem('subtitle')
-                                localStorage.removeItem('fnLanguage')
-                                localStorage.removeItem('fn')
                                 toggleShow()
                             })
                         }}>YES</MDBBtn>

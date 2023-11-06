@@ -35,14 +35,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     }, [props.hotRef])
     const selectRows = useCallback(() => {
         if (props.playerRef.current.getInternalPlayer() && !props.hotRef.current.getActiveEditor()?._opened) {
-            const row = !props.fnToggle ? props.subtitleIndexRef.current : props.fnIndexRef.current
+            const row = props.subtitleIndexRef.current
             const [start, end] = props.hotRef.current.getDataAtRow(row).slice(0, 2)
             const currentTime = props.playerRef.current.getCurrentTime()?.toFixed(3)
             if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end)) { // if not editing
                 if (!props.hotRef.current.getSelected()) props.hotRef.current.selectRows(row)
             }
         }
-    }, [props.hotRef, props.fnToggle, props.subtitleIndexRef, props.fnIndexRef, props.playerRef])
+    }, [props.hotRef, props.subtitleIndexRef, props.playerRef])
     const getSelectedPairs = (rangeArray) => {
         const allPairs = []
         for (const range of rangeArray) {
@@ -91,7 +91,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             })
         }
         props.hotRef.current = new Handsontable(containerMain.current, {
-            data: !props.fnToggle ? props.cellDataRef.current : props.fnRef.current,
+            data: props.cellDataRef.current,
             columns: [{
                 data: 'start',
                 type: 'text',
@@ -104,19 +104,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 renderer: tcOutRenderer,
                 readOnly: props.tcLockRef.current,
                 editor: customTextEditor
-            }, ...(!props.fnToggle ? props.languages.map((value) => ({
-                data: `${value.code}_${value.counter}`,
-                type: 'text',
-                renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer,
-                editor: customTextEditor
-            })) : props.fnLanguages.map((value) => ({
+            }, ...(props.languages.map((value) => ({
                 data: `${value.code}_${value.counter}`,
                 type: 'text',
                 renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer,
                 editor: customTextEditor
             })))],
             manualColumnResize: true,
-            colHeaders: ['TC_IN', 'TC_OUT', ...(!props.fnToggle ? props.languages.map((value) => value.name) : props.fnLanguages.map((value) => value.name)), 'error'],
+            colHeaders: ['TC_IN', 'TC_OUT', ...(props.languages.map((value) => value.name)), 'error'],
             rowHeaders: true,
             width: props.size.width,
             height: props.size.height,
@@ -178,7 +173,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         props.hotRef.current.addHook('afterChange', (changes, source) => {
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
-            !props.fnToggle && !props.taskHashedId ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
+            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             if (props.isFromTimelineWindowRef.current) {
                 props.isFromTimelineWindowRef.current = false
                 return
@@ -204,17 +199,10 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             }
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
-            if (!props.fnToggle) {
-                for (let i = index; i < index + amount; i++) {
-                    props.cellDataRef.current[i].rowId = v4()
-                }
-                !props.taskHashedId && localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            } else {
-                for (let i = index; i < index + amount; i++) {
-                    props.fnRef.current[i].rowId = v4()
-                }
-                !props.taskHashedId && localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
+            for (let i = index; i < index + amount; i++) {
+                props.cellDataRef.current[i].rowId = v4()
             }
+            !props.taskHashedId && localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             props.hotRef.current.render()
             afterRenderPromise().then(() => {
                 for (let i = 0; i < 2; i++) {
@@ -232,7 +220,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         })
         props.hotRef.current.addHook('afterRemoveRow', () => {
             setTotalLines(getTotalLines())
-            !props.fnToggle && !props.taskHashedId ? localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current)) : localStorage.setItem('fn', JSON.stringify(props.fnRef.current))
+            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             props.hotSelectionRef.current.rowStart = Math.min(row, row2)
@@ -240,7 +228,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.fnToggle, props.fnRef, props.fnLanguages, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, props.fnIndexRef, resetSegments, getTotalLines, selectRows, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, resetSegments, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

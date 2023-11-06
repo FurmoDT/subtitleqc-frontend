@@ -37,15 +37,14 @@ const LanguagesModal = (props) => {
         const counter = languageCounter(code)
         setLanguages([...languages, {
             code: code,
-            name: name + (counter > 1 ? `(${counter})` : '') + (props.fnToggle ? 'FN' : ''),
+            name: name + (counter > 1 ? `(${counter})` : ''),
             counter: counter
         }])
     }
 
     useEffect(() => {
-        if (!props.fnToggle) setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
-        else setLanguages([...props.fnLanguages.map((value) => (Object.assign({}, value)))])
-    }, [props.languages, props.fnLanguages, props.fnToggle])
+        setLanguages([...props.languages.map((value) => (Object.assign({}, value)))])
+    }, [props.languages])
 
     return <>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Languages'>
@@ -90,20 +89,13 @@ const LanguagesModal = (props) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={() => {
                             toggleShow()
-                            if (!props.fnToggle) setLanguages([...props.languages])
-                            else setLanguages([...props.fnLanguages])
+                            setLanguages([...props.languages])
                         }}>Close</MDBBtn>
                         <MDBBtn onClick={() => {
                             toggleShow()
-                            if (!props.fnToggle) {
-                                props.setLanguages([...languages.map((value) => ({
-                                    code: value.code, name: value.name, counter: value.counter
-                                }))])
-                            } else {
-                                props.setFnLanguages([...languages.map((value) => ({
-                                    code: value.code, name: value.name, counter: value.counter
-                                }))])
-                            }
+                            props.setLanguages([...languages.map((value) => ({
+                                code: value.code, name: value.name, counter: value.counter
+                            }))])
                         }}>Save changes</MDBBtn>
                     </MDBModalFooter>
                 </MDBModalContent>

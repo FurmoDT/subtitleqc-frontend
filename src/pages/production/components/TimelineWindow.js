@@ -7,10 +7,9 @@ const checkboxLabelStyle = {
     fontSize: 12, userSelect: 'none', display: 'flex', alignItems: 'center', color: 'white', marginLeft: -5
 }
 
-const TimelineWindow = (props) => {
+const TimelineWindow = ({resetSegments, ...props}) => {
     const waveformRef = useRef(null);
     const overviewRef = useRef(null);
-    const resetSegments = useRef(null)
     const statusRef = useRef(null);
     const spinnerRef = useRef(null);
     const warningRef = useRef(null);
@@ -51,16 +50,14 @@ const TimelineWindow = (props) => {
             warningRef.current.style.display = 'none'
         }
     }
-    useEffect(() => {
-        resetSegments.current = props.resetSegments
-    }, [props.resetSegments])
+    const errorHandler = (ev) => {
+        if (ev.error?.name === 'TypeError' && ev.error.message.startsWith('WaveformData')) setStatusDisplay('error')
+    }
 
     useEffect(() => {
         if (!props.video) return
         setStatusDisplay('isLoading')
-        window.addEventListener('error', (ev) => {
-            if (ev.error?.name === 'TypeError' && ev.error.message.startsWith('WaveformData')) setStatusDisplay('error')
-        })
+        window.addEventListener('error', errorHandler)
         const options = {
             mediaElement: document.querySelector('video'),
             webAudio: {
@@ -97,7 +94,7 @@ const TimelineWindow = (props) => {
             }
             if (peaks) {
                 props.waveformRef.current = peaks
-                peaks.segments.add(resetSegments.current())
+                peaks.segments.add(resetSegments())
                 peaks.on('zoomview.click', (event) => {
                     afterSeekedPromise().then(() => {
                         if (event.evt.ctrlKey) {
@@ -187,9 +184,7 @@ const TimelineWindow = (props) => {
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
             props.selectedSegment.current = null
-            window.removeEventListener('error', (ev) => {
-                if (ev.error.name === 'TypeError') setStatusDisplay('error')
-            })
+            window.removeEventListener('error', errorHandler)
         }
     }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef, props.selectedSegment])
 

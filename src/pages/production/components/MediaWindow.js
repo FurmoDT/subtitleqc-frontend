@@ -6,13 +6,13 @@ import {MDBBtn, MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle
 let subtitleLanguage = null
 let fnLanguage = null
 
-const MediaWindow = (props) => {
+const MediaWindow = ({setVideo, ...props}) => {
     const [showFn, setShowFn] = useState(false)
     const subtitleLabelRef = useRef(null)
     const fnLabelRef = useRef(null)
     const curSubtitleIndexRef = useRef(-1)
     const curFnIndexRef = useRef(-1)
-    const setVideo = props.setVideo
+    const [t] = useState(Date.now())
     const setLabel = useCallback((seconds, start, end, isSubtitle, forceSelect, isSeek) => {
         let curIndex, targetIndex, nextSubtitle, labelRef
         if (isSubtitle) {
@@ -109,7 +109,9 @@ const MediaWindow = (props) => {
         if (video && event.target.tagName === 'VIDEO') video.paused ? video.readyState && video.play() : video.pause()
     }}>
         <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
-                     controls={true} progressInterval={1} url={`${props.mediaFile}?t=${Date.now()}`} onSeek={onSeek} onProgress={onProgress}
+                     controls={true} progressInterval={1}
+                     url={props.mediaFile?.startsWith('https://s3.subtitleqc.ai') ? `${props.mediaFile}?t=${t}` : props.mediaFile}
+                     onSeek={onSeek} onProgress={onProgress}
                      onReady={onReady} onPlay={onPlayPause} onPause={onPlayPause}
                      config={{
                          file: {

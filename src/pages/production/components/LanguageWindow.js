@@ -2,7 +2,7 @@ import Handsontable from 'handsontable';
 import '../../../css/Handsontable.css'
 import * as Grammarly from '@grammarly/editor-sdk'
 import {useCallback, useEffect, useRef, useState} from "react";
-import {tcInValidator, tcOutValidator, textValidator} from "../../../utils/hotRenderer";
+import {durationValidator, tcInValidator, tcOutValidator, textValidator} from "../../../utils/hotRenderer";
 import {createSegment, tcToSec} from "../../../utils/functions";
 import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
@@ -67,12 +67,22 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             tcOutValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
+        function durationRenderer(instance, td) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments)
+            durationValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance)
+        }
+
         function textRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
             if (arguments[5]) {
                 td.style.fontSize = props.hotFontSize
                 td.classList.add('td-custom')
             }
+        }
+
+        function checkboxRenderer(instance, td) {
+            Handsontable.renderers.CheckboxRenderer.apply(this, arguments)
+            td.classList.add('d-flex', 'justify-content-center')
         }
 
         function textLanguageRenderer(instance, td) {
@@ -90,6 +100,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 }
             })
         }
+
         props.hotRef.current = new Handsontable(containerMain.current, {
             data: props.cellDataRef.current,
             columns: [{
@@ -104,6 +115,15 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 renderer: tcOutRenderer,
                 readOnly: props.tcLockRef.current,
                 editor: customTextEditor
+            }, {
+                data: 'duration',
+                type: 'text',
+                renderer: durationRenderer,
+                readOnly: true
+            }, {
+                data: 'fn',
+                type: 'checkbox',
+                renderer: checkboxRenderer,
             }, ...(props.languages.map((value) => ({
                 data: `${value.code}_${value.counter}`,
                 type: 'text',
@@ -111,7 +131,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 editor: customTextEditor
             })))],
             manualColumnResize: true,
-            colHeaders: ['TC_IN', 'TC_OUT', ...(props.languages.map((value) => value.name)), 'error'],
+            colHeaders: ['TC In', 'TC Out', 'Duration', 'FN', ...(props.languages.map((value) => value.name)), 'error'],
             rowHeaders: true,
             width: props.size.width,
             height: props.size.height,

@@ -16,8 +16,7 @@ const TransToolbar = (props) => {
         <MDBInput type='number' defaultValue={14} min={10} max={25} size={'sm'}
                   wrapperStyle={{width: '3.5rem', minWidth: '3.5rem'}}
                   onChange={(event) => props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')}/>
-        <LanguagesModal fnToggle={props.fnToggle} languages={props.languages} setLanguages={props.setLanguages}
-                        fnLanguages={props.fnLanguages} setFnLanguages={props.setFnLanguages}/>
+        <LanguagesModal languages={props.languages} setLanguages={props.setLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Speech To Text'>
             <MDBBtn disabled={isTranslating} color={'link'} size={'sm'} onClick={() => {
                 // axios.get(`https://s3.subtitleqc.ai/task/demo/stt.json`, {headers: {Authorization: null}}).then((response) => {

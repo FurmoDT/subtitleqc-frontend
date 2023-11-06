@@ -50,7 +50,7 @@ const Dropzone = (props) => {
                     languageEncoding(file, {fallbackEncoding: null}).then((fileInfo) => {
                         const decoder = new TextDecoder(fileInfo.encoding || 'UTF-8');
                         const str = decoder.decode(binaryStr)
-                        const languages = !props.fnToggleRef.current ? props.languages : props.fnLanguages
+                        const languages = props.languages
                         if (file.name.endsWith('.fsp')) {
                             props.setLanguageFile({prevLanguages: languages, ...parseFsp(JSON.parse(xml2json(str, {compact: false})), languages)})
                         } else if (file.name.endsWith('.srt')) {

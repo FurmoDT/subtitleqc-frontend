@@ -81,7 +81,7 @@ const TaskDropzone = ({uploadedFiles, setUploadedFiles, multiple}) => {
                 key={value.name} style={{padding: '0 0.75rem'}}>{value.name}
                 <MDBBtn className='btn-close position-absolute end-0' color='none' onClick={handleClick}/>
             </MDBListGroupItem>) : <label className={'text-start'} style={{paddingLeft: '0.75rem', ...labelStyle}}>
-                파일 업로드 또는 드래그앤드롭</label>}
+                파일 업로드 또는 드래그앤드롭 (2GB 미만 영상: .mp4, .mov / 문서: .pdf, .docx)</label>}
         </MDBListGroup>
         <input ref={fileInputRef} style={{display: 'none'}} multiple={multiple} type={'file'}
                onChange={(e) => uploadFilesHandler(e.target.files)}/>

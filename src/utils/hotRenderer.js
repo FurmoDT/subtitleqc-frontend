@@ -60,7 +60,7 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
 
 export const durationValidator = (r, c, v, td, fontSize, instance) => {
     td.style.fontSize = fontSize
-    td.style.color = 'black'
+    td.classList.remove('htDimmed')
     td.classList.add('text-center')
     const [start, end] = [tcToSec(instance.getDataAtCell(r, c - 2)), tcToSec(instance.getDataAtCell(r, c - 1))]
     if (0 <= start && 0 <= end) td.innerHTML = (end - start).toFixed(3)

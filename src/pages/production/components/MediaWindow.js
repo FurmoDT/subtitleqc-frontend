@@ -100,8 +100,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                      }}/>
         <span className={'position-absolute pe-none top-0 start-0 ms-1'} style={{color: 'white', fontSize: '0.8rem'}}>
             {props.mediaInfo?.framerate && `${props.mediaInfo.framerate} fps`}</span>
-        <label ref={subtitleLabelRef} className={'position-absolute pe-none'}
-               style={{color: 'white', whiteSpace: 'pre'}}/>
+        <span ref={subtitleLabelRef} className={'span-subtitle'}/>
         <div className={'position-absolute top-0 end-0'}>
             <MDBDropdown className={'d-flex justify-content-end'}>
                 <MDBDropdownToggle color={'link'}>

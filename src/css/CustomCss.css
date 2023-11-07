@@ -24,6 +24,13 @@
     overflow: hidden;
 }
 
+.span-subtitle {
+    position: absolute;
+    color: white;
+    white-space: pre;
+    pointer-events: none;
+}
+
 .yellow {
     background-color: yellow;
     color: black

@@ -50,9 +50,9 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             warningRef.current.style.display = 'none'
         }
     }
-    const errorHandler = (ev) => {
+    const errorHandler = useCallback((ev) => {
         if (ev.error?.name === 'TypeError' && ev.error.message.startsWith('WaveformData')) setStatusDisplay('error')
-    }
+    }, [])
 
     useEffect(() => {
         if (!props.video) return
@@ -186,7 +186,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             props.selectedSegment.current = null
             window.removeEventListener('error', errorHandler)
         }
-    }, [props.video, props.waveformRef, onWheel, afterSeekedPromise, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef, props.selectedSegment])
+    }, [props.video, props.waveformRef, onWheel, errorHandler, afterSeekedPromise, resetSegments, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef, props.selectedSegment])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

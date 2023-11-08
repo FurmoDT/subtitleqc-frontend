@@ -80,15 +80,13 @@ const MediaWindow = ({setVideo, ...props}) => {
 
     return <div
         className={'w-100 h-100 d-flex justify-content-center align-items-end position-relative overflow-hidden'}
-        style={{borderStyle: 'solid', borderWidth: 'thin'}} onClick={(event) => {
+        style={{borderStyle: 'solid', borderWidth: 'thin', backgroundColor: 'black'}} onClick={(event) => {
         const video = props.playerRef.current?.getInternalPlayer()
         if (video && event.target.tagName === 'VIDEO') video.paused ? video.readyState && video.play() : video.pause()
     }}>
-        <ReactPlayer ref={props.playerRef} style={{backgroundColor: 'black'}} width={'100%'} height={'100%'}
-                     controls={true} progressInterval={1}
+        <ReactPlayer ref={props.playerRef} width={'100%'} height={'100%'} progressInterval={1} onProgress={onProgress}
+                     onReady={onReady} onPlay={onPlayPause} onPause={onPlayPause} onSeek={onSeek} controls={true}
                      url={props.mediaFile?.startsWith('https://s3.subtitleqc.ai') ? `${props.mediaFile}?t=${t}` : props.mediaFile}
-                     onSeek={onSeek} onProgress={onProgress}
-                     onReady={onReady} onPlay={onPlayPause} onPause={onPlayPause}
                      config={{
                          file: {
                              attributes: {

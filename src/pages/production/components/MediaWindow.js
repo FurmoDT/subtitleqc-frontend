@@ -6,7 +6,7 @@ import RangeSlider from 'react-range-slider-input';
 import '../../../css/RangeSlider.css';
 import {BsPauseFill, BsPlayFill} from "react-icons/bs";
 import {SlSpeedometer} from "react-icons/sl";
-import {HiMiniSpeakerWave, HiMiniSpeakerXMark} from "react-icons/hi2";
+import {HiSpeakerWave, HiSpeakerXMark} from "react-icons/hi2";
 
 let subtitleLanguage = null
 
@@ -131,18 +131,18 @@ const MediaWindow = ({setVideo, ...props}) => {
                          onMouseEnter={() => volumeRef.current.classList.remove('d-none')}
                          onMouseLeave={() => volumeRef.current.classList.add('d-none')}>
                         {isMuted ?
-                            <HiMiniSpeakerXMark className={'button-icon'} size={20}
-                                                onClick={() => {
-                                                    const internalPlayer = props.playerRef.current.getInternalPlayer()
-                                                    setIsMuted(false)
-                                                    if (internalPlayer) internalPlayer.muted = false
-                                                }}/> :
-                            <HiMiniSpeakerWave className={'button-icon'} size={20}
-                                               onClick={() => {
-                                                   const internalPlayer = props.playerRef.current.getInternalPlayer()
-                                                   setIsMuted(true)
-                                                   if (internalPlayer) internalPlayer.muted = true
-                                               }}/>}
+                            <HiSpeakerXMark className={'button-icon'} size={20}
+                                            onClick={() => {
+                                                const internalPlayer = props.playerRef.current.getInternalPlayer()
+                                                setIsMuted(false)
+                                                if (internalPlayer) internalPlayer.muted = false
+                                            }}/> :
+                            <HiSpeakerWave className={'button-icon'} size={20}
+                                           onClick={() => {
+                                               const internalPlayer = props.playerRef.current.getInternalPlayer()
+                                               setIsMuted(true)
+                                               if (internalPlayer) internalPlayer.muted = true
+                                           }}/>}
                         <div ref={volumeRef} className={'position-absolute'} style={{bottom: 20}}>
                             <div style={{height: '140px', padding: '20px'}}>
                                 {/*TODO range slider*/}
@@ -150,7 +150,8 @@ const MediaWindow = ({setVideo, ...props}) => {
                         </div>
                     </div>
                     <MDBDropdown className={'me-4'} dropup>
-                        <MDBDropdownToggle tag={'section'} className={'button-icon d-flex align-items-center'}>
+                        <MDBDropdownToggle className={'button-icon d-flex align-items-center custom-dropdown'}
+                                           tag={'section'}>
                             <SlSpeedometer size={20}/>
                         </MDBDropdownToggle>
                         <MDBDropdownMenu style={{minWidth: '5rem', height: '10rem', overflowY: 'scroll'}}
@@ -165,7 +166,8 @@ const MediaWindow = ({setVideo, ...props}) => {
                         </MDBDropdownMenu>
                     </MDBDropdown>
                     <MDBDropdown dropup>
-                        <MDBDropdownToggle tag={'section'} className={'button-icon d-flex align-items-center'}>
+                        <MDBDropdownToggle className={'button-icon d-flex align-items-center custom-dropdown'}
+                                           tag={'section'}>
                             <MDBIcon fas icon='globe'/>
                         </MDBDropdownToggle>
                         <MDBDropdownMenu style={{minWidth: '7rem'}} responsive={'end'}>

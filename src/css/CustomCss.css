@@ -94,6 +94,13 @@
     opacity: .5;
 }
 
+.custom-dropdown::after {
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+}
+
 .horizontal-divider {
     border-bottom: solid;
     border-width: thick;

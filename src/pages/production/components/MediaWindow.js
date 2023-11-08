@@ -1,7 +1,7 @@
 import ReactPlayer from "react-player";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {bisect, secToTc, tcToSec} from "../../../utils/functions";
-import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon, MDBRange} from "mdb-react-ui-kit";
+import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
 import RangeSlider from 'react-range-slider-input';
 import '../../../css/RangeSlider.css';
 import {BsPauseFill, BsPlayFill} from "react-icons/bs";

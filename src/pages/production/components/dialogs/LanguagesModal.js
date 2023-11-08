@@ -62,7 +62,7 @@ const LanguagesModal = (props) => {
                     <MDBModalBody>
                         <MDBDropdown className={'d-flex justify-content-end'}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Add Languages</MDBDropdownToggle>
-                            <MDBDropdownMenu>{addLanguageItem}</MDBDropdownMenu>
+                            <MDBDropdownMenu style={{minWidth: '9rem'}}>{addLanguageItem}</MDBDropdownMenu>
                         </MDBDropdown>
                         <ReactSortable animation={200} easing={"ease-out"} list={languages} setList={setLanguages}>
                             {languages.map((item) => {
@@ -75,7 +75,7 @@ const LanguagesModal = (props) => {
                         </ReactSortable>
                         <MDBDropdown className={'d-flex justify-content-end'}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Remove Languages</MDBDropdownToggle>
-                            <MDBDropdownMenu>
+                            <MDBDropdownMenu style={{minWidth: '10.5rem'}}>
                                 {languages.map((item, index) => {
                                     return <MDBDropdownItem key={`${item.code}_${item.counter}`} link onClick={() => {
                                         const removed = [...languages]

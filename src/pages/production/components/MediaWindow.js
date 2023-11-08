@@ -145,7 +145,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                                                }}/>}
                         <div ref={volumeRef} className={'position-absolute'} style={{bottom: 20}}>
                             <div style={{height: '140px', padding: '20px'}}>
-
+                                {/*TODO range slider*/}
                             </div>
                         </div>
                     </div>

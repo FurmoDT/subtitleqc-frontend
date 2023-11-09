@@ -82,7 +82,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
 
         function checkboxRenderer(instance, td) {
             Handsontable.renderers.CheckboxRenderer.apply(this, arguments)
-            td.classList.add('d-flex', 'justify-content-center')
+            td.classList.add('text-center')
         }
 
         function textLanguageRenderer(instance, td) {

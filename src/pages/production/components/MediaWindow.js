@@ -134,7 +134,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                        renderThumb={({props}) => (
                            <div {...props} className={'input-range-thumb'} style={{...props.style}}/>)}/>
             </div>
-            <div className={'d-flex justify-content-between px-3'} style={{height: '2rem'}}>
+            <div className={'d-flex justify-content-between'} style={{height: '2rem', padding: '0 0.625rem'}}>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'}>
                     {isPlaying ?
                         <BsPauseFill className={'button-icon'} size={20}
@@ -167,8 +167,8 @@ const MediaWindow = ({setVideo, ...props}) => {
                                                setIsMuted(true)
                                                if (internalPlayer) internalPlayer.muted = true
                                            }}/>}
-                        <div ref={volumeRef} className={'position-absolute d-none'} style={{bottom: 20}}>
-                            <div style={{height: '140px', padding: '20px'}}>
+                        <div ref={volumeRef} className={'position-absolute d-none rounded opacity-95'}
+                             style={{height: '140px', padding: '20px', bottom: 20, backgroundColor: '#333'}}>
                                 <Range step={0.01} min={0} max={1} values={isMuted ? [0] : volume}
                                        direction={Direction.Up} onChange={values => setVolume(values)}
                                        renderTrack={({props, children}) => (
@@ -184,7 +184,6 @@ const MediaWindow = ({setVideo, ...props}) => {
                                        renderThumb={({props}) => (
                                            <div {...props} className={'input-range-thumb'} style={{...props.style}}/>)}
                                 />
-                            </div>
                         </div>
                     </div>
                     <MDBDropdown className={'me-4'} dropup>

@@ -1,11 +1,12 @@
 import ReactPlayer from "react-player";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {bisect, secToTc, tcToSec} from "../../../utils/functions";
-import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
+import {MDBIcon} from "mdb-react-ui-kit";
 import {BsPauseFill, BsPlayFill} from "react-icons/bs";
 import {SlSpeedometer} from "react-icons/sl";
 import {HiSpeakerWave, HiSpeakerXMark} from "react-icons/hi2";
 import {Direction, getTrackBackground, Range} from 'react-range';
+import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
 
 let subtitleLanguage = null
 
@@ -18,8 +19,23 @@ const MediaWindow = ({setVideo, ...props}) => {
     const [isMuted, setIsMuted] = useState(false)
     const [isPlaying, setIsPlaying] = useState(false)
     const volumeRef = useRef(null)
+    const speedRef = useRef(null)
+    const languageRef = useRef(null)
     const [volume, setVolume] = useState([1])
-    let hideVolume = null
+    const hideUtilTimeoutRef = useRef(null)
+
+    const showUtilHandler = useCallback((target) => {
+        [volumeRef.current, speedRef.current, languageRef.current].map(v => {
+            if (v !== target) v.classList.add('d-none')
+        })
+        clearTimeout(hideUtilTimeoutRef.current)
+        target.classList.remove('d-none')
+    }, [])
+
+    const hideUtilHandler = useCallback((target) => {
+        clearTimeout(hideUtilTimeoutRef.current)
+        hideUtilTimeoutRef.current = setTimeout(() => target.classList.add('d-none'), 2000)
+    }, [])
 
     const setLabel = useCallback((seconds, start, end, forceSelect, isSeek) => {
         let curIndex = curSubtitleIndexRef
@@ -145,14 +161,8 @@ const MediaWindow = ({setVideo, ...props}) => {
                 </div>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'}>
                     <div className={'position-relative d-flex justify-content-center me-4'}
-                         onMouseEnter={() => {
-                             clearTimeout(hideVolume)
-                             volumeRef.current.classList.remove('d-none')
-                         }}
-                         onMouseLeave={() => {
-                             clearTimeout(hideVolume)
-                             hideVolume = setTimeout(() => volumeRef.current.classList.add('d-none'), 2000)
-                         }}>
+                         onMouseEnter={() => showUtilHandler(volumeRef.current)}
+                         onMouseLeave={() => hideUtilHandler(volumeRef.current)}>
                         {isMuted ?
                             <HiSpeakerXMark className={'button-icon'} size={20}
                                             onClick={() => {
@@ -186,34 +196,37 @@ const MediaWindow = ({setVideo, ...props}) => {
                             />
                         </div>
                     </div>
-                    <MDBDropdown className={'me-4'} dropup>
-                        <MDBDropdownToggle className={'button-icon d-flex align-items-center custom-dropdown'}
-                                           tag={'section'}>
-                            <SlSpeedometer size={20}/>
-                        </MDBDropdownToggle>
-                        <MDBDropdownMenu style={{minWidth: '5rem', height: '10rem', overflowY: 'scroll'}}>
-                            <div className={'text-center fw-bold'}>재생 속도</div>
-                            {Array.from({length: (2 - 0.25) / 0.25 + 1}, (_, i) => 0.25 + 0.25 * i).map(value =>
-                                <MDBDropdownItem link key={value} onClick={() => {
-                                    const internalPlayer = props.playerRef.current.getInternalPlayer()
-                                    if (internalPlayer) internalPlayer.playbackRate = value
-                                }}>{`${value}`}</MDBDropdownItem>)}
-                        </MDBDropdownMenu>
-                    </MDBDropdown>
-                    <MDBDropdown dropup>
-                        <MDBDropdownToggle className={'button-icon d-flex align-items-center custom-dropdown'}
-                                           tag={'section'}>
-                            <MDBIcon fas icon='globe'/>
-                        </MDBDropdownToggle>
-                        <MDBDropdownMenu style={{minWidth: '7rem'}}>
-                            <div className={'text-center fw-bold'}>언어 선택</div>
-                            {props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map(value =>
-                                <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {
-                                    subtitleLanguage = `${value.code}_${value.counter}`
-                                    if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
-                                }}>{value.name}</MDBDropdownItem>)}
-                        </MDBDropdownMenu>
-                    </MDBDropdown>
+                    <div className={'position-relative d-flex justify-content-center me-4'}
+                         onMouseEnter={() => showUtilHandler(speedRef.current)}
+                         onMouseLeave={() => hideUtilHandler(speedRef.current)}>
+                        <SlSpeedometer className={'button-icon'} size={20}/>
+                        <div ref={speedRef} className={'util-container d-none'}>
+                            <div className={'text-center fw-bold text-nowrap mb-2'}>재생 속도</div>
+                            <OverlayScrollbarsComponent options={{scrollbars: {theme: "os-theme-light"}}} defer>
+                                {Array.from({length: (2 - 0.25) / 0.25 + 1}, (_, i) => 0.25 + 0.25 * i).map((value) =>
+                                    <div className={'util-items'} key={`${value}`} onClick={() => {
+                                        const internalPlayer = props.playerRef.current.getInternalPlayer()
+                                        if (internalPlayer) internalPlayer.playbackRate = value
+                                    }}>{`${value}`}</div>)}
+                            </OverlayScrollbarsComponent>
+                        </div>
+                    </div>
+                    <div className={'position-relative d-flex justify-content-center me-4'}
+                         onMouseEnter={() => showUtilHandler(languageRef.current)}
+                         onMouseLeave={() => hideUtilHandler(languageRef.current)}>
+                        <MDBIcon className={'button-icon'} fas icon='globe'/>
+                        <div ref={languageRef} className={'util-container d-none'}>
+                            <div className={'text-center fw-bold text-nowrap mb-2'}>언어 선택</div>
+                            <OverlayScrollbarsComponent options={{scrollbars: {theme: "os-theme-light"}}} defer>
+                                {props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map(value =>
+                                    <div className={'util-items'} key={`${value.code}_${value.counter}`}
+                                         onClick={() => {
+                                             subtitleLanguage = `${value.code}_${value.counter}`
+                                             if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
+                                         }}>{value.name}</div>)}
+                            </OverlayScrollbarsComponent>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

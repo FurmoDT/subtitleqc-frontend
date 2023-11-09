@@ -75,6 +75,27 @@
     color: black;
 }
 
+.input-range-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 0.25rem;
+}
+
+.input-range-track-vertical {
+    width: 6px;
+    height: 100%;
+    border-radius: 0.25rem;
+}
+
+.input-range-thumb {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer !important;
+    outline: none !important;
+}
+
 .button-active {
     color: black !important;
     border-color: #f28720ff !important;

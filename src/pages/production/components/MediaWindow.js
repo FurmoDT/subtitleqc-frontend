@@ -2,7 +2,6 @@ import ReactPlayer from "react-player";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {bisect, secToTc, tcToSec} from "../../../utils/functions";
 import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
-import '../../../css/RangeSlider.css';
 import {BsPauseFill, BsPlayFill} from "react-icons/bs";
 import {SlSpeedometer} from "react-icons/sl";
 import {HiSpeakerWave, HiSpeakerXMark} from "react-icons/hi2";

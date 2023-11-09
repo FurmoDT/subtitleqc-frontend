@@ -25,6 +25,7 @@
     "js-base64": "^3.7.5",
     "konva": "^9.2.2",
     "mdb-react-ui-kit": "^6.3.0",
+    "overlayscrollbars-react": "^0.5.3",
     "peaks.js": "^3.2.0",
     "quill-cursors": "^4.0.2",
     "quill-delta": "^5.1.0",

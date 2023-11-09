@@ -141,7 +141,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                                      onClick={event => props.playerRef.current.getInternalPlayer().pause()}/> :
                         <BsPlayFill className={'button-icon'} size={20}
                                     onClick={event => props.playerRef.current.getInternalPlayer()?.play()}/>}
-                    <span className={'span-duration ms-2'}>{`${secToTc(seek)} / ${secToTc(duration)}`}</span>
+                    <span className={'span-duration mx-2'}>{`${secToTc(seek)} / ${secToTc(duration)}`}</span>
                 </div>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'}>
                     <div className={'position-relative d-flex justify-content-center me-4'}

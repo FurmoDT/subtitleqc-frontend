@@ -39,7 +39,7 @@
     "react-player": "^2.13.0",
     "react-pro-sidebar": "^1.1.0-alpha.1",
     "react-quill": "^2.0.0",
-    "react-range-slider-input": "^3.0.7",
+    "react-range": "^1.8.14",
     "react-router-dom": "^6.17.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.7.7",

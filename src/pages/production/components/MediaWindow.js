@@ -2,11 +2,11 @@ import ReactPlayer from "react-player";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {bisect, secToTc, tcToSec} from "../../../utils/functions";
 import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon} from "mdb-react-ui-kit";
-import RangeSlider from 'react-range-slider-input';
 import '../../../css/RangeSlider.css';
 import {BsPauseFill, BsPlayFill} from "react-icons/bs";
 import {SlSpeedometer} from "react-icons/sl";
 import {HiSpeakerWave, HiSpeakerXMark} from "react-icons/hi2";
+import {Direction, getTrackBackground, Range} from 'react-range';
 
 let subtitleLanguage = null
 
@@ -19,6 +19,8 @@ const MediaWindow = ({setVideo, ...props}) => {
     const [isMuted, setIsMuted] = useState(false)
     const [isPlaying, setIsPlaying] = useState(false)
     const volumeRef = useRef(null)
+    const [volume, setVolume] = useState([1])
+    let hideVolume = null
 
     const setLabel = useCallback((seconds, start, end, forceSelect, isSeek) => {
         let curIndex = curSubtitleIndexRef
@@ -94,6 +96,16 @@ const MediaWindow = ({setVideo, ...props}) => {
         subtitleLabelRef.current.innerHTML = ''
     }, [props.mediaFile])
 
+    useEffect(() => {
+        if (volume[0]) {
+            setIsMuted(false)
+            const internalPlayer = props.playerRef.current.getInternalPlayer()
+            if (internalPlayer) internalPlayer.volume = volume[0]
+        } else {
+            setIsMuted(true)
+        }
+    }, [volume, props.playerRef]);
+
     return <>
         <div className={'w-100 position-relative'} style={{height: 'calc(100% - 3rem)', backgroundColor: 'black'}}
              onClick={() => {
@@ -112,10 +124,16 @@ const MediaWindow = ({setVideo, ...props}) => {
         </div>
         <div className={'w-100 h-100'} style={{backgroundColor: 'black'}}>
             <div className={'d-flex align-items-center px-3'} style={{height: '1rem'}}>
-                <RangeSlider className="single-thumb" thumbsDisabled={[true, false]} rangeSlideDisabled={true}
-                             value={[0, seek]} max={duration}
-                             onInput={value => props.playerRef.current.seekTo(value[1], 'seconds')}/>
-
+                <Range min={0} max={duration || 1} values={[seek]}
+                       onChange={values => props.playerRef.current.seekTo(values[0], 'seconds')}
+                       renderTrack={({props, children}) => (
+                           <div {...props} className={'input-range-track'} style={{
+                               ...props.style, background: getTrackBackground({
+                                   values: [seek], colors: ['#fff', '#999'], min: 0, max: duration || 1
+                               })
+                           }}>{children}</div>)}
+                       renderThumb={({props}) => (
+                           <div {...props} className={'input-range-thumb'} style={{...props.style}}/>)}/>
             </div>
             <div className={'d-flex justify-content-between px-3'} style={{height: '2rem'}}>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'}>
@@ -128,13 +146,20 @@ const MediaWindow = ({setVideo, ...props}) => {
                 </div>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'}>
                     <div className={'position-relative d-flex justify-content-center me-4'}
-                         onMouseEnter={() => volumeRef.current.classList.remove('d-none')}
-                         onMouseLeave={() => volumeRef.current.classList.add('d-none')}>
+                         onMouseEnter={() => {
+                             clearTimeout(hideVolume)
+                             volumeRef.current.classList.remove('d-none')
+                         }}
+                         onMouseLeave={() => {
+                             clearTimeout(hideVolume)
+                             hideVolume = setTimeout(() => volumeRef.current.classList.add('d-none'), 2000)
+                         }}>
                         {isMuted ?
                             <HiSpeakerXMark className={'button-icon'} size={20}
                                             onClick={() => {
                                                 const internalPlayer = props.playerRef.current.getInternalPlayer()
                                                 setIsMuted(false)
+                                                if (!volume[0]) setVolume([1])
                                                 if (internalPlayer) internalPlayer.muted = false
                                             }}/> :
                             <HiSpeakerWave className={'button-icon'} size={20}
@@ -143,9 +168,23 @@ const MediaWindow = ({setVideo, ...props}) => {
                                                setIsMuted(true)
                                                if (internalPlayer) internalPlayer.muted = true
                                            }}/>}
-                        <div ref={volumeRef} className={'position-absolute'} style={{bottom: 20}}>
+                        <div ref={volumeRef} className={'position-absolute d-none'} style={{bottom: 20}}>
                             <div style={{height: '140px', padding: '20px'}}>
-                                {/*TODO range slider*/}
+                                <Range step={0.01} min={0} max={1} values={isMuted ? [0] : volume}
+                                       direction={Direction.Up} onChange={values => setVolume(values)}
+                                       renderTrack={({props, children}) => (
+                                           <div {...props} className={'input-range-track-vertical'} style={{
+                                               ...props.style, background: getTrackBackground({
+                                                   values: isMuted ? [0] : volume,
+                                                   colors: ['#548BF4', '#999'],
+                                                   min: 0,
+                                                   max: 1,
+                                                   direction: Direction.Up
+                                               })
+                                           }}>{children}</div>)}
+                                       renderThumb={({props}) => (
+                                           <div {...props} className={'input-range-thumb'} style={{...props.style}}/>)}
+                                />
                             </div>
                         </div>
                     </div>

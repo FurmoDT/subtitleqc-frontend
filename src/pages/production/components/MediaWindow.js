@@ -169,21 +169,21 @@ const MediaWindow = ({setVideo, ...props}) => {
                                            }}/>}
                         <div ref={volumeRef} className={'position-absolute d-none rounded opacity-95'}
                              style={{height: '140px', padding: '20px', bottom: 20, backgroundColor: '#333'}}>
-                                <Range step={0.01} min={0} max={1} values={isMuted ? [0] : volume}
-                                       direction={Direction.Up} onChange={values => setVolume(values)}
-                                       renderTrack={({props, children}) => (
-                                           <div {...props} className={'input-range-track-vertical'} style={{
-                                               ...props.style, background: getTrackBackground({
-                                                   values: isMuted ? [0] : volume,
-                                                   colors: ['#548BF4', '#999'],
-                                                   min: 0,
-                                                   max: 1,
-                                                   direction: Direction.Up
-                                               })
-                                           }}>{children}</div>)}
-                                       renderThumb={({props}) => (
-                                           <div {...props} className={'input-range-thumb'} style={{...props.style}}/>)}
-                                />
+                            <Range step={0.01} min={0} max={1} values={isMuted ? [0] : volume}
+                                   direction={Direction.Up} onChange={values => setVolume(values)}
+                                   renderTrack={({props, children}) => (
+                                       <div {...props} className={'input-range-track-vertical'} style={{
+                                           ...props.style, background: getTrackBackground({
+                                               values: isMuted ? [0] : volume,
+                                               colors: ['#548BF4', '#999'],
+                                               min: 0,
+                                               max: 1,
+                                               direction: Direction.Up
+                                           })
+                                       }}>{children}</div>)}
+                                   renderThumb={({props}) => (
+                                       <div {...props} className={'input-range-thumb'} style={{...props.style}}/>)}
+                            />
                         </div>
                     </div>
                     <MDBDropdown className={'me-4'} dropup>
@@ -191,15 +191,13 @@ const MediaWindow = ({setVideo, ...props}) => {
                                            tag={'section'}>
                             <SlSpeedometer size={20}/>
                         </MDBDropdownToggle>
-                        <MDBDropdownMenu style={{minWidth: '5rem', height: '10rem', overflowY: 'scroll'}}
-                                         responsive={'end'}>
+                        <MDBDropdownMenu style={{minWidth: '5rem', height: '10rem', overflowY: 'scroll'}}>
                             <div className={'text-center fw-bold'}>재생 속도</div>
                             {Array.from({length: (2 - 0.25) / 0.25 + 1}, (_, i) => 0.25 + 0.25 * i).map(value =>
-                                <MDBDropdownItem link key={value}
-                                                 onClick={() => {
-                                                     const internalPlayer = props.playerRef.current.getInternalPlayer()
-                                                     if (internalPlayer) internalPlayer.playbackRate = value
-                                                 }}>{`${value}`}</MDBDropdownItem>)}
+                                <MDBDropdownItem link key={value} onClick={() => {
+                                    const internalPlayer = props.playerRef.current.getInternalPlayer()
+                                    if (internalPlayer) internalPlayer.playbackRate = value
+                                }}>{`${value}`}</MDBDropdownItem>)}
                         </MDBDropdownMenu>
                     </MDBDropdown>
                     <MDBDropdown dropup>
@@ -207,7 +205,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                                            tag={'section'}>
                             <MDBIcon fas icon='globe'/>
                         </MDBDropdownToggle>
-                        <MDBDropdownMenu style={{minWidth: '7rem'}} responsive={'end'}>
+                        <MDBDropdownMenu style={{minWidth: '7rem'}}>
                             <div className={'text-center fw-bold'}>언어 선택</div>
                             {props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map(value =>
                                 <MDBDropdownItem link key={`${value.code}_${value.counter}`} onClick={() => {

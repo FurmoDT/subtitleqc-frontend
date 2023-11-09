@@ -8,8 +8,6 @@ import {HiSpeakerWave, HiSpeakerXMark} from "react-icons/hi2";
 import {Direction, getTrackBackground, Range} from 'react-range';
 import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
 
-let subtitleLanguage = null
-
 const MediaWindow = ({setVideo, ...props}) => {
     const subtitleLabelRef = useRef(null)
     const curSubtitleIndexRef = useRef(-1)
@@ -22,10 +20,12 @@ const MediaWindow = ({setVideo, ...props}) => {
     const speedRef = useRef(null)
     const languageRef = useRef(null)
     const [volume, setVolume] = useState([1])
+    // const [speed, setSpeed] = useState(null)
+    const [language, setLanguage] = useState(null)
     const hideUtilTimeoutRef = useRef(null)
 
     const showUtilHandler = useCallback((target) => {
-        [volumeRef.current, speedRef.current, languageRef.current].map(v => {
+        [volumeRef.current, speedRef.current, languageRef.current].forEach(v => {
             if (v !== target) v.classList.add('d-none')
         })
         clearTimeout(hideUtilTimeoutRef.current)
@@ -40,7 +40,7 @@ const MediaWindow = ({setVideo, ...props}) => {
     const setLabel = useCallback((seconds, start, end, forceSelect, isSeek) => {
         let curIndex = curSubtitleIndexRef
         let targetIndex = props.subtitleIndexRef.current
-        let nextSubtitle = props.cellDataRef.current[targetIndex][subtitleLanguage] || ''
+        let nextSubtitle = props.cellDataRef.current[targetIndex][language] || ''
         let labelRef = subtitleLabelRef
         const viewPortToIndex = Math.max(targetIndex - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
         if (seconds >= start && seconds <= end) {
@@ -63,7 +63,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                 curIndex.current = -1
             }
         }
-    }, [props.cellDataRef, props.subtitleIndexRef, props.hotRef])
+    }, [props.cellDataRef, props.subtitleIndexRef, props.hotRef, language])
 
     const onSeek = useCallback((seconds) => {
         setSeek(seconds)
@@ -102,10 +102,10 @@ const MediaWindow = ({setVideo, ...props}) => {
     }, [props.mediaFile, props.video, setVideo, props.subtitleIndexRef])
 
     useEffect(() => {
-        if (!subtitleLanguage || !props.languages.map((value) => `${value.code}_${value.counter}`).includes(subtitleLanguage)) {
-            subtitleLanguage = props.languages[0] ? `${props.languages[0].code}_${props.languages[0].counter}` : null
+        if (!language || !props.languages.map((value) => `${value.code}_${value.counter}`).includes(language)) {
+            setLanguage(props.languages[0] ? `${props.languages[0].code}_${props.languages[0].counter}` : null)
         }
-    }, [props.languages])
+    }, [props.languages, language])
 
     useEffect(() => {
         subtitleLabelRef.current.innerHTML = ''
@@ -221,7 +221,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                                 {props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map(value =>
                                     <div className={'util-items'} key={`${value.code}_${value.counter}`}
                                          onClick={() => {
-                                             subtitleLanguage = `${value.code}_${value.counter}`
+                                             setLanguage(`${value.code}_${value.counter}`)
                                              if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
                                          }}>{value.name}</div>)}
                             </OverlayScrollbarsComponent>

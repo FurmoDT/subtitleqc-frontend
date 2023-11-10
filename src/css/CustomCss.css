@@ -33,6 +33,7 @@
     color: white;
     white-space: pre;
     pointer-events: none;
+    user-select: none;
 }
 
 .span-framerate {
@@ -44,6 +45,7 @@
     white-space: nowrap;
     font-size: 0.8rem;
     pointer-events: none;
+    user-select: none;
 }
 
 .span-duration {
@@ -51,6 +53,7 @@
     white-space: nowrap;
     font-size: 0.8rem;
     pointer-events: none;
+    user-select: none;
 }
 
 .yellow {

@@ -1,12 +1,12 @@
 import ReactPlayer from "react-player";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {bisect, secToTc, tcToSec} from "../../../utils/functions";
-import {MDBIcon} from "mdb-react-ui-kit";
 import {BsPauseFill, BsPlayFill} from "react-icons/bs";
 import {SlSpeedometer} from "react-icons/sl";
 import {HiSpeakerWave, HiSpeakerXMark} from "react-icons/hi2";
 import {Direction, getTrackBackground, Range} from 'react-range';
 import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
+import {PiGlobe} from "react-icons/pi";
 
 const MediaWindow = ({setVideo, ...props}) => {
     const subtitleLabelRef = useRef(null)
@@ -211,11 +211,11 @@ const MediaWindow = ({setVideo, ...props}) => {
                             </OverlayScrollbarsComponent>
                         </div>
                     </div>
-                    <div className={'position-relative d-flex justify-content-center me-4'}
+                    <div className={'position-relative d-flex justify-content-center me-2'}
                          onMouseEnter={() => showUtilHandler(languageRef.current)}
                          onMouseLeave={() => hideUtilHandler(languageRef.current)}>
-                        <MDBIcon className={'button-icon'} fas icon='globe'/>
-                        <div ref={languageRef} className={'util-container d-none'}>
+                        <PiGlobe className={'button-icon'} size={20}/>
+                        <div ref={languageRef} className={'util-container d-none'} style={{right: '-0.5rem'}}>
                             <div className={'text-center fw-bold text-nowrap mb-2'}>언어 선택</div>
                             <OverlayScrollbarsComponent options={{scrollbars: {theme: "os-theme-light"}}} defer>
                                 {props.languages.filter((value) => value.code.match(/^[a-z]{2}[A-Z]{2}$/)).map(value =>

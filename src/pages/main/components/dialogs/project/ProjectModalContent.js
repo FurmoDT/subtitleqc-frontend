@@ -128,7 +128,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
                                 <label className={'fw-bold mx-1 input-header-label'}>납품기한</label>
                                 <DatePicker customInput={<DateInput/>} showTimeSelect timeIntervals={60}
                                             timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'}
-                                            selected={project.dueDate}
+                                            selected={project.dueDate && new Date(project.dueDate)}
                                             onChange={date => setProject(prevState => ({
                                                 ...prevState, dueDate: date.getTime()
                                             }))}/>

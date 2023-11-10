@@ -82,8 +82,8 @@ const RequestModal = ({forceRender}) => {
                                           onBlur={(event) => task.title = event.target.value.trim()}/>
                             </MDBCol>
                             <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
-                                <DatePicker customInput={<DateInput label={'*납품기한'}/>}
-                                            selected={task.dueDate} showTimeSelect
+                                <DatePicker customInput={<DateInput label={'*납품기한'}/>} showTimeSelect
+                                            selected={task.dueDate && new Date(task.dueDate)}
                                             timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'} timeIntervals={60}
                                             onChange={(date) => setTask(prevState => ({
                                                 ...prevState, dueDate: date.getTime()

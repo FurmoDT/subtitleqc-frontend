@@ -18,7 +18,7 @@ const TransToolbar = (props) => {
                   onChange={(event) => props.setHotFontSize(Math.max(Math.min(parseInt(event.target.value), 25), 10) + 'px')}/>
         <LanguagesModal languages={props.languages} setLanguages={props.setLanguages}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Speech To Text'>
-            <MDBBtn disabled={isTranslating} color={'link'} size={'sm'} onClick={() => {
+            <MDBBtn disabled={true} color={'link'} size={'sm'} onClick={() => {
                 // axios.get(`https://s3.subtitleqc.ai/task/demo/stt.json`, {headers: {Authorization: null}}).then((response) => {
                 //     setTimeout(() => {
                 //         props.cellDataRef.current = response.data.cells
@@ -27,7 +27,7 @@ const TransToolbar = (props) => {
                 // }).catch(() => null)
             }}><GrDocumentSound color={'black'} size={20}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Translate'>
-            <MDBBtn disabled={isTranslating} color={'link'} size={'sm'} onClick={() => {
+            <MDBBtn disabled={/*isTranslating*/true} color={'link'} size={'sm'} onClick={() => {
                 if (props.hotRef.current.colToProp(2).startsWith('koKR') && !Number.isInteger(props.hotRef.current.propToCol('spns_1'))) {
                     setIsTranslating(true)
                     axios.post('v1/task/spns/subtitle_translation', {inputs: props.hotRef.current.getDataAtCol(2).map(value => value ? value : '')}).then((response) => {

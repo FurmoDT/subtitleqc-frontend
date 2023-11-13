@@ -48,7 +48,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
             taskValidationSpanRef.current.innerText = '모든 필수 정보를 입력해주세요.'
             error = true
         } else taskValidationSpanRef.current.innerText = ''
-        if (workers.filter(value => !(value.workType && (/^(sync|transcribe)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage) && value.workerId && value.dueDate)).length !== 0) {
+        if (workers.filter(value => !(value.workType && (/^(sync|transcribe)$/.test(value.workType) ? value.targetLanguage : value.sourceLanguage && value.targetLanguage))).length !== 0) {
             workerValidationSpanRef.current.innerText = '모든 필수 정보를 입력해주세요.'
             error = true
         } else workerValidationSpanRef.current.innerText = ''
@@ -268,7 +268,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                             }}/>
                         </MDBCol>
                         <MDBCol size={2}>
-                            <Select styles={singleStyle} options={workerListOption} placeholder={'*작업자 이름'}
+                            <Select styles={singleStyle} options={workerListOption} placeholder={'작업자 이름'}
                                     value={workerListOption.find(value => value.value === workers[index].workerId)}
                                     components={{Option: UserOption}} onChange={(newValue) => {
                                 setWorkers(prevState => {
@@ -278,7 +278,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                             }}/>
                         </MDBCol>
                         <MDBCol style={{minWidth: '220px', maxWidth: '220px'}}>
-                            <DatePicker customInput={<DateInput label={'*마감일'}/>} showTimeSelect
+                            <DatePicker customInput={<DateInput label={'마감일'}/>} showTimeSelect
                                         selected={workers[index].dueDate && new Date(workers[index].dueDate)}
                                         timeFormat={'HH:mm'} dateFormat={'yyyy-MM-dd h:mm aa'} timeIntervals={60}
                                         onChange={(date) => {

@@ -1,5 +1,9 @@
 .app-container {
     font-family: 'Nanum Gothic', sans-serif;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #f3f3f3ff;
 }
 
 .menu-toolbar {

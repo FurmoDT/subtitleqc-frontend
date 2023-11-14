@@ -165,7 +165,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         props.hotRef.current.addHook('afterScrollVertically', selectRows)
         props.hotRef.current.addHook('afterScrollHorizontally', selectRows)
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
-            // props.hotRef.current.render()
             if (props.hotRef.current.colToProp(column).startsWith('enUS')) {
                 grammarly.then(r => {
                     grammarlyPlugin = r.addPlugin(containerMain.current.querySelector('textarea'), {
@@ -180,18 +179,16 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.isFromLanguageWindowRef.current = true
             if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')
         })
-        props.hotRef.current.addHook('beforeChange', () => {
-            if (props.hotRef.current.getActiveEditor()?._opened) {
-                props.isFromLanguageWindowRef.current = true
-                props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
-            }
-        })
-        props.hotRef.current.addHook('afterChange', (changes, source) => {
-            grammarlyPlugin?.disconnect()
-            setTotalLines(getTotalLines())
-            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+        props.hotRef.current.addHook('beforeChange', (changes, source) => {
+            const {tcChanges, fnChanges} = changes.reduce((acc, value) => {
+                if (value[1] === 'start' || value[1] === 'end') acc.tcChanges.push(value);
+                else if (value[1] === 'fn') acc.fnChanges.push(value);
+                return acc;
+            }, {tcChanges: [], fnChanges: []});
+
+            fnChanges.forEach(v => v[3] = Boolean(v[3]) || null)
+
             if (!props.waveformRef.current || source === 'timelineWindow') return
-            const tcChanges = changes.filter((value) => value[1] === 'start' || value[1] === 'end')
             if (tcChanges.length) {
                 if (tcChanges.length > 1) {
                     props.waveformRef.current.segments.removeAll()
@@ -209,6 +206,15 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     }
                 }
             }
+            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+        })
+        props.hotRef.current.addHook('afterChange', () => {
+            if (props.hotRef.current.getActiveEditor()?._opened) {
+                props.isFromLanguageWindowRef.current = true
+                props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
+            }
+            grammarlyPlugin?.disconnect()
+            setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('beforeCreateRow', (index, amount) => {
             afterRenderPromise().then(() => {

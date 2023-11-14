@@ -605,7 +605,7 @@ CheckboxRenderer
   vertical-align: middle;
 }
 .handsontable .htCheckboxRendererInput.noValue {
-  opacity: 0.5;
+  /*opacity: 0.5;*/
 }
 .handsontable .htCheckboxRendererLabel {
   cursor: pointer;

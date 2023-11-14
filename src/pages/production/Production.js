@@ -52,7 +52,6 @@ const Production = () => {
     const selectedSegment = useRef(null)
     const [tcLock, setTcLock] = useState(true)
     const tcLockRef = useRef(true)
-    const isFromTimelineWindowRef = useRef(false)
     const isFromLanguageWindowRef = useRef(false)
     const subtitleIndexRef = useRef(0)
     const afterRenderPromise = useCallback(() => {
@@ -64,7 +63,6 @@ const Production = () => {
             const afterRenderCallback = (isForced) => {
                 clearTimeout(timeOut)
                 if (!isForced) {
-                    hotRef.current.removeHook('afterRender', afterRenderCallback)
                     resolve()
                 }
             }
@@ -137,10 +135,6 @@ const Production = () => {
             setMediaInfo({framerate: task.task_file_info.framerate})
             setTaskName(`${task.task_name}_${task.task_episode}`)
             // setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
-            axios.get(`https://s3.subtitleqc.ai/task/demo/${taskHashedId}.json`, {headers: {Authorization: null}}).then((response) => {
-                cellDataRef.current = response.data.cells
-                setLanguages(response.data.languages)
-            }).catch(() => null)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
 
@@ -199,15 +193,13 @@ const Production = () => {
                                         hotSelectionRef={hotSelectionRef} languages={languages}
                                         guideline={projectDetail.guideline} resetSegments={resetSegments}
                                         selectedSegment={selectedSegment} subtitleIndexRef={subtitleIndexRef}
-                                        isFromTimelineWindowRef={isFromTimelineWindowRef}
                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
                                         taskHashedId={taskHashedId} workHashedId={workHashedId}/>
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>
                     <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
-                                    isFromTimelineWindowRef={isFromTimelineWindowRef} playerRef={playerRef}
-                                    waveformRef={waveformRef} mediaFile={mediaFile} video={video}
+                                    playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile} video={video}
                                     resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}
                                     tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                                     tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}

@@ -13,15 +13,14 @@ const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98
 const LanguageWindow = ({resetSegments, ...props}) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
+
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
-            const afterRenderCallback = () => {
-                props.hotRef.current.removeHook('afterRender', afterRenderCallback)
-                resolve()
-            }
+            const afterRenderCallback = () => resolve()
             props.hotRef.current?.addHookOnce('afterRender', afterRenderCallback)
         })
     }, [props.hotRef])
+
     const getTotalLines = useCallback(() => {
         const data = props.hotRef.current.getData()
         let totalLines = -1
@@ -33,6 +32,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         }
         return Math.max(totalLines + 1, 0)
     }, [props.hotRef])
+
     const selectRows = useCallback(() => {
         if (props.playerRef.current.getInternalPlayer() && !props.hotRef.current.getActiveEditor()?._opened) {
             const row = props.subtitleIndexRef.current
@@ -43,6 +43,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             }
         }
     }, [props.hotRef, props.subtitleIndexRef, props.playerRef])
+
     const getSelectedPairs = (rangeArray) => {
         const allPairs = []
         for (const range of rangeArray) {
@@ -116,19 +117,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 readOnly: props.tcLockRef.current,
                 editor: customTextEditor
             }, {
-                data: 'duration',
-                type: 'text',
-                renderer: durationRenderer,
-                readOnly: true
+                data: 'duration', type: 'text', readOnly: true, renderer: durationRenderer
             }, {
-                data: 'fn',
-                type: 'checkbox',
-                renderer: checkboxRenderer,
+                data: 'fn', type: 'checkbox', renderer: checkboxRenderer,
             }, ...(props.languages.map((value) => ({
                 data: `${value.code}_${value.counter}`,
                 type: 'text',
-                renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer,
-                editor: customTextEditor
+                editor: customTextEditor,
+                renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer
             })))],
             manualColumnResize: true,
             colHeaders: ['TC In', 'TC Out', 'Duration', 'FN', ...(props.languages.map((value) => value.name)), 'error'],
@@ -194,11 +190,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
             localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            if (props.isFromTimelineWindowRef.current) {
-                props.isFromTimelineWindowRef.current = false
-                return
-            }
-            if (!props.waveformRef.current) return
+            if (!props.waveformRef.current || source === 'timelineWindow') return
             const tcChanges = changes.filter((value) => value[1] === 'start' || value[1] === 'end')
             if (tcChanges.length) {
                 if (tcChanges.length > 1) {
@@ -218,17 +210,19 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 }
             }
         })
-        props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
-            for (let i = index; i < index + amount; i++) {
-                props.cellDataRef.current[i].rowId = v4()
-            }
-            !props.taskHashedId && localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            props.hotRef.current.render()
+        props.hotRef.current.addHook('beforeCreateRow', (index, amount) => {
             afterRenderPromise().then(() => {
                 for (let i = 0; i < 2; i++) {
                     for (let j = index; j < index + amount; j++) props.hotRef.current.getCellMeta(j, i).readOnly = props.tcLockRef.current
                 }
+                props.hotRef.current.render()
             })
+        })
+        props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
+            for (let i = index; i < index + amount; i++) {
+                props.hotRef.current.setDataAtRowProp(i, 'rowId', v4())
+            }
+            !props.taskHashedId && localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
@@ -248,7 +242,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromTimelineWindowRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, resetSegments, getTotalLines, selectRows, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, resetSegments, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

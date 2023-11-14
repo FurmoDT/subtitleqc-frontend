@@ -20,7 +20,6 @@ const MediaWindow = ({setVideo, ...props}) => {
     const speedRef = useRef(null)
     const languageRef = useRef(null)
     const [volume, setVolume] = useState([1])
-    // const [speed, setSpeed] = useState(null)
     const [language, setLanguage] = useState(null)
     const hideUtilTimeoutRef = useRef(null)
 
@@ -51,7 +50,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                     if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(viewPortToIndex)
                 }
             } else {
-                if (isSeek && forceSelect) {
+                if (isSeek && forceSelect) { // change language
                     props.hotRef.current.selectRows(targetIndex)
                     // props.hotRef.current.scrollViewportTo(viewPortToIndex)
                 }

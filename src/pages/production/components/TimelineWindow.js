@@ -133,13 +133,12 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     if (JSON.stringify(props.hotRef.current.getSelected()) !== JSON.stringify(cells)) props.hotRef.current.selectCells(cells)
                 })
                 peaks.on("segments.dragend", (event) => {
-                    props.isFromTimelineWindowRef.current = true
                     const [start, end] = [secToTc(Number(event.segment.startTime.toFixed(3))), secToTc(Number(event.segment.endTime.toFixed(3)))]
                     const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id)
                     const cells = []
                     if (props.hotRef.current.getDataAtCell(row, 0) !== start) cells.push([row, 0, start])
                     if (props.hotRef.current.getDataAtCell(row, 1) !== end) cells.push([row, 1, end])
-                    props.hotRef.current.setDataAtCell(cells)
+                    props.hotRef.current.setDataAtCell(cells, 'timelineWindow')
                 })
                 peaks.on("segments.click", (event) => {
                     peaks.views.getView('zoomview')?.enableSegmentDragging(false)
@@ -186,7 +185,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             props.selectedSegment.current = null
             window.removeEventListener('error', errorHandler)
         }
-    }, [props.video, props.waveformRef, onWheel, errorHandler, afterSeekedPromise, resetSegments, props.hotRef, props.isFromTimelineWindowRef, props.playerRef, props.tcLockRef, props.selectedSegment])
+    }, [props.video, props.waveformRef, onWheel, errorHandler, afterSeekedPromise, resetSegments, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()

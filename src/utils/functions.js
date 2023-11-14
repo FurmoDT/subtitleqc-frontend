@@ -22,9 +22,10 @@ export const tcToSec = (tc) => {
 }
 
 export const secToTc = (sec) => {
-    const h = Math.floor(sec / 3600).toString().padStart(2, '0')
-    const m = Math.floor((sec % 3600) / 60).toString().padStart(2, '0')
-    const s = (sec % 60).toFixed(3).padStart(6, '0')
+    const validSec = sec || 0
+    const h = Math.floor(validSec / 3600).toString().padStart(2, '0')
+    const m = Math.floor((validSec % 3600) / 60).toString().padStart(2, '0')
+    const s = (validSec % 60).toFixed(3).padStart(6, '0')
     return `${h}:${m}:${s}`
 }
 

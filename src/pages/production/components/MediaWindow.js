@@ -13,7 +13,6 @@ const MediaWindow = ({setVideo, ...props}) => {
     const curSubtitleIndexRef = useRef(-1)
     const [t] = useState(Date.now())
     const [seek, setSeek] = useState(0)
-    const [duration, setDuration] = useState(0)
     const [isMuted, setIsMuted] = useState(false)
     const [isPlaying, setIsPlaying] = useState(false)
     const volumeRef = useRef(null)
@@ -74,8 +73,6 @@ const MediaWindow = ({setVideo, ...props}) => {
         props.isFromLanguageWindowRef.current = false
     }, [props.cellDataRef, props.isFromLanguageWindowRef, setLabel, props.subtitleIndexRef, props.waveformRef])
 
-    const onDuration = useCallback((duration) => setDuration(duration), [])
-
     const onProgress = useCallback((state) => {
         setSeek(state.playedSeconds)
         const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[props.subtitleIndexRef.current]
@@ -127,8 +124,8 @@ const MediaWindow = ({setVideo, ...props}) => {
                  if (video) isPlaying ? video.pause() : video.play()
              }}>
             <ReactPlayer ref={props.playerRef} width={'100%'} height={'100%'} progressInterval={1} muted={isMuted}
-                         onProgress={onProgress} onReady={onReady} onDuration={onDuration}
-                         onPlay={onPlayPause} onPause={onPlayPause} onSeek={onSeek}
+                         onProgress={onProgress} onReady={onReady} onPlay={onPlayPause} onPause={onPlayPause}
+                         onSeek={onSeek}
                          url={props.mediaFile?.startsWith('https://s3.subtitleqc.ai') ? `${props.mediaFile}?t=${t}` : props.mediaFile}
                          config={{file: {attributes: {onContextMenu: e => e.preventDefault()}}}}/>
             <div className={'w-100 h-100 position-absolute top-0'}/>
@@ -138,12 +135,12 @@ const MediaWindow = ({setVideo, ...props}) => {
         </div>
         <div className={'w-100 h-100'} style={{backgroundColor: 'black'}}>
             <div className={'d-flex align-items-center px-3'} style={{height: '1rem'}}>
-                <Range min={0} max={duration || 1} values={[seek]}
+                <Range min={0} max={props.mediaInfo?.duration || 1} values={[seek]}
                        onChange={values => props.playerRef.current.seekTo(values[0], 'seconds')}
-                       renderTrack={({props, children}) => (
-                           <div {...props} className={'input-range-track'} style={{
-                               ...props.style, background: getTrackBackground({
-                                   values: [seek], colors: ['#fff', '#999'], min: 0, max: duration || 1
+                       renderTrack={({props: _props, children}) => (
+                           <div {..._props} className={'input-range-track'} style={{
+                               ..._props.style, background: getTrackBackground({
+                                   values: [seek], colors: ['#fff', '#999'], min: 0, max: props.mediaInfo?.duration || 1
                                })
                            }}>{children}</div>)}
                        renderThumb={({props}) => (
@@ -156,7 +153,9 @@ const MediaWindow = ({setVideo, ...props}) => {
                                      onClick={event => props.playerRef.current.getInternalPlayer().pause()}/> :
                         <BsPlayFill className={'button-icon'} size={20}
                                     onClick={event => props.playerRef.current.getInternalPlayer()?.play()}/>}
-                    <span className={'span-duration mx-2'}>{`${secToTc(seek)} / ${secToTc(duration)}`}</span>
+                    <span className={'span-duration mx-2'}>
+                        {`${secToTc(seek)} / ${secToTc(props.mediaInfo?.duration)}`}
+                    </span>
                 </div>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'}>
                     <div className={'position-relative d-flex justify-content-center me-4'}

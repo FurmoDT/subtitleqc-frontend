@@ -34,9 +34,7 @@ const TransToolbar = (props) => {
                         props.hotRef.current.setDataAtCell((response.data.map((value, index) => ([index, props.hotRef.current.countCols() - 1, value]))))
                         setIsTranslating(false)
                     })
-                    !props.fnToggle ? props.setLanguages(prevState => [...prevState, {
-                        code: 'spns', name: 'SPNS', counter: 1
-                    }]) : props.setFnLanguages(prevState => [...prevState, {code: 'spns', name: 'SPNS', counter: 1}])
+                    props.setLanguages(prevState => [...prevState, {code: 'spns', name: 'SPNS', counter: 1}])
                 }
             }}><img src={'/translate-icon.png'} alt={''} width={'25'}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Offset Rest'>

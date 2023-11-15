@@ -206,12 +206,12 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     }
                 }
             }
-            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
         })
         props.hotRef.current.addHook('afterChange', () => {
+            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             if (props.hotRef.current.getActiveEditor()?._opened) {
                 props.isFromLanguageWindowRef.current = true
-                props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds')
+                props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds') // update subtitle
             }
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
@@ -248,7 +248,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, props.subtitleIndexRef, resetSegments, getTotalLines, selectRows, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

@@ -101,7 +101,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 }
             })
         }
-
+        // TODO tcLockRef bug fix - readOnly prevents createRow
         props.hotRef.current = new Handsontable(containerMain.current, {
             data: props.cellDataRef.current,
             columns: [{
@@ -216,6 +216,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
         })
+        // TODO create row source === CopyPaste.paste performance
         props.hotRef.current.addHook('beforeCreateRow', (index, amount) => {
             afterRenderPromise().then(() => {
                 for (let i = 0; i < 2; i++) {
@@ -258,8 +259,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     }, [props.tcLock, props.hotRef])
 
     return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
-        <div ref={containerMain} style={{zIndex: 0}}
-             onClick={(event) => props.focusedRef.current = props.hotRef.current}/>
+        <div ref={containerMain} style={{zIndex: 0}} onClick={() => props.focusedRef.current = props.hotRef.current}/>
         <MDBBtn className={'position-absolute'} style={{bottom: '1.5rem', right: '1.5rem', padding: '0.75rem'}}
                 color={'info'} rounded onClick={() => props.hotRef.current.scrollViewportTo(totalLines - 1)}>
             <MDBIcon fas icon="arrow-down"/>&nbsp;{totalLines}

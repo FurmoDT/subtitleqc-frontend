@@ -80,8 +80,9 @@ const Production = () => {
     }, [])
 
     useEffect(() => {
-        if (!taskHashedId && languages.length) localStorage.setItem('language', JSON.stringify(languages))
-    }, [taskHashedId, languages])
+        if (!dataInitialized) return
+        if (!taskHashedId) localStorage.setItem('language', JSON.stringify(languages))
+    }, [taskHashedId, languages, dataInitialized])
 
     useEffect(() => {
         tcLockRef.current = tcLock

@@ -21,8 +21,8 @@ import {FaBars} from "react-icons/fa";
 
 const LanguagesModal = (props) => {
     const [languages, setLanguages] = useState([])
-    const [basicModal, setBasicModal] = useState(false);
-    const toggleShow = () => setBasicModal(!basicModal);
+    const [show, setShow] = useState(false);
+    const toggleShow = () => setShow(!show);
     const addLanguageItem = Object.entries(languageCodes).map(([key, value]) => (
         <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value}</MDBDropdownItem>))
 
@@ -52,7 +52,7 @@ const LanguagesModal = (props) => {
                 <GrLanguage color={'black'} size={19}/>
             </MDBBtn>
         </MDBTooltip>
-        <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
+        <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'sm'}>
                 <MDBModalContent>
                     <MDBModalHeader>

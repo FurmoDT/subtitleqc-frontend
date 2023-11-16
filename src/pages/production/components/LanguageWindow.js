@@ -179,8 +179,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.isFromLanguageWindowRef.current = true
             if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')
         })
-        props.hotRef.current.addHook('beforeChange', (changes, source) => {
-            changes.changes.forEach(v => v[1] === 'fn' && (v[3] = Boolean(v[3]) || null))
+        props.hotRef.current.addHook('beforeChange', (changes) => {
+            changes.forEach(v => v[1] === 'fn' && (v[3] = Boolean(v[3]) || null))
         })
         props.hotRef.current.addHook('afterChange', (changes, source) => {
             localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))

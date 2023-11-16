@@ -54,6 +54,8 @@ const Production = () => {
     const tcLockRef = useRef(true)
     const isFromLanguageWindowRef = useRef(false)
     const subtitleIndexRef = useRef(0)
+    const [dataInitialized, setDataInitialized] = useState(false)
+
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const timeOut = setTimeout(() => {
@@ -124,6 +126,7 @@ const Production = () => {
             setAuthority('test')
             if (localStorage.language?.length) setLanguages(JSON.parse(localStorage.language))
             if (localStorage.subtitle) cellDataRef.current = JSON.parse(localStorage.subtitle)
+            setDataInitialized(true)
             return
         }
         axios.get(`v1/task/access`, {

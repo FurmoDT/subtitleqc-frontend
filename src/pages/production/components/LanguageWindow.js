@@ -180,15 +180,12 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')
         })
         props.hotRef.current.addHook('beforeChange', (changes, source) => {
-            const {tcChanges, fnChanges} = changes.reduce((acc, value) => {
-                if (value[1] === 'start' || value[1] === 'end') acc.tcChanges.push(value);
-                else if (value[1] === 'fn') acc.fnChanges.push(value);
-                return acc;
-            }, {tcChanges: [], fnChanges: []});
-
-            fnChanges.forEach(v => v[3] = Boolean(v[3]) || null)
-
+            changes.changes.forEach(v => v[1] === 'fn' && (v[3] = Boolean(v[3]) || null))
+        })
+        props.hotRef.current.addHook('afterChange', (changes, source) => {
+            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             if (!props.waveformRef.current || source === 'timelineWindow') return
+            const tcChanges = changes.filter((value) => value[1] === 'start' || value[1] === 'end')
             if (tcChanges.length) {
                 if (tcChanges.length > 1) {
                     props.waveformRef.current.segments.removeAll()
@@ -206,9 +203,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     }
                 }
             }
-        })
-        props.hotRef.current.addHook('afterChange', () => {
-            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             if (props.hotRef.current.getActiveEditor()?._opened) {
                 props.isFromLanguageWindowRef.current = true
                 props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds') // update subtitle

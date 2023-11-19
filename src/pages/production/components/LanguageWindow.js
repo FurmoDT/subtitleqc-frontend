@@ -6,6 +6,7 @@ import {durationValidator, tcInValidator, tcOutValidator, textValidator} from ".
 import {createSegment, tcToSec} from "../../../utils/functions";
 import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
+import * as Y from "yjs";
 
 const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
@@ -225,11 +226,18 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 props.hotRef.current.render()
             })
         })
-        props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
-            for (let i = index; i < index + amount; i++) {
-                props.hotRef.current.setDataAtRowProp(i, 'rowId', v4())
-            }
-            !props.taskHashedId && localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+        props.hotRef.current.addHook('afterCreateRow', (index, amount, source) => {
+            if (props.taskHashedId) {
+                props.crdt.yDoc().transact(() => {
+                    const rows = props.crdt.yMap().get('cells')
+                    const newRows = Array.from({length: amount}, () => {
+                        const map = new Y.Map()
+                        map.set('rowId', v4())
+                        return map
+                    })
+                    rows.insert(index, newRows)
+                })
+            } else if (!props.taskHashedId) localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
@@ -239,9 +247,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 })
             }
         })
-        props.hotRef.current.addHook('afterRemoveRow', () => {
+        props.hotRef.current.addHook('afterRemoveRow', (index, amount) => {
+            if (props.taskHashedId) {
+                props.crdt.yDoc().transact(() => {
+                    const rows = props.crdt.yMap().get('cells')
+                    rows.delete(index, amount)
+                })
+            } else if (!props.taskHashedId) localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             setTotalLines(getTotalLines())
-            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             props.hotSelectionRef.current.rowStart = Math.min(row, row2)

@@ -159,6 +159,20 @@ const Production = () => {
                     })
                     yMap.set('cells', Y.Array.from(yCellData))
                 }
+                yMap.get('cells').observe(event => { // new row
+                    let retain, inserts, deletes
+                    for (let i = 0; i < event.changes.delta.length; i++) {
+                        retain = event.changes.delta[i].retain || retain || 0
+                        inserts = event.changes.delta[i].insert?.map(value => ({rowId: value.get('rowId')})) || []
+                        deletes = event.changes.delta[i].delete || 0
+                    }
+                    if (event.transaction.local) {
+                        inserts?.forEach((value, i) => hotRef.current.setDataAtRowProp(retain + i, 'rowId', value.rowId))
+                    } else {
+                        cellDataRef.current.splice(retain, deletes, ...inserts)
+                        hotRef.current.render()
+                    }
+                })
                 yMap.get('cells').observeDeep(events => {
                     events.forEach(event => {
                         if (!event.transaction.local) {

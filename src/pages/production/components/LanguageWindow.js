@@ -180,26 +180,32 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')
         })
         props.hotRef.current.addHook('beforeChange', (changes) => {
-            changes.forEach(v => v[1] === 'fn' && (v[3] = Boolean(v[3]) || null))
+            changes.forEach(v => v[1] === 'fn' && (v[3] = Boolean(v[3])))
         })
         props.hotRef.current.addHook('afterChange', (changes, source) => {
-            localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            if (!props.waveformRef.current || source === 'timelineWindow') return
-            const tcChanges = changes.filter((value) => value[1] === 'start' || value[1] === 'end')
-            if (tcChanges.length) {
-                if (tcChanges.length > 1) {
-                    props.waveformRef.current.segments.removeAll()
-                    props.waveformRef.current.segments.add(resetSegments())
-                } else {
-                    if (tcChanges[0][2]) {
-                        const {rowId} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
-                        props.waveformRef.current.segments.removeById(rowId)
-                        props.selectedSegment.current = null
-                    }
-                    if (tcChanges[0][3]) {
-                        const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
-                        const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
-                        0 <= startSec && endSec && props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
+            if (props.taskHashedId && source !== 'sync') {
+                props.crdt.yDoc().transact(() => {
+                    const rows = props.crdt.yMap().get('cells')
+                    changes.forEach(change => rows.get(change[0])?.set(change[1], change[3]))
+                })
+            } else if (!props.taskHashedId) localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+            if (props.waveformRef.current && source !== 'timelineWindow') {
+                const tcChanges = changes.filter((value) => value[1] === 'start' || value[1] === 'end')
+                if (tcChanges.length) {
+                    if (tcChanges.length > 1) {
+                        props.waveformRef.current.segments.removeAll()
+                        props.waveformRef.current.segments.add(resetSegments())
+                    } else {
+                        if (tcChanges[0][2]) {
+                            const {rowId} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
+                            props.waveformRef.current.segments.removeById(rowId)
+                            props.selectedSegment.current = null
+                        }
+                        if (tcChanges[0][3]) {
+                            const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
+                            const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
+                            0 <= startSec && endSec && props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
+                        }
                     }
                 }
             }
@@ -243,7 +249,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, getTotalLines, selectRows, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

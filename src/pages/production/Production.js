@@ -13,7 +13,8 @@ import {v4} from "uuid";
 import axios from "../../utils/axios";
 import {useNavigate} from "react-router-dom";
 import {Allotment} from "allotment";
-
+import CrdtHandler from "./components/CrdtHandler";
+import * as Y from "yjs";
 
 const Production = () => {
     const [, , taskHashedId, workHashedId] = window.location.pathname.split('/')
@@ -54,6 +55,8 @@ const Production = () => {
     const tcLockRef = useRef(true)
     const isFromLanguageWindowRef = useRef(false)
     const subtitleIndexRef = useRef(0)
+    const crdtHandlerRef = useRef(null)
+    const [crdtInitialized, setCrdtInitialized] = useState(false)
     const [dataInitialized, setDataInitialized] = useState(false)
 
     const afterRenderPromise = useCallback(() => {
@@ -141,9 +144,39 @@ const Production = () => {
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
 
+    useEffect(() => {
+        if (crdtInitialized) {
+            const crdt = crdtHandlerRef.current
+            const yMap = crdt.yMap()
+            crdt.yDoc().transact(() => {
+                if (yMap.get('cells')) {
+                    cellDataRef.current = yMap.get('cells').toArray().map(value => value.toJSON())
+                } else {
+                    const yCellData = cellDataRef.current.map(value => {
+                        const map = new Y.Map()
+                        Object.entries(value).forEach(([key, value]) => map.set(key, value))
+                        return map
+                    })
+                    yMap.set('cells', Y.Array.from(yCellData))
+                }
+                yMap.get('cells').observeDeep(events => {
+                    events.forEach(event => {
+                        if (!event.transaction.local) {
+                            const row = hotRef.current.getSourceDataAtCol('rowId').indexOf(event.target.get('rowId'))
+                            const updates = []
+                            event.changes.keys.forEach((change, key) => updates.push([row, key, event.target.get(key)]))
+                            hotRef.current.setDataAtRowProp(updates, 'sync')
+                        }
+                    })
+                })
+            })
+            setDataInitialized(true)
+        }
+    }, [crdtInitialized]);
+
     return <>
-        <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
-                  setLanguageFile={setLanguageFile} languages={languages}/>
+        {!taskHashedId && <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
+                                    setLanguageFile={setLanguageFile} languages={languages}/>}
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
                          cellDataRef={cellDataRef} languageFile={languageFile} setLanguages={setLanguages}
                          waveformRef={waveformRef} resetSegments={resetSegments}/>
@@ -155,6 +188,7 @@ const Production = () => {
                      tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
+        <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId} setCrdtInitialized={setCrdtInitialized}/>
         <div ref={dropzoneRef} className={'w-100 d-flex flex-row justify-content-center position-relative'}
              style={{height: 'calc(100vh - 50px - 40px)'}}>
             <Allotment ref={containerRef} vertical proportionalLayout={false} minSize={300} onReset={() => null}
@@ -192,11 +226,13 @@ const Production = () => {
                                       languages={languages} setLanguages={setLanguages}/>
                         <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}
                                         hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
-                                        tcLock={tcLock} tcLockRef={tcLockRef} cellDataRef={cellDataRef}
-                                        hotSelectionRef={hotSelectionRef} languages={languages}
+                                        tcLock={tcLock} tcLockRef={tcLockRef} dataInitialized={dataInitialized}
+                                        cellDataRef={cellDataRef} languages={languages}
+                                        crdt={crdtHandlerRef.current}
                                         guideline={projectDetail.guideline} resetSegments={resetSegments}
-                                        selectedSegment={selectedSegment} subtitleIndexRef={subtitleIndexRef}
+                                        selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
                                         isFromLanguageWindowRef={isFromLanguageWindowRef}
+                                        subtitleIndexRef={subtitleIndexRef}
                                         taskHashedId={taskHashedId} workHashedId={workHashedId}/>
                     </Allotment.Pane>
                 </Allotment>

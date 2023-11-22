@@ -167,7 +167,7 @@ const Production = () => {
                         deletes = event.changes.delta[i].delete || 0
                     }
                     if (event.transaction.local) {
-                        inserts?.forEach((value, i) => hotRef.current.setDataAtRowProp(retain + i, 'rowId', value.rowId))
+                        inserts?.forEach((value, i) => cellDataRef.current[retain + i].rowId = value.rowId)
                     } else {
                         cellDataRef.current.splice(retain, deletes, ...inserts)
                         hotRef.current.render()

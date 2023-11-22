@@ -217,7 +217,10 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
         })
-        // TODO create row source === CopyPaste.paste performance
+        props.hotRef.current.addHook('beforePaste', (data, coords) => {
+            const newRows = Math.max(data.length + coords[0].startRow - props.hotRef.current.countRows(), 0)
+            if (newRows) props.hotRef.current.alter('insert_row', props.hotRef.current.countRows(), newRows)
+        })
         props.hotRef.current.addHook('beforeCreateRow', (index, amount) => {
             afterRenderPromise().then(() => {
                 for (let i = 0; i < 2; i++) {

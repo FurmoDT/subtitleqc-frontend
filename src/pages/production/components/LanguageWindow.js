@@ -171,6 +171,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     grammarlyPlugin = r.addPlugin(containerMain.current.querySelector('textarea'), {
                         documentDialect: "american",
                     },)
+                    containerMain.current.querySelector('grammarly-editor-plugin').style.setProperty('--grammarly-button-position-top', `${64 + 7 + props.size.height}px`)
+                    containerMain.current.querySelector('grammarly-editor-plugin').style.setProperty('--grammarly-button-position-right', '100px')
                     containerMain.current.querySelector('grammarly-editor-plugin').querySelector('textarea').focus()
                 });
             } else if (props.hotRef.current.colToProp(column).startsWith('arAE')) {

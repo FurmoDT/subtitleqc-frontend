@@ -238,16 +238,17 @@ const Production = () => {
                                       findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                                       afterRenderPromise={afterRenderPromise} cellDataRef={cellDataRef}
                                       languages={languages} setLanguages={setLanguages}/>
-                        <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}
-                                        hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
-                                        tcLock={tcLock} tcLockRef={tcLockRef} dataInitialized={dataInitialized}
-                                        cellDataRef={cellDataRef} languages={languages}
-                                        crdt={crdtHandlerRef.current}
-                                        guideline={projectDetail.guideline} resetSegments={resetSegments}
-                                        selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
-                                        isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                        subtitleIndexRef={subtitleIndexRef}
-                                        taskHashedId={taskHashedId} workHashedId={workHashedId}/>
+                        {(taskHashedId && dataInitialized || !taskHashedId) &&
+                            <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}
+                                            hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
+                                            tcLock={tcLock} tcLockRef={tcLockRef} dataInitialized={dataInitialized}
+                                            cellDataRef={cellDataRef} languages={languages}
+                                            crdt={crdtHandlerRef.current}
+                                            guideline={projectDetail.guideline} resetSegments={resetSegments}
+                                            selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
+                                            isFromLanguageWindowRef={isFromLanguageWindowRef}
+                                            subtitleIndexRef={subtitleIndexRef}
+                                            taskHashedId={taskHashedId} workHashedId={workHashedId}/>}
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>

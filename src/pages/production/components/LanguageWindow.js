@@ -186,12 +186,18 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             changes.forEach(v => v[1] === 'fn' && (v[3] = Boolean(v[3])))
         })
         props.hotRef.current.addHook('afterChange', (changes, source) => {
-            if (props.taskHashedId && source !== 'sync') {
-                props.crdt.yDoc().transact(() => {
-                    const rows = props.crdt.yMap().get('cells')
-                    changes.forEach(change => rows.get(change[0])?.set(change[1], change[3]))
-                })
-            } else if (!props.taskHashedId) localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+            if (props.taskHashedId) {
+                if (source === 'sync') {
+                    props.hotRef.current.undoRedo.doneActions.pop()
+                } else {
+                    props.crdt.yDoc().transact(() => {
+                        const rows = props.crdt.yMap().get('cells')
+                        changes.forEach(change => rows.get(change[0])?.set(change[1], change[3]))
+                    })
+                }
+            } else {
+                localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+            }
             if (props.waveformRef.current && source !== 'timelineWindow') {
                 const tcChanges = changes.filter((value) => value[1] === 'start' || value[1] === 'end')
                 if (tcChanges.length) {

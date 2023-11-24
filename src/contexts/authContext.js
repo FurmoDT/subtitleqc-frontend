@@ -19,6 +19,7 @@ export const AuthProvider = ({children}) => {
                         isAuthenticated: true,
                         user: {
                             userId: response.data.user_id,
+                            userName: response.data.user_name,
                             userEmail: response.data.user_email,
                             userRole: response.data.user_role
                         }

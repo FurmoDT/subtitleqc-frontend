@@ -7,9 +7,11 @@ import {WebrtcProvider} from "y-webrtc";
 import {localWsUrl, wsUrl} from "../../../utils/config";
 import {IndexeddbPersistence} from "y-indexeddb";
 import {SessionContext} from "../../../contexts/sessionContext";
+import {AuthContext} from "../../../contexts/authContext";
 
-const CrdtHandler = forwardRef(({setCrdtInitialized, ...props}, ref) => {
+const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...props}, ref) => {
     const {sessionId} = useContext(SessionContext)
+    const {userState} = useContext(AuthContext);
     const [iceservers, setIceServers] = useState(null)
     const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
     const {wsRef, isOnline, websocketConnected} = useContext(WebsocketContext)
@@ -18,7 +20,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, ...props}, ref) => {
 
     useImperativeHandle(ref, () => ({
         yDoc: () => yDocRef.current,
-        yMap: () => yDocRef.current.getMap(roomId)
+        yMap: () => yDocRef.current.getMap(roomId),
     }), [roomId])
 
     useEffect(() => {
@@ -31,6 +33,21 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, ...props}, ref) => {
             maxConns: 20,
             peerOpts: {config: {iceServers: iceservers}}
         })
+        const awareness = provider.awareness
+        awareness.setLocalStateField('user', {name: userState.user.userName, email: userState.user.userEmail})
+        awareness.on('change', ({added, removed, updated}) => {
+            const states = provider.awareness.getStates()
+            added.forEach(id => {
+                setCrdtAwarenessState(prevState => ({...prevState, [id]: states.get(id)}))
+            })
+            removed.forEach(id => {
+                setCrdtAwarenessState(prevState => {
+                    const {[id]: omit, ...newState} = prevState
+                    return newState
+                })
+            })
+        })
+
         const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
         persistence.whenSynced.then(() => {
             axios.get('v1/task/content', {params: {hashed_id: props.taskHashedId}}).then((r) => {
@@ -50,7 +67,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, ...props}, ref) => {
             provider.destroy()
             yDoc.destroy()
         }
-    }, [props.taskHashedId, roomId, setCrdtInitialized, iceservers, sessionId, wsRef, websocketConnected]);
+    }, [props.taskHashedId, roomId, setCrdtInitialized, setCrdtAwarenessState, sessionId, userState, iceservers, wsRef, websocketConnected]);
 
     useEffect(() => {
         const connection = navigator.connection

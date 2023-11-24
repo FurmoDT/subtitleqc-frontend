@@ -57,6 +57,7 @@ const Production = () => {
     const subtitleIndexRef = useRef(0)
     const crdtHandlerRef = useRef(null)
     const [crdtInitialized, setCrdtInitialized] = useState(false)
+    const [crdtAwarenessState, setCrdtAwarenessState] = useState({})
     const [dataInitialized, setDataInitialized] = useState(false)
 
     const afterRenderPromise = useCallback(() => {
@@ -198,11 +199,13 @@ const Production = () => {
                      focusedRef={focusedRef} projectDetail={projectDetail} setProjectDetail={setProjectDetail}
                      setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
+                     crdtAwarenessState={crdtAwarenessState}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
-        <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId} setCrdtInitialized={setCrdtInitialized}/>
+        <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId}
+                     setCrdtInitialized={setCrdtInitialized} setCrdtAwarenessState={setCrdtAwarenessState}/>
         <div ref={dropzoneRef} className={'w-100 d-flex flex-row justify-content-center position-relative'}
              style={{height: 'calc(100vh - 50px - 40px)'}}>
             <Allotment ref={containerRef} vertical proportionalLayout={false} minSize={300} onReset={() => null}
@@ -238,7 +241,7 @@ const Production = () => {
                                       findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                                       afterRenderPromise={afterRenderPromise} cellDataRef={cellDataRef}
                                       languages={languages} setLanguages={setLanguages}/>
-                        {(taskHashedId && dataInitialized || !taskHashedId) &&
+                        {((taskHashedId && dataInitialized) || !taskHashedId) &&
                             <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}
                                             hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
                                             tcLock={tcLock} tcLockRef={tcLockRef} dataInitialized={dataInitialized}

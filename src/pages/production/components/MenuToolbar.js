@@ -76,7 +76,14 @@ const MenuToolbar = (props) => {
         <div className={'w-100 d-flex justify-content-center'}>
             <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</span>
         </div>
-        <div className={'w-100'}/>
+        <div className={'w-100 d-flex justify-content-end'}>
+            {Object.keys(props.crdtAwarenessState).map(key => props.crdtAwarenessState[key].user).map((value, index) => {
+                return <MDBTooltip key={index} tag='span' wrapperClass='span-avatar mx-1' placement={'bottom'}
+                                   title={`${value.name}`}>
+                    <span>{value.email.slice(0, 3)}</span>
+                </MDBTooltip>
+            })}
+        </div>
     </div>
 };
 

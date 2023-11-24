@@ -32,7 +32,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, ...props}, ref) => {
             peerOpts: {config: {iceServers: iceservers}}
         })
         const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
-        persistence.once('synced', () => {
+        persistence.whenSynced.then(() => {
             axios.get('v1/task/content', {params: {hashed_id: props.taskHashedId}}).then((r) => {
                 if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
             }).finally(() => setCrdtInitialized(true))

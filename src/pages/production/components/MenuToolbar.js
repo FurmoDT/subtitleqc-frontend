@@ -4,8 +4,27 @@ import {downloadCsv, downloadFspx, downloadSrt, downloadXlsx} from "../../../uti
 import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
 import ProjectSettingModal from "./dialogs/ProjectSettingModal";
+import {useEffect, useState} from "react";
 
 const MenuToolbar = (props) => {
+    const [onlineUsers, setOnlineUsers] = useState([])
+
+    useEffect(() => {
+        const aw = Object.keys(props.crdtAwarenessState).map(key => props.crdtAwarenessState[key].user)
+        setOnlineUsers(prevState => prevState.length !== aw.length ? aw : prevState)
+    }, [props.crdtAwarenessState])
+
+    const OnlineUsersComponent = () => {
+        return onlineUsers.sort((a, b) => a.connectedAt - b.connectedAt)
+            .filter((obj, index, self) => index === self.findIndex((o) => o.email === obj.email))
+            .map((value, index) => {
+                return <MDBTooltip key={index} tag='span' wrapperClass='span-avatar mx-1' placement={'bottom'}
+                                   title={`${value.name}`}>
+                    <span>{value.email.slice(0, 3)}</span>
+                </MDBTooltip>
+            })
+    }
+
     return <div className={'menu-toolbar'}>
         <div className={'d-flex w-100'}>
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Project Setting'>
@@ -77,12 +96,7 @@ const MenuToolbar = (props) => {
             <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</span>
         </div>
         <div className={'w-100 d-flex justify-content-end'}>
-            {Object.keys(props.crdtAwarenessState).map(key => props.crdtAwarenessState[key].user).map((value, index) => {
-                return <MDBTooltip key={index} tag='span' wrapperClass='span-avatar mx-1' placement={'bottom'}
-                                   title={`${value.name}`}>
-                    <span>{value.email.slice(0, 3)}</span>
-                </MDBTooltip>
-            })}
+            <OnlineUsersComponent/>
         </div>
     </div>
 };

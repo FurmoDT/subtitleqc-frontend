@@ -17,9 +17,9 @@ const MenuToolbar = (props) => {
     const OnlineUsersComponent = () => {
         return onlineUsers.sort((a, b) => a.connectedAt - b.connectedAt)
             .filter((obj, index, self) => index === self.findIndex((o) => o.email === obj.email))
-            .map((value, index) => {
-                return <MDBTooltip key={index} tag='span' wrapperClass='span-avatar mx-1' placement={'bottom'}
-                                   title={`${value.name}`}>
+            .map(value => {
+                return <MDBTooltip key={value.connectedAt} tag='span' wrapperClass='span-avatar mx-1'
+                                   placement={'bottom'} title={value.name}>
                     <span>{value.email.slice(0, 3)}</span>
                 </MDBTooltip>
             })

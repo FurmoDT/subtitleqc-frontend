@@ -5,7 +5,7 @@ import MenuToolbar from "./components/MenuToolbar";
 import TimelineWindow from "./components/TimelineWindow";
 import {useCallback, useEffect, useRef, useState} from "react";
 import TransToolbar from "./components/TransToolbar";
-import {defaultLanguage, defaultProjectDetail, defaultSubtitle} from "../../utils/config";
+import {defaultLanguage, defaultProjectDetail, defaultSubtitle, languageCodes} from "../../utils/config";
 import FileUploadModal from "./components/dialogs/FileUploadModal";
 import Dropzone from "./components/Dropzone";
 import {createSegment, fileExtension, tcToSec} from "../../utils/functions";
@@ -141,6 +141,7 @@ const Production = () => {
             setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
             setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
             setTaskName(`${task.task_name}_${task.task_episode}`)
+            setLanguages(response.data.target_languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
             // setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])

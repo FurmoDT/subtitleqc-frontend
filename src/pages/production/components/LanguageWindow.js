@@ -14,6 +14,7 @@ const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98
 const LanguageWindow = ({resetSegments, ...props}) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
+    const userCursorsRef = useRef({})
 
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
@@ -268,12 +269,39 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
+            props.crdt.awareness().setLocalStateField('cursor', {row: row, column: column})
             props.hotSelectionRef.current.rowStart = Math.min(row, row2)
             props.hotSelectionRef.current.columnStart = Math.min(column, column2)
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
+        props.hotRef.current.addHook('afterSetCellMeta', (row, column, key, value) => {
+            console.log(row, column, key, value)
+        })
+        props.hotRef.current.addHook('afterRemoveCellMeta', (row, column, key, value) => {
+            console.log(row, column, key, value)
+        })
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, getTotalLines, selectRows, props.taskHashedId])
+
+    useEffect(() => {
+        const awareness = props.crdt.awareness()
+        awareness.on('change', ({removed, updated}) => {
+            const states = awareness.getStates()
+            removed.forEach(id => {
+                const oldCursor = userCursorsRef.current[id]?.cursor
+                if (oldCursor) props.hotRef.current.removeCellMeta(oldCursor.row, oldCursor.column, 'test')
+                userCursorsRef.current = Object.fromEntries(Object.entries(userCursorsRef.current).filter(value => value[0] !== `${id}`))
+            })
+            updated.forEach(id => {
+                if (id === props.crdt.yDoc().clientID) return
+                const oldCursor = userCursorsRef.current[id]?.cursor
+                if (oldCursor) props.hotRef.current.removeCellMeta(oldCursor.row, oldCursor.column, 'test')
+                userCursorsRef.current[id] = states.get(id)
+                const newCursor = userCursorsRef.current[id].cursor
+                props.hotRef.current.setCellMeta(newCursor.row, newCursor.column, 'test', 1)
+            })
+        })
+    }, [props.crdt])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

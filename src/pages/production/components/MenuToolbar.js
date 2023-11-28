@@ -7,16 +7,27 @@ import ProjectSettingModal from "./dialogs/ProjectSettingModal";
 import {useEffect, useState} from "react";
 
 const MenuToolbar = (props) => {
-    const [onlineUsers, setOnlineUsers] = useState([])
+    const [onlineUsers, setOnlineUsers] = useState({})
 
     useEffect(() => {
-        const aw = Object.keys(props.crdtAwarenessState).map(key => props.crdtAwarenessState[key].user)
-        setOnlineUsers(prevState => prevState.length !== aw.length ? aw : prevState)
-    }, [props.crdtAwarenessState])
+        if (!props.crdtInitialized) return
+        const awareness = props.crdt.awareness()
+        setOnlineUsers({[props.crdt.yDoc().clientID]: awareness.getLocalState()})
+        awareness.on('change', ({added, removed}) => {
+            const states = awareness.getStates()
+            added.forEach(id => setOnlineUsers(prevState => ({...prevState, [id]: states.get(id)})))
+            removed.forEach(id => {
+                setOnlineUsers(prevState => {
+                    const {[id]: omit, ...newState} = prevState
+                    return newState
+                })
+            })
+        })
+    }, [props.crdt, props.crdtInitialized]);
 
     const OnlineUsersComponent = () => {
-        return onlineUsers.sort((a, b) => a.connectedAt - b.connectedAt)
-            .filter((obj, index, self) => index === self.findIndex((o) => o.email === obj.email))
+        return onlineUsers && Object.keys(onlineUsers).map(key => onlineUsers[key].user).sort((a, b) => a.connectedAt - b.connectedAt)
+            .filter((obj, index, self) => index === self.findIndex((o) => o.id === obj.id))
             .map(value => {
                 return <MDBTooltip key={value.connectedAt} tag='span' wrapperClass='span-avatar mx-1'
                                    placement={'bottom'} title={value.name}>

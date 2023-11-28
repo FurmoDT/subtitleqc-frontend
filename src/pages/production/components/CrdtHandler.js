@@ -16,11 +16,13 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
     const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
     const {wsRef, isOnline, websocketConnected} = useContext(WebsocketContext)
     const yDocRef = useRef(null)
+    const awarenessRef = useRef(null)
     const roomId = `${props.taskHashedId}`
 
     useImperativeHandle(ref, () => ({
         yDoc: () => yDocRef.current,
         yMap: () => yDocRef.current.getMap(roomId),
+        awareness: () => awarenessRef.current
     }), [roomId])
 
     useEffect(() => {
@@ -34,18 +36,13 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
             peerOpts: {config: {iceServers: iceservers}}
         })
         const awareness = provider.awareness
-        awareness.on('change', ({added, removed, updated}) => {
-            const states = awareness.getStates()
-            added.forEach(id => setCrdtAwarenessState(prevState => ({...prevState, [id]: states.get(id)})))
-            removed.forEach(id => {
-                setCrdtAwarenessState(prevState => {
-                    const {[id]: omit, ...newState} = prevState
-                    return newState
-                })
-            })
-            updated.forEach(id => setCrdtAwarenessState(prevState => ({...prevState, [id]: states.get(id)})))
+        awarenessRef.current = awareness
+        awareness.setLocalStateField('user', {
+            id: userState.user.userId,
+            name: userState.user.userName,
+            email: userState.user.userEmail,
+            connectedAt: Date.now()
         })
-        awareness.setLocalStateField('user', {name: userState.user.userName, email: userState.user.userEmail, connectedAt: Date.now()})
 
         const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
         persistence.whenSynced.then(() => {

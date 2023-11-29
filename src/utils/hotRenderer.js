@@ -69,7 +69,7 @@ export const durationValidator = (r, c, v, td, fontSize, instance) => {
 export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.fontSize = fontSize
     td.style.position = 'relative'
-    td.classList.add('td-custom')
+    td.classList.add('td-custom-text')
     const span = document.createElement('span');
     if (v) {
         // v = v.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')

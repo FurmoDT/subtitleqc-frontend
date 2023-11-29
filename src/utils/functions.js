@@ -66,6 +66,10 @@ export const formatTimestamp = (timestamp) => {
     return `${year}-${month}-${day}\n${hours}:${minutes}`;
 }
 
+export const generateHexColor = () => {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')
+}
+
 export const fileExtension = (filename) => {
     return filename?.split('.').pop().toLowerCase()
 }

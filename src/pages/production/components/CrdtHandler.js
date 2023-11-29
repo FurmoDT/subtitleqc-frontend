@@ -8,6 +8,7 @@ import {localWsUrl, wsUrl} from "../../../utils/config";
 import {IndexeddbPersistence} from "y-indexeddb";
 import {SessionContext} from "../../../contexts/sessionContext";
 import {AuthContext} from "../../../contexts/authContext";
+import {generateHexColor} from "../../../utils/functions";
 
 const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...props}, ref) => {
     const {sessionId} = useContext(SessionContext)
@@ -41,6 +42,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
             id: userState.user.userId,
             name: userState.user.userName,
             email: userState.user.userEmail,
+            color: generateHexColor(),
             connectedAt: Date.now()
         })
 

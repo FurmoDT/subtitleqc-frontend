@@ -28,12 +28,11 @@ const MenuToolbar = (props) => {
     const OnlineUsersComponent = () => {
         return onlineUsers && Object.keys(onlineUsers).map(key => onlineUsers[key].user).sort((a, b) => a.connectedAt - b.connectedAt)
             .filter((obj, index, self) => index === self.findIndex((o) => o.id === obj.id))
-            .map(value => {
-                return <MDBTooltip key={value.connectedAt} tag='span' wrapperClass='span-avatar mx-1'
-                                   placement={'bottom'} title={value.name}>
+            .map(value => (
+                <MDBTooltip key={value.connectedAt} tag='span' wrapperClass='span-avatar mx-1' placement={'bottom'}
+                            wrapperProps={{style: {outline: `3px solid ${value.color}`}}} title={value.name}>
                     <span>{value.email.slice(0, 3)}</span>
-                </MDBTooltip>
-            })
+                </MDBTooltip>))
     }
 
     return <div className={'menu-toolbar'}>

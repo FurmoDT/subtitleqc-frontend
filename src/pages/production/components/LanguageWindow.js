@@ -15,12 +15,18 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
     const userCursorsRef = useRef({})
+    const debounceTimeoutRef = useRef(null)
 
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
             const afterRenderCallback = () => resolve()
             props.hotRef.current?.addHookOnce('afterRender', afterRenderCallback)
         })
+    }, [props.hotRef])
+
+    const debounceRender = useCallback(() => {
+        clearTimeout(debounceTimeoutRef.current)
+        debounceTimeoutRef.current = setTimeout(() => props.hotRef.current.render(), 100)
     }, [props.hotRef])
 
     const getTotalLines = useCallback(() => {
@@ -79,7 +85,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
             if (arguments[5]) {
                 td.style.fontSize = props.hotFontSize
-                td.classList.add('td-custom')
+                td.classList.add('td-custom-text')
             }
         }
 
@@ -275,33 +281,48 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
         })
-        props.hotRef.current.addHook('afterSetCellMeta', (row, column, key, value) => {
-            console.log(row, column, key, value)
+        props.hotRef.current.addHook('afterRenderer', (TD, row, column, prop, value, cellProperties) => {
+            if (cellProperties.awareness) {
+                const borderDiv = document.createElement('div')
+                TD.classList.add('td-custom-container')
+                borderDiv.className = 'td-custom-border'
+                borderDiv.style.border = `2px solid ${cellProperties.awareness.color}`
+                borderDiv.style.width = borderDiv.style.height = 'calc(100% - 4px)'
+                const nameDiv = document.createElement('div')
+                nameDiv.className = 'td-custom-name'
+                nameDiv.style.backgroundColor = cellProperties.awareness.color
+                nameDiv.innerHTML = cellProperties.awareness.name
+                TD.append(borderDiv, nameDiv)
+            }
         })
-        props.hotRef.current.addHook('afterRemoveCellMeta', (row, column, key, value) => {
-            console.log(row, column, key, value)
-        })
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, getTotalLines, selectRows, props.taskHashedId])
+        props.hotRef.current.addHook('afterSetCellMeta', () => debounceRender())
+        props.hotRef.current.addHook('afterRemoveCellMeta', () => debounceRender())
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
         const awareness = props.crdt.awareness()
-        awareness.on('change', ({removed, updated}) => {
+        awareness.on('change', ({added, removed, updated}) => {
             const states = awareness.getStates()
+            added.forEach(id => {
+                userCursorsRef.current[id] = states.get(id)
+                const aw = userCursorsRef.current[id]
+                if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
+            })
             removed.forEach(id => {
-                const oldCursor = userCursorsRef.current[id]?.cursor
-                if (oldCursor) props.hotRef.current.removeCellMeta(oldCursor.row, oldCursor.column, 'test')
+                const prevCursor = userCursorsRef.current[id]?.cursor
+                if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, prevCursor.column, 'awareness')
                 userCursorsRef.current = Object.fromEntries(Object.entries(userCursorsRef.current).filter(value => value[0] !== `${id}`))
             })
             updated.forEach(id => {
                 if (id === props.crdt.yDoc().clientID) return
-                const oldCursor = userCursorsRef.current[id]?.cursor
-                if (oldCursor) props.hotRef.current.removeCellMeta(oldCursor.row, oldCursor.column, 'test')
+                const prevCursor = userCursorsRef.current[id]?.cursor
+                if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, prevCursor.column, 'awareness')
                 userCursorsRef.current[id] = states.get(id)
-                const newCursor = userCursorsRef.current[id].cursor
-                props.hotRef.current.setCellMeta(newCursor.row, newCursor.column, 'test', 1)
+                const aw = userCursorsRef.current[id]
+                props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
             })
         })
-    }, [props.crdt])
+    }, [props.crdt, props.hotRef])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

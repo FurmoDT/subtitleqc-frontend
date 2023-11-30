@@ -176,7 +176,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                             const {row, col} = selection[0].start
                             props.crdt.yDoc().transact(() => {
                                 const rows = props.crdt.yMap().get('cells')
-                                alert(`최종 작업자: ${rows.get(row).get(props.hotRef.current.colToProp(col)).metadata.user.name}`)
+                                const worker = rows.get(row).get(props.hotRef.current.colToProp(col))?.metadata.user.name
+                                if (worker) alert(`최종 작업자: ${worker}`)
                             })
                         }
                     },

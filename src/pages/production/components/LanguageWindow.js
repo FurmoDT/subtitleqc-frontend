@@ -169,6 +169,10 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             },
         })
         setTotalLines(getTotalLines())
+        Object.entries(userCursorsRef.current).forEach(([, aw]) => {
+            if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
+            debounceRender()
+        })
         let grammarlyPlugin = null
         props.hotRef.current.addHook('afterScrollVertically', selectRows)
         props.hotRef.current.addHook('afterScrollHorizontally', selectRows)
@@ -300,6 +304,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
+        if (!props.taskHashedId) return
         const awareness = props.crdt.awareness()
         awareness.on('change', ({added, removed, updated}) => {
             const states = awareness.getStates()
@@ -322,7 +327,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
             })
         })
-    }, [props.crdt, props.hotRef])
+    }, [props.taskHashedId, props.crdt, props.hotRef])
 
     useEffect(() => {
         for (let i = 0; i < 2; i++) {

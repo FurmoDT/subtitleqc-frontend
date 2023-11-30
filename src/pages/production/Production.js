@@ -155,7 +155,7 @@ const Production = () => {
                 if (yMap.get('cells')) {
                     cellDataRef.current = yMap.get('cells').toArray().map(value => {
                         return Object.entries(value.toJSON()).reduce((acc, [key, value]) => {
-                            acc[key] = typeof value !== 'object' ? value : value.value;
+                            if (value) acc[key] = typeof value !== 'object' ? value : value.value;
                             return acc;
                         }, {});
                     })

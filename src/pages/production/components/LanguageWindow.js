@@ -164,7 +164,22 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     },
                     separator3: Handsontable.plugins.ContextMenu.SEPARATOR,
                     cut: {},
-                    copy: {}
+                    copy: {},
+                    separator4: Handsontable.plugins.ContextMenu.SEPARATOR,
+                    info: {
+                        name: 'Info',
+                        hidden: () => {
+                            const selected = props.hotRef.current.getSelected()
+                            return !props.taskHashedId || !(selected.length === 1 && selected[0][0] === selected[0][2] && selected[0][1] === selected[0][3])
+                        },
+                        callback: (key, selection) => {
+                            const {row, col} = selection[0].start
+                            props.crdt.yDoc().transact(() => {
+                                const rows = props.crdt.yMap().get('cells')
+                                alert(`최종 작업자: ${rows.get(row).get(props.hotRef.current.colToProp(col)).metadata.user.name}`)
+                            })
+                        }
+                    },
                 }
             },
         })
@@ -199,7 +214,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 } else {
                     props.crdt.yDoc().transact(() => {
                         const rows = props.crdt.yMap().get('cells')
-                        changes.forEach(change => rows.get(change[0])?.set(change[1], change[3]))
+                        const user = userCursorsRef.current[props.crdt.yDoc().clientID]
+                        changes.forEach(change => {
+                            if (change[2] !== change[3] && (change[2] || change[3])) {
+                                rows.get(change[0])?.set(change[1], {
+                                    value: change[3], metadata: {user: {id: user.id, name: user.name}}
+                                })
+                            }
+                        })
                     })
                 }
             } else {
@@ -305,6 +327,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     useEffect(() => {
         if (!props.taskHashedId) return
         const awareness = props.crdt.awareness()
+        userCursorsRef.current[props.crdt.yDoc().clientID] = awareness.getStates().get(props.crdt.yDoc().clientID).user
         awareness.on('change', ({added, removed, updated}) => {
             const states = awareness.getStates()
             added.forEach(id => {

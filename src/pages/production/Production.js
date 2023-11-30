@@ -140,7 +140,9 @@ const Production = () => {
             setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
             setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
             setTaskName(`${task.task_name}_${task.task_episode}`)
-            setLanguages(response.data.target_languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
+            setLanguages(response.data.target_languages.map(value => ({
+                code: value, name: languageCodes[value], counter: 1
+            })))
             // setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
@@ -151,7 +153,12 @@ const Production = () => {
             const yMap = crdt.yMap()
             crdt.yDoc().transact(() => {
                 if (yMap.get('cells')) {
-                    cellDataRef.current = yMap.get('cells').toArray().map(value => value.toJSON())
+                    cellDataRef.current = yMap.get('cells').toArray().map(value => {
+                        return Object.entries(value.toJSON()).reduce((acc, [key, value]) => {
+                            acc[key] = typeof value !== 'object' ? value : value.value;
+                            return acc;
+                        }, {});
+                    })
                 } else {
                     const yCellData = cellDataRef.current.map(value => {
                         const map = new Y.Map()
@@ -179,7 +186,7 @@ const Production = () => {
                         if (!event.transaction.local) {
                             const row = hotRef.current.getSourceDataAtCol('rowId').indexOf(event.target.get('rowId'))
                             const updates = []
-                            event.changes.keys.forEach((change, key) => updates.push([row, key, event.target.get(key)]))
+                            event.changes.keys.forEach((change, key) => updates.push([row, key, event.target.get(key).value]))
                             hotRef.current.setDataAtRowProp(updates, 'sync')
                         }
                     })

@@ -169,10 +169,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             },
         })
         setTotalLines(getTotalLines())
-        Object.entries(userCursorsRef.current).forEach(([, aw]) => {
-            if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
-            debounceRender()
-        })
         let grammarlyPlugin = null
         props.hotRef.current.addHook('afterScrollVertically', selectRows)
         props.hotRef.current.addHook('afterScrollHorizontally', selectRows)
@@ -279,7 +275,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
-            props.crdt.awareness().setLocalStateField('cursor', {row: row, column: column})
+            props.crdt?.awareness()?.setLocalStateField('cursor', {row: row, column: column})
             props.hotSelectionRef.current.rowStart = Math.min(row, row2)
             props.hotSelectionRef.current.columnStart = Math.min(column, column2)
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
@@ -301,6 +297,9 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         })
         props.hotRef.current.addHook('afterSetCellMeta', () => debounceRender())
         props.hotRef.current.addHook('afterRemoveCellMeta', () => debounceRender())
+        Object.entries(userCursorsRef.current).forEach(([, aw]) => {
+            if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
+        })
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {

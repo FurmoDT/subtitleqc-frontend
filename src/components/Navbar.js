@@ -31,16 +31,16 @@ export default function Navbar(props) {
     }, [navigate])
 
     return <>
-        <MDBNavbar expand={'lg'} dark style={{backgroundColor: '#121212ff', padding: 0, minHeight: '50px'}}>
-            <MDBContainer fluid style={{paddingLeft: 5}}>
-                <MDBNavbarBrand href={`${props.basename}`} style={{width: '40px', height: '35px'}}>
-                    <img src='/furmo-logo.png' width={'35'} height={'28'} alt='' style={{margin: '0 auto'}}/>
+        <MDBNavbar expand={'lg'} className={'p-0 shadow-0'} style={{backgroundColor: '#f7f8fc', minHeight: '50px'}}>
+            <MDBContainer fluid>
+                <MDBNavbarBrand href={`${props.basename}`}>
+                    <img src='/furmo-logo.png' width={'40'} height={'30'} alt='' className={'m-0'}/>
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={() => setShowNavNoTogglerSecond(!showNavNoTogglerSecond)}>
                     <MDBIcon icon='bars' fas/>
                 </MDBNavbarToggler>
                 <MDBCollapse navbar show={showNavNoTogglerSecond}>
-                    <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
+                    <MDBNavbarNav className='mb-0'>
                         <MDBNavbarItem>
                             <Link className={`nav-link ${activeNav === '/tasks' ? 'active' : ''}`} to={'/'}>MAIN</Link>
                         </MDBNavbarItem>
@@ -64,13 +64,11 @@ export default function Navbar(props) {
                     <MDBBtn outline color={'link'} className={'text-nowrap'}
                             style={{display: userState.isAuthenticated ? 'none' : ''}}
                             onClick={useCallback(() => navigate('/login'), [navigate])}>로그인</MDBBtn>
-                    <MDBDropdown style={{display: userState.isAuthenticated ? '' : 'none', color: 'white'}}>
+                    <MDBDropdown style={{display: userState.isAuthenticated ? '' : 'none', color: 'black'}}>
                         <MDBDropdownToggle tag={'section'}
                                            onMouseEnter={(event) => event.target.style.cursor = 'pointer'}>
-                            <label style={{marginRight: '5px', fontSize: '1rem'}}>
-                                {userState.user?.userEmail} 님
-                            </label>
-                            <MDBIcon fas icon="user-circle" size={'xl'} color={'white-50'}/>
+                            <span className={'me-2'}>{`${userState.user?.userEmail} 님`}</span>
+                            <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>
                         </MDBDropdownToggle>
                         <MDBDropdownMenu responsive={'end'}>
                             <MDBDropdownItem link href={null} onClick={useCallback(() => {

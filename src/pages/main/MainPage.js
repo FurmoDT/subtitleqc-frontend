@@ -21,9 +21,9 @@ const MainPage = () => {
     }, [navigate, pathname])
 
     return <div style={{height: 'calc(100vh - 50px)', display: 'flex'}}>
-        <Sidebar collapsedWidth={'50px'} collapsed={true} rootStyles={{
+        <Sidebar collapsedWidth={'4rem'} collapsed={true} rootStyles={{
             [`.${sidebarClasses.container}`]: {
-                backgroundColor: '#121212ff'
+                backgroundColor: '#ecf1fb'
             },
         }}>
             <Menu style={{display: 'flex', justifyContent: 'center'}} menuItemStyles={{
@@ -32,16 +32,18 @@ const MainPage = () => {
                 <MenuItem disabled={true}/>
                 <MenuItem active={activeMenu === '/'} onClick={() => setActiveMenu('/')}
                           component={<Link to={'/'}/>} disabled>
-                    <MdDashboard size={25} color={'white'}/>
+                    <span className={'span-menuItem'}>
+                        <MdDashboard size={25} color={'#6cadd0'}/>
+                    </span>
                 </MenuItem>
                 <MenuItem active={activeMenu === '/tasks'} onClick={() => setActiveMenu('/tasks')}
                           component={<Link to={'/tasks'}/>}>
-                    <BsListTask size={25} color={'white'}/>
+                    <BsListTask size={25} color={'#6cadd0'}/>
                 </MenuItem>
                 {/^(admin|pm)$/.test(userState.user.userRole) &&
                     <MenuItem active={activeMenu === '/projects'} onClick={() => setActiveMenu('/projects')}
                               component={<Link to={'/projects'}/>}>
-                        <MdFolderOpen size={25} color={'white'}/>
+                        <MdFolderOpen size={25} color={'#6cadd0'}/>
                     </MenuItem>}
             </Menu>
         </Sidebar>

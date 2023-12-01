@@ -38,24 +38,27 @@ const TaskPanel = () => {
         } else return null
     }
 
-    return <div className={'h-100 text-center p-5'} style={{width: 'calc(100vw - 50px)'}}>
-        {userState.user.userRole ? <>
-            <MDBRow className={'mb-2'}>
-                <MDBCol sm={4} className={'d-flex justify-content-start align-items-end'}>
-                    <ModalComponent/>
-                </MDBCol>
-                <MDBCol sm={4} className={'d-flex justify-content-center align-items-end'}>
-                    <div className={'fw-bold'}>태스크 리스트</div>
-                </MDBCol>
-                <MDBCol sm={4} className={'d-flex justify-content-end'}>
-                    <DatePickerComponent startAt={startAt} setStartAt={setStartAt} endAt={endAt} setEndAt={setEndAt}/>
-                </MDBCol>
-            </MDBRow>
-            <div style={{height: 'calc(100% - 5rem)'}}>
-                <TaskGridComponent startAt={startAt} endAt={endAt} forceRender={forceRender}
-                                   forceRenderer={forceRenderer}/>
-            </div>
-        </> : <>승인 대기중입니다.</>}
+    return <div className={'h-100 text-center p-2'} style={{width: 'calc(100vw - 50px)'}}>
+        <div className={'w-100 h-100 p-2 bg-white rounded-5'}>
+            {userState.user.userRole ? <>
+                <MDBRow className={'mb-2'}>
+                    <MDBCol sm={4} className={'d-flex justify-content-start align-items-end'}>
+                        <ModalComponent/>
+                    </MDBCol>
+                    <MDBCol sm={4} className={'d-flex justify-content-center align-items-end'}>
+                        <div className={'fw-bold'}>태스크 리스트</div>
+                    </MDBCol>
+                    <MDBCol sm={4} className={'d-flex justify-content-end'}>
+                        <DatePickerComponent startAt={startAt} setStartAt={setStartAt} endAt={endAt}
+                                             setEndAt={setEndAt}/>
+                    </MDBCol>
+                </MDBRow>
+                <div style={{height: 'calc(100% - 5rem)'}}>
+                    <TaskGridComponent startAt={startAt} endAt={endAt} forceRender={forceRender}
+                                       forceRenderer={forceRenderer}/>
+                </div>
+            </> : <>승인 대기중입니다.</>}
+        </div>
     </div>
 };
 

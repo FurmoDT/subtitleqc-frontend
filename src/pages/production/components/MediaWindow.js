@@ -40,18 +40,17 @@ const MediaWindow = ({setVideo, ...props}) => {
         let targetIndex = props.subtitleIndexRef.current
         let nextSubtitle = props.cellDataRef.current[targetIndex][language] || ''
         let labelRef = subtitleLabelRef
-        const viewPortToIndex = Math.max(targetIndex - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
+        const centerTargetIndex = Math.max(targetIndex - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
         if (seconds >= start && seconds <= end) {
             if (curIndex.current !== targetIndex) {
                 curIndex.current = targetIndex
                 if (forceSelect) {
                     !props.hotRef.current.getActiveEditor()?._opened && props.hotRef.current.selectRows(targetIndex)
-                    if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(viewPortToIndex)
+                    if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(centerTargetIndex)
                 }
             } else {
                 if (isSeek && forceSelect) { // change language
                     props.hotRef.current.selectRows(targetIndex)
-                    // props.hotRef.current.scrollViewportTo(viewPortToIndex)
                 }
             }
             if (labelRef.current.innerHTML !== nextSubtitle) labelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
@@ -59,6 +58,8 @@ const MediaWindow = ({setVideo, ...props}) => {
             if (curIndex.current === targetIndex) {
                 labelRef.current.innerHTML = ''
                 curIndex.current = -1
+            } else {
+                isSeek && props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? centerTargetIndex + 1 : targetIndex + 1)
             }
         }
     }, [props.cellDataRef, props.subtitleIndexRef, props.hotRef, language])
@@ -137,6 +138,7 @@ const MediaWindow = ({setVideo, ...props}) => {
             <div className={'d-flex align-items-center px-3'} style={{height: '1rem'}}>
                 <Range min={0} max={props.mediaInfo?.duration || 1} values={[seek]}
                        onChange={values => props.playerRef.current.seekTo(values[0], 'seconds')}
+                       onFinalChange={values => seek === values[0] && !isPlaying && props.playerRef.current.seekTo(values[0], 'seconds')}
                        renderTrack={({props: _props, children}) => (
                            <div {..._props} className={'input-range-track'} style={{
                                ..._props.style, background: getTrackBackground({

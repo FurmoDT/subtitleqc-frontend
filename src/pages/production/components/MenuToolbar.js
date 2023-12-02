@@ -40,13 +40,14 @@ const MenuToolbar = (props) => {
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Project Setting'>
                 <ProjectSettingModal projectDetail={props.projectDetail} setProjectDetail={props.setProjectDetail}/>
             </MDBTooltip>
-            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
-                <NewProjectModal setProjectDetail={props.setProjectDetail} hotRef={props.hotRef}
-                                 setTcLock={props.setTcLock}
-                                 setMediaFile={props.setMediaFile} setMediaInfo={props.setMediaInfo}
-                                 setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
-                                 setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
-            </MDBTooltip>
+            {!props.taskHashedId &&
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
+                    <NewProjectModal setProjectDetail={props.setProjectDetail} hotRef={props.hotRef}
+                                     setTcLock={props.setTcLock}
+                                     setMediaFile={props.setMediaFile} setMediaInfo={props.setMediaInfo}
+                                     setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
+                                     setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
+                </MDBTooltip>}
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
                 <ShortcutModal focusedRef={props.focusedRef} hotRef={props.hotRef} playerRef={props.playerRef}
                                waveformRef={props.waveformRef}

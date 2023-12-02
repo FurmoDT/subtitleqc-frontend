@@ -20,28 +20,27 @@ const MainPage = () => {
         setActiveMenu(pathname)
     }, [navigate, pathname])
 
-    return <div style={{height: 'calc(100vh - 50px)', display: 'flex'}}>
+    return <div className={'d-flex'} style={{height: 'calc(100vh - 50px)'}}>
         <Sidebar collapsedWidth={'4rem'} collapsed={true} rootStyles={{
-            [`.${sidebarClasses.container}`]: {
-                backgroundColor: '#ecf1fb'
-            },
+            [`.${sidebarClasses.container}`]: {backgroundColor: '#ecf1fb'},
         }}>
-            <Menu style={{display: 'flex', justifyContent: 'center'}} menuItemStyles={{
-                button: ({active}) => ({backgroundColor: active ? '#eecef9' : undefined})
+            <Menu className={'d-flex justify-content-center'} menuItemStyles={{
+                button: ({active}) => ({
+                    backgroundColor: active ? '#c4d1e9' : undefined,
+                    '&:hover': {backgroundColor: '#d8e1f5'}
+                })
             }}>
-                <MenuItem disabled={true}/>
-                <MenuItem active={activeMenu === '/'} onClick={() => setActiveMenu('/')}
+                <MenuItem className={'my-3'} active={activeMenu === '/'} onClick={() => setActiveMenu('/')}
                           component={<Link to={'/'}/>} disabled>
-                    <span className={'span-menuItem'}>
-                        <MdDashboard size={25} color={'#6cadd0'}/>
-                    </span>
+                    <MdDashboard size={25} color={'#6cadd0'}/>
                 </MenuItem>
-                <MenuItem active={activeMenu === '/tasks'} onClick={() => setActiveMenu('/tasks')}
+                <MenuItem className={'mb-3'} active={activeMenu === '/tasks'} onClick={() => setActiveMenu('/tasks')}
                           component={<Link to={'/tasks'}/>}>
                     <BsListTask size={25} color={'#6cadd0'}/>
                 </MenuItem>
                 {/^(admin|pm)$/.test(userState.user.userRole) &&
-                    <MenuItem active={activeMenu === '/projects'} onClick={() => setActiveMenu('/projects')}
+                    <MenuItem className={'mb-3'} active={activeMenu === '/projects'}
+                              onClick={() => setActiveMenu('/projects')}
                               component={<Link to={'/projects'}/>}>
                         <MdFolderOpen size={25} color={'#6cadd0'}/>
                     </MenuItem>}

@@ -2,7 +2,7 @@ import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
 import {fileType, formatTimestamp} from "../../../utils/functions";
-import {MDBBtn} from "mdb-react-ui-kit";
+import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../contexts/authContext";
 import {languageCodes, workType} from "../../../utils/config";
 import ModifyModal from "./dialogs/task/ModifyModal";
@@ -77,14 +77,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     }
 
     const defaultColumns = {
-        no: {key: 'no', name: 'No', width: 60},
-        pm: {key: 'pm', name: 'PM'}, pd: {key: 'pd', name: 'PD'}, client: {key: 'client', name: 'Client'},
-        taskName: {
-            key: 'taskName',
-            name: '태스크명',
-            renderCell: (row) =>
-                <div>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</div>
-        },
+        no: {key: 'no', name: '번호', width: 60},
+        pm: {key: 'pm', name: '담당자(외부)'}, pd: {key: 'pd', name: '담당자(내부)'}, client: {key: 'client', name: '클라이언트'},
+        taskName: {key: 'taskName', name: '태스크명'},
         taskType: {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
         createdAt: {key: 'createdAt', name: '생성일'},
         endedAt: {key: 'endedAt', name: '완료일'}, dueDate: {key: 'dueDate', name: '납품기한'},
@@ -135,28 +130,37 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         const WorkGrid = ({hashedId}) => {
             const work = taskAndWork[hashedId].work
             return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-75 h-100'}
-                                            rows={work} rowHeight={() => 45} columns={
-                [{key: 'workType', name: '작업'}, {key: 'worker', name: '작업자'},
-                    {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
-                    {key: 'workEndedAt', name: '완료일'}, {key: 'workDueDate', name: '마감일'},
-                    {key: 'workMemo', name: '메모'}, {
+                                            rows={work} rowHeight={() => 45} columns={[
+                {
+                    key: 'workType',
+                    name: '작업',
+                    renderCell: (row) =>
+                        <MDBBtn color={'link'} style={{fontSize: '0.875rem'}}
+                                href={`/${taskAndWork[hashedId].task.taskType}/${hashedId}/${row.row.workHashedId}`}
+                                disabled={!taskAndWork[hashedId].task.taskType}>{row.row.workType}</MDBBtn>
+                }, {key: 'worker', name: '작업자'},
+                {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
+                {key: 'workEndedAt', name: '완료일'}, {key: 'workDueDate', name: '마감일'},
+                {key: 'workMemo', name: '메모'},
+                {
                     key: 'workStatus', name: '상태', renderCell: (row) => {
-                        return row.row.workEndedAt ? <MDBBtn outline
-                                                             className={`${(taskAndWork[hashedId].task.extra.pmId === userState.user.userId || Object.keys(taskAndWork[hashedId].task.extra.pd).includes(`${userState.user.userId}`)) ? 'button-active' : 'button-disabled'}`}
-                                                             onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}>🟢완료</MDBBtn> :
+                        return row.row.workEndedAt ?
+                            <MDBBtn outline
+                                    className={`${(taskAndWork[hashedId].task.extra.pmId === userState.user.userId || Object.keys(taskAndWork[hashedId].task.extra.pd).includes(`${userState.user.userId}`)) ? 'button-active' : 'button-disabled'}`}
+                                    onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}>🟢완료</MDBBtn> :
                             <MDBBtn outline className={'button-disabled'}>🟡진행중</MDBBtn>
                     }
                 }]}/>) : null
         }
         columns = [
             {
-                key: 'expanded', name: '', width: 40, minWidth: 40, maxWidth: 40, resizable: false,
+                key: 'expanded', name: '', width: 30, minWidth: 30, maxWidth: 30, resizable: false,
                 colSpan: (args) => args.type === 'ROW' && args.row.type === 'DETAIL' ? columns.length : undefined,
                 cellClass: (row) => row.type === 'DETAIL' ? 'rdg-detail-cell' : undefined,
                 renderCell: ({row, tabIndex, onRowChange}) => {
                     if (row.type === 'DETAIL') return <WorkGrid hashedId={row.hashedId}/>
                     return taskAndWork[row.extra.hashedId].work.length ?
-                        <div><span tabIndex={tabIndex} style={{userSelect: 'none'}}
+                        <div><span className={'user-select-none'} tabIndex={tabIndex}
                                    onClick={() => onRowChange({...row, expanded: !row.expanded})}>
                             {row.expanded ? '\u25BC' : '\u25B6'}</span>
                         </div> : null
@@ -164,43 +168,42 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             },
             defaultColumns.no, defaultColumns.client, defaultColumns.pm, defaultColumns.pd,
             {key: 'projectCode', name: '프로젝트 코드'}, {key: 'projectName', name: '프로젝트명'}, {key: 'group', name: '그룹'},
-            defaultColumns.taskName, defaultColumns.taskType, defaultColumns.createdAt, defaultColumns.endedAt,
+            {
+                ...defaultColumns.taskName,
+                renderCell: (row) =>
+                    row.row.type === 'MASTER' && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ? <>
+                            <MDBBtn color={'link'} style={{fontSize: '0.875rem'}}
+                                    href={`/${row.row.taskType}/${row.row.extra.hashedId}`}
+                                    disabled={!row.row.taskType || !taskAndWork[row.row.extra.hashedId]?.work?.length}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
+                        </> :
+                        <div>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</div>
+            }, defaultColumns.taskType, defaultColumns.createdAt, defaultColumns.endedAt,
             defaultColumns.dueDate, defaultColumns.memo, {
                 ...defaultColumns.status, renderCell: (row) => {
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
-                    return <MDBBtn outline className={`${authorized ? 'button-active' : 'button-disabled'}`}
-                                   onClick={() => row.row.endedAt ? setTaskUndoneHashedId(row.row.extra.hashedId) : setTaskDoneHashedId(row.row.extra.hashedId)}>
-                        {{
-                            New: '신규', Ing: '🟡진행중', Done: '🟢완료'
-                        }[row.row.status || (taskAndWork[row.row.extra.hashedId].work.length ? 'Ing' : 'New')]}</MDBBtn>
+                    return <>
+                        <MDBBtn outline className={`${authorized ? 'button-active' : 'button-disabled'}`}
+                                onClick={() => row.row.endedAt ? setTaskUndoneHashedId(row.row.extra.hashedId) : setTaskDoneHashedId(row.row.extra.hashedId)}>
+                            {{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status]}</MDBBtn>
+                        {authorized && <MDBBtn className={'bg-main mx-1'} color={'link'} floating
+                                               onClick={() => setModifyTaskHashedId(row.row.extra.hashedId)}>
+                            <MDBIcon fas icon="cog"/></MDBBtn>}
+                    </>
                 }
-            }, {
-                ...defaultColumns.buttons,
-                renderCell: (row) => row.row.type === 'MASTER' && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ? <>
-                    <MDBBtn color={'link'} href={`/${row.row.taskType}/${row.row.extra.hashedId}`}
-                            disabled={!row.row.taskType || !taskAndWork[row.row.extra.hashedId]?.work?.length}>이동하기</MDBBtn>
-                    <div className={'mx-1'}/>
-                    <MDBBtn color={'link'}
-                            onClick={() => setModifyTaskHashedId(row.row.extra.hashedId)}>수정하기</MDBBtn>
-                </> : null,
-            },]
+            }]
     } else {
         columns = [defaultColumns.no, defaultColumns.client, defaultColumns.pd,
-            defaultColumns.taskName, defaultColumns.taskType,
+            {
+                ...defaultColumns.taskName,
+                renderCell: (row) =>
+                    <MDBBtn color={'link'} style={{fontSize: '0.875rem'}}
+                            href={`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`}
+                            disabled={!row.row.taskType}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
+            }, defaultColumns.taskType,
             {key: 'workType', name: '작업', renderCell: (row) => <div>{workType[row.row.workType]}</div>},
             {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
             defaultColumns.createdAt, defaultColumns.endedAt, {...defaultColumns.dueDate, name: '마감일'},
-            defaultColumns.memo, {
-                ...defaultColumns.buttons,
-                renderCell: (row) => <><MDBBtn color={'link'}
-                                               href={`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`}
-                                               disabled={!row.row.taskType}>이동하기</MDBBtn>
-                    <div className={'mx-1'}/>
-                    <MDBBtn color={'link'} onClick={() => {
-                        console.log(row.row.extra.hashedId)
-                    }}>수정하기</MDBBtn>
-                </>
-            }]
+            defaultColumns.memo]
     }
 
     useEffect(() => {
@@ -251,10 +254,10 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     useEffect(() => {
         if (!taskAndWork) return
         setRows(Object.values(taskAndWork).reduce((result, current, currentIndex) => {
+            current.task.status = current.task.status || (current.work.length ? 'Ing' : 'New')
+            // default expanded false -> comment out two lines below
             result.push({...current.task, expanded: true, type: 'MASTER', no: currentIndex + 1})
-            current.work.length && result.push({
-                type: 'DETAIL', hashedId: current.task.extra.hashedId, status: current.task.status
-            })
+            current.work.length && result.push({type: 'DETAIL', hashedId: current.task.extra.hashedId})
             return result
         }, []))
     }, [taskAndWork])
@@ -267,7 +270,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         const row = rows[indexes[0]];
         if (row.type === 'MASTER') {
             row.expanded ? rows.splice(indexes[0] + 1, 0, {
-                type: 'DETAIL', hashedId: row.extra.hashedId, status: row.status
+                type: 'DETAIL', hashedId: row.extra.hashedId
             }) : rows.splice(indexes[0] + 1, 1)
             setRows(rows)
         }

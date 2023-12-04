@@ -8,7 +8,7 @@ const RegisterModal = ({forceRender}) => {
     const toggleShow = () => setShow(!show)
 
     return <>
-        <MDBBtn className={'bg-furmo'} style={{color: 'black'}} onClick={toggleShow}>
+        <MDBBtn className={'bg-main'} color={'link'} onClick={toggleShow}>
             프로젝트 등록
         </MDBBtn>
         <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>

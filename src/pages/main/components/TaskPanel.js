@@ -38,7 +38,7 @@ const TaskPanel = () => {
         } else return null
     }
 
-    return <div className={'h-100 text-center p-2'} style={{width: 'calc(100vw - 4rem)'}}>
+    return <div className={'h-100 text-center px-2'} style={{width: 'calc(100vw - 4rem)'}}>
         <div className={'w-100 h-100 p-2 bg-white rounded-5'}>
             {userState.user.userRole ? <>
                 <MDBRow className={'mb-2 d-flex align-items-center'}>

@@ -1,5 +1,5 @@
 .rdg-header-row {
-    background-color: #f28720ff;
+    background-color: #e5e5e5;
     text-align: center;
 }
 
@@ -16,7 +16,6 @@
 
 .rdg-detail-cell {
     padding: 1rem;
-    background-color: #e5e5e5;
 }
 
 .rdg-header-filter {

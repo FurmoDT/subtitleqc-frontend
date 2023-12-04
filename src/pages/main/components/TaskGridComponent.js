@@ -134,7 +134,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
         const WorkGrid = ({hashedId}) => {
             const work = taskAndWork[hashedId].work
-            return work.length ? (<DataGrid className={'rdg-light fill-grid'} style={{width: '50%', height: '100%'}}
+            return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-75 h-100'}
                                             rows={work} rowHeight={() => 45} columns={
                 [{key: 'workType', name: '작업'}, {key: 'worker', name: '작업자'},
                     {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
@@ -170,7 +170,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
                     return <MDBBtn outline className={`${authorized ? 'button-active' : 'button-disabled'}`}
                                    onClick={() => row.row.endedAt ? setTaskUndoneHashedId(row.row.extra.hashedId) : setTaskDoneHashedId(row.row.extra.hashedId)}>
-                        {{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status || (taskAndWork[row.row.extra.hashedId].work.length ? 'Ing' : 'New')]}</MDBBtn>
+                        {{
+                            New: '신규', Ing: '🟡진행중', Done: '🟢완료'
+                        }[row.row.status || (taskAndWork[row.row.extra.hashedId].work.length ? 'Ing' : 'New')]}</MDBBtn>
                 }
             }, {
                 ...defaultColumns.buttons,
@@ -273,7 +275,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
 
     return initialized && <>
         <FilterContext.Provider value={filters}>
-            <DataGrid className={'rdg-light fill-grid'} style={{height: '100%'}} columns={columns} rows={filteredRows}
+            <DataGrid className={'rdg-light fill-grid rounded h-100'} columns={columns} rows={filteredRows}
                       rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45}
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>

@@ -42,14 +42,15 @@ export default function Navbar(props) {
                 <MDBCollapse navbar show={showNavNoTogglerSecond}>
                     <MDBNavbarNav className='mb-0'>
                         <MDBNavbarItem>
-                            <Link className={`nav-link ${activeNav === '/tasks' ? 'active' : ''}`} to={'/'}>MAIN</Link>
+                            <Link className={`nav-link ${activeNav === '/tasks' ? 'active active-furmo' : ''}`}
+                                  to={'/'}>MAIN</Link>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <Link className={`nav-link ${activeNav.startsWith('/video') ? 'active' : ''}`}
+                            <Link className={`nav-link ${activeNav.startsWith('/video') ? 'active active-furmo' : ''}`}
                                   to={activeNav.startsWith('/video') ? null : '/video'}>VIDEO</Link>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <Link className={`nav-link ${activeNav.startsWith('/text') ? 'active' : ''}`}
+                            <Link className={`nav-link ${activeNav.startsWith('/text') ? 'active active-furmo' : ''}`}
                                   to={activeNav.startsWith('/text') ? null : '/text'}>TEXT</Link>
                         </MDBNavbarItem>
                         <MDBNavbarItem>

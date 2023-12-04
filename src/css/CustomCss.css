@@ -14,8 +14,23 @@
     background-color: #b7b7b7ff;
 }
 
+.nav-link.active-furmo {
+    color: #f28720ff !important;
+}
+
 .bg-furmo {
     background-color: #f28720ff !important;
+}
+
+.bg-main {
+    color: black !important;
+    background-color: #e5e5e5 !important;
+}
+
+.border-main {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #e5e5e5;
 }
 
 .bg-white {

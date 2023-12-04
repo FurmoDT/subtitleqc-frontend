@@ -12,7 +12,7 @@ const FindPopover = (props) => {
         if (event.target.value) {
             props.hotRef.current.getData().forEach((row, rowIndex) => {
                 row.forEach((value, colIndex) => {
-                    if (value?.toLowerCase().includes(event.target.value.toLowerCase())) {
+                    if (colIndex !== 3 && value?.toLowerCase().includes(event.target.value.toLowerCase())) {
                         result.push({row: rowIndex, col: colIndex, value: event.target.value})
                     }
                 })
@@ -73,16 +73,19 @@ const FindPopover = (props) => {
             setSearched([])
         }}>
             <MDBPopoverHeader>Find</MDBPopoverHeader>
-            <MDBPopoverBody style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                <MDBInput onChange={handleOnChange} onKeyDown={handleKeyDown} type='text'/>
-                <label style={{marginLeft: '5px'}}
-                       ref={findPositionLabelRef}>{curFindPosition}/{searched.length}</label>
-                <MDBBtn size={'sm'} color={'link'} floating tag='a' onClick={handleOnClick}>
-                    <MDBIcon fas icon="chevron-left" color={'dark'}/>
-                </MDBBtn>
-                <MDBBtn size={'sm'} color={'link'} floating tag='a' onClick={handleOnClick}>
-                    <MDBIcon fas icon="chevron-right" color={'dark'}/>
-                </MDBBtn>
+            <MDBPopoverBody>
+                <div className={'d-flex flex-row'}>
+                    <MDBInput data-source={'transToolbar'} onChange={handleOnChange} onKeyDown={handleKeyDown} type='text'/>
+                    <div className={'d-flex flex-row align-items-center'}>
+                        <span ref={findPositionLabelRef} className={'ms-2'}>{curFindPosition}/{searched.length}</span>
+                        <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating onClick={handleOnClick}>
+                            <MDBIcon fas icon="chevron-left" color={'dark'}/>
+                        </MDBBtn>
+                        <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating onClick={handleOnClick}>
+                            <MDBIcon fas icon="chevron-right" color={'dark'}/>
+                        </MDBBtn>
+                    </div>
+                </div>
             </MDBPopoverBody>
         </MDBPopover>
     </>

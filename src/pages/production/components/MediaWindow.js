@@ -136,7 +136,7 @@ const MediaWindow = ({setVideo, ...props}) => {
         </div>
         <div className={'w-100 h-100'} style={{backgroundColor: 'black'}}>
             <div className={'d-flex align-items-center px-3'} style={{height: '1rem'}}>
-                <Range min={0} max={props.mediaInfo?.duration || 1} values={[seek]}
+                <Range min={0} max={props.mediaInfo?.duration || 1} values={[seek]} disabled={!props.mediaFile}
                        onChange={values => props.playerRef.current.seekTo(values[0], 'seconds')}
                        onFinalChange={values => seek === values[0] && !isPlaying && props.playerRef.current.seekTo(values[0], 'seconds')}
                        renderTrack={({props: _props, children}) => (

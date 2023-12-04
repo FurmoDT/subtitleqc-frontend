@@ -42,6 +42,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     }, [props.hotRef])
 
     const selectRows = useCallback(() => {
+        if (document.activeElement.dataset.source === 'transToolbar') return
         if (props.playerRef.current.getInternalPlayer() && !props.hotRef.current.getActiveEditor()?._opened) {
             const row = props.subtitleIndexRef.current
             const [start, end] = props.hotRef.current.getDataAtRow(row).slice(0, 2)
@@ -320,9 +321,11 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         })
         props.hotRef.current.addHook('afterSetCellMeta', () => debounceRender())
         props.hotRef.current.addHook('afterRemoveCellMeta', () => debounceRender())
+        // default render
         Object.entries(userCursorsRef.current).forEach(([, aw]) => {
             if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
         })
+        selectRows() // scroll to video playtime
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {

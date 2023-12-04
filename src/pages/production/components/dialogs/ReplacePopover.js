@@ -14,7 +14,7 @@ const ReplacePopover = (props) => {
         if (event.target.value) {
             props.hotRef.current.getData().forEach((row, rowIndex) => {
                 row.forEach((value, colIndex) => {
-                    if (value?.toLowerCase().includes(event.target.value.toLowerCase())) {
+                    if (colIndex !== 3 && value?.toLowerCase().includes(event.target.value.toLowerCase())) {
                         result.push({row: rowIndex, col: colIndex, value: event.target.value})
                     }
                 })
@@ -76,19 +76,19 @@ const ReplacePopover = (props) => {
         }}>
             <MDBPopoverHeader>Replace</MDBPopoverHeader>
             <MDBPopoverBody>
-                <div style={{display: 'flex', flexDirection: 'row'}}>
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
-                        <MDBInput ref={findLabelRef} onChange={handleOnChange} onKeyDown={handleKeyDown} type={'text'}/>
+                <div className={'d-flex flex-row'}>
+                    <div className={'d-flex flex-column'}>
+                        <MDBInput data-source={'transToolbar'} ref={findLabelRef} onChange={handleOnChange} onKeyDown={handleKeyDown} type={'text'}/>
                         <MDBInput ref={replaceLabelRef} type={'text'}/>
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'end', marginLeft: '5px'}}>
-                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                            <label style={{display: 'flex', alignItems: 'center'}}
-                                   ref={findPositionLabelRef}>{curFindPosition}/{searched.length}</label>
-                            <MDBBtn size={'sm'} color={'link'} floating tag='a' onClick={handleOnClick}>
+                    <div className={'d-flex flex-column justify-content-end ms-2'}>
+                        <div className={'d-flex flex-row justify-content-center'}>
+                            <span ref={findPositionLabelRef} className={'d-flex align-items-center'}>
+                                {curFindPosition}/{searched.length}</span>
+                            <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating onClick={handleOnClick}>
                                 <MDBIcon fas icon="chevron-left" color={'dark'}/>
                             </MDBBtn>
-                            <MDBBtn size={'sm'} color={'link'} floating tag='a' onClick={handleOnClick}>
+                            <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating onClick={handleOnClick}>
                                 <MDBIcon fas icon="chevron-right" color={'dark'}/>
                             </MDBBtn>
                         </div>

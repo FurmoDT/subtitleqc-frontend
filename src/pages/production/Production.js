@@ -29,6 +29,7 @@ const Production = () => {
     const timelineWindowRef = useRef(null)
     const [languageWindowSize, setLanguageWindowSize] = useState({width: 0, height: 0})
     const [timelineWindowSize, setTimelineWindowSize] = useState({height: 320})
+    const resizingTimeoutRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [mediaInfo, setMediaInfo] = useState(null)
     const [video, setVideo] = useState(null)
@@ -113,11 +114,18 @@ const Production = () => {
     }, [languageFile, resetSegments])
 
     useEffect(() => {
+        const handleLanguageWindowResize = () => {
+            clearTimeout(resizingTimeoutRef.current);
+            const newTimeout = setTimeout(() => {
+                setLanguageWindowSize({
+                    width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
+                })
+            }, 200)
+            resizingTimeoutRef.current = newTimeout
+        };
         const observer = new ResizeObserver(() => {
             containerRef.current.resize([dropzoneRef.current.offsetHeight - timelineWindowRef.current.childNodes[1].offsetHeight, timelineWindowRef.current.childNodes[1].offsetHeight])
-            setLanguageWindowSize({
-                width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
-            })
+            handleLanguageWindowResize()
             setTimelineWindowSize(prevState => ({height: prevState.height}))
         });
         observer.observe(dropzoneRef.current);

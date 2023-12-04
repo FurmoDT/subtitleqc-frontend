@@ -24,13 +24,13 @@
 
 .bg-main {
     color: black !important;
-    background-color: #e5e5e5 !important;
+    background-color: #e8e8e8 !important;
 }
 
 .border-main {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #e5e5e5;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: #dddddd !important;
 }
 
 .bg-white {

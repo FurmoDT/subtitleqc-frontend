@@ -129,7 +129,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
         const WorkGrid = ({hashedId}) => {
             const work = taskAndWork[hashedId].work
-            return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-75 h-100'}
+            return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-75 h-100 border-main'}
                                             rows={work} rowHeight={() => 45} columns={[
                 {
                     key: 'workType',
@@ -278,7 +278,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
 
     return initialized && <>
         <FilterContext.Provider value={filters}>
-            <DataGrid className={'rdg-light fill-grid rounded h-100'} columns={columns} rows={filteredRows}
+            <DataGrid className={'rdg-light fill-grid rounded h-100 border-main'} columns={columns} rows={filteredRows}
                       rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45}
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>

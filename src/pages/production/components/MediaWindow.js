@@ -21,6 +21,7 @@ const MediaWindow = ({setVideo, ...props}) => {
     const [volume, setVolume] = useState([1])
     const [language, setLanguage] = useState(null)
     const hideUtilTimeoutRef = useRef(null)
+    const popover = document.querySelector('.popover')
 
     const showUtilHandler = useCallback((target) => {
         [volumeRef.current, speedRef.current, languageRef.current].forEach(v => {
@@ -44,7 +45,7 @@ const MediaWindow = ({setVideo, ...props}) => {
         if (seconds >= start && seconds <= end) {
             if (curIndex.current !== targetIndex) {
                 curIndex.current = targetIndex
-                if (forceSelect) {
+                if (forceSelect && !popover) {
                     !props.hotRef.current.getActiveEditor()?._opened && props.hotRef.current.selectRows(targetIndex)
                     if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(centerTargetIndex)
                 }
@@ -62,7 +63,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                 isSeek && props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? centerTargetIndex + 1 : targetIndex + 1)
             }
         }
-    }, [props.cellDataRef, props.subtitleIndexRef, props.hotRef, language])
+    }, [props.cellDataRef, props.subtitleIndexRef, props.hotRef, language, popover])
 
     const onSeek = useCallback((seconds) => {
         setSeek(seconds)

@@ -148,9 +148,7 @@ const Production = () => {
             setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
             setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
             setTaskName(`${task.task_name}_${task.task_episode}`)
-            setLanguages(response.data.target_languages.map(value => ({
-                code: value, name: languageCodes[value], counter: 1
-            })))
+            setLanguages(response.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
             // setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])

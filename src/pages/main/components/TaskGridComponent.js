@@ -17,7 +17,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const {userState} = useContext(AuthContext)
     let columns
     const [rows, setRows] = useState(null)
-    const [taskAndWork, setTaskAndWork] = useState(new Map())
+    const [taskAndWork, setTaskAndWork] = useState(null)
     const [modifyTaskHashedId, setModifyTaskHashedId] = useState(null)
     const [taskDoneHashedId, setTaskDoneHashedId] = useState(null)
     const [taskUndoneHashedId, setTaskUndoneHashedId] = useState(null)

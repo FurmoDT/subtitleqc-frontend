@@ -16,6 +16,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     const [totalLines, setTotalLines] = useState(0)
     const userCursorsRef = useRef({})
     const debounceTimeoutRef = useRef(null)
+    const [persistentRowIndex, setPersistentRowIndex] = useState(0);
 
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
@@ -185,6 +186,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 }
             },
         })
+        const autoRowSizePlugin = props.hotRef.current.getPlugin('autoRowSize');
         setTotalLines(getTotalLines())
         let grammarlyPlugin = null
         props.hotRef.current.addHook('afterScrollVertically', selectRows)
@@ -325,8 +327,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         Object.entries(userCursorsRef.current).forEach(([, aw]) => {
             if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
         })
-        selectRows() // scroll to video playtime
+        return () => {
+            setPersistentRowIndex(autoRowSizePlugin.getFirstVisibleRow())
+        }
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
+
+    useEffect(() => {
+        props.hotRef.current.scrollViewportTo(persistentRowIndex)
+    }, [persistentRowIndex, props.hotRef, props.size, props.languages]);
 
     useEffect(() => {
         if (!props.taskHashedId) return

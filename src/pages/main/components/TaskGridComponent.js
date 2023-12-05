@@ -17,7 +17,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const {userState} = useContext(AuthContext)
     let columns
     const [rows, setRows] = useState(null)
-    const [taskAndWork, setTaskAndWork] = useState(null)
+    const [taskAndWork, setTaskAndWork] = useState(new Map())
     const [modifyTaskHashedId, setModifyTaskHashedId] = useState(null)
     const [taskDoneHashedId, setTaskDoneHashedId] = useState(null)
     const [taskUndoneHashedId, setTaskUndoneHashedId] = useState(null)
@@ -42,8 +42,8 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         return arr.reduce((result, current) => {
             const key = keyFunc(current);
             const pd = JSON.parse(current.pd)
-            if (!result[key]) {
-                result[key] = {
+            if (!result.has(key)) {
+                result.set(key, {
                     task: {
                         client: current.client_name,
                         pm: current.pm_name,
@@ -60,9 +60,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         status: current.task_ended_at ? 'Done' : null,
                         extra: {hashedId: current.task_hashed_id, pmId: current.pm_id, pd: pd},
                     }, work: []
-                };
+                })
             }
-            if (current.work_id && !current.work_deactivated) result[key].work.push({
+            if (current.work_id && !current.work_deactivated) result.get(key).work.push({
                 workHashedId: current.work_hashed_id,
                 workType: workType[current.work_type],
                 worker: current.worker_name,
@@ -73,7 +73,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 workMemo: current.work_memo
             });
             return result;
-        }, {});
+        }, new Map());
     }
 
     const defaultColumns = {
@@ -128,8 +128,8 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         ];
     } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
         const WorkGrid = ({hashedId}) => {
-            const task = taskAndWork[hashedId].task
-            const work = taskAndWork[hashedId].work
+            const task = taskAndWork.get(hashedId).task
+            const work = taskAndWork.get(hashedId).work
             return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-75 h-100 border-main'}
                                             rows={work} rowHeight={() => 45} columns={[
                 {
@@ -148,7 +148,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     key: 'workStatus', name: '상태', renderCell: (row) => {
                         return row.row.workEndedAt ?
                             <MDBBtn outline
-                                    className={`${(taskAndWork[hashedId].task.extra.pmId === userState.user.userId || Object.keys(taskAndWork[hashedId].task.extra.pd).includes(`${userState.user.userId}`)) ? 'button-active' : 'button-disabled'}`}
+                                    className={`${(taskAndWork.get(hashedId).task.extra.pmId === userState.user.userId || Object.keys(taskAndWork.get(hashedId).task.extra.pd).includes(`${userState.user.userId}`)) ? 'button-active' : 'button-disabled'}`}
                                     onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}>🟢완료</MDBBtn> :
                             <MDBBtn outline className={'button-disabled'}>🟡진행중</MDBBtn>
                     }
@@ -161,7 +161,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 cellClass: (row) => row.type === 'DETAIL' ? 'rdg-detail-cell' : undefined,
                 renderCell: ({row, tabIndex, onRowChange}) => {
                     if (row.type === 'DETAIL') return <WorkGrid hashedId={row.hashedId}/>
-                    return taskAndWork[row.extra.hashedId].work.length ?
+                    return taskAndWork.get(row.extra.hashedId).work.length ?
                         <div><span className={'user-select-none'} tabIndex={tabIndex}
                                    onClick={() => onRowChange({...row, expanded: !row.expanded})}>
                             {row.expanded ? '\u25BC' : '\u25B6'}</span>
@@ -254,7 +254,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
 
     useEffect(() => {
         if (!taskAndWork) return
-        setRows(Object.values(taskAndWork).reduce((result, current, currentIndex) => {
+        setRows(Array.from(taskAndWork.values()).sort((a, b) => a.work.length === 0 ? -1 : b.work.length === 0 ? 1 : 0).reduce((result, current, currentIndex) => {
             current.task.status = current.task.status || (current.work.length ? 'Ing' : 'New')
             // default expanded false -> comment out two lines below
             result.push({...current.task, expanded: true, type: 'MASTER', no: currentIndex + 1})
@@ -270,9 +270,8 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     function onRowsChange(rows, {indexes}) {
         const row = rows[indexes[0]];
         if (row.type === 'MASTER') {
-            row.expanded ? rows.splice(indexes[0] + 1, 0, {
-                type: 'DETAIL', hashedId: row.extra.hashedId
-            }) : rows.splice(indexes[0] + 1, 1)
+            if (row.expanded) rows.splice(indexes[0] + 1, 0, {type: 'DETAIL', hashedId: row.extra.hashedId})
+            else rows.splice(indexes[0] + 1, 1)
             setRows(rows)
         }
     }
@@ -280,7 +279,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     return initialized && <>
         <FilterContext.Provider value={filters}>
             <DataGrid className={'rdg-light fill-grid rounded h-100 border-main'} columns={columns} rows={filteredRows}
-                      rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.[args.row.hashedId].work.length * 45 : 45}
+                      rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.get(args.row.hashedId).work.length * 45 : 45}
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId} forceRenderer={forceRenderer}/>

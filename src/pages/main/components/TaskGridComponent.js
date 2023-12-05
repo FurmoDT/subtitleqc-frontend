@@ -128,6 +128,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         ];
     } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
         const WorkGrid = ({hashedId}) => {
+            const task = taskAndWork[hashedId].task
             const work = taskAndWork[hashedId].work
             return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-75 h-100 border-main'}
                                             rows={work} rowHeight={() => 45} columns={[
@@ -135,9 +136,10 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     key: 'workType',
                     name: '작업',
                     renderCell: (row) =>
-                        <MDBBtn color={'link'} style={{fontSize: '0.875rem'}}
-                                href={`/${taskAndWork[hashedId].task.taskType}/${hashedId}/${row.row.workHashedId}`}
-                                disabled={!taskAndWork[hashedId].task.taskType}>{row.row.workType}</MDBBtn>
+                        <MDBBtn
+                            className={task.taskType && (task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'btn-custom-disabled'}
+                            color={'link'} style={{fontSize: '0.875rem'}}
+                            href={`/${task.taskType}/${hashedId}/${row.row.workHashedId}`}>{row.row.workType}</MDBBtn>
                 }, {key: 'worker', name: '작업자'},
                 {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
                 {key: 'workEndedAt', name: '완료일'}, {key: 'workDueDate', name: '마감일'},
@@ -171,12 +173,11 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             {
                 ...defaultColumns.taskName,
                 renderCell: (row) =>
-                    row.row.type === 'MASTER' && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ? <>
-                            <MDBBtn color={'link'} style={{fontSize: '0.875rem'}}
-                                    href={`/${row.row.taskType}/${row.row.extra.hashedId}`}
-                                    disabled={!row.row.taskType || !taskAndWork[row.row.extra.hashedId]?.work?.length}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
-                        </> :
-                        <div>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</div>
+                    row.row.type === 'MASTER' &&
+                    <MDBBtn
+                        className={row.row.taskType && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'btn-custom-disabled'}
+                        color={'link'} style={{fontSize: '0.875rem'}}
+                        href={`/${row.row.taskType}/${row.row.extra.hashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
             }, defaultColumns.taskType, defaultColumns.createdAt, defaultColumns.endedAt,
             defaultColumns.dueDate, defaultColumns.memo, {
                 ...defaultColumns.status, renderCell: (row) => {
@@ -196,9 +197,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             {
                 ...defaultColumns.taskName,
                 renderCell: (row) =>
-                    <MDBBtn color={'link'} style={{fontSize: '0.875rem'}}
-                            href={`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`}
-                            disabled={!row.row.taskType}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
+                    <MDBBtn className={row.row.taskType ? '' : 'btn-custom-disabled'}
+                            color={'link'} style={{fontSize: '0.875rem'}}
+                            href={`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
             }, defaultColumns.taskType,
             {key: 'workType', name: '작업', renderCell: (row) => <div>{workType[row.row.workType]}</div>},
             {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},

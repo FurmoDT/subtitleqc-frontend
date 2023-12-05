@@ -27,6 +27,12 @@
     background-color: #e8e8e8 !important;
 }
 
+.btn-custom-disabled {
+    pointer-events: none;
+    color: black !important;
+    opacity: 1 !important;
+}
+
 .border-main {
     border-width: 1px !important;
     border-style: solid !important;

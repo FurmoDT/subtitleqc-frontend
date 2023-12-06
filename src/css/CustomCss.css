@@ -27,7 +27,12 @@
     background-color: #e8e8e8 !important;
 }
 
-.btn-custom-disabled {
+.bg-red {
+    background-color: red;
+    color: white;
+}
+
+.custom-disabled {
     pointer-events: none;
     color: black !important;
     opacity: 1 !important;

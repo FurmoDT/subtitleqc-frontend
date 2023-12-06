@@ -65,6 +65,11 @@ export const formatTimestamp = (timestamp) => {
     return `${year}.${month}.${day} ${hours}:${minutes} ${ampm}`;
 }
 
+export const convertToTimestamp = (dateTimeString) => {
+    const dateTime = new Date(dateTimeString);
+    return dateTime.getTime()
+}
+
 export const generateHexColor = () => {
     return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')
 }

@@ -1,7 +1,7 @@
 import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
-import {fileType, formatTimestamp} from "../../../utils/functions";
+import {convertToTimestamp, fileType, formatTimestamp} from "../../../utils/functions";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../contexts/authContext";
 import {languageCodes, workType} from "../../../utils/config";
@@ -68,6 +68,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 worker: current.worker_name,
                 sourceLanguage: languageCodes[current.work_source_language],
                 targetLanguage: languageCodes[current.work_target_language],
+                workCreatedAt: formatTimestamp(current.work_created_at),
                 workEndedAt: formatTimestamp(current.work_ended_at),
                 workDueDate: formatTimestamp(current.work_due_date),
                 workMemo: current.work_memo
@@ -86,8 +87,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         memo: {
             key: 'memo',
             name: '메모',
-            renderCell: row =>
-                <div style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>{row.row.memo}</div>,
+            renderCell: row => <div className={'text-truncate'}>{row.row.memo}</div>,
             width: 100
         },
         status: {
@@ -130,20 +130,25 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         const WorkGrid = ({hashedId}) => {
             const task = taskAndWork.get(hashedId).task
             const work = taskAndWork.get(hashedId).work
-            return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-75 h-100 border-main'}
+            return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-100 h-100 border-main ms-3'}
                                             rows={work} rowHeight={() => 35} columns={[
                 {
                     key: 'workType',
                     name: '작업',
-                    renderCell: (row) =>
-                        <MDBBtn
-                            className={task.taskType && (task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'btn-custom-disabled'}
-                            color={'link'} style={{fontSize: '0.875rem'}}
-                            href={`/${task.taskType}/${hashedId}/${row.row.workHashedId}`}>{row.row.workType}</MDBBtn>
+                    renderCell: row =>
+                        <a className={task.taskType && (task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'custom-disabled'}
+                           color={'link'} style={{fontSize: '0.875rem'}}
+                           href={`/${task.taskType}/${hashedId}/${row.row.workHashedId}`}>{row.row.workType}</a>
                 }, {key: 'worker', name: '작업자'},
                 {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
-                {key: 'workEndedAt', name: '완료일'}, {key: 'workDueDate', name: '마감일'},
-                {key: 'workMemo', name: '메모'},
+                {key: 'workCreatedAt', name: '시작일'}, {
+                    key: 'workDueDate',
+                    name: '완료예정일',
+                    renderCell: row => {
+                        const bg = convertToTimestamp(row.row.workDueDate) >= new Date() ? '' : 'bg-red'
+                        return <div className={bg}>{row.row.workDueDate}</div>
+                    }
+                }, // {key: 'workMemo', name: '메모'},
                 {
                     key: 'workStatus', name: '상태', renderCell: (row) => {
                         return row.row.workEndedAt ?
@@ -172,23 +177,24 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             {key: 'projectName', name: '프로젝트명'}, defaultColumns.pm, defaultColumns.pd,
             {
                 ...defaultColumns.taskName,
-                renderCell: (row) =>
-                    row.row.type === 'MASTER' &&
-                    <MDBBtn
-                        className={row.row.taskType && (row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'btn-custom-disabled'}
-                        color={'link'} style={{fontSize: '0.875rem'}}
-                        href={`/${row.row.taskType}/${row.row.extra.hashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
-            }, defaultColumns.taskType, defaultColumns.createdAt, defaultColumns.endedAt,
-            defaultColumns.dueDate, {
+                renderCell: (row) => {
+                    if (row.row.type !== 'MASTER') return
+                    const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
+                    return <>
+                        <a className={authorized ? '' : 'custom-disabled'} color={'link'} style={{fontSize: '0.875rem'}}
+                           href={`/${row.row.taskType}/${row.row.extra.hashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</a>
+                        {authorized && <MDBBtn className={'bg-main mx-1'} color={'link'} size={'sm'} floating
+                                               onClick={() => setModifyTaskHashedId(row.row.extra.hashedId)}>
+                            <MDBIcon fas icon="cog"/></MDBBtn>}
+                    </>
+                }
+            }, defaultColumns.taskType, defaultColumns.createdAt, defaultColumns.dueDate, {
                 ...defaultColumns.status, renderCell: (row) => {
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
                     return <>
                         <MDBBtn outline className={`${authorized ? 'button-active' : 'button-disabled'}`}
                                 onClick={() => row.row.endedAt ? setTaskUndoneHashedId(row.row.extra.hashedId) : setTaskDoneHashedId(row.row.extra.hashedId)}>
                             {{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status]}</MDBBtn>
-                        {authorized && <MDBBtn className={'bg-main mx-1'} color={'link'} floating
-                                               onClick={() => setModifyTaskHashedId(row.row.extra.hashedId)}>
-                            <MDBIcon fas icon="cog"/></MDBBtn>}
                     </>
                 }
             }]
@@ -197,9 +203,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             {
                 ...defaultColumns.taskName,
                 renderCell: (row) =>
-                    <MDBBtn className={row.row.taskType ? '' : 'btn-custom-disabled'}
-                            color={'link'} style={{fontSize: '0.875rem'}}
-                            href={`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
+                    <a className={row.row.taskType ? '' : 'custom-disabled'}
+                       color={'link'} style={{fontSize: '0.875rem'}}
+                       href={`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</a>
             }, defaultColumns.taskType,
             {key: 'workType', name: '작업', renderCell: (row) => <div>{workType[row.row.workType]}</div>},
             {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
@@ -256,7 +262,6 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         if (!taskAndWork) return
         setRows(Array.from(taskAndWork.values()).sort((a, b) => a.work.length === 0 ? -1 : b.work.length === 0 ? 1 : 0).reduce((result, current, currentIndex) => {
             current.task.status = current.task.status || (current.work.length ? 'Ing' : 'New')
-            // default expanded false -> comment out two lines below
             result.push({...current.task, expanded: true, type: 'MASTER', no: currentIndex + 1})
             current.work.length && result.push({type: 'DETAIL', hashedId: current.task.extra.hashedId})
             return result

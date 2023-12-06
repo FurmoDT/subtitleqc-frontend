@@ -111,20 +111,19 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 }
             })
         }
-        // TODO tcLockRef bug fix - readOnly prevents createRow
         props.hotRef.current = new Handsontable(containerMain.current, {
             data: props.cellDataRef.current,
             columns: [{
                 data: 'start',
                 type: 'text',
                 renderer: tcInRenderer,
-                readOnly: props.tcLockRef.current,
+                readOnly: props.tcLock,
                 editor: customTextEditor
             }, {
                 data: 'end',
                 type: 'text',
                 renderer: tcOutRenderer,
-                readOnly: props.tcLockRef.current,
+                readOnly: props.tcLock,
                 editor: customTextEditor
             }, {
                 data: 'duration', type: 'text', readOnly: true, renderer: durationRenderer
@@ -262,14 +261,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             const newRows = Math.max(data.length + coords[0].startRow - props.hotRef.current.countRows(), 0)
             if (newRows) props.hotRef.current.alter('insert_row', props.hotRef.current.countRows(), newRows)
         })
-        props.hotRef.current.addHook('beforeCreateRow', (index, amount) => {
-            afterRenderPromise().then(() => {
-                for (let i = 0; i < 2; i++) {
-                    for (let j = index; j < index + amount; j++) props.hotRef.current.getCellMeta(j, i).readOnly = props.tcLockRef.current
-                }
-                props.hotRef.current.render()
-            })
-        })
         props.hotRef.current.addHook('afterCreateRow', (index, amount, source) => {
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
@@ -330,11 +321,11 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         return () => {
             setPersistentRowIndex(autoRowSizePlugin.getFirstVisibleRow())
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.playerRef, props.tcLockRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndex)
-    }, [persistentRowIndex, props.hotRef, props.size, props.languages]);
+    }, [persistentRowIndex, props.hotRef, props.size, props.languages, props.tcLock]);
 
     useEffect(() => {
         if (!props.taskHashedId) return
@@ -362,13 +353,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             })
         })
     }, [props.taskHashedId, props.crdt, props.hotRef])
-
-    useEffect(() => {
-        for (let i = 0; i < 2; i++) {
-            for (let j = 0; j < props.hotRef.current.countRows(); j++) props.hotRef.current.getCellMeta(j, i).readOnly = props.tcLock
-        }
-        props.hotRef.current.render()
-    }, [props.tcLock, props.hotRef])
 
     return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
         <div ref={containerMain} style={{zIndex: 0}} onClick={() => props.focusedRef.current = props.hotRef.current}/>

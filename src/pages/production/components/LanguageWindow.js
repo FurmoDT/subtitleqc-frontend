@@ -293,11 +293,13 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
-            props.crdt?.awareness()?.setLocalStateField('cursor', {row: row, column: column})
             props.hotSelectionRef.current.rowStart = Math.min(row, row2)
             props.hotSelectionRef.current.columnStart = Math.min(column, column2)
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
+        })
+        props.hotRef.current.addHook('afterSelectionEndByProp', (row, prop, row2, prop2) => {
+            props.crdt?.awareness()?.setLocalStateField('cursor', {row: row, colProp: prop})
         })
         props.hotRef.current.addHook('afterRenderer', (TD, row, column, prop, value, cellProperties) => {
             if (cellProperties.awareness) {
@@ -317,7 +319,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         props.hotRef.current.addHook('afterRemoveCellMeta', () => debounceRender())
         // default render
         Object.entries(userCursorsRef.current).forEach(([, aw]) => {
-            if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
+            if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
         })
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
@@ -339,20 +341,20 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             added.forEach(id => {
                 userCursorsRef.current[id] = states.get(id)
                 const aw = userCursorsRef.current[id]
-                if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
+                if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
             })
             removed.forEach(id => {
                 const prevCursor = userCursorsRef.current[id]?.cursor
-                if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, prevCursor.column, 'awareness')
+                if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
                 userCursorsRef.current = Object.fromEntries(Object.entries(userCursorsRef.current).filter(value => value[0] !== `${id}`))
             })
             updated.forEach(id => {
                 if (id === props.crdt.yDoc().clientID) return
                 const prevCursor = userCursorsRef.current[id]?.cursor
-                if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, prevCursor.column, 'awareness')
+                if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
                 userCursorsRef.current[id] = states.get(id)
                 const aw = userCursorsRef.current[id]
-                props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
+                props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
             })
         })
     }, [props.taskHashedId, props.crdt, props.hotRef])

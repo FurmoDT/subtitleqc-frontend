@@ -78,7 +78,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
 
     const defaultColumns = {
         no: {key: 'no', name: '번호', width: 60},
-        pm: {key: 'pm', name: '담당자(외부)'}, pd: {key: 'pd', name: '담당자(내부)'}, client: {key: 'client', name: '클라이언트'},
+        pm: {key: 'pm', name: '담당자(외부)'}, pd: {key: 'pd', name: '담당자(내부)'}, client: {key: 'client', name: '거래처'},
         taskName: {key: 'taskName', name: '태스크명'},
         taskType: {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
         createdAt: {key: 'createdAt', name: '생성일'},
@@ -131,7 +131,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             const task = taskAndWork.get(hashedId).task
             const work = taskAndWork.get(hashedId).work
             return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-75 h-100 border-main'}
-                                            rows={work} rowHeight={() => 45} columns={[
+                                            rows={work} rowHeight={() => 35} columns={[
                 {
                     key: 'workType',
                     name: '작업',
@@ -168,8 +168,8 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         </div> : null
                 }
             },
-            defaultColumns.no, defaultColumns.client, defaultColumns.pm, defaultColumns.pd,
-            {key: 'projectCode', name: '프로젝트 코드'}, {key: 'projectName', name: '프로젝트명'}, {key: 'group', name: '그룹'},
+            defaultColumns.no, {key: 'projectCode', name: '프로젝트 코드'}, defaultColumns.client,
+            {key: 'projectName', name: '프로젝트명'}, defaultColumns.pm, defaultColumns.pd,
             {
                 ...defaultColumns.taskName,
                 renderCell: (row) =>
@@ -179,7 +179,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         color={'link'} style={{fontSize: '0.875rem'}}
                         href={`/${row.row.taskType}/${row.row.extra.hashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</MDBBtn>
             }, defaultColumns.taskType, defaultColumns.createdAt, defaultColumns.endedAt,
-            defaultColumns.dueDate, defaultColumns.memo, {
+            defaultColumns.dueDate, {
                 ...defaultColumns.status, renderCell: (row) => {
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
                     return <>
@@ -279,7 +279,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     return initialized && <>
         <FilterContext.Provider value={filters}>
             <DataGrid className={'rdg-light fill-grid rounded h-100 border-main'} columns={columns} rows={filteredRows}
-                      rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.get(args.row.hashedId).work.length * 45 : 45}
+                      rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.get(args.row.hashedId).work.length * 35 : 35}
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId} forceRenderer={forceRenderer}/>

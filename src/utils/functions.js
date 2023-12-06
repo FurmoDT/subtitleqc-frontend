@@ -55,15 +55,14 @@ export const thousandSeperator = (value) => {
 
 export const formatTimestamp = (timestamp) => {
     if (!timestamp) return null
-    const date = new Date(timestamp);
-
+    const date = new Date(timestamp)
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
+    const hours = String(date.getHours() % 12 || 12).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    return `${year}-${month}-${day}\n${hours}:${minutes}`;
+    const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
+    return `${year}.${month}.${day} ${hours}:${minutes} ${ampm}`;
 }
 
 export const generateHexColor = () => {

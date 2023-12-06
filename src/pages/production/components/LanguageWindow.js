@@ -16,7 +16,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     const [totalLines, setTotalLines] = useState(0)
     const userCursorsRef = useRef({})
     const debounceTimeoutRef = useRef(null)
-    const [persistentRowIndex, setPersistentRowIndex] = useState(0);
+    const persistentRowIndexRef = useRef(0);
 
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
@@ -319,13 +319,13 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, aw.cursor.column, 'awareness', aw.user)
         })
         return () => {
-            setPersistentRowIndex(autoRowSizePlugin.getFirstVisibleRow())
+            persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
     }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
 
     useEffect(() => {
-        props.hotRef.current.scrollViewportTo(persistentRowIndex)
-    }, [persistentRowIndex, props.hotRef, props.size, props.languages, props.tcLock]);
+        props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
+    }, [props.hotRef, props.size, props.languages, props.tcLock]);
 
     useEffect(() => {
         if (!props.taskHashedId) return

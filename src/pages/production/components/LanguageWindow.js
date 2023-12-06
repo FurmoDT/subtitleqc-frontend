@@ -17,6 +17,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     const userCursorsRef = useRef({})
     const debounceTimeoutRef = useRef(null)
     const persistentRowIndexRef = useRef(0);
+    const persistentUndoRedoRef = useRef({doneActions: [], undoneActions: []})
 
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
@@ -325,6 +326,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
+        props.hotRef.current.undoRedo.doneActions = persistentUndoRedoRef.current.doneActions
+        props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
     }, [props.hotRef, props.size, props.languages, props.tcLock]);
 
     useEffect(() => {

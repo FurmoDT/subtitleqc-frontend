@@ -16,6 +16,7 @@ const dragStyle = {
 let counter = 0
 const Dropzone = (props) => {
     const handleDragEnter = useCallback((e) => {
+        if (!e.dataTransfer.files.length) return
         e.preventDefault();
         e.stopPropagation();
         counter = Math.max(counter++, 2)

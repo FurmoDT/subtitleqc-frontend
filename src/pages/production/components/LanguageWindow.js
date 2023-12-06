@@ -129,15 +129,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             }, {
                 data: 'duration', type: 'text', readOnly: true, renderer: durationRenderer
             }, {
-                data: 'fn', type: 'checkbox', renderer: checkboxRenderer,
+                data: 'fn', type: 'checkbox', renderer: checkboxRenderer
             }, ...(props.languages.map((value) => ({
                 data: `${value.code}_${value.counter}`,
                 type: 'text',
                 editor: customTextEditor,
                 renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer
             })))],
-            manualColumnResize: true,
-            colHeaders: ['TC In', 'TC Out', 'Duration', 'FN', ...(props.languages.map((value) => value.name)), 'error'],
+            colHeaders: ['TC IN', 'TC OUT', 'DURATION', 'FN', ...(props.languages.map((value) => value.name)), 'error'],
             rowHeaders: true,
             width: props.size.width,
             height: props.size.height,
@@ -330,7 +329,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
         props.hotRef.current.undoRedo.doneActions = persistentUndoRedoRef.current.doneActions
         props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
-    }, [props.hotRef, props.size, props.languages, props.tcLock]);
+        props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, ()=>Math.floor((props.size.width - 365) / props.languages.length))]})
+    }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize]);
 
     useEffect(() => {
         if (!props.taskHashedId) return

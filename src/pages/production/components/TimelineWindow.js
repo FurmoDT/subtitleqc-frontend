@@ -14,6 +14,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
     const spinnerRef = useRef(null);
     const warningRef = useRef(null);
     const amplitudeScale = useRef(2)
+    const moveCursorRef = useRef(null)
 
     const onWheel = useCallback((e) => {
         if (e.ctrlKey) {
@@ -97,6 +98,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                 peaks.segments.add(resetSegments())
                 peaks.on('zoomview.click', (event) => {
                     afterSeekedPromise().then(() => {
+                        props.waveformRef.current?.player.pause()
                         if (event.evt.ctrlKey) {
                             const time = peaks.player.getCurrentTime()
                             if (!peaks.segments.find(time, time + 1).length) {
@@ -108,13 +110,13 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     })
                 })
                 peaks.on("segments.mouseenter", (event) => {
-                    if (event.segment.editable) event.evt.target.style.cursor = 'move'
+                    if (event.segment.editable) {
+                        moveCursorRef.current = event.evt.target
+                        moveCursorRef.current.style.cursor = 'move'
+                    }
                 })
                 peaks.on("segments.mouseleave", (event) => {
                     event.evt.target.style.cursor = 'default'
-                })
-                peaks.on("segments.dragstart", (event) => {
-                    props.hotRef.current.scrollViewportTo(props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id) - Math.round(props.hotRef.current.countVisibleRows() / 2))
                 })
                 peaks.on("segments.dragged", (event) => {
                     const [start, end] = [secToTc(Number(event.segment.startTime.toFixed(3))), secToTc(Number(event.segment.endTime.toFixed(3)))]
@@ -142,8 +144,9 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                 })
                 peaks.on("segments.click", (event) => {
                     peaks.views.getView('zoomview')?.enableSegmentDragging(false)
+                    moveCursorRef.current = event.evt.target
                     if (props.selectedSegment.current === event.segment) {
-                        event.evt.target.style.cursor = 'default'
+                        moveCursorRef.current.style.cursor = 'default'
                         props.selectedSegment.current.update({color: 'white', editable: false})
                         props.selectedSegment.current = null
                         return
@@ -152,7 +155,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     props.selectedSegment.current = event.segment
                     props.selectedSegment.current.update({color: 'red', editable: !props.tcLockRef.current})
                     peaks.views.getView('zoomview')?.enableSegmentDragging(true)
-                    event.evt.target.style.cursor = 'move'
+                    moveCursorRef.current.style.cursor = 'move'
                 })
                 peaks.on('peaks.ready', () => {
                     if (!props.playerRef.current.getInternalPlayer()?.src.startsWith(props.video)) {
@@ -175,6 +178,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     const curRow = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(curSegment.id)
                     props.hotRef.current.setDataAtCell([[curRow, 0, ''], [curRow, 1, '']])
                     props.selectedSegment.current = null
+                    moveCursorRef.current.style.cursor = 'default'
                 }
             }
         })
@@ -226,8 +230,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     <MDBIcon fas icon="exclamation-circle" size={'3x'} color={'white'}/>
                 </MDBBtn>
             </div>
-            <div ref={waveformRef} className={'w-100'} style={{height: `${props.size.height - 100}px`}}
-                 onClick={() => props.waveformRef.current?.player.pause()}/>
+            <div ref={waveformRef} className={'w-100'} style={{height: `${props.size.height - 100}px`}}/>
             <div ref={overviewRef} className={'w-100'} style={{height: '30px'}}/>
         </div>
     </>

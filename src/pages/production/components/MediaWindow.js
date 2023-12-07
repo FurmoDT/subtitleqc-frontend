@@ -41,7 +41,7 @@ const MediaWindow = ({setVideo, ...props}) => {
         let targetIndex = props.subtitleIndexRef.current
         let nextSubtitle = props.cellDataRef.current[targetIndex][language] || ''
         let labelRef = subtitleLabelRef
-        const centerTargetIndex = Math.max(targetIndex - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
+        const centerTargetIndex = Math.max(targetIndex - Math.round(props.hotRef.current?.countVisibleRows() / 2), 0)
         if (seconds >= start && seconds <= end) {
             if (curIndex.current !== targetIndex) {
                 curIndex.current = targetIndex

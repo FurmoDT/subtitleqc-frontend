@@ -157,6 +157,13 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     peaks.views.getView('zoomview')?.enableSegmentDragging(true)
                     moveCursorRef.current.style.cursor = 'move'
                 })
+                peaks.on("segments.remove", (event) => {
+                    event.segments.forEach(value => {
+                        if (value === props.selectedSegment.current) {
+                            props.selectedSegment.current = null
+                        }
+                    })
+                })
                 peaks.on('peaks.ready', () => {
                     if (!props.playerRef.current.getInternalPlayer()?.src.startsWith(props.video)) {
                         props.waveformRef.current?.destroy()

@@ -245,7 +245,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                         if (tcChanges[0][3]) {
                             const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
                             const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
-                            0 <= startSec && endSec && props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
+                            0 <= startSec && startSec <= endSec && props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
                         }
                     }
                 }

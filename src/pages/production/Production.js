@@ -79,7 +79,7 @@ const Production = () => {
         const segments = []
         cellDataRef.current.forEach((value) => {
             const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-            if (0 <= start && end) segments.push(createSegment(start, end, value.rowId))
+            if (0 <= start && start <= end) segments.push(createSegment(start, end, value.rowId))
         })
         selectedSegment.current = null
         return segments

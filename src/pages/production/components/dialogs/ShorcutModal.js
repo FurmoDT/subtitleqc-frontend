@@ -85,9 +85,8 @@ const ShortcutModal = (props) => {
         };
     }, [handleKeyDown]);
     return <>
-        <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={() => {
-            toggleShow()
-        }}><MDBIcon fas icon="keyboard" size={'2x'}/></MDBBtn>
+        <MDBBtn className={'mx-1 color-black'} size={'sm'} color={'link'} onClick={toggleShow}>
+            <MDBIcon fas icon="keyboard" size={'2x'}/></MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
             <MDBModalDialog size={'lg'}>
                 <MDBModalContent>

@@ -130,6 +130,10 @@
     color: white;
 }
 
+.color-black {
+    color: black !important;
+}
+
 .input-error-span {
     font-size: 0.75rem;
     color: red;

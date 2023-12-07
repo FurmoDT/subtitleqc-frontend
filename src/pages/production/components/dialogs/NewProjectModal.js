@@ -16,7 +16,7 @@ const NewProjectModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
     return <>
-        <MDBBtn style={{marginLeft: '5px', color: 'black'}} size={'sm'} color={'link'} onClick={toggleShow}>
+        <MDBBtn className={'mx-1 color-black'} size={'sm'} color={'link'} onClick={toggleShow}>
             <MDBIcon far icon="file" size={'2x'}/></MDBBtn>
         <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>

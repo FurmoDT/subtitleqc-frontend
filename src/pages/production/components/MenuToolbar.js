@@ -57,7 +57,7 @@ const MenuToolbar = (props) => {
                                splitLineButtonRef={props.splitLineButtonRef}
                                mergeLineButtonRef={props.mergeLineButtonRef}/>
             </MDBTooltip>
-            <MDBDropdown>
+            <MDBDropdown className={'mx-1 color-black'}>
                 <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Download'>
                     <MDBDropdownToggle color={'link'}>
                         <MDBIcon fas icon='download' size={'xl'} color={'dark'}/>

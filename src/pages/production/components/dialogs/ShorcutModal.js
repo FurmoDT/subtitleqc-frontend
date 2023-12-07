@@ -78,12 +78,23 @@ const ShortcutModal = (props) => {
             }
         }
     }, [props.hotRef, props.waveformRef, props.playerRef, props.focusedRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+
+    const handleKeyDownCapturing = useCallback((event) => {
+        if (event.key === 'F2') {
+            event.stopPropagation()
+            if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.getInternalPlayer().play()
+            else props.playerRef.current.getInternalPlayer()?.pause()
+        }
+    }, [props.playerRef])
+
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keydown", handleKeyDownCapturing, true);
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keydown", handleKeyDownCapturing, true);
         };
-    }, [handleKeyDown]);
+    }, [handleKeyDown, handleKeyDownCapturing]);
     return <>
         <MDBBtn className={'mx-1 color-black'} size={'sm'} color={'link'} onClick={toggleShow}>
             <MDBIcon fas icon="keyboard" size={'2x'}/></MDBBtn>

@@ -87,11 +87,13 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Split Line'>
             <MDBBtn ref={props.splitLineButtonRef} color={'link'} size={'sm'} onClick={() => {
                 const selection = props.hotSelectionRef.current
-                const selectedData = props.hotRef.current.getDataAtRow(selection.rowStart)
-                props.hotRef.current.alter('insert_row', selection.rowStart + 1, 1)
-                const mid = secToTc(tcToSec(selectedData[0]) + Number(((tcToSec(selectedData[1]) - tcToSec(selectedData[0])) / 2).toFixed(3)))
-                props.hotRef.current.setDataAtCell([[selection.rowStart, 1, mid], [selection.rowStart + 1, 0, mid], [selection.rowStart + 1, 1, selectedData[1]]])
-                props.hotRef.current.selectCell(selection.rowStart + 1, selection.columnStart)
+                if (selection.rowStart !== null) {
+                    const selectedData = props.hotRef.current.getDataAtRow(selection.rowStart)
+                    props.hotRef.current.alter('insert_row', selection.rowStart + 1, 1)
+                    const mid = secToTc(tcToSec(selectedData[0]) + Number(((tcToSec(selectedData[1]) - tcToSec(selectedData[0])) / 2).toFixed(3)))
+                    props.hotRef.current.setDataAtCell([[selection.rowStart, 1, mid], [selection.rowStart + 1, 0, mid], [selection.rowStart + 1, 1, selectedData[1]]])
+                    props.hotRef.current.selectCell(selection.rowStart + 1, selection.columnStart)
+                }
             }}><TbArrowsSplit2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Merge Line'>
@@ -99,8 +101,12 @@ const TransToolbar = (props) => {
                 const selection = props.hotSelectionRef.current
                 const countCols = props.hotRef.current.countCols()
                 const selectedData = props.hotRef.current.getData(selection.rowStart, 0, selection.rowEnd, countCols)
+                if (selectedData.length <= 1) {
+                    if (selection.rowStart !== null && selection.rowEnd !== null) props.hotRef.current.selectCell(selection.rowStart, selection.columnEnd)
+                    return
+                }
                 const result = [];
-                for (let i = 2; i < countCols; i++) {
+                for (let i = 4; i < countCols; i++) {
                     const colValues = selectedData.map(row => row[i]);
                     result.push(colValues.join('\n'));
                 }

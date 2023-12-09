@@ -108,10 +108,10 @@ const TransToolbar = (props) => {
                 const result = [];
                 for (let i = 4; i < countCols; i++) {
                     const colValues = selectedData.map(row => row[i]);
-                    result.push(colValues.join('\n'));
+                    result.push(colValues.join(' '));
                 }
                 props.hotRef.current.setDataAtCell([[selection.rowStart, 1, selectedData[selectedData.length - 1][1]],
-                    ...result.map((value, index) => [selection.rowStart, index + 2, value]),
+                    ...result.map((value, index) => [selection.rowStart, index + 4, value]),
                     ...Array.from({length: selection.rowEnd - selection.rowStart}, (_, rowIndex) => Array.from({length: countCols}, (_, colIndex) => [selection.rowStart + 1 + rowIndex, colIndex, ''])).flat()
                 ])
                 props.hotRef.current.alter('remove_row', selection.rowStart + 1, selection.rowEnd - selection.rowStart)

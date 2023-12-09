@@ -54,8 +54,9 @@ const FindPopover = (props) => {
             props.hotRef.current.render()
         }
     }, [props.findButtonRef, props.hotRef])
-    return <>
+    return <div className={'d-inline-block'}>
         <MDBPopover id={'find-popover'} size={'sm'} color={'link'} placement={'right-end'}
+                    btnClassName={'transToolbar-button'}
                     btnChildren={<MDBTooltip className={'pb-13'} tag='span' title='Find'>
                         <MdSearch color={'black'} size={20}/></MDBTooltip>} onShow={() => {
             const observer = new MutationObserver(() => {
@@ -96,7 +97,7 @@ const FindPopover = (props) => {
                 </div>
             </MDBPopoverBody>
         </MDBPopover>
-    </>
+    </div>
 }
 
 export default FindPopover

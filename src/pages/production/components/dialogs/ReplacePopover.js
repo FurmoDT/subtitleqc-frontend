@@ -56,8 +56,9 @@ const ReplacePopover = (props) => {
             props.hotRef.current.render()
         }
     }, [props.replaceButtonRef, props.hotRef])
-    return <>
+    return <div className={'d-inline-block'}>
         <MDBPopover id={'replace-popover'} size={'sm'} color={'link'} placement={'right-end'}
+                    btnClassName={'transToolbar-button'}
                     btnChildren={<MDBTooltip className={'pb-13'} tag='span' title='Replace'>
                         <MdFindReplace color={'black'} size={20}/></MDBTooltip>} onShow={() => {
             const observer = new MutationObserver(() => {
@@ -112,7 +113,7 @@ const ReplacePopover = (props) => {
                 </div>
             </MDBPopoverBody>
         </MDBPopover>
-    </>
+    </div>
 }
 
 export default ReplacePopover

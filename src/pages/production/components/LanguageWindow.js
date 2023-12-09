@@ -296,6 +296,12 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.hotSelectionRef.current.columnStart = Math.min(column, column2)
             props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
             props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
+            const curSegment = props.waveformRef.current?.segments.getSegment(props.hotRef.current.getDataAtRowProp(row, 'rowId'))
+            if (curSegment && curSegment !== props.selectedSegment.current) {
+                props.selectedSegment.current?.update({color: 'white', editable: false})
+                props.selectedSegment.current = curSegment
+                props.selectedSegment.current.update({color: 'red', editable: !props.tcLock})
+            }
         })
         props.hotRef.current.addHook('afterSelectionEndByProp', (row, prop, row2, prop2) => {
             props.crdt?.awareness()?.setLocalStateField('cursor', {row: row, colProp: prop})
@@ -329,7 +335,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
         props.hotRef.current.undoRedo.doneActions = persistentUndoRedoRef.current.doneActions
         props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
-        props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, ()=>Math.floor((props.size.width - 365) / props.languages.length))]})
+        props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, () => Math.floor((props.size.width - 365) / props.languages.length))]})
     }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize]);
 
     useEffect(() => {

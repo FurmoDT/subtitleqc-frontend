@@ -203,6 +203,19 @@
     color: rgba(55, 53, 47, 0.16);
 }
 
+.transToolbar-vertical-divider {
+    width: 2px;
+    height: 2rem;
+    display: inline-block;
+    flex: none;
+    background-color: rgba(55, 53, 47, 0.16);
+}
+
+.transToolbar-button {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+
 .util-container {
     position: absolute;
     bottom: 20px;

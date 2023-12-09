@@ -16,16 +16,17 @@ import {
 } from 'mdb-react-ui-kit';
 import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
-import {MdFindReplace, MdSearch} from "react-icons/md";
+import {MdFindReplace, MdPlayCircle, MdSearch} from "react-icons/md";
+import {secToTc, tcToSec} from "../../../../utils/functions";
 
 const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
     const handleKeyDown = useCallback((event) => {
-        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'VIDEO' && event.target.tagName !== 'INPUT') || event.key === 'F6') {
+        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'INPUT') || event.key === 'F6') {
             event.preventDefault();
-            if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.getInternalPlayer().play()
-            else props.playerRef.current.getInternalPlayer()?.pause()
+            const player = props.playerRef.current.getInternalPlayer()
+            if (player) player.paused ? player.play() : player.pause()
         }
         if (event.ctrlKey && event.key === 'f') {
             event.preventDefault();
@@ -34,6 +35,14 @@ const ShortcutModal = (props) => {
         if (event.ctrlKey && event.key === 'h') {
             event.preventDefault();
             props.replaceButtonRef.current.click()
+        }
+        if (event.key === 'F3') {
+            event.preventDefault();
+            props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() - 10, 'seconds')
+        }
+        if (event.key === 'F4') {
+            event.preventDefault();
+            props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() + 10, 'seconds')
         }
         if (event.key === 'F9') {
             event.preventDefault();
@@ -80,12 +89,64 @@ const ShortcutModal = (props) => {
     }, [props.hotRef, props.waveformRef, props.playerRef, props.focusedRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
+        if (event.ctrlKey && event.key === 'ArrowUp') {
+            event.stopPropagation()
+            if (props.tcLockRef.current) return
+            const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+            if (rowStart === null) return
+            const pairs = [];
+            for (let row = rowStart; row <= rowEnd; row++) {
+                for (let col = columnStart; col <= 1; col++) {
+                    pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) + 0.2)])
+                }
+            }
+            props.hotRef.current.setDataAtCell(pairs)
+            props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+        }
+        if (event.ctrlKey && event.key === 'ArrowLeft') {
+            event.stopPropagation()
+        }
+        if (event.ctrlKey && event.key === 'ArrowDown') {
+            event.stopPropagation()
+            if (props.tcLockRef.current) return
+            const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+            if (rowStart === null) return
+            const pairs = [];
+            for (let row = rowStart; row <= rowEnd; row++) {
+                for (let col = columnStart; col <= 1; col++) {
+                    pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) - 0.2)])
+                }
+            }
+            props.hotRef.current.setDataAtCell(pairs)
+            props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+        }
+        if (event.ctrlKey && event.key === 'ArrowRight') {
+            event.stopPropagation()
+        }
         if (event.key === 'F2') {
             event.stopPropagation()
-            if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.getInternalPlayer().play()
-            else props.playerRef.current.getInternalPlayer()?.pause()
+            const segment = props.selectedSegment.current
+            if (segment) {
+                props.playerRef.current.seekTo(segment.startTime, 'seconds')
+                props.playerRef.current.getInternalPlayer().play()
+            }
         }
-    }, [props.playerRef])
+        if (event.ctrlKey && event.shiftKey && event.key === 'Insert') {
+            const {rowStart} = props.hotSelectionRef.current
+            if (rowStart === null) return
+            props.hotRef.current.alter('insert_row', rowStart + 1, 1)
+        } else if (event.ctrlKey && event.key === 'Insert') {
+            const {rowStart} = props.hotSelectionRef.current
+            if (rowStart === null) return
+            props.hotRef.current.alter('insert_row', rowStart, 1)
+        }
+        if (event.ctrlKey && event.key === 'Delete') {
+            event.stopPropagation()
+            const {rowStart, rowEnd} = props.hotSelectionRef.current
+            if (rowStart === null) return
+            props.hotRef.current.alter('remove_row', rowStart, rowEnd + 1 - rowStart)
+        }
+    }, [props.playerRef, props.selectedSegment, props.hotRef, props.hotSelectionRef, props.tcLockRef])
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
@@ -119,18 +180,24 @@ const ShortcutModal = (props) => {
                                         SPACE , F6
                                     </MDBListGroupItem>
                                 </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
+                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                        <MdPlayCircle size={20} color={'black'}/> F2
+                                    </MDBListGroupItem>
+                                </MDBCol>
                             </MDBRow>
                             <MDBRow>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <MDBIcon fas icon="angle-double-left"/> ←
+                                        <MDBIcon fas icon="angle-double-left"/> F3
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem className='d-flex justify-content-between align-items-center'
                                                       style={{paddingLeft: 10, paddingRight: 10}}>
-                                        <MDBIcon fas icon="angle-double-right"/> →
+                                        <MDBIcon fas icon="angle-double-right"/> F4
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>

@@ -50,8 +50,9 @@ const MenuToolbar = (props) => {
                 </MDBTooltip>}
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
                 <ShortcutModal focusedRef={props.focusedRef} hotRef={props.hotRef} playerRef={props.playerRef}
-                               waveformRef={props.waveformRef}
+                               waveformRef={props.waveformRef} selectedSegment={props.selectedSegment}
                                findButtonRef={props.findButtonRef} replaceButtonRef={props.replaceButtonRef}
+                               hotSelectionRef={props.hotSelectionRef} tcLockRef={props.tcLockRef}
                                tcOffsetButtonRef={props.tcOffsetButtonRef} tcIoButtonRef={props.tcIoButtonRef}
                                tcInButtonRef={props.tcInButtonRef} tcOutButtonRef={props.tcOutButtonRef}
                                splitLineButtonRef={props.splitLineButtonRef}

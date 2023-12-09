@@ -7,6 +7,7 @@ import {HiSpeakerWave, HiSpeakerXMark} from "react-icons/hi2";
 import {Direction, getTrackBackground, Range} from 'react-range';
 import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
 import {PiGlobe} from "react-icons/pi";
+import {MdPlayCircle} from "react-icons/md";
 
 const MediaWindow = ({setVideo, ...props}) => {
     const subtitleLabelRef = useRef(null)
@@ -150,8 +151,8 @@ const MediaWindow = ({setVideo, ...props}) => {
                        renderThumb={({props}) => (
                            <div {...props} className={'input-range-thumb'} style={{...props.style}}/>)}/>
             </div>
-            <div className={'d-flex justify-content-between'} style={{height: '2rem', padding: '0 0.625rem'}}>
-                <div className={'h-100 d-flex flex-nowrap align-items-center'}>
+            <div className={'d-flex justify-content-between'} style={{height: '2rem'}}>
+                <div className={'h-100 d-flex flex-nowrap align-items-center'} style={{margin: '0 0.625rem'}}>
                     {isPlaying ?
                         <BsPauseFill className={'button-icon'} size={20}
                                      onClick={event => props.playerRef.current.getInternalPlayer().pause()}/> :
@@ -160,9 +161,16 @@ const MediaWindow = ({setVideo, ...props}) => {
                     <span className={'span-duration mx-2'}>
                         {`${secToTc(seek)} / ${secToTc(props.mediaInfo?.duration)}`}
                     </span>
+                    <MdPlayCircle className={'button-icon'} size={20} onClick={() => {
+                        const segment = props.selectedSegment.current
+                        if (segment) {
+                            props.playerRef.current.seekTo(segment.startTime, 'seconds')
+                            props.playerRef.current.getInternalPlayer().play()
+                        }
+                    }}/>
                 </div>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'}>
-                    <div className={'position-relative d-flex justify-content-center me-4'}
+                    <div className={'position-relative d-flex justify-content-center mx-2'}
                          onMouseEnter={() => showUtilHandler(volumeRef.current)}
                          onMouseLeave={() => hideUtilHandler(volumeRef.current)}>
                         {isMuted ?
@@ -198,7 +206,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                             />
                         </div>
                     </div>
-                    <div className={'position-relative d-flex justify-content-center me-4'}
+                    <div className={'position-relative d-flex justify-content-center mx-2'}
                          onMouseEnter={() => showUtilHandler(speedRef.current)}
                          onMouseLeave={() => hideUtilHandler(speedRef.current)}>
                         <SlSpeedometer className={'button-icon'} size={20}/>
@@ -213,7 +221,7 @@ const MediaWindow = ({setVideo, ...props}) => {
                             </OverlayScrollbarsComponent>
                         </div>
                     </div>
-                    <div className={'position-relative d-flex justify-content-center me-2'}
+                    <div className={'position-relative d-flex justify-content-center mx-2'}
                          onMouseEnter={() => showUtilHandler(languageRef.current)}
                          onMouseLeave={() => hideUtilHandler(languageRef.current)}>
                         <PiGlobe className={'button-icon'} size={20}/>

@@ -151,9 +151,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                         props.selectedSegment.current = null
                         return
                     }
-                    props.selectedSegment.current?.update({color: 'white', editable: false})
-                    props.selectedSegment.current = event.segment
-                    props.selectedSegment.current.update({color: 'red', editable: !props.tcLockRef.current})
+                    props.hotRef.current.selectRows(props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id))
                     peaks.views.getView('zoomview')?.enableSegmentDragging(true)
                     moveCursorRef.current.style.cursor = 'move'
                 })

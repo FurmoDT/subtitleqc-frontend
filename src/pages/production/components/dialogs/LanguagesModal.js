@@ -48,7 +48,7 @@ const LanguagesModal = (props) => {
 
     return <>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Languages'>
-            <MDBBtn className={'ms-1'} size={'sm'} color={'link'} onClick={toggleShow}>
+            <MDBBtn className={'transToolbar-button'} size={'sm'} color={'link'} onClick={toggleShow}>
                 <GrLanguage color={'black'} size={19}/>
             </MDBBtn>
         </MDBTooltip>

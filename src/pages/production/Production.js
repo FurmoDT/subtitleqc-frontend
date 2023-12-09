@@ -212,9 +212,10 @@ const Production = () => {
                      focusedRef={focusedRef} projectDetail={projectDetail} setProjectDetail={setProjectDetail}
                      setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
+                     hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
                      taskHashedId={taskHashedId} crdt={crdtHandlerRef.current} crdtInitialized={crdtInitialized}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
-                     tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
+                     tcLockRef={tcLockRef} tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId}
@@ -236,7 +237,8 @@ const Production = () => {
                             <Allotment.Pane minSize={300}>
                                 <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} languages={languages}
                                              playerRef={playerRef} mediaFile={mediaFile} mediaInfo={mediaInfo}
-                                             waveformRef={waveformRef} isFromLanguageWindowRef={isFromLanguageWindowRef}
+                                             waveformRef={waveformRef} selectedSegment={selectedSegment}
+                                             isFromLanguageWindowRef={isFromLanguageWindowRef}
                                              video={video} setVideo={setVideo} subtitleIndexRef={subtitleIndexRef}/>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={50} snap>

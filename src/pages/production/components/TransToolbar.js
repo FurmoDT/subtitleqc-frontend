@@ -118,14 +118,10 @@ const TransToolbar = (props) => {
                 props.hotRef.current.selectCell(selection.rowStart, selection.columnEnd)
             }}><TbArrowsJoin2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Find'>
-            <FindPopover findButtonRef={props.findButtonRef} hotRef={props.hotRef}
-                         afterRenderPromise={props.afterRenderPromise}/>
-        </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Replace'>
-            <ReplacePopover replaceButtonRef={props.replaceButtonRef} hotRef={props.hotRef}
-                            afterRenderPromise={props.afterRenderPromise}/>
-        </MDBTooltip>
+        <FindPopover findButtonRef={props.findButtonRef} hotRef={props.hotRef}
+                     afterRenderPromise={props.afterRenderPromise}/>
+        <ReplacePopover replaceButtonRef={props.replaceButtonRef} hotRef={props.hotRef}
+                        afterRenderPromise={props.afterRenderPromise}/>
     </div>
 };
 

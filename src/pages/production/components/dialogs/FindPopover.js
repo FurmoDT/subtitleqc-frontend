@@ -1,4 +1,4 @@
-import {MDBBtn, MDBIcon, MDBInput, MDBPopover, MDBPopoverBody, MDBPopoverHeader,} from 'mdb-react-ui-kit';
+import {MDBBtn, MDBIcon, MDBInput, MDBPopover, MDBPopoverBody, MDBPopoverHeader, MDBTooltip,} from 'mdb-react-ui-kit';
 import {useCallback, useEffect, useRef, useState} from "react";
 import {MdSearch} from "react-icons/md";
 
@@ -56,7 +56,8 @@ const FindPopover = (props) => {
     }, [props.findButtonRef, props.hotRef])
     return <>
         <MDBPopover id={'find-popover'} size={'sm'} color={'link'} placement={'right-end'}
-                    btnChildren={<MdSearch color={'black'} size={20}/>} onShow={() => {
+                    btnChildren={<MDBTooltip className={'pb-13'} tag='span' title='Find'>
+                        <MdSearch color={'black'} size={20}/></MDBTooltip>} onShow={() => {
             const observer = new MutationObserver(() => {
                 const popover = document.querySelector('.popover')
                 if (popover) {
@@ -72,16 +73,23 @@ const FindPopover = (props) => {
             setCurFindPosition(0)
             setSearched([])
         }}>
-            <MDBPopoverHeader>Find</MDBPopoverHeader>
+            <MDBPopoverHeader>
+                <div className={'d-flex align-items-center justify-content-between'}>
+                    Find<MDBBtn className='btn-close' color='none' onClick={() => props.findButtonRef.current.click()}/>
+                </div>
+            </MDBPopoverHeader>
             <MDBPopoverBody>
                 <div className={'d-flex flex-row'}>
-                    <MDBInput data-source={'transToolbar'} onChange={handleOnChange} onKeyDown={handleKeyDown} type='text'/>
+                    <MDBInput data-source={'transToolbar'} onChange={handleOnChange} onKeyDown={handleKeyDown}
+                              type='text'/>
                     <div className={'d-flex flex-row align-items-center'}>
                         <span ref={findPositionLabelRef} className={'ms-2'}>{curFindPosition}/{searched.length}</span>
-                        <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating onClick={handleOnClick}>
+                        <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating
+                                onClick={handleOnClick}>
                             <MDBIcon fas icon="chevron-left" color={'dark'}/>
                         </MDBBtn>
-                        <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating onClick={handleOnClick}>
+                        <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating
+                                onClick={handleOnClick}>
                             <MDBIcon fas icon="chevron-right" color={'dark'}/>
                         </MDBBtn>
                     </div>

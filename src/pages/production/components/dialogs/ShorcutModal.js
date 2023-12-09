@@ -31,7 +31,7 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.findButtonRef.current.click()
         }
-        if (event.ctrlKey && event.key === 'g') {
+        if (event.ctrlKey && event.key === 'h') {
             event.preventDefault();
             props.replaceButtonRef.current.click()
         }

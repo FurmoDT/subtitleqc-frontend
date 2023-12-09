@@ -134,6 +134,10 @@
     color: black !important;
 }
 
+.pb-13 {
+    padding-bottom: 13px !important;
+}
+
 .input-error-span {
     font-size: 0.75rem;
     color: red;

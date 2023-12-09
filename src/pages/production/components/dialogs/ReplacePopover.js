@@ -1,4 +1,4 @@
-import {MDBBtn, MDBIcon, MDBInput, MDBPopover, MDBPopoverBody, MDBPopoverHeader,} from 'mdb-react-ui-kit';
+import {MDBBtn, MDBIcon, MDBInput, MDBPopover, MDBPopoverBody, MDBPopoverHeader, MDBTooltip,} from 'mdb-react-ui-kit';
 import {useCallback, useEffect, useRef, useState} from "react";
 import {MdFindReplace} from "react-icons/md";
 
@@ -58,7 +58,8 @@ const ReplacePopover = (props) => {
     }, [props.replaceButtonRef, props.hotRef])
     return <>
         <MDBPopover id={'replace-popover'} size={'sm'} color={'link'} placement={'right-end'}
-                    btnChildren={<MdFindReplace color={'black'} size={20}/>} onShow={() => {
+                    btnChildren={<MDBTooltip className={'pb-13'} tag='span' title='Replace'>
+                        <MdFindReplace color={'black'} size={20}/></MDBTooltip>} onShow={() => {
             const observer = new MutationObserver(() => {
                 const popover = document.querySelector('.popover')
                 if (popover) {
@@ -74,21 +75,29 @@ const ReplacePopover = (props) => {
             setCurFindPosition(0)
             setSearched([])
         }}>
-            <MDBPopoverHeader>Replace</MDBPopoverHeader>
+            <MDBPopoverHeader>
+                <div className={'d-flex align-items-center justify-content-between'}>
+                    Replace<MDBBtn className='btn-close' color='none'
+                                   onClick={() => props.replaceButtonRef.current.click()}/>
+                </div>
+            </MDBPopoverHeader>
             <MDBPopoverBody>
                 <div className={'d-flex flex-row'}>
                     <div className={'d-flex flex-column'}>
-                        <MDBInput data-source={'transToolbar'} ref={findLabelRef} onChange={handleOnChange} onKeyDown={handleKeyDown} type={'text'}/>
+                        <MDBInput data-source={'transToolbar'} ref={findLabelRef} onChange={handleOnChange}
+                                  onKeyDown={handleKeyDown} type={'text'}/>
                         <MDBInput ref={replaceLabelRef} type={'text'}/>
                     </div>
                     <div className={'d-flex flex-column justify-content-end ms-2'}>
                         <div className={'d-flex flex-row justify-content-center'}>
                             <span ref={findPositionLabelRef} className={'d-flex align-items-center'}>
                                 {curFindPosition}/{searched.length}</span>
-                            <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating onClick={handleOnClick}>
+                            <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating
+                                    onClick={handleOnClick}>
                                 <MDBIcon fas icon="chevron-left" color={'dark'}/>
                             </MDBBtn>
-                            <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating onClick={handleOnClick}>
+                            <MDBBtn data-source={'transToolbar'} size={'sm'} color={'link'} floating
+                                    onClick={handleOnClick}>
                                 <MDBIcon fas icon="chevron-right" color={'dark'}/>
                             </MDBBtn>
                         </div>

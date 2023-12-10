@@ -47,6 +47,11 @@ const Production = () => {
     const tcIoButtonRef = useRef(null)
     const tcInButtonRef = useRef(null)
     const tcOutButtonRef = useRef(null)
+    const tcIncreaseButtonRef = useRef(null)
+    const tcDecreaseButtonRef = useRef(null)
+    const insertLineAboveButtonRef = useRef(null)
+    const insertLineBelowButtonRef = useRef(null)
+    const removeLineButtonRef = useRef(null)
     const splitLineButtonRef = useRef(null)
     const mergeLineButtonRef = useRef(null)
     const findButtonRef = useRef(null)
@@ -217,6 +222,9 @@ const Production = () => {
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcLockRef={tcLockRef} tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
+                     tcIncreaseButtonRef={tcIncreaseButtonRef} tcDecreaseButtonRef={tcDecreaseButtonRef}
+                     insertLineAboveButtonRef={insertLineAboveButtonRef}
+                     insertLineBelowButtonRef={insertLineBelowButtonRef} removeLineButtonRef={removeLineButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId}
                      setCrdtInitialized={setCrdtInitialized}/>
@@ -252,6 +260,11 @@ const Production = () => {
                                       tcLockRef={tcLockRef} selectedSegment={selectedSegment}
                                       tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
+                                      tcIncreaseButtonRef={tcIncreaseButtonRef}
+                                      tcDecreaseButtonRef={tcDecreaseButtonRef}
+                                      insertLineAboveButtonRef={insertLineAboveButtonRef}
+                                      insertLineBelowButtonRef={insertLineBelowButtonRef}
+                                      removeLineButtonRef={removeLineButtonRef}
                                       splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}
                                       findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                                       afterRenderPromise={afterRenderPromise} cellDataRef={cellDataRef}

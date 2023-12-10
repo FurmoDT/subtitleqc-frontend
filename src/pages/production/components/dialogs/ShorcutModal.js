@@ -17,7 +17,6 @@ import {
 import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 import {TbArrowsJoin2, TbArrowsSplit2, TbClockMinus, TbClockPlus} from "react-icons/tb";
 import {MdFindReplace, MdPlayCircle, MdSearch} from "react-icons/md";
-import {secToTc, tcToSec} from "../../../../utils/functions";
 import {AiOutlineInsertRowAbove, AiOutlineInsertRowBelow} from "react-icons/ai";
 import {RiDeleteRow} from "react-icons/ri";
 
@@ -93,34 +92,14 @@ const ShortcutModal = (props) => {
     const handleKeyDownCapturing = useCallback((event) => {
         if (event.ctrlKey && event.key === 'ArrowUp') {
             event.stopPropagation()
-            if (props.tcLockRef.current) return
-            const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-            if (rowStart === null) return
-            const pairs = [];
-            for (let row = rowStart; row <= rowEnd; row++) {
-                for (let col = columnStart; col <= 1; col++) {
-                    pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) + 0.2)])
-                }
-            }
-            props.hotRef.current.setDataAtCell(pairs)
-            props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+            props.tcIncreaseButtonRef.current.click()
         }
         if (event.ctrlKey && event.key === 'ArrowLeft') {
             event.stopPropagation()
         }
         if (event.ctrlKey && event.key === 'ArrowDown') {
             event.stopPropagation()
-            if (props.tcLockRef.current) return
-            const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-            if (rowStart === null) return
-            const pairs = [];
-            for (let row = rowStart; row <= rowEnd; row++) {
-                for (let col = columnStart; col <= 1; col++) {
-                    pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) - 0.2)])
-                }
-            }
-            props.hotRef.current.setDataAtCell(pairs)
-            props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+            props.tcDecreaseButtonRef.current.click()
         }
         if (event.ctrlKey && event.key === 'ArrowRight') {
             event.stopPropagation()
@@ -134,21 +113,15 @@ const ShortcutModal = (props) => {
             }
         }
         if (event.ctrlKey && event.shiftKey && event.key === 'Insert') {
-            const {rowStart} = props.hotSelectionRef.current
-            if (rowStart === null) return
-            props.hotRef.current.alter('insert_row', rowStart + 1, 1)
+            props.insertLineBelowButtonRef.current.click()
         } else if (event.ctrlKey && event.key === 'Insert') {
-            const {rowStart} = props.hotSelectionRef.current
-            if (rowStart === null) return
-            props.hotRef.current.alter('insert_row', rowStart, 1)
+            props.insertLineAboveButtonRef.current.click()
         }
         if (event.ctrlKey && event.key === 'Delete') {
             event.stopPropagation()
-            const {rowStart, rowEnd} = props.hotSelectionRef.current
-            if (rowStart === null) return
-            props.hotRef.current.alter('remove_row', rowStart, rowEnd + 1 - rowStart)
+            props.removeLineButtonRef.current.click()
         }
-    }, [props.playerRef, props.selectedSegment, props.hotRef, props.hotSelectionRef, props.tcLockRef])
+    }, [props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef])
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
@@ -247,7 +220,7 @@ const ShortcutModal = (props) => {
                                 </MDBCol>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem
-                                        cclassName='d-flex justify-content-between align-items-center px-2'>
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <BsSunrise color={'black'} size={20}/> F11
                                     </MDBListGroupItem>
                                 </MDBCol>

@@ -95,34 +95,36 @@ const TransToolbar = (props) => {
         </MDBTooltip>
         <div className={'transToolbar-vertical-divider'}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC 값 증가'>
-            <MDBBtn className={'transToolbar-button'} color={'link'} size={'sm'} onClick={() => {
-                if (props.tcLockRef.current) return
-                const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                if (rowStart === null) return
-                const pairs = [];
-                for (let row = rowStart; row <= rowEnd; row++) {
-                    for (let col = columnStart; col <= 1; col++) {
-                        pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) + 0.2)])
-                    }
-                }
-                props.hotRef.current.setDataAtCell(pairs)
-                props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
-            }}><TbClockPlus size={20} color={'black'}/></MDBBtn>
+            <MDBBtn ref={props.tcIncreaseButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
+                    onClick={() => {
+                        if (props.tcLockRef.current) return
+                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+                        if (rowStart === null) return
+                        const pairs = [];
+                        for (let row = rowStart; row <= rowEnd; row++) {
+                            for (let col = columnStart; col <= 1; col++) {
+                                pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) + 0.2)])
+                            }
+                        }
+                        props.hotRef.current.setDataAtCell(pairs)
+                        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+                    }}><TbClockPlus size={20} color={'black'}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC 값 감소'>
-            <MDBBtn className={'transToolbar-button'} color={'link'} size={'sm'} onClick={() => {
-                if (props.tcLockRef.current) return
-                const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                if (rowStart === null) return
-                const pairs = [];
-                for (let row = rowStart; row <= rowEnd; row++) {
-                    for (let col = columnStart; col <= 1; col++) {
-                        pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) - 0.2)])
-                    }
-                }
-                props.hotRef.current.setDataAtCell(pairs)
-                props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
-            }}><TbClockMinus size={20} color={'black'}/></MDBBtn>
+            <MDBBtn ref={props.tcDecreaseButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
+                    onClick={() => {
+                        if (props.tcLockRef.current) return
+                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+                        if (rowStart === null) return
+                        const pairs = [];
+                        for (let row = rowStart; row <= rowEnd; row++) {
+                            for (let col = columnStart; col <= 1; col++) {
+                                pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) - 0.2)])
+                            }
+                        }
+                        props.hotRef.current.setDataAtCell(pairs)
+                        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+                    }}><TbClockMinus size={20} color={'black'}/></MDBBtn>
         </MDBTooltip>
         <div className={'transToolbar-vertical-divider'}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Split Line'>
@@ -163,28 +165,31 @@ const TransToolbar = (props) => {
         </MDBTooltip>
         <div className={'transToolbar-vertical-divider'}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='위에 줄 추가'>
-            <MDBBtn className={'transToolbar-button'} color={'link'} size={'sm'} onClick={() => {
-                const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                if (rowStart === null) return
-                props.hotRef.current.alter('insert_row', rowStart, 1)
-                props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
-            }}><AiOutlineInsertRowAbove color={'black'} size={20}/></MDBBtn>
+            <MDBBtn ref={props.insertLineAboveButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
+                    onClick={() => {
+                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+                        if (rowStart === null) return
+                        props.hotRef.current.alter('insert_row', rowStart, 1)
+                        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+                    }}><AiOutlineInsertRowAbove color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='아래 줄 추가'>
-            <MDBBtn className={'transToolbar-button'} color={'link'} size={'sm'} onClick={() => {
-                const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                if (rowStart === null) return
-                props.hotRef.current.alter('insert_row', rowStart + 1, 1)
-                props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
-            }}><AiOutlineInsertRowBelow color={'black'} size={20}/></MDBBtn>
+            <MDBBtn ref={props.insertLineBelowButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
+                    onClick={() => {
+                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+                        if (rowStart === null) return
+                        props.hotRef.current.alter('insert_row', rowStart + 1, 1)
+                        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+                    }}><AiOutlineInsertRowBelow color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 삭제'>
-            <MDBBtn className={'transToolbar-button'} color={'link'} size={'sm'} onClick={() => {
-                const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                if (rowStart === null) return
-                props.hotRef.current.alter('remove_row', rowStart, rowEnd + 1 - rowStart)
-                props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
-            }}><RiDeleteRow color={'black'} size={20}/></MDBBtn>
+            <MDBBtn ref={props.removeLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
+                    onClick={() => {
+                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+                        if (rowStart === null) return
+                        props.hotRef.current.alter('remove_row', rowStart, rowEnd + 1 - rowStart)
+                        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+                    }}><RiDeleteRow color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <div className={'transToolbar-vertical-divider'}/>
         <FindPopover findButtonRef={props.findButtonRef} hotRef={props.hotRef}

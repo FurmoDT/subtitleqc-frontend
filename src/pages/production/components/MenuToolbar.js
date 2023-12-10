@@ -55,6 +55,11 @@ const MenuToolbar = (props) => {
                                hotSelectionRef={props.hotSelectionRef} tcLockRef={props.tcLockRef}
                                tcOffsetButtonRef={props.tcOffsetButtonRef} tcIoButtonRef={props.tcIoButtonRef}
                                tcInButtonRef={props.tcInButtonRef} tcOutButtonRef={props.tcOutButtonRef}
+                               tcIncreaseButtonRef={props.tcIncreaseButtonRef}
+                               tcDecreaseButtonRef={props.tcDecreaseButtonRef}
+                               insertLineAboveButtonRef={props.insertLineAboveButtonRef}
+                               insertLineBelowButtonRef={props.insertLineBelowButtonRef}
+                               removeLineButtonRef={props.removeLineButtonRef}
                                splitLineButtonRef={props.splitLineButtonRef}
                                mergeLineButtonRef={props.mergeLineButtonRef}/>
             </MDBTooltip>

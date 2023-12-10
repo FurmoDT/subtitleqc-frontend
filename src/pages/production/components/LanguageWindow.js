@@ -18,6 +18,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     const debounceTimeoutRef = useRef(null)
     const persistentRowIndexRef = useRef(0);
     const persistentUndoRedoRef = useRef({doneActions: [], undoneActions: []})
+    const subtitleIndexRef = useRef(-1)
 
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
@@ -28,7 +29,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
 
     const debounceRender = useCallback(() => {
         clearTimeout(debounceTimeoutRef.current)
-        debounceTimeoutRef.current = setTimeout(() => props.hotRef.current.render(), 100)
+        debounceTimeoutRef.current = setTimeout(() => props.hotRef.current.render(), 200)
     }, [props.hotRef])
 
     const getTotalLines = useCallback(() => {
@@ -42,18 +43,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         }
         return Math.max(totalLines + 1, 0)
     }, [props.hotRef])
-
-    const selectRows = useCallback(() => {
-        if (document.activeElement.dataset.source === 'transToolbar') return
-        if (props.playerRef.current.getInternalPlayer() && !props.hotRef.current.getActiveEditor()?._opened) {
-            const row = props.subtitleIndexRef.current
-            const [start, end] = props.hotRef.current.getDataAtRow(row).slice(0, 2)
-            const currentTime = props.playerRef.current.getCurrentTime()?.toFixed(3)
-            if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end)) { // if not editing
-                if (!props.hotRef.current.getSelected()) props.hotRef.current.selectRows(row)
-            }
-        }
-    }, [props.hotRef, props.subtitleIndexRef, props.playerRef])
 
     const getSelectedPairs = (rangeArray) => {
         const allPairs = []
@@ -188,8 +177,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         const autoRowSizePlugin = props.hotRef.current.getPlugin('autoRowSize');
         setTotalLines(getTotalLines())
         let grammarlyPlugin = null
-        props.hotRef.current.addHook('afterScrollVertically', selectRows)
-        props.hotRef.current.addHook('afterScrollHorizontally', selectRows)
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
             if (props.hotRef.current.colToProp(column).startsWith('enUS')) {
                 grammarly.then(r => {
@@ -204,7 +191,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 containerMain.current.querySelector('textarea').dir = 'rtl'
             }
             const tcIn = props.hotRef.current.getDataAtCell(row, 0)
-            props.isFromLanguageWindowRef.current = true
             if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')
         })
         props.hotRef.current.addHook('beforeChange', (changes) => {
@@ -250,10 +236,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     }
                 }
             }
-            if (props.hotRef.current.getActiveEditor()?._opened) {
-                props.isFromLanguageWindowRef.current = true
-                props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds') // update subtitle
-            }
+            if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds') // update subtitle
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
         })
@@ -319,6 +302,9 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 nameDiv.innerHTML = cellProperties.awareness.name
                 TD.append(borderDiv, nameDiv)
             }
+            if (column === props.hotRef.current.countCols() - 1 && cellProperties.subtitle) {
+                TD.parentNode.childNodes.forEach(child => child.classList.add('td-custom-highlight'))
+            }
         })
         props.hotRef.current.addHook('afterSetCellMeta', () => debounceRender())
         props.hotRef.current.addHook('afterRemoveCellMeta', () => debounceRender())
@@ -329,14 +315,21 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.isFromLanguageWindowRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, selectRows, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
         props.hotRef.current.undoRedo.doneActions = persistentUndoRedoRef.current.doneActions
         props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
         props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, () => Math.floor((props.size.width - 365) / props.languages.length))]})
+        props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
     }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize]);
+
+    useEffect(() => {
+        if (subtitleIndexRef.current > 0) props.hotRef.current.removeCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle')
+        subtitleIndexRef.current = props.subtitleIndex
+        props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
+    }, [props.subtitleIndex, props.hotRef])
 
     useEffect(() => {
         if (!props.taskHashedId) return

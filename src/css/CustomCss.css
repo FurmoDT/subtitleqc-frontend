@@ -52,6 +52,10 @@
     position: relative;
 }
 
+.td-custom-highlight {
+    background-color: #98fb98 !important;
+}
+
 .td-custom-text {
     white-space: pre !important;
     text-overflow: ellipsis;

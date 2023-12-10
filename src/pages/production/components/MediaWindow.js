@@ -9,9 +9,10 @@ import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
 import {PiGlobe} from "react-icons/pi";
 import {MdPlayCircle} from "react-icons/md";
 
-const MediaWindow = ({setVideo, ...props}) => {
+const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const subtitleLabelRef = useRef(null)
     const curSubtitleIndexRef = useRef(-1)
+    const nextSubtitleIndexRef = useRef(0)
     const [t] = useState(Date.now())
     const [seek, setSeek] = useState(0)
     const [isMuted, setIsMuted] = useState(false)
@@ -22,7 +23,6 @@ const MediaWindow = ({setVideo, ...props}) => {
     const [volume, setVolume] = useState([1])
     const [language, setLanguage] = useState(null)
     const hideUtilTimeoutRef = useRef(null)
-    const popover = document.querySelector('.popover')
 
     const showUtilHandler = useCallback((target) => {
         [volumeRef.current, speedRef.current, languageRef.current].forEach(v => {
@@ -37,69 +37,66 @@ const MediaWindow = ({setVideo, ...props}) => {
         hideUtilTimeoutRef.current = setTimeout(() => target.classList.add('d-none'), 2000)
     }, [])
 
-    const setLabel = useCallback((seconds, start, end, forceSelect, isSeek) => {
-        let curIndex = curSubtitleIndexRef
-        let targetIndex = props.subtitleIndexRef.current
+    const setLabel = useCallback((seconds, start, end, isSeek) => {
+        const targetIndex = nextSubtitleIndexRef.current
         let nextSubtitle = props.cellDataRef.current[targetIndex][language] || ''
         let labelRef = subtitleLabelRef
         if (!props.hotRef.current) return
         const centerTargetIndex = Math.max(targetIndex - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
         if (seconds >= start && seconds <= end) {
-            if (curIndex.current !== targetIndex) {
-                curIndex.current = targetIndex
-                if (forceSelect && !popover) {
-                    !props.hotRef.current.getActiveEditor()?._opened && props.hotRef.current.selectRows(targetIndex)
+            if (curSubtitleIndexRef.current !== targetIndex) {
+                curSubtitleIndexRef.current = targetIndex
+                setSubtitleIndex(targetIndex)
+                if (!props.hotRef.current.getActiveEditor()?._opened) {
+                    if (isSeek) {
+                        props.hotRef.current.scrollViewportTo(targetIndex)
+                    } else {
+                        // TODO scroll if invisible
+                    }
                     if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(centerTargetIndex)
-                }
-            } else {
-                if (isSeek && forceSelect) { // change language
-                    props.hotRef.current.selectRows(targetIndex)
                 }
             }
             if (labelRef.current.innerHTML !== nextSubtitle) labelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
-            if (curIndex.current === targetIndex) {
+            if (curSubtitleIndexRef.current === targetIndex) {
                 labelRef.current.innerHTML = ''
-                curIndex.current = -1
+                curSubtitleIndexRef.current = -1
+                setSubtitleIndex(-1)
             } else {
-                isSeek && props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? centerTargetIndex + 1 : targetIndex + 1)
+                isSeek && props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? centerTargetIndex : targetIndex)
             }
         }
-    }, [props.cellDataRef, props.subtitleIndexRef, props.hotRef, language, popover])
+    }, [props.cellDataRef, props.hotRef, language, setSubtitleIndex])
 
     const onSeek = useCallback((seconds) => {
         setSeek(seconds)
-        props.subtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
-        if (tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].start) !== seconds) props.subtitleIndexRef.current = Math.max(props.subtitleIndexRef.current - 1, 0)
-        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[props.subtitleIndexRef.current]
-        setLabel(seconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), !props.isFromLanguageWindowRef.current, true)
+        nextSubtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
+        if (tcToSec(props.cellDataRef.current[nextSubtitleIndexRef.current].start) !== seconds) nextSubtitleIndexRef.current = Math.max(nextSubtitleIndexRef.current - 1, 0)
+        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[nextSubtitleIndexRef.current]
+        setLabel(seconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), true)
         if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
-        props.isFromLanguageWindowRef.current = false
-    }, [props.cellDataRef, props.isFromLanguageWindowRef, setLabel, props.subtitleIndexRef, props.waveformRef])
+    }, [props.cellDataRef, setLabel, props.waveformRef])
 
     const onProgress = useCallback((state) => {
         setSeek(state.playedSeconds)
-        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[props.subtitleIndexRef.current]
-        setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), true, false)
+        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[nextSubtitleIndexRef.current]
+        setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), false)
         if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)
-        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[props.subtitleIndexRef.current].end)) props.subtitleIndexRef.current += 1
-    }, [props.cellDataRef, setLabel, props.subtitleIndexRef, props.waveformRef])
+        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[nextSubtitleIndexRef.current].end)) nextSubtitleIndexRef.current += 1
+    }, [props.cellDataRef, setLabel, props.waveformRef])
 
     const onPlayPause = useCallback((event) => {
         setIsPlaying(event?.type !== 'pause')
-        const curIndex = props.subtitleIndexRef.current
-        const [start, end] = props.hotRef.current.getDataAtRow(curIndex).slice(0, 2)
-        const currentTime = props.playerRef.current.getCurrentTime().toFixed(3)
-        if (currentTime >= tcToSec(start) && currentTime <= tcToSec(end) && !props.hotRef.current.getActiveEditor()?._opened) props.hotRef.current.selectRows(curIndex)
-    }, [props.hotRef, props.subtitleIndexRef, props.playerRef])
+    }, [])
 
     const onReady = useCallback(() => {
         if (props.video !== props.mediaFile) {
             setVideo(props.mediaFile) // generate waveform after video is loaded
             curSubtitleIndexRef.current = -1
-            props.subtitleIndexRef.current = 0
+            nextSubtitleIndexRef.current = 0
+            setSubtitleIndex(-1)
         }
-    }, [props.mediaFile, props.video, setVideo, props.subtitleIndexRef])
+    }, [props.mediaFile, props.video, setVideo, setSubtitleIndex])
 
     useEffect(() => {
         if (!language || !props.languages.map((value) => `${value.code}_${value.counter}`).includes(language)) {

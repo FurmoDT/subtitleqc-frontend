@@ -59,8 +59,7 @@ const Production = () => {
     const selectedSegment = useRef(null)
     const [tcLock, setTcLock] = useState(true)
     const tcLockRef = useRef(true)
-    const isFromLanguageWindowRef = useRef(false)
-    const subtitleIndexRef = useRef(0)
+    const [subtitleIndex, setSubtitleIndex] = useState(-1)
     const crdtHandlerRef = useRef(null)
     const [crdtInitialized, setCrdtInitialized] = useState(false)
     const [dataInitialized, setDataInitialized] = useState(false)
@@ -246,8 +245,7 @@ const Production = () => {
                                 <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} languages={languages}
                                              playerRef={playerRef} mediaFile={mediaFile} mediaInfo={mediaInfo}
                                              waveformRef={waveformRef} selectedSegment={selectedSegment}
-                                             isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                             video={video} setVideo={setVideo} subtitleIndexRef={subtitleIndexRef}/>
+                                             video={video} setVideo={setVideo} setSubtitleIndex={setSubtitleIndex}/>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={50} snap>
                                 <InformationWindow/>
@@ -274,11 +272,9 @@ const Production = () => {
                                             hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
                                             tcLock={tcLock} tcLockRef={tcLockRef} dataInitialized={dataInitialized}
                                             cellDataRef={cellDataRef} languages={languages}
-                                            crdt={crdtHandlerRef.current}
+                                            crdt={crdtHandlerRef.current} subtitleIndex={subtitleIndex}
                                             guideline={projectDetail.guideline} resetSegments={resetSegments}
                                             selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
-                                            isFromLanguageWindowRef={isFromLanguageWindowRef}
-                                            subtitleIndexRef={subtitleIndexRef}
                                             taskHashedId={taskHashedId} workHashedId={workHashedId}/>}
                     </Allotment.Pane>
                 </Allotment>

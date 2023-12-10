@@ -15,9 +15,11 @@ import {
     MDBRow,
 } from 'mdb-react-ui-kit';
 import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
-import {TbArrowsJoin2, TbArrowsSplit2} from "react-icons/tb";
+import {TbArrowsJoin2, TbArrowsSplit2, TbClockMinus, TbClockPlus} from "react-icons/tb";
 import {MdFindReplace, MdPlayCircle, MdSearch} from "react-icons/md";
 import {secToTc, tcToSec} from "../../../../utils/functions";
+import {AiOutlineInsertRowAbove, AiOutlineInsertRowBelow} from "react-icons/ai";
+import {RiDeleteRow} from "react-icons/ri";
 
 const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
@@ -171,8 +173,8 @@ const ShortcutModal = (props) => {
                         <MDBListGroup className={'mb-4'} light small>
                             <MDBRow>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <div>
                                             <MDBIcon fas icon="play" color={'dark'}/> / <MDBIcon fas icon="pause"
                                                                                                  color={'dark'}/>
@@ -181,34 +183,34 @@ const ShortcutModal = (props) => {
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MdPlayCircle size={20} color={'black'}/> F2
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>
                             <MDBRow>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MDBIcon fas icon="angle-double-left"/> F3
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MDBIcon fas icon="angle-double-right"/> F4
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MDBIcon fas icon="angle-double-up"/> SHIFT >
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MDBIcon fas icon="angle-double-down"/> {'SHIFT <'}
                                     </MDBListGroupItem>
                                 </MDBCol>
@@ -218,66 +220,100 @@ const ShortcutModal = (props) => {
                         <MDBListGroup className={'mb-4'} light small>
                             <MDBRow>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MDBIcon fas icon="undo"/> CTRL Z
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MDBIcon fas icon="redo"/> CTRL SHIFT Z
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>
                             <MDBRow>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <BsFillSunriseFill color={'black'} size={20}/> F9
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <BsSun color={'black'} size={20}/> F10
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        cclassName='d-flex justify-content-between align-items-center px-2'>
                                         <BsSunrise color={'black'} size={20}/> F11
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <BsSunset color={'black'} size={20}/> F12
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>
                             <MDBRow>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
+                                        <TbClockPlus size={20} color={'black'}/> <span>CTRL&nbsp;<b>↑</b></span>
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
+                                        <TbClockMinus size={20} color={'black'}/> <span>CTRL&nbsp;<b>↓</b></span>
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
+                                        <AiOutlineInsertRowAbove color={'black'} size={20}/> CTRL INSERT
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={4}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
+                                        <AiOutlineInsertRowBelow color={'black'} size={20}/> CTRL SHIFT INSERT
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
+                                        <RiDeleteRow color={'black'} size={20}/> CTRL DELETE
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol size={3}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <TbArrowsSplit2 color={'black'} size={20}/> CTRL SHIFT D
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <TbArrowsJoin2 color={'black'} size={20}/> SHIFT F12
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MdSearch color={'black'} size={20}/> CTRL F
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         <MdFindReplace color={'black'} size={20}/> CTRL H
                                     </MDBListGroupItem>
                                 </MDBCol>
@@ -287,8 +323,8 @@ const ShortcutModal = (props) => {
                         <MDBListGroup className={'mb-4'} light small>
                             <MDBRow>
                                 <MDBCol size={3}>
-                                    <MDBListGroupItem className='d-flex justify-content-between align-items-center'
-                                                      style={{paddingLeft: 10, paddingRight: 10}}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
                                         Not Supported
                                     </MDBListGroupItem>
                                 </MDBCol>

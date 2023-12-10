@@ -39,6 +39,17 @@ export const createSegment = (start, end, id) => {
     }
 }
 
+export const splitLine = (line) => {
+    const center = Math.floor(line.length / 2);
+    const nearestLeft = Math.max(line.lastIndexOf(' ', center), line.lastIndexOf('\n', center));
+    const nearestRight = Math.min(...[line.indexOf(' ', center), line.indexOf('\n', center)].filter(value => value !== -1));
+    let nearestIndex = line.length
+    if (nearestLeft > -1 && nearestRight < Infinity) nearestIndex = center - nearestLeft < nearestRight - center ? nearestLeft : nearestRight
+    else if (nearestLeft > -1) nearestIndex = nearestLeft
+    else if (nearestRight < Infinity) nearestIndex = nearestRight
+    return [line.substring(0, nearestIndex), line.substring(nearestIndex + 1)];
+}
+
 export const birthdayValidator = (value) => {
     value = value.replace(/\D/g, '')
     let [year, month, day] = [value.slice(0, 4), value.slice(4, 6), value.slice(6, 8)]

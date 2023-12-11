@@ -1,8 +1,8 @@
 import {useCallback, useEffect} from 'react';
-import languageEncoding from "detect-file-encoding-and-language";
 import {parseFsp, parseSrt} from "../../../utils/fileParser";
 import {xml2json} from "xml-js";
 import {getFileInfo} from "../../../utils/functions";
+import chardet from "chardet"
 
 const baseStyle = {
     borderStyle: 'none',
@@ -48,18 +48,18 @@ const Dropzone = (props) => {
                 reader.onload = () => {
                     let binaryStr = new ArrayBuffer(0)
                     binaryStr = reader.result
-                    languageEncoding(file, {fallbackEncoding: null}).then((fileInfo) => {
-                        const decoder = new TextDecoder(fileInfo.encoding || 'UTF-8');
-                        const str = decoder.decode(binaryStr)
-                        const languages = props.languages
-                        if (file.name.endsWith('.fsp')) {
-                            props.setLanguageFile({prevLanguages: languages, ...parseFsp(JSON.parse(xml2json(str, {compact: false})), languages)})
-                        } else if (file.name.endsWith('.srt')) {
-                            props.setLanguageFile({prevLanguages: languages, ...parseSrt(str)})
-                        } else if (file.name.endsWith('.fspx')) {
-                            props.setLanguageFile(JSON.parse(str))
-                        }
-                    })
+                    const byteArray = new Uint8Array(binaryStr);
+                    const encoding = chardet.detect(byteArray);
+                    const decoder = new TextDecoder(encoding || 'UTF-8');
+                    const str = decoder.decode(binaryStr)
+                    const languages = props.languages
+                    if (file.name.endsWith('.fsp')) {
+                        props.setLanguageFile({prevLanguages: languages, ...parseFsp(JSON.parse(xml2json(str, {compact: false})), languages)})
+                    } else if (file.name.endsWith('.srt')) {
+                        props.setLanguageFile({prevLanguages: languages, ...parseSrt(str)})
+                    } else if (file.name.endsWith('.fspx')) {
+                        props.setLanguageFile(JSON.parse(str))
+                    }
                 }
                 reader.readAsArrayBuffer(file)
             }

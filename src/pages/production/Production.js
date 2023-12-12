@@ -60,6 +60,7 @@ const Production = () => {
     const [tcLock, setTcLock] = useState(true)
     const tcLockRef = useRef(true)
     const [subtitleIndex, setSubtitleIndex] = useState(-1)
+    const menuToolbarRef = useRef(null)
     const crdtHandlerRef = useRef(null)
     const [crdtInitialized, setCrdtInitialized] = useState(false)
     const [dataInitialized, setDataInitialized] = useState(false)
@@ -157,7 +158,7 @@ const Production = () => {
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
 
-    useEffect(()=>{
+    useEffect(() => {
         if (authority === 'sync') setTcLock(false)
     }, [authority])
 
@@ -216,8 +217,9 @@ const Production = () => {
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
                          cellDataRef={cellDataRef} languageFile={languageFile} setLanguages={setLanguages}
                          waveformRef={waveformRef} resetSegments={resetSegments}/>
-        <MenuToolbar cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages} hotRef={hotRef}
-                     focusedRef={focusedRef} projectDetail={projectDetail} setProjectDetail={setProjectDetail}
+        <MenuToolbar ref={menuToolbarRef} cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages}
+                     hotRef={hotRef} focusedRef={focusedRef}
+                     projectDetail={projectDetail} setProjectDetail={setProjectDetail}
                      setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
@@ -280,7 +282,8 @@ const Production = () => {
                                             crdt={crdtHandlerRef.current} subtitleIndex={subtitleIndex}
                                             guideline={projectDetail.guideline} resetSegments={resetSegments}
                                             selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
-                                            taskHashedId={taskHashedId} workHashedId={workHashedId}/>}
+                                            taskHashedId={taskHashedId} workHashedId={workHashedId}
+                                            onSave={menuToolbarRef.current.showSavingStatus}/>}
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>

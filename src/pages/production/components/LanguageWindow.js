@@ -11,7 +11,7 @@ import * as Y from "yjs";
 const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
 
-const LanguageWindow = ({resetSegments, ...props}) => {
+const LanguageWindow = ({resetSegments, onSave, ...props}) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
     const userCursorsRef = useRef({})
@@ -211,6 +211,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                                 })
                             }
                         })
+                        onSave(false)
                     })
                 }
             } else {
@@ -320,7 +321,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId, onSave])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)

@@ -1,14 +1,52 @@
-import {MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBIcon, MDBTooltip} from "mdb-react-ui-kit";
+import {
+    MDBDropdown,
+    MDBDropdownItem,
+    MDBDropdownMenu,
+    MDBDropdownToggle,
+    MDBIcon,
+    MDBSpinner,
+    MDBTooltip
+} from "mdb-react-ui-kit";
 import {toSrt} from "../../../utils/fileParser";
 import {downloadCsv, downloadFspx, downloadSrt, downloadXlsx} from "../../../utils/fileDownload";
 import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
 import ProjectSettingModal from "./dialogs/ProjectSettingModal";
-import {useEffect, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import SubmitModal from "../components/dialogs/SubmitModal";
+import {BsCloudCheck} from "react-icons/bs";
 
-const MenuToolbar = (props) => {
+const MenuToolbar = forwardRef((props, ref) => {
     const [onlineUsers, setOnlineUsers] = useState({})
+    const saveStatusDivRef = useRef(null)
+    const [isSaving, setIsSaving] = useState(true)
+    let saveStatusTimer = null
+
+    useImperativeHandle(ref, () => ({
+        showSavingStatus
+    }))
+
+    const showSavingStatus = (syncedOnly) => {
+        saveStatusDivRef.current.style.display = 'flex'
+        clearTimeout(saveStatusTimer)
+        if (syncedOnly) {
+            setIsSaving(false)
+            saveStatusTimer = setTimeout(() => {
+                saveStatusDivRef.current.style.display = 'none'
+            }, 3000)
+        } else {
+            setIsSaving(true)
+            saveStatusTimer = setTimeout(() => {
+                setIsSaving(false)
+                clearTimeout(saveStatusTimer)
+                saveStatusTimer = setTimeout(() => {
+                    setIsSaving(true)
+                    saveStatusDivRef.current.style.display = 'none'
+                }, 3000)
+            }, 2000)
+        }
+    }
+
 
     useEffect(() => {
         if (!props.crdtInitialized) return
@@ -112,6 +150,13 @@ const MenuToolbar = (props) => {
             {props.workHashedId && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
                 <SubmitModal workId={props.workHashedId}/>
             </MDBTooltip>}
+            {props.taskHashedId && <div ref={saveStatusDivRef} className={'align-items-center'}
+                                        style={{display: 'none', fontSize: '0.8rem'}}>
+                {isSaving && <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/>
+                    <span>저장 중...</span></>}
+                {!isSaving && <><BsCloudCheck size={20} className={'mx-1'}/>
+                    <span>저장 완료</span></>}
+            </div>}
         </div>
         <div className={'w-100 d-flex justify-content-center'}>
             <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</span>
@@ -120,6 +165,6 @@ const MenuToolbar = (props) => {
             <OnlineUsersComponent/>
         </div>
     </div>
-};
+})
 
 export default MenuToolbar

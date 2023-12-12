@@ -214,7 +214,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
         <div className={'position-absolute end-0'} style={{zIndex: 1}}>
             <div className={'d-flex ms-auto'}>
                 <MDBCheckbox id='tcLock-checkbox' wrapperClass={'d-flex mx-2'}
-                             label='TC Lock' labelStyle={checkboxLabelStyle} defaultChecked={true}
+                             label='TC Lock' labelStyle={checkboxLabelStyle} checked={props.tcLock}
                              onChange={(event) => {
                                  props.setTcLock(event.target.checked)
                                  event.target.blur()

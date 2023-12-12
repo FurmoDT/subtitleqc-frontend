@@ -138,7 +138,7 @@ const Production = () => {
 
     useEffect(() => {
         if (!taskHashedId) {
-            setAuthority('test')
+            setAuthority('local')
             if (localStorage.language?.length) setLanguages(JSON.parse(localStorage.language))
             if (localStorage.subtitle) cellDataRef.current = JSON.parse(localStorage.subtitle)
             setDataInitialized(true)
@@ -156,6 +156,10 @@ const Production = () => {
             // setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
+
+    useEffect(()=>{
+        if (authority === 'sync') setTcLock(false)
+    }, [authority])
 
     useEffect(() => {
         if (crdtInitialized) {
@@ -281,7 +285,8 @@ const Production = () => {
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>
                     <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
                                     playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile} video={video}
-                                    resetSegments={resetSegments} tcLockRef={tcLockRef} setTcLock={setTcLock}
+                                    resetSegments={resetSegments}
+                                    tcLock={tcLock} tcLockRef={tcLockRef} setTcLock={setTcLock}
                                     tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                                     tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
                                     selectedSegment={selectedSegment}/>

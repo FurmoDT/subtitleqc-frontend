@@ -283,7 +283,7 @@ const Production = () => {
                                             guideline={projectDetail.guideline} resetSegments={resetSegments}
                                             selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
                                             taskHashedId={taskHashedId} workHashedId={workHashedId}
-                                            onSave={menuToolbarRef.current.showSavingStatus}/>}
+                                            menuToolbarRef={menuToolbarRef}/>}
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>

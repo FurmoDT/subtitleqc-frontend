@@ -19,8 +19,8 @@ import {BsCloudCheck} from "react-icons/bs";
 const MenuToolbar = forwardRef((props, ref) => {
     const [onlineUsers, setOnlineUsers] = useState({})
     const saveStatusDivRef = useRef(null)
-    const [isSaving, setIsSaving] = useState(true)
-    let saveStatusTimer = null
+    const [isSaving, setIsSaving] = useState(false)
+    const saveStatusTimeoutRef = useRef(null)
 
     useImperativeHandle(ref, () => ({
         showSavingStatus
@@ -28,25 +28,24 @@ const MenuToolbar = forwardRef((props, ref) => {
 
     const showSavingStatus = (syncedOnly) => {
         saveStatusDivRef.current.style.display = 'flex'
-        clearTimeout(saveStatusTimer)
+        clearTimeout(saveStatusTimeoutRef.current)
         if (syncedOnly) {
             setIsSaving(false)
-            saveStatusTimer = setTimeout(() => {
+            saveStatusTimeoutRef.current = setTimeout(() => {
                 saveStatusDivRef.current.style.display = 'none'
             }, 3000)
         } else {
             setIsSaving(true)
-            saveStatusTimer = setTimeout(() => {
+            saveStatusTimeoutRef.current = setTimeout(() => {
                 setIsSaving(false)
-                clearTimeout(saveStatusTimer)
-                saveStatusTimer = setTimeout(() => {
+                clearTimeout(saveStatusTimeoutRef.current)
+                saveStatusTimeoutRef.current = setTimeout(() => {
                     setIsSaving(true)
                     saveStatusDivRef.current.style.display = 'none'
                 }, 3000)
             }, 2000)
         }
     }
-
 
     useEffect(() => {
         if (!props.crdtInitialized) return
@@ -150,13 +149,10 @@ const MenuToolbar = forwardRef((props, ref) => {
             {props.workHashedId && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
                 <SubmitModal workId={props.workHashedId}/>
             </MDBTooltip>}
-            {props.taskHashedId && <div ref={saveStatusDivRef} className={'align-items-center'}
-                                        style={{display: 'none', fontSize: '0.8rem'}}>
-                {isSaving && <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/>
-                    <span>저장 중...</span></>}
-                {!isSaving && <><BsCloudCheck size={20} className={'mx-1'}/>
-                    <span>저장 완료</span></>}
-            </div>}
+            <div ref={saveStatusDivRef} className={'align-items-center'} style={{display: 'none', fontSize: '0.8rem'}}>
+                {isSaving ? <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/><span>저장 중...</span></> :
+                    <><BsCloudCheck size={20} className={'mx-1'}/><span>저장 완료</span></>}
+            </div>
         </div>
         <div className={'w-100 d-flex justify-content-center'}>
             <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</span>

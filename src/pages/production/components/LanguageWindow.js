@@ -211,7 +211,7 @@ const LanguageWindow = ({resetSegments, onSave, ...props}) => {
                                 })
                             }
                         })
-                        onSave(false)
+                        props.menuToolbarRef.current.showSavingStatus(false)
                     })
                 }
             } else {
@@ -321,7 +321,7 @@ const LanguageWindow = ({resetSegments, onSave, ...props}) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId, onSave])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId, props.menuToolbarRef])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
@@ -362,7 +362,8 @@ const LanguageWindow = ({resetSegments, onSave, ...props}) => {
                 props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
             })
         })
-    }, [props.taskHashedId, props.crdt, props.hotRef])
+        props.menuToolbarRef.current.showSavingStatus(true)
+    }, [props.taskHashedId, props.crdt, props.hotRef, props.menuToolbarRef])
 
     return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
         <div ref={containerMain} style={{zIndex: 0}} onClick={() => props.focusedRef.current = props.hotRef.current}/>

@@ -223,15 +223,20 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                         props.waveformRef.current.segments.removeAll()
                         props.waveformRef.current.segments.add(resetSegments())
                     } else {
-                        if (tcChanges[0][2]) {
-                            const {rowId} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
+                        const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
+                        if (tcChanges[0][3]) {
+                            const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
+                            if (0 <= startSec && startSec <= endSec) {
+                                const segment = props.waveformRef.current.segments.getSegment(rowId)
+                                if (segment) segment.update({startTime: startSec, endTime: endSec})
+                                else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
+                            } else {
+                                props.waveformRef.current.segments.removeById(rowId)
+                                props.selectedSegment.current = null
+                            }
+                        } else {
                             props.waveformRef.current.segments.removeById(rowId)
                             props.selectedSegment.current = null
-                        }
-                        if (tcChanges[0][3]) {
-                            const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
-                            const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
-                            0 <= startSec && startSec <= endSec && props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
                         }
                     }
                 }

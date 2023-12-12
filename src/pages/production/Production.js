@@ -221,7 +221,8 @@ const Production = () => {
                      setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
-                     taskHashedId={taskHashedId} crdt={crdtHandlerRef.current} crdtInitialized={crdtInitialized}
+                     taskHashedId={taskHashedId} workHashedId={workHashedId}
+                     crdt={crdtHandlerRef.current} crdtInitialized={crdtInitialized}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcLockRef={tcLockRef} tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}

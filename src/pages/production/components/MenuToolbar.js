@@ -5,6 +5,7 @@ import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
 import ProjectSettingModal from "./dialogs/ProjectSettingModal";
 import {useEffect, useState} from "react";
+import SubmitModal from "../components/dialogs/SubmitModal";
 
 const MenuToolbar = (props) => {
     const [onlineUsers, setOnlineUsers] = useState({})
@@ -108,6 +109,9 @@ const MenuToolbar = (props) => {
                     }}>.csv</MDBDropdownItem>
                 </MDBDropdownMenu>
             </MDBDropdown>
+            {props.workHashedId && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
+                <SubmitModal workId={props.workHashedId}/>
+            </MDBTooltip>}
         </div>
         <div className={'w-100 d-flex justify-content-center'}>
             <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</span>

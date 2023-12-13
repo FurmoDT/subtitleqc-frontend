@@ -118,7 +118,7 @@ const TransToolbar = (props) => {
                         if (rowStart === null) return
                         const pairs = [];
                         for (let row = rowStart; row <= rowEnd; row++) {
-                            for (let col = columnStart; col <= 1; col++) {
+                            for (let col = columnStart; col <= Math.min(columnEnd, 1); col++) {
                                 pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) - 0.2)])
                             }
                         }

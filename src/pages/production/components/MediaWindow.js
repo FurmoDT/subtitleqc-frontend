@@ -38,6 +38,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     }, [])
 
     const setLabel = useCallback((seconds, start, end, isSeek) => {
+        setSeek(seconds)
         const targetIndex = nextSubtitleIndexRef.current
         let nextSubtitle = props.cellDataRef.current[targetIndex][language] || ''
         let labelRef = subtitleLabelRef
@@ -69,7 +70,6 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     }, [props.cellDataRef, props.hotRef, language, setSubtitleIndex])
 
     const onSeek = useCallback((seconds) => {
-        setSeek(seconds)
         nextSubtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
         if (tcToSec(props.cellDataRef.current[nextSubtitleIndexRef.current].start) !== seconds) nextSubtitleIndexRef.current = Math.max(nextSubtitleIndexRef.current - 1, 0)
         const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[nextSubtitleIndexRef.current]
@@ -78,7 +78,6 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     }, [props.cellDataRef, setLabel, props.waveformRef])
 
     const onProgress = useCallback((state) => {
-        setSeek(state.playedSeconds)
         const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[nextSubtitleIndexRef.current]
         setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), false)
         if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current?.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current?.views.getView('zoomview').getWidth() / 2)

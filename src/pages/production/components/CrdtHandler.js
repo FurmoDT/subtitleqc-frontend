@@ -56,6 +56,8 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
         yDoc.on('update', (update, origin, doc, tr) => {
             if (websocketConnected && props.taskHashedId) {
                 wsRef.current.send(JSON.stringify({room_id: `${roomId}`, update: fromUint8Array(update)}))
+                if (origin === 'local') props.menuToolbarRef.current.showSavingStatus(false)
+                else props.menuToolbarRef.current.showSavingStatus(true)
             }
         })
 
@@ -65,7 +67,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
             provider.destroy()
             yDoc.destroy()
         }
-    }, [props.taskHashedId, roomId, setCrdtInitialized, setCrdtAwarenessState, sessionId, userState, iceservers, wsRef, websocketConnected]);
+    }, [props.taskHashedId, roomId, setCrdtInitialized, setCrdtAwarenessState, sessionId, userState, iceservers, wsRef, websocketConnected, props.menuToolbarRef]);
 
     useEffect(() => {
         const connection = navigator.connection

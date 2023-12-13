@@ -26,22 +26,22 @@ const MenuToolbar = forwardRef((props, ref) => {
         showSavingStatus
     }))
 
-    const showSavingStatus = (syncedOnly) => {
-        saveStatusDivRef.current.style.display = 'flex'
-        clearTimeout(saveStatusTimeoutRef.current)
-        if (syncedOnly) {
+    const showSavingStatus = (isSync) => {
+        if (saveStatusDivRef.current) {
+            clearTimeout(saveStatusTimeoutRef.current)
+            saveStatusDivRef.current.style.display = 'flex'
+        }
+        if (isSync) {
             setIsSaving(false)
             saveStatusTimeoutRef.current = setTimeout(() => {
-                saveStatusDivRef.current.style.display = 'none'
+                if (saveStatusDivRef.current) saveStatusDivRef.current.style.display = 'none'
             }, 3000)
         } else {
             setIsSaving(true)
             saveStatusTimeoutRef.current = setTimeout(() => {
                 setIsSaving(false)
-                clearTimeout(saveStatusTimeoutRef.current)
                 saveStatusTimeoutRef.current = setTimeout(() => {
-                    setIsSaving(true)
-                    saveStatusDivRef.current.style.display = 'none'
+                    if (saveStatusDivRef.current) saveStatusDivRef.current.style.display = 'none'
                 }, 3000)
             }, 2000)
         }

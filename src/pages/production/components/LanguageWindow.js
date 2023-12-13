@@ -211,7 +211,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                                 })
                             }
                         })
-                    })
+                    }, 'local')
                 }
             } else {
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
@@ -331,6 +331,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize]);
 
     useEffect(() => {
+        // highlight current subtitle
         if (subtitleIndexRef.current > -1) props.hotRef.current.removeCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle')
         subtitleIndexRef.current = props.subtitleIndex
         props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)

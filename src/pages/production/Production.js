@@ -232,8 +232,8 @@ const Production = () => {
                      insertLineAboveButtonRef={insertLineAboveButtonRef}
                      insertLineBelowButtonRef={insertLineBelowButtonRef} removeLineButtonRef={removeLineButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
-        <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId}
-                     setCrdtInitialized={setCrdtInitialized}/>
+        <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId} setCrdtInitialized={setCrdtInitialized}
+                     menuToolbarRef={menuToolbarRef}/>
         <div ref={dropzoneRef} className={'w-100 d-flex flex-row justify-content-center position-relative'}
              style={{height: 'calc(100vh - 50px - 40px)'}}>
             <Allotment ref={containerRef} vertical proportionalLayout={false} minSize={300} onReset={() => null}

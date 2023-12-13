@@ -208,6 +208,18 @@ const Production = () => {
                 })
             })
             setDataInitialized(true)
+            const awareness = crdt.awareness()
+            menuToolbarRef.current.setOnlineUsers({[crdt.yDoc().clientID]: awareness.getLocalState()})
+            awareness.on('change', ({added, removed}) => {
+                const states = awareness.getStates()
+                added.forEach(id => menuToolbarRef.current.setOnlineUsers(prevState => ({...prevState, [id]: states.get(id)})))
+                removed.forEach(id => {
+                    menuToolbarRef.current.setOnlineUsers(prevState => {
+                        const {[id]: omit, ...newState} = prevState
+                        return newState
+                    })
+                })
+            })
         }
     }, [crdtInitialized]);
 
@@ -224,7 +236,6 @@ const Production = () => {
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
                      taskHashedId={taskHashedId} workHashedId={workHashedId}
-                     crdt={crdtHandlerRef.current} crdtInitialized={crdtInitialized}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcLockRef={tcLockRef} tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}

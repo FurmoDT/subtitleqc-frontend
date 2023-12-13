@@ -23,7 +23,8 @@ const MenuToolbar = forwardRef((props, ref) => {
     const saveStatusTimeoutRef = useRef(null)
 
     useImperativeHandle(ref, () => ({
-        showSavingStatus
+        showSavingStatus,
+        setOnlineUsers
     }))
 
     const showSavingStatus = (isSync) => {
@@ -46,22 +47,6 @@ const MenuToolbar = forwardRef((props, ref) => {
             }, 2000)
         }
     }
-
-    useEffect(() => {
-        if (!props.crdtInitialized) return
-        const awareness = props.crdt.awareness()
-        setOnlineUsers({[props.crdt.yDoc().clientID]: awareness.getLocalState()})
-        awareness.on('change', ({added, removed}) => {
-            const states = awareness.getStates()
-            added.forEach(id => setOnlineUsers(prevState => ({...prevState, [id]: states.get(id)})))
-            removed.forEach(id => {
-                setOnlineUsers(prevState => {
-                    const {[id]: omit, ...newState} = prevState
-                    return newState
-                })
-            })
-        })
-    }, [props.crdt, props.crdtInitialized]);
 
     const OnlineUsersComponent = () => {
         return onlineUsers && Object.keys(onlineUsers).map(key => onlineUsers[key].user).sort((a, b) => a.connectedAt - b.connectedAt)

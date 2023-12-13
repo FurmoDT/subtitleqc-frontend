@@ -241,7 +241,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     }
                 }
             }
-            if (props.playerRef.current.getInternalPlayer()?.paused) props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds') // update subtitle
+            if (props.playerRef.current.getInternalPlayer()?.paused && changes.filter(value => value[0] === subtitleIndexRef.current).length) props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds') // update subtitle
             grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
         })

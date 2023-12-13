@@ -29,7 +29,7 @@ const MenuToolbar = forwardRef((props, ref) => {
     const showSavingStatus = (isSync) => {
         if (saveStatusDivRef.current) {
             clearTimeout(saveStatusTimeoutRef.current)
-            saveStatusDivRef.current.style.display = 'flex'
+            saveStatusDivRef.current.style.display = 'inline-flex'
         }
         if (isSync) {
             setIsSaving(false)
@@ -103,7 +103,7 @@ const MenuToolbar = forwardRef((props, ref) => {
             </MDBTooltip>
             <MDBDropdown className={'mx-1 color-black'}>
                 <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Download'>
-                    <MDBDropdownToggle color={'link'}>
+                    <MDBDropdownToggle color={'link'} className={'px-3'}>
                         <MDBIcon fas icon='download' size={'xl'} color={'dark'}/>
                     </MDBDropdownToggle>
                 </MDBTooltip>
@@ -149,9 +149,10 @@ const MenuToolbar = forwardRef((props, ref) => {
             {props.workHashedId && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
                 <SubmitModal workId={props.workHashedId}/>
             </MDBTooltip>}
-            <div ref={saveStatusDivRef} className={'align-items-center'} style={{display: 'none', fontSize: '0.8rem'}}>
-                {isSaving ? <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/><span>저장 중...</span></> :
-                    <><BsCloudCheck size={20} className={'mx-1'}/><span>저장 완료</span></>}
+            <div ref={saveStatusDivRef} className={'align-items-center mx-1'}
+                 style={{display: 'none', fontSize: '0.8rem'}}>
+                {isSaving ? <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/><span className={'text-nowrap'}>저장 중...</span></> :
+                    <><BsCloudCheck size={20} className={'mx-1'}/><span className={'text-nowrap'}>저장 완료</span></>}
             </div>
         </div>
         <div className={'w-100 d-flex justify-content-center'}>

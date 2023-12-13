@@ -11,7 +11,7 @@ import * as Y from "yjs";
 const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
 
 
-const LanguageWindow = ({resetSegments, onSave, ...props}) => {
+const LanguageWindow = ({resetSegments, ...props}) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
     const userCursorsRef = useRef({})
@@ -211,7 +211,6 @@ const LanguageWindow = ({resetSegments, onSave, ...props}) => {
                                 })
                             }
                         })
-                        props.menuToolbarRef.current.showSavingStatus(false)
                     })
                 }
             } else {
@@ -321,7 +320,7 @@ const LanguageWindow = ({resetSegments, onSave, ...props}) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId, props.menuToolbarRef])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
@@ -362,8 +361,7 @@ const LanguageWindow = ({resetSegments, onSave, ...props}) => {
                 props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
             })
         })
-        props.menuToolbarRef.current.showSavingStatus(true)
-    }, [props.taskHashedId, props.crdt, props.hotRef, props.menuToolbarRef])
+    }, [props.taskHashedId, props.crdt, props.hotRef])
 
     return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
         <div ref={containerMain} style={{zIndex: 0}} onClick={() => props.focusedRef.current = props.hotRef.current}/>

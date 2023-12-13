@@ -282,8 +282,7 @@ const Production = () => {
                                             crdt={crdtHandlerRef.current} subtitleIndex={subtitleIndex}
                                             guideline={projectDetail.guideline} resetSegments={resetSegments}
                                             selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
-                                            taskHashedId={taskHashedId} workHashedId={workHashedId}
-                                            menuToolbarRef={menuToolbarRef}/>}
+                                            taskHashedId={taskHashedId} workHashedId={workHashedId}/>}
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>

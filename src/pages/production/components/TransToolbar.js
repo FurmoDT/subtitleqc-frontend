@@ -30,11 +30,12 @@ const TransToolbar = (props) => {
                 // }).catch(() => null)
             }}><GrDocumentSound color={'black'} size={20}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Translate'>
-            <MDBBtn className={'transToolbar-button'} disabled={/*isTranslating*/true} color={'link'} size={'sm'}
+            <MDBBtn className={'transToolbar-button'} disabled={isTranslating} color={'link'} size={'sm'}
                     onClick={() => {
-                        if (props.hotRef.current.colToProp(2).startsWith('koKR') && !Number.isInteger(props.hotRef.current.propToCol('spns_1'))) {
+                        const ko = props.hotRef.current.getDataAtCol(props.hotRef.current.propToCol('koKR_1'))
+                        if (ko && !Number.isInteger(props.hotRef.current.propToCol('spns_1'))) {
                             setIsTranslating(true)
-                            axios.post('v1/task/spns/subtitle_translation', {inputs: props.hotRef.current.getDataAtCol(2).map(value => value ? value : '')}).then((response) => {
+                            axios.post('v1/task/spns/subtitle_translation', {inputs: ko.map(value => value ? value : '')}).then((response) => {
                                 props.hotRef.current.setDataAtCell((response.data.map((value, index) => ([index, props.hotRef.current.countCols() - 1, value]))))
                                 setIsTranslating(false)
                             })

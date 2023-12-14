@@ -12,7 +12,7 @@ import {downloadCsv, downloadFspx, downloadSrt, downloadXlsx} from "../../../uti
 import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
 import ProjectSettingModal from "./dialogs/ProjectSettingModal";
-import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
+import {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import SubmitModal from "../components/dialogs/SubmitModal";
 import {BsCloudCheck} from "react-icons/bs";
 

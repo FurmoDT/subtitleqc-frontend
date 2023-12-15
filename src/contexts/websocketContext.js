@@ -11,12 +11,8 @@ export const WebsocketProvider = ({children}) => {
     const wsRef = useRef(null)
     const connect = useCallback(() => {
         return new Promise((resolve, reject) => {
-            if (!userState.isAuthenticated) {
-                wsRef.current?.close(4000)
-                reject()
-                return
-            }
             if (wsRef.current) {
+                if (!accessTokenRef.current) wsRef.current?.close(4000)
                 reject()
                 return
             }
@@ -31,16 +27,16 @@ export const WebsocketProvider = ({children}) => {
                 if (event.code === 1008) axios.post('v1/auth/refresh').then((response) => {
                     return updateAccessToken(response.data.access_token).then(() => connect())
                 })
+                else if (event.code === 4000) {
+                } else setTimeout(() => connect(), 5000)
                 setWebsocketConnected(false)
                 console.log('ws closed')
             }
             wsRef.current.onerror = (error) => {
-                wsRef.current = null
-                setWebsocketConnected(false)
                 console.log('ws closed on error')
             }
         })
-    }, [userState, accessTokenRef, updateAccessToken])
+    }, [accessTokenRef, updateAccessToken])
 
     useEffect(() => {
         connect().then(() => setWebsocketConnected(true)).catch(() => null)

@@ -212,9 +212,11 @@ const Production = () => {
             menuToolbarRef.current.setOnlineUsers({[crdt.yDoc().clientID]: awareness.getLocalState()})
             awareness.on('change', ({added, removed}) => {
                 const states = awareness.getStates()
-                added.forEach(id => menuToolbarRef.current.setOnlineUsers(prevState => ({...prevState, [id]: states.get(id)})))
+                added.forEach(id => menuToolbarRef.current.setOnlineUsers(prevState => ({
+                    ...prevState, [id]: states.get(id)
+                })))
                 removed.forEach(id => {
-                    menuToolbarRef.current.setOnlineUsers(prevState => {
+                    menuToolbarRef.current?.setOnlineUsers(prevState => {
                         const {[id]: omit, ...newState} = prevState
                         return newState
                     })

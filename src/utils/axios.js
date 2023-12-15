@@ -16,7 +16,7 @@ function AxiosInterceptor({children}) {
             return response;
         };
         const errInterceptor = (error) => {
-            if (error.response.status === HttpStatusCode.Unauthorized) {
+            if (error.response?.status === HttpStatusCode.Unauthorized) {
                 return axios.post(`v1/auth/refresh`).then((response) => {
                     if (response.status === HttpStatusCode.Ok) {
                         return updateAccessToken(response.data.access_token).then((accessToken) => {

@@ -14,8 +14,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
     const {sessionId} = useContext(SessionContext)
     const {userState} = useContext(AuthContext);
     const [iceservers, setIceServers] = useState(null)
-    const [connectionType, setConnectionType] = useState(navigator.connection.effectiveType)
-    const {wsRef, isOnline, websocketConnected} = useContext(WebsocketContext)
+    const {wsRef, websocketConnected} = useContext(WebsocketContext)
     const yDocRef = useRef(null)
     const awarenessRef = useRef(null)
     const roomId = `${props.taskHashedId}`
@@ -70,15 +69,8 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
     }, [props.taskHashedId, roomId, setCrdtInitialized, setCrdtAwarenessState, sessionId, userState, iceservers, wsRef, websocketConnected, props.menuToolbarRef]);
 
     useEffect(() => {
-        const connection = navigator.connection
-        const handleConnectionChange = () => setConnectionType(connection.effectiveType)
-        navigator.connection.addEventListener('change', handleConnectionChange)
-        return () => navigator.connection.removeEventListener('change', handleConnectionChange)
-    }, [])
-
-    useEffect(() => {
         axios.get(`v1/twilio/iceservers`).then((response) => setIceServers(response.data))
-    }, [isOnline, connectionType])
+    }, [])
 
     return <></>
 })

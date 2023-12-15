@@ -6,7 +6,6 @@ import axios from "../utils/axios";
 export const WebsocketContext = createContext(null);
 
 export const WebsocketProvider = ({children}) => {
-    const [isOnline, setIsOnline] = useState(navigator.onLine)
     const [websocketConnected, setWebsocketConnected] = useState(false)
     const {userState, accessTokenRef, updateAccessToken} = useContext(AuthContext)
     const wsRef = useRef(null)
@@ -44,24 +43,10 @@ export const WebsocketProvider = ({children}) => {
     }, [userState, accessTokenRef, updateAccessToken])
 
     useEffect(() => {
-        const handleOnline = () => setIsOnline(true);
-        const handleOffline = () => setIsOnline(false);
+        connect().then(() => setWebsocketConnected(true)).catch(() => null)
+    }, [connect, userState])
 
-        window.addEventListener('online', handleOnline);
-        window.addEventListener('offline', handleOffline);
-
-        return () => {
-            window.removeEventListener('online', handleOnline);
-            window.removeEventListener('offline', handleOffline);
-        };
-    }, [])
-
-    useEffect(() => {
-        if (isOnline) connect().then(() => setWebsocketConnected(true)).catch(() => null)
-        else wsRef.current?.onerror(new Error('offline'))
-    }, [connect, isOnline, userState])
-
-    return <WebsocketContext.Provider value={{wsRef, isOnline, websocketConnected}}>
+    return <WebsocketContext.Provider value={{wsRef, websocketConnected}}>
         {children}
     </WebsocketContext.Provider>;
 };

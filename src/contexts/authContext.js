@@ -1,6 +1,5 @@
 import {createContext, useCallback, useEffect, useRef, useState} from "react";
 import axios from "../utils/axios";
-import {HttpStatusCode} from "axios";
 
 export const AuthContext = createContext(null);
 
@@ -37,7 +36,7 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         axios.post('v1/auth/refresh').then((response) => {
-            if (response.status === HttpStatusCode.Ok) return updateAccessToken(response.data.access_token).then()
+            return updateAccessToken(response.data.access_token).then()
         }).catch(() => null).finally(() => setIsInitialized(true))
     }, [updateAccessToken])
 

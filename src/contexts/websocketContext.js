@@ -2,7 +2,6 @@ import {createContext, useCallback, useContext, useEffect, useRef, useState} fro
 import {localWsUrl, wsUrl} from "../utils/config";
 import {AuthContext} from "./authContext";
 import axios from "../utils/axios";
-import {HttpStatusCode} from "axios";
 
 export const WebsocketContext = createContext(null);
 
@@ -30,8 +29,8 @@ export const WebsocketProvider = ({children}) => {
             }
             wsRef.current.onclose = (event) => {
                 wsRef.current = null
-                if (event.code !== 4000) axios.post('v1/auth/refresh').then((response) => {
-                    if (response.status === HttpStatusCode.Ok) return updateAccessToken(response.data.access_token).then(() => setTimeout(connect, 10000))
+                if (event.code === 1008) axios.post('v1/auth/refresh').then((response) => {
+                    return updateAccessToken(response.data.access_token).then(() => connect())
                 })
                 setWebsocketConnected(false)
                 console.log('ws closed')

@@ -14,11 +14,12 @@ const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98
 const LanguageWindow = ({resetSegments, ...props}) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
-    const userCursorsRef = useRef({})
     const debounceTimeoutRef = useRef(null)
     const persistentRowIndexRef = useRef(0);
     const persistentUndoRedoRef = useRef({doneActions: [], undoneActions: []})
     const subtitleIndexRef = useRef(-1)
+    const userCursorsRef = useRef({})
+    const userRef = useRef(null)
 
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
@@ -203,11 +204,12 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 } else {
                     props.crdt.yDoc().transact(() => {
                         const rows = props.crdt.yMap().get('cells')
-                        const user = userCursorsRef.current[props.crdt.yDoc().clientID]
+                        const user = userRef.current.user
                         changes.forEach(change => {
                             if (change[2] !== change[3] && (change[2] || change[3])) {
                                 rows.get(change[0])?.set(change[1], {
-                                    value: change[3], metadata: {user: {id: user.id, name: user.name}}
+                                    value: change[3],
+                                    metadata: {user: {id: user.id, name: user.name}}
                                 })
                             }
                         })
@@ -320,7 +322,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.dataInitialized, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
@@ -338,31 +340,35 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     }, [props.subtitleIndex, props.hotRef])
 
     useEffect(() => {
-        if (!props.taskHashedId) return
-        const awareness = props.crdt.awareness()
-        userCursorsRef.current[props.crdt.yDoc().clientID] = awareness.getStates().get(props.crdt.yDoc().clientID).user
-        awareness.on('change', ({added, removed, updated}) => {
-            const states = awareness.getStates()
-            added.forEach(id => {
-                userCursorsRef.current[id] = states.get(id)
-                const aw = userCursorsRef.current[id]
-                if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
+        if (props.crdtAwarenessInitialized) {
+            const awareness = props.crdt.awareness()
+            const user = awareness.getStates().get(props.crdt.yDoc().clientID)
+            userCursorsRef.current[props.crdt.yDoc().clientID] = userRef.current = user
+            awareness.on('change', ({added, removed, updated}) => {
+                const states = awareness.getStates()
+                added.forEach(id => {
+                    userCursorsRef.current[id] = states.get(id)
+                    const aw = userCursorsRef.current[id]
+                    if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
+                })
+                removed.forEach(id => {
+                    const prevCursor = userCursorsRef.current[id]?.cursor
+                    if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
+                    userCursorsRef.current = Object.fromEntries(Object.entries(userCursorsRef.current).filter(value => value[0] !== `${id}`))
+                })
+                updated.forEach(id => {
+                    if (id === props.crdt.yDoc().clientID) return
+                    const prevCursor = userCursorsRef.current[id]?.cursor
+                    if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
+                    userCursorsRef.current[id] = states.get(id)
+                    const aw = userCursorsRef.current[id]
+                    props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
+                })
             })
-            removed.forEach(id => {
-                const prevCursor = userCursorsRef.current[id]?.cursor
-                if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
-                userCursorsRef.current = Object.fromEntries(Object.entries(userCursorsRef.current).filter(value => value[0] !== `${id}`))
-            })
-            updated.forEach(id => {
-                if (id === props.crdt.yDoc().clientID) return
-                const prevCursor = userCursorsRef.current[id]?.cursor
-                if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
-                userCursorsRef.current[id] = states.get(id)
-                const aw = userCursorsRef.current[id]
-                props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
-            })
-        })
-    }, [props.taskHashedId, props.crdt, props.hotRef])
+        } else {
+            userCursorsRef.current = {}
+        }
+    }, [props.crdtAwarenessInitialized, props.crdt, props.hotRef])
 
     return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
         <div ref={containerMain} style={{zIndex: 0}} onClick={() => props.focusedRef.current = props.hotRef.current}/>

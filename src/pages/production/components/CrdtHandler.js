@@ -10,14 +10,15 @@ import {SessionContext} from "../../../contexts/sessionContext";
 import {AuthContext} from "../../../contexts/authContext";
 import {generateHexColor} from "../../../utils/functions";
 
-const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...props}, ref) => {
+const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized, ...props}, ref) => {
     const {sessionId} = useContext(SessionContext)
     const {userState} = useContext(AuthContext);
     const [iceservers, setIceServers] = useState(null)
     const {wsRef, websocketConnected} = useContext(WebsocketContext)
     const yDocRef = useRef(null)
     const awarenessRef = useRef(null)
-    const roomId = `${props.taskHashedId}`
+    const offlineUpdate = useRef(null)
+    const roomId = props.taskHashedId
 
     useImperativeHandle(ref, () => ({
         yDoc: () => yDocRef.current,
@@ -26,15 +27,48 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
     }), [roomId])
 
     useEffect(() => {
-        if (!props.taskHashedId || !iceservers) return
+        if (roomId && websocketConnected) axios.get(`v1/twilio/iceservers`).then((response) => setIceServers(response.data))
+        else setIceServers(null)
+    }, [roomId, sessionId, userState, websocketConnected])
+
+    useEffect(() => {
+        if (!roomId) return
 
         const yDoc = new Y.Doc()
         yDocRef.current = yDoc
-        const provider = new WebrtcProvider(roomId, yDoc, {
+
+        const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
+        persistence.whenSynced.then(() => {
+            axios.get('v1/task/content', {params: {hashed_id: roomId}}).then((r) => {
+                if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
+            }).finally(() => setCrdtInitialized(true))
+        })
+
+        yDoc.on('update', (update, origin, doc, tr) => {
+            if (wsRef.current?.readyState === WebSocket.OPEN) {
+                wsRef.current.send(JSON.stringify({room_id: `${roomId}`, update: fromUint8Array(update)}))
+                if (origin === 'local') props.menuToolbarRef.current.showSavingStatus(false)
+                else props.menuToolbarRef.current.showSavingStatus(true)
+            } else {
+                offlineUpdate.current = offlineUpdate.current ? Y.mergeUpdates([offlineUpdate.current, update]) : update
+            }
+        })
+        return () => {
+            setCrdtInitialized(false)
+            yDoc.destroy()
+            yDocRef.current = null
+        }
+    }, [roomId, sessionId, setCrdtInitialized, wsRef, props.menuToolbarRef])
+
+    useEffect(() => {
+        if (!iceservers) return
+
+        const provider = new WebrtcProvider(roomId, yDocRef.current, {
             signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`],
             maxConns: 20,
             peerOpts: {config: {iceServers: iceservers}}
         })
+
         const awareness = provider.awareness
         awarenessRef.current = awareness
         awareness.setLocalStateField('user', {
@@ -44,33 +78,21 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessState, ...p
             color: generateHexColor(),
             connectedAt: Date.now()
         })
-
-        const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
-        persistence.whenSynced.then(() => {
-            axios.get('v1/task/content', {params: {hashed_id: props.taskHashedId}}).then((r) => {
-                if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
-            }).finally(() => setCrdtInitialized(true))
-        })
-
-        yDoc.on('update', (update, origin, doc, tr) => {
-            if (websocketConnected && props.taskHashedId) {
-                wsRef.current.send(JSON.stringify({room_id: `${roomId}`, update: fromUint8Array(update)}))
-                if (origin === 'local') props.menuToolbarRef.current.showSavingStatus(false)
-                else props.menuToolbarRef.current.showSavingStatus(true)
+        if (offlineUpdate.current) {
+            if (wsRef.current?.readyState === WebSocket.OPEN) {
+                wsRef.current.send(JSON.stringify({
+                    room_id: `${roomId}`, update: fromUint8Array(offlineUpdate.current)
+                }))
+                props.menuToolbarRef.current.showSavingStatus(true)
+                offlineUpdate.current = null
             }
-        })
-
-        return () => {
-            setCrdtInitialized(false)
-            provider.disconnect()
-            provider.destroy()
-            yDoc.destroy()
         }
-    }, [props.taskHashedId, roomId, setCrdtInitialized, setCrdtAwarenessState, sessionId, userState, iceservers, wsRef, websocketConnected, props.menuToolbarRef]);
-
-    useEffect(() => {
-        axios.get(`v1/twilio/iceservers`).then((response) => setIceServers(response.data))
-    }, [])
+        setCrdtAwarenessInitialized(true)
+        return () => {
+            provider.destroy()
+            setCrdtAwarenessInitialized(false)
+        }
+    }, [roomId, userState, iceservers, setCrdtAwarenessInitialized, wsRef, props.menuToolbarRef]);
 
     return <></>
 })

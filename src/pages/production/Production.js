@@ -63,6 +63,7 @@ const Production = () => {
     const menuToolbarRef = useRef(null)
     const crdtHandlerRef = useRef(null)
     const [crdtInitialized, setCrdtInitialized] = useState(false)
+    const [crdtAwarenessInitialized, setCrdtAwarenessInitialized] = useState(false)
     const [dataInitialized, setDataInitialized] = useState(false)
 
     const afterRenderPromise = useCallback(() => {
@@ -208,20 +209,6 @@ const Production = () => {
                 })
             })
             setDataInitialized(true)
-            const awareness = crdt.awareness()
-            menuToolbarRef.current.setOnlineUsers({[crdt.yDoc().clientID]: awareness.getLocalState()})
-            awareness.on('change', ({added, removed}) => {
-                const states = awareness.getStates()
-                added.forEach(id => menuToolbarRef.current.setOnlineUsers(prevState => ({
-                    ...prevState, [id]: states.get(id)
-                })))
-                removed.forEach(id => {
-                    menuToolbarRef.current?.setOnlineUsers(prevState => {
-                        const {[id]: omit, ...newState} = prevState
-                        return newState
-                    })
-                })
-            })
         }
     }, [crdtInitialized]);
 
@@ -238,6 +225,7 @@ const Production = () => {
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
                      taskHashedId={taskHashedId} workHashedId={workHashedId}
+                     crdt={crdtHandlerRef.current} crdtAwarenessInitialized={crdtAwarenessInitialized}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcLockRef={tcLockRef} tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                      tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
@@ -245,8 +233,8 @@ const Production = () => {
                      insertLineAboveButtonRef={insertLineAboveButtonRef}
                      insertLineBelowButtonRef={insertLineBelowButtonRef} removeLineButtonRef={removeLineButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
-        <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId} setCrdtInitialized={setCrdtInitialized}
-                     menuToolbarRef={menuToolbarRef}/>
+        <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId} menuToolbarRef={menuToolbarRef}
+                     setCrdtInitialized={setCrdtInitialized} setCrdtAwarenessInitialized={setCrdtAwarenessInitialized}/>
         <div ref={dropzoneRef} className={'w-100 d-flex flex-row justify-content-center position-relative'}
              style={{height: 'calc(100vh - 50px - 40px)'}}>
             <Allotment ref={containerRef} vertical proportionalLayout={false} minSize={300} onReset={() => null}
@@ -290,9 +278,10 @@ const Production = () => {
                         {((taskHashedId && dataInitialized) || !taskHashedId) &&
                             <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}
                                             hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
-                                            tcLock={tcLock} tcLockRef={tcLockRef} dataInitialized={dataInitialized}
+                                            tcLock={tcLock} tcLockRef={tcLockRef} subtitleIndex={subtitleIndex}
                                             cellDataRef={cellDataRef} languages={languages}
-                                            crdt={crdtHandlerRef.current} subtitleIndex={subtitleIndex}
+                                            crdt={crdtHandlerRef.current}
+                                            crdtAwarenessInitialized={crdtAwarenessInitialized}
                                             guideline={projectDetail.guideline} resetSegments={resetSegments}
                                             selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
                                             taskHashedId={taskHashedId} workHashedId={workHashedId}/>}

@@ -2,7 +2,7 @@ import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import DataGrid from "react-data-grid";
 import axios from "../../../utils/axios";
 import {convertToTimestamp, fileType, formatTimestamp} from "../../../utils/functions";
-import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
+import {MDBBtn, MDBIcon, MDBTooltip} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../contexts/authContext";
 import {languageCodes, workType} from "../../../utils/config";
 import ModifyModal from "./dialogs/task/ModifyModal";
@@ -65,7 +65,8 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             if (current.work_id && !current.work_deactivated) result.get(key).work.push({
                 workHashedId: current.work_hashed_id,
                 workType: workType[current.work_type],
-                worker: current.worker_name,
+                workerName: current.worker_name,
+                workerEmail: current.worker_email,
                 sourceLanguage: languageCodes[current.work_source_language],
                 targetLanguage: languageCodes[current.work_target_language],
                 workCreatedAt: formatTimestamp(current.work_created_at),
@@ -139,7 +140,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         <a className={task.taskType && (task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'custom-disabled'}
                            color={'link'} style={{fontSize: '0.875rem'}}
                            href={`/${task.taskType}/${hashedId}/${row.row.workHashedId}`}>{row.row.workType}</a>
-                }, {key: 'worker', name: '작업자'},
+                }, {key: 'worker', name: '작업자', renderCell: row => <MDBTooltip tag={'div'} title={row.row.workerEmail}>
+                        {row.row.workerName}
+                    </MDBTooltip>},
                 {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
                 {key: 'workCreatedAt', name: '시작일'}, {
                     key: 'workDueDate',

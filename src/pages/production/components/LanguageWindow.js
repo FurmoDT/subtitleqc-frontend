@@ -347,8 +347,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             awareness.on('change', ({added, removed, updated}) => {
                 const states = awareness.getStates()
                 added.forEach(id => {
-                    userCursorsRef.current[id] = states.get(id)
-                    const aw = userCursorsRef.current[id]
+                    const aw = userCursorsRef.current[id] = states.get(id)
                     if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
                 })
                 removed.forEach(id => {
@@ -360,9 +359,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     if (id === props.crdt.yDoc().clientID) return
                     const prevCursor = userCursorsRef.current[id]?.cursor
                     if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
-                    userCursorsRef.current[id] = states.get(id)
-                    const aw = userCursorsRef.current[id]
-                    props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
+                    const aw = userCursorsRef.current[id] = states.get(id)
+                    if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
                 })
             })
         } else {

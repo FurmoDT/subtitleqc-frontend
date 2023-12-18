@@ -62,13 +62,12 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
     }, [roomId, sessionId, setCrdtInitialized, wsRef, props.menuToolbarRef])
 
     useEffect(() => {
+        providerRef.current?.destroy()
+        providerRef.current = null
         if (!iceservers) {
-            providerRef.current?.destroy()
-            providerRef.current = null
             setCrdtAwarenessInitialized(false)
             return
         }
-
         const provider = new WebrtcProvider(roomId, yDocRef.current, {
             signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`],
             maxConns: 20,

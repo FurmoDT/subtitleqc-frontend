@@ -16,6 +16,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
     const [iceservers, setIceServers] = useState(null)
     const {wsRef, websocketConnected} = useContext(WebsocketContext)
     const yDocRef = useRef(null)
+    const providerRef = useRef(null)
     const awarenessRef = useRef(null)
     const offlineUpdate = useRef(null)
     const roomId = props.taskHashedId
@@ -61,13 +62,19 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
     }, [roomId, sessionId, setCrdtInitialized, wsRef, props.menuToolbarRef])
 
     useEffect(() => {
-        if (!iceservers) return
+        if (!iceservers) {
+            providerRef.current?.destroy()
+            providerRef.current = null
+            setCrdtAwarenessInitialized(false)
+            return
+        }
 
         const provider = new WebrtcProvider(roomId, yDocRef.current, {
             signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`],
             maxConns: 20,
             peerOpts: {config: {iceServers: iceservers}}
         })
+        providerRef.current = provider
 
         const awareness = provider.awareness
         awarenessRef.current = awareness
@@ -88,10 +95,6 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
             }
         }
         setCrdtAwarenessInitialized(true)
-        return () => {
-            provider.destroy()
-            setCrdtAwarenessInitialized(false)
-        }
     }, [roomId, userState, iceservers, setCrdtAwarenessInitialized, wsRef, props.menuToolbarRef]);
 
     return <></>

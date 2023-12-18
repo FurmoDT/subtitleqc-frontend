@@ -315,10 +315,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         })
         props.hotRef.current.addHook('afterSetCellMeta', () => debounceRender())
         props.hotRef.current.addHook('afterRemoveCellMeta', () => debounceRender())
-        // default render
-        Object.entries(userCursorsRef.current).forEach(([, aw]) => {
-            if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
-        })
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
@@ -330,6 +326,9 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
         props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, () => Math.floor((props.size.width - 365) / props.languages.length))]})
         props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
+        Object.entries(userCursorsRef.current).forEach(([, aw]) => {
+            if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
+        })
     }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize]);
 
     useEffect(() => {
@@ -364,6 +363,9 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 })
             })
         } else {
+            Object.entries(userCursorsRef.current).forEach(([, aw]) => {
+                if (aw.cursor) props.hotRef.current.removeCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness')
+            })
             userCursorsRef.current = {}
         }
     }, [props.crdtAwarenessInitialized, props.crdt, props.hotRef])

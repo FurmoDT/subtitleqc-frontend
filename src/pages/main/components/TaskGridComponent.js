@@ -140,9 +140,12 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         <a className={task.taskType && (task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'custom-disabled'}
                            color={'link'} style={{fontSize: '0.875rem'}}
                            href={`/${task.taskType}/${hashedId}/${row.row.workHashedId}`}>{row.row.workType}</a>
-                }, {key: 'worker', name: '작업자', renderCell: row => <MDBTooltip tag={'div'} title={row.row.workerEmail}>
+                },
+                {
+                    key: 'worker', name: '작업자', renderCell: row => <MDBTooltip tag={'div'} title={row.row.workerEmail}>
                         {row.row.workerName}
-                    </MDBTooltip>},
+                    </MDBTooltip>
+                },
                 {key: 'sourceLanguage', name: '출발어'}, {key: 'targetLanguage', name: '도착어'},
                 {key: 'workCreatedAt', name: '시작일'}, {
                     key: 'workDueDate',

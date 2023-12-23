@@ -39,10 +39,7 @@ const TaskDoneModal = ({hashedId, setHashedId, forceRenderer}) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleShow}>취소</MDBBtn>
                         <MDBBtn onClick={() => {
-                            axios.post('v1/task/done', {
-                                task_hashed_id: hashedId,
-                                task_ended_at: new Date().getTime()
-                            }).then(() => {
+                            axios.post(`v1/tasks/done/${hashedId}`, {task_ended_at: new Date().getTime()}).then(() => {
                                 toggleShow()
                                 forceRenderer()
                             })

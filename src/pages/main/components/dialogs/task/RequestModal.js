@@ -48,7 +48,7 @@ const RequestModal = ({forceRender}) => {
             setUploadedFiles([])
             return
         }
-        axios.get(`v1/user/pm`).then((response) => {
+        axios.get(`v1/users/pm`).then((response) => {
             setPmListOption(response.data.map(value => ({
                 value: value.user_id,
                 label: value.user_name,
@@ -121,8 +121,8 @@ const RequestModal = ({forceRender}) => {
                                                 <MDBBtn className={'bg-furmo'} onClick={() => {
                                                     modifySpinnerRef.current.style.display = ''
                                                     submitToggleShow()
-                                                    axios.get('v1/project/empty').then((response) => {
-                                                        uploadedFiles.map(async (file, index) => axios.post('v1/task/tasks', {
+                                                    axios.get('v1/projects/empty').then((response) => {
+                                                        uploadedFiles.map(async (file, index) => axios.post('v1/tasks', {
                                                                 pm_id: task.pm.value,
                                                                 project_id: response.data.project_id,
                                                                 task_name: task.title,

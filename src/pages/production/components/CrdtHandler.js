@@ -40,7 +40,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
 
         const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
         persistence.whenSynced.then(() => {
-            axios.get('v1/task/content', {params: {hashed_id: roomId}}).then((r) => {
+            axios.get(`v1/tasks/content/${roomId}`).then((r) => {
                 if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
             }).finally(() => setCrdtInitialized(true))
         })

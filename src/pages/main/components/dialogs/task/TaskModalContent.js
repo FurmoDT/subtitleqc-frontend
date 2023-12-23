@@ -68,7 +68,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
             reset()
             return
         }
-        axios.get(`v1/project/projects/${value}`).then((response) => {
+        axios.get(`v1/projects/${value}`).then((response) => {
             setTask(prevState => ({
                 ...prevState,
                 projectInfo: {
@@ -83,10 +83,10 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
 
     useEffect(() => {
         if (!show) return
-        axios.get(`v1/user/workers`).then((response) => setWorkerListOption(response.data.map(value => ({
+        axios.get(`v1/users/workers`).then((response) => setWorkerListOption(response.data.map(value => ({
             value: value.user_id, label: value.user_name, email: value.user_email
         }))))
-        axios.get(`v1/user/pm`).then((response) => setPmListOption(response.data.map(value => ({
+        axios.get(`v1/users/pm`).then((response) => setPmListOption(response.data.map(value => ({
             value: value.user_id, label: value.user_name, email: value.user_email
         }))))
     }, [show])
@@ -106,7 +106,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
             return
         }
         if (hashedId && pmListOption.length) {
-            axios.get(`v1/task/tasks/${hashedId}`).then((response) => {
+            axios.get(`v1/tasks/${hashedId}`).then((response) => {
                 setTask({
                     pd: pmListOption.filter(value => Object.keys(JSON.parse(response.data.pd)).includes(`${value.value}`)),
                     projectInfo: {
@@ -124,7 +124,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                 })
                 if (response.data.task_file_info) setUploadedFiles([{name: response.data.task_file_info.name}])
             })
-            axios.get(`v1/task/${hashedId}/works`).then((response) => {
+            axios.get(`v1/tasks/works/${hashedId}`).then((response) => {
                 setWorkers(response.data.map((value) => ({
                     workHashedId: value.work_hashed_id,
                     workType: value.work_type,
@@ -329,7 +329,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                             <MDBBtn className={'bg-furmo'} onClick={async () => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
-                                                axios.post('v1/task/tasks', {
+                                                axios.post('v1/tasks', {
                                                     project_id: task.projectInfo?.projectId,
                                                     pm_id: userState.user.userId,
                                                     pd_ids: task.pd.map(value => value.value),
@@ -343,7 +343,8 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     const {
                                                         task_id: taskId, task_file_version: fileVersion
                                                     } = response.data
-                                                    workers.length && axios.post(`v1/task/${taskId}/works`, {
+                                                    workers.length && axios.post(`v1/works`, {
+                                                        task_id: taskId,
                                                         works: workers.map((value) => ({
                                                             worker_id: value.workerId,
                                                             work_type: value.workType,
@@ -355,7 +356,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     }).then()
                                                     if (uploadedFiles.length) {
                                                         s3UploadSource(taskId, fileVersion, uploadedFiles, setUploadProgress).then(() => {
-                                                            axios.post(`v1/task/initialize/${taskId}`, {
+                                                            axios.post(`v1/tasks/initialize/${taskId}`, {
                                                                 file_version: fileVersion,
                                                                 file_format: fileExtension(uploadedFiles[0].name),
                                                                 source_language: workers.filter(value => value.workType === 'translate').map(value => value.sourceLanguage).pop() || '',
@@ -407,7 +408,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                 modifySpinnerRef.current.style.display = ''
                                                 submitToggleShow()
                                                 const fileUpdated = uploadedFiles[0] instanceof File
-                                                axios.put('v1/task/tasks', {
+                                                axios.put('v1/tasks', {
                                                     task_hashed_id: hashedId,
                                                     project_id: task.projectInfo.projectId,
                                                     pd_ids: task.pd.map(value => value.value),
@@ -452,15 +453,16 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     removedWorkers.forEach((value) => {
                                                         updateWorks.push(updateWorkParser(value, true))
                                                     })
-                                                    newWorks.length && axios.post(`v1/task/${taskId}/works`, {
+                                                    newWorks.length && axios.post(`v1/works`, {
+                                                        task_id: taskId,
                                                         works: newWorks
                                                     }).then()
-                                                    updateWorks.length && axios.put(`v1/task/works`, {
+                                                    updateWorks.length && axios.put(`v1/works`, {
                                                         works: updateWorks
                                                     }).then()
                                                     if (fileUpdated) {
                                                         s3UploadSource(taskId, task.fileVersion + 1, uploadedFiles, setUploadProgress).then(() => {
-                                                            axios.post(`v1/task/initialize/${taskId}`, {
+                                                            axios.post(`v1/tasks/initialize/${taskId}`, {
                                                                 file_version: task.fileVersion + 1,
                                                                 file_format: fileExtension(uploadedFiles[0].name),
                                                                 source_language: workers.filter(value => value.workType === 'translate').map(value => value.sourceLanguage).pop(),
@@ -504,7 +506,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                         </MDBRow>
                                         <div className={'d-flex justify-content-between'} style={{margin: '1rem 5rem'}}>
                                             <MDBBtn className={'bg-furmo'} onClick={() => {
-                                                axios.put('v1/task/tasks', {
+                                                axios.put('v1/tasks', {
                                                     task_hashed_id: hashedId,
                                                     task_deactivated: true
                                                 }).then(() => {

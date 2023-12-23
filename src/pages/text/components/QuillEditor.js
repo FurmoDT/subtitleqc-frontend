@@ -106,7 +106,7 @@ const QuillEditor = ({editorType, taskHashedId, targetLanguage, iceservers, conn
 
         persistence.once('synced', () => {
             if (taskHashedId) {
-                axios.get('v1/task/content', {params: {hashed_id: taskHashedId}}).then((r) => {
+                axios.get(`v1/tasks/content/${taskHashedId}`).then((r) => {
                     if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
                 }).finally(() => initializedRef.current = true)
             }

@@ -19,7 +19,7 @@ const ProjectGridComponent = ({startAt, endAt}) => {
 
     useEffect(() => {
         if (!startAt || !endAt) return
-        axios.get('v1/project/projects', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
+        axios.get('v1/projects', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
             setRows(response.data.map((item, index) => ({
                 no: index + 1,
                 projectCode: item.project_code,

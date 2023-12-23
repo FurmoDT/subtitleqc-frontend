@@ -34,7 +34,7 @@ const AdminPanel = ({userInfoRef, userListRef}) => {
         const user = {user_id: userId}
         if (['name', 'birthday', 'phone', 'role'].includes(key)) user[`user_${key}`] = value
         else user.user_info = [{[key]: value}]
-        axios.post('v1/user/', {user: user}).then()
+        axios.post('v1/users', {user: user}).then()
     }, [])
 
     const [columnDefs] = useState([{field: 'id', editable: false, sort: 'asc'}, {

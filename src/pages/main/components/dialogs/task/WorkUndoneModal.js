@@ -12,17 +12,17 @@ import {
 import axios from "../../../../../utils/axios";
 import {MdRemove} from "react-icons/md";
 
-const WorkUndoneModal = ({hashedId, setHashedId, forceRenderer}) => {
+const WorkUndoneModal = ({workHashedId, setWorkHashedId, forceRenderer}) => {
     const [show, setShow] = useState(false)
     const toggleShow = () => setShow(!show)
 
     useEffect(() => {
-        if (hashedId) setShow(true)
-    }, [hashedId])
+        if (workHashedId) setShow(true)
+    }, [workHashedId])
 
     useEffect(() => {
-        if (!show) setHashedId(null)
-    }, [show, setHashedId])
+        if (!show) setWorkHashedId(null)
+    }, [show, setWorkHashedId])
 
     return <>
         <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>
@@ -39,10 +39,7 @@ const WorkUndoneModal = ({hashedId, setHashedId, forceRenderer}) => {
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleShow}>취소</MDBBtn>
                         <MDBBtn onClick={() => {
-                            axios.post('v1/task/work/done', {
-                                work_hashed_id: hashedId,
-                                work_ended_at: null
-                            }).then(() => {
+                            axios.post(`v1/works/done/${workHashedId}`, {work_ended_at: null}).then(() => {
                                 toggleShow()
                                 forceRenderer()
                             })

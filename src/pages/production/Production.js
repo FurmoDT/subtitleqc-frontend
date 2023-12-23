@@ -146,9 +146,7 @@ const Production = () => {
             setDataInitialized(true)
             return
         }
-        axios.get(`v1/task/access`, {
-            params: {hashed_id: taskHashedId, work_hashed_id: workHashedId}
-        }).then((response) => {
+        axios.get(`v1/tasks/access/${taskHashedId}`, {params: {work_hashed_id: workHashedId}}).then((response) => {
             setAuthority(response.data.authority)
             const task = response.data.task
             setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)

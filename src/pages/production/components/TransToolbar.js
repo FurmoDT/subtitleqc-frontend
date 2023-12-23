@@ -35,7 +35,7 @@ const TransToolbar = (props) => {
                         const ko = props.hotRef.current.getDataAtCol(props.hotRef.current.propToCol('koKR_1'))
                         if (ko && !Number.isInteger(props.hotRef.current.propToCol('spns_1'))) {
                             setIsTranslating(true)
-                            axios.post('v1/task/spns/subtitle_translation', {inputs: ko.map(value => value ? value : '')}).then((response) => {
+                            axios.post('v1/tasks/spns/subtitle_translation', {inputs: ko.map(value => value ? value : '')}).then((response) => {
                                 props.hotRef.current.setDataAtCell((response.data.map((value, index) => ([index, props.hotRef.current.countCols() - 1, value]))))
                                 setIsTranslating(false)
                             })

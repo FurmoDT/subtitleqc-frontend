@@ -31,15 +31,15 @@ const TextPage = () => {
 
     useEffect(() => {
         if (showDiff && taskHashedId && targetLanguage.value) {
-            axios.get(`v1/task/content`, {
-                params: {hashed_id: taskHashedId, room_type: 'original', target_language: targetLanguage.value}
+            axios.get(`v1/tasks/content/${taskHashedId}`, {
+                params: {room_type: 'original', target_language: targetLanguage.value}
             }).then((response) => {
                 const yDoc = new Y.Doc()
                 Y.applyUpdate(yDoc, toUint8Array(response.data.task_crdt))
                 setOriginalText(yDoc.getText('quill').toString().replace("\uFEFF", ""))
             })
-            axios.get(`v1/task/content`, {
-                params: {hashed_id: taskHashedId, room_type: 'review', target_language: targetLanguage.value}
+            axios.get(`v1/tasks/content/${taskHashedId}`, {
+                params: {room_type: 'review', target_language: targetLanguage.value}
             }).then((response) => {
                 const yDoc = new Y.Doc()
                 Y.applyUpdate(yDoc, toUint8Array(response.data.task_crdt))
@@ -55,9 +55,7 @@ const TextPage = () => {
             setLanguageOptions([{value: '', label: ''}])
             return
         }
-        axios.get(`v1/task/access`, {
-            params: {hashed_id: taskHashedId, work_hashed_id: workHashedId}
-        }).then((response) => {
+        axios.get(`v1/tasks/access/${taskHashedId}`, {params: {work_hashed_id: workHashedId}}).then((response) => {
             setAuthority(response.data.authority)
             const task = response.data.task
             setTextFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info?.name)}`)

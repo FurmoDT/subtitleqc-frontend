@@ -17,7 +17,7 @@ const UserPage = () => {
     const {userState} = useContext(AuthContext)
 
     useEffect(() => {
-        axios.get(`v1/user/me`).then((response) => {
+        axios.get(`v1/users/me`).then((response) => {
             userInfoRef.current = response.data
             setIsProfileInitialized(true)
         })
@@ -25,7 +25,7 @@ const UserPage = () => {
 
     useEffect(() => {
         if (/^(admin|pm)$/.test(userState.user.userRole)) {
-            axios.get(`v1/user/users`).then((response) => {
+            axios.get(`v1/users`).then((response) => {
                 userListRef.current = response.data
                 setIsAdminInitialized(true)
             })

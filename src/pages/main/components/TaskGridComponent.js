@@ -223,7 +223,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         if (!startAt || !endAt) return
         setInitialized(false)
         if (userState.user.userRole === 'client') {
-            axios.get('v1/task/client', {params: {start_date: startAt, end_date: endAt}}).then((response) =>
+            axios.get('v1/tasks/client', {params: {start_date: startAt, end_date: endAt}}).then((response) =>
                 setRows(response.data.map((item, index) => ({
                     no: index + 1,
                     pm: item.pm_name,
@@ -237,11 +237,11 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     extra: {hashedId: item.task_hashed_id, work: item.work}
                 }))))
         } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
-            axios.get('v1/task/pm', {params: {start_date: startAt, end_date: endAt}}).then((response) =>
+            axios.get('v1/tasks/pm', {params: {start_date: startAt, end_date: endAt}}).then((response) =>
                 setTaskAndWork(groupBy(response.data, (item) => item.task_hashed_id))
             )
         } else {
-            axios.get('v1/task/worker', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
+            axios.get('v1/tasks/worker', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
                 setRows(response.data.map((item, index) => {
                     const pd = JSON.parse(item.pd)
                     return {
@@ -297,7 +297,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         <TaskDoneModal hashedId={taskDoneHashedId} setHashedId={setTaskDoneHashedId} forceRenderer={forceRenderer}/>
         <TaskUndoneModal hashedId={taskUndoneHashedId} setHashedId={setTaskUndoneHashedId}
                          forceRenderer={forceRenderer}/>
-        <WorkUndoneModal hashedId={workUndoneHashedId} setHashedId={setWorkUndoneHashedId}
+        <WorkUndoneModal workHashedId={workUndoneHashedId} setWorkHashedId={setWorkUndoneHashedId}
                          forceRenderer={forceRenderer}/>
     </>
 }

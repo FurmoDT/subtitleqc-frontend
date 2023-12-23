@@ -150,7 +150,7 @@ const MenuToolbar = forwardRef((props, ref) => {
                 </MDBDropdownMenu>
             </MDBDropdown>
             {props.workHashedId && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
-                <SubmitModal workId={props.workHashedId}/>
+                <SubmitModal taskHashedId={props.taskHashedId} workHashedId={props.workHashedId}/>
             </MDBTooltip>}
             <div ref={saveStatusDivRef} className={'align-items-center mx-1'}
                  style={{display: 'none', fontSize: '0.8rem'}}>

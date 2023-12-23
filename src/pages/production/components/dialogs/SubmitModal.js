@@ -14,7 +14,7 @@ import {BsCheckCircleFill} from "react-icons/bs";
 import axios from "../../../../utils/axios";
 import {useNavigate} from 'react-router-dom';
 
-const SubmitModal = ({workId}) => {
+const SubmitModal = ({taskHashedId, workHashedId}) => {
     const [basicModal, setBasicModal] = useState(false);
     const navigate = useNavigate();
     const toggleShow = () => setBasicModal(!basicModal);

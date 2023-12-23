@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
 import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../../utils/config";
 import TaskDropzone from "../../TaskDropzone";
 import {AuthContext} from "../../../../../contexts/authContext";
-import {s3Upload} from "../../../../../utils/awsS3Upload";
+import {s3UploadSource} from "../../../../../utils/awsS3Upload";
 import {fileExtension, getFileInfo} from "../../../../../utils/functions";
 import {DateInput, inputStyle, labelStyle} from "../../../../../components/Inputs";
 
@@ -354,7 +354,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                         }))
                                                     }).then()
                                                     if (uploadedFiles.length) {
-                                                        s3Upload(taskId, fileVersion, uploadedFiles, setUploadProgress).then(() => {
+                                                        s3UploadSource(taskId, fileVersion, uploadedFiles, setUploadProgress).then(() => {
                                                             axios.post(`v1/task/initialize/${taskId}`, {
                                                                 file_version: fileVersion,
                                                                 file_format: fileExtension(uploadedFiles[0].name),
@@ -459,7 +459,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                         works: updateWorks
                                                     }).then()
                                                     if (fileUpdated) {
-                                                        s3Upload(taskId, task.fileVersion + 1, uploadedFiles, setUploadProgress).then(() => {
+                                                        s3UploadSource(taskId, task.fileVersion + 1, uploadedFiles, setUploadProgress).then(() => {
                                                             axios.post(`v1/task/initialize/${taskId}`, {
                                                                 file_version: task.fileVersion + 1,
                                                                 file_format: fileExtension(uploadedFiles[0].name),

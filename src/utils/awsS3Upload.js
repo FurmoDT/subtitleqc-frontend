@@ -2,7 +2,7 @@ import axios from "./axios";
 import AWS from "aws-sdk"
 import {fileExtension} from "./functions";
 
-export const s3Upload = (taskId, fileVersion, files, setUploadProgress) => {
+export const s3UploadSource = (taskId, fileVersion, files, setUploadProgress) => {
     return new Promise((resolve, reject) => {
         axios.get('v1/aws/sts/s3').then((response) => {
             const s3 = new AWS.S3({

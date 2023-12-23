@@ -8,7 +8,6 @@ import QualityControl from "./pages/QualityControl";
 import Manual from "./pages/Manual";
 import LoginPage from "./pages/auth/LoginPage";
 import {googleClientId, publicUrl} from "./utils/config";
-import {AxiosInterceptor} from "./utils/axios";
 import {AuthContext} from "./contexts/authContext";
 import SignupPage from "./pages/auth/SignupPage";
 import UserPage from "./pages/user/UserPage";
@@ -18,6 +17,7 @@ import MainPage from "./pages/main/MainPage";
 import AuthComponent from "./components/AuthComponent";
 import TextPage from "./pages/text/TextPage";
 import AwsSignedComponent from "./components/AwsSignedComponent";
+import {AxiosInterceptor} from "./components/AxiosInterceptor";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`

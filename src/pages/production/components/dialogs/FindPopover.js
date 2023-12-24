@@ -57,7 +57,7 @@ const FindPopover = (props) => {
     return <div className={'d-inline-block'}>
         <MDBPopover id={'find-popover'} size={'sm'} color={'link'} placement={'right-end'}
                     btnClassName={'transToolbar-button'}
-                    btnChildren={<MDBTooltip className={'pb-13'} tag='span' title='Find'>
+                    btnChildren={<MDBTooltip className={'pb-13'} tag='span' title='찾기'>
                         <MdSearch color={'black'} size={20}/></MDBTooltip>} onShow={() => {
             const observer = new MutationObserver(() => {
                 const popover = document.querySelector('.popover')

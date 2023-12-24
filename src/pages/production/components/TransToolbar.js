@@ -29,7 +29,7 @@ const TransToolbar = (props) => {
                 //     }, 13000)
                 // }).catch(() => null)
             }}><GrDocumentSound color={'black'} size={20}/></MDBBtn></MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Translate'>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='번역'>
             <MDBBtn className={'transToolbar-button'} disabled={isTranslating} color={'link'} size={'sm'}
                     onClick={() => {
                         const ko = props.hotRef.current.getDataAtCol(props.hotRef.current.propToCol('koKR_1'))
@@ -60,7 +60,7 @@ const TransToolbar = (props) => {
                         props.hotRef.current.setDataAtCell(newArray)
                     }}><BsFillSunriseFill color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In & Out'>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN & OUT'>
             <MDBBtn ref={props.tcIoButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
                         if (props.tcLockRef.current) return
@@ -72,7 +72,7 @@ const TransToolbar = (props) => {
                         }
                     }}><BsSun color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC In'>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN'>
             <MDBBtn ref={props.tcInButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
                         if (props.tcLockRef.current) return
@@ -83,7 +83,7 @@ const TransToolbar = (props) => {
                         }
                     }}><BsSunrise color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC Out'>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC OUT'>
             <MDBBtn ref={props.tcOutButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
                         if (props.tcLockRef.current) return
@@ -128,7 +128,7 @@ const TransToolbar = (props) => {
                     }}><TbClockMinus size={20} color={'black'}/></MDBBtn>
         </MDBTooltip>
         <div className={'transToolbar-vertical-divider'}/>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Split Line'>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 나누기'>
             <MDBBtn ref={props.splitLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
                         const selection = props.hotSelectionRef.current
@@ -144,7 +144,7 @@ const TransToolbar = (props) => {
                         }
                     }}><TbArrowsSplit2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
-        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Merge Line'>
+        <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 합치기'>
             <MDBBtn ref={props.mergeLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
                         const selection = props.hotSelectionRef.current

@@ -78,18 +78,18 @@ const MenuToolbar = forwardRef((props, ref) => {
 
     return <div className={'menu-toolbar'}>
         <div className={'d-flex w-100'}>
-            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Project Setting'>
+            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='프로젝트 설정'>
                 <ProjectSettingModal projectDetail={props.projectDetail} setProjectDetail={props.setProjectDetail}/>
             </MDBTooltip>
             {!props.taskHashedId &&
-                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='New Project'>
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='새 프로젝트'>
                     <NewProjectModal setProjectDetail={props.setProjectDetail} hotRef={props.hotRef}
                                      setTcLock={props.setTcLock}
                                      setMediaFile={props.setMediaFile} setMediaInfo={props.setMediaInfo}
                                      setLanguages={props.setLanguages} cellDataRef={props.cellDataRef}
                                      setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
                 </MDBTooltip>}
-            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Shortcut'>
+            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='단축키'>
                 <ShortcutModal focusedRef={props.focusedRef} hotRef={props.hotRef} playerRef={props.playerRef}
                                waveformRef={props.waveformRef} selectedSegment={props.selectedSegment}
                                findButtonRef={props.findButtonRef} replaceButtonRef={props.replaceButtonRef}
@@ -105,7 +105,7 @@ const MenuToolbar = forwardRef((props, ref) => {
                                mergeLineButtonRef={props.mergeLineButtonRef}/>
             </MDBTooltip>
             <MDBDropdown className={'mx-1 color-black'}>
-                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Download'>
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='다운로드'>
                     <MDBDropdownToggle color={'link'} className={'px-3'}>
                         <MDBIcon fas icon='download' size={'xl'} color={'dark'}/>
                     </MDBDropdownToggle>

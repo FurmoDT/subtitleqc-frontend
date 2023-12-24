@@ -59,7 +59,7 @@ const ReplacePopover = (props) => {
     return <div className={'d-inline-block'}>
         <MDBPopover id={'replace-popover'} size={'sm'} color={'link'} placement={'right-end'}
                     btnClassName={'transToolbar-button'}
-                    btnChildren={<MDBTooltip className={'pb-13'} tag='span' title='Replace'>
+                    btnChildren={<MDBTooltip className={'pb-13'} tag='span' title='바꾸기'>
                         <MdFindReplace color={'black'} size={20}/></MDBTooltip>} onShow={() => {
             const observer = new MutationObserver(() => {
                 const popover = document.querySelector('.popover')

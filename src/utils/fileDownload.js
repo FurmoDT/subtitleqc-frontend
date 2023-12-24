@@ -1,4 +1,5 @@
 import XLSX from "xlsx-js-style";
+import {toFspx} from "./fileParser";
 
 export const downloadSrt = (fileData) => {
     const blob = new Blob(['\ufeff', fileData.subtitle], {type: "text/plain"})
@@ -10,8 +11,7 @@ export const downloadSrt = (fileData) => {
 }
 
 export const downloadFspx = (fileData) => {
-    const blob = new Blob([JSON.stringify(fileData, null, 2)], {type: 'application/json;charset=utf-8'})
-    const url = URL.createObjectURL(blob)
+    const url = URL.createObjectURL(toFspx(fileData))
     const link = document.createElement("a")
     link.download = `${fileData.projectDetail.name || '-'}.fspx`
     link.href = url;

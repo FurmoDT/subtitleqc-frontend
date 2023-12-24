@@ -67,7 +67,7 @@ export const parseFsp = (fspJson, languages) => {
     return {newLanguages: newLanguages, subtitle: items}
 }
 
-export function toSrt(array, language) {
+export const toSrt = (array, language) => {
     let res = "";
     for (let i = 0; i < array.length; i++) {
         let s = array[i];
@@ -78,4 +78,8 @@ export function toSrt(array, language) {
         }
     }
     return res;
+}
+
+export const toFspx = (fileData) => {
+    return new Blob([JSON.stringify(fileData, null, 2)], {type: 'application/json;charset=utf-8'})
 }

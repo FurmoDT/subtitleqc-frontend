@@ -28,13 +28,11 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
     }), [roomId])
 
     useEffect(() => {
-        if (roomId && websocketConnected) axios.get(`v1/twilio/iceservers`).then((response) => setIceServers(response.data))
+        if (websocketConnected) axios.get(`v1/twilio/iceservers`).then((response) => setIceServers(response.data))
         else setIceServers(null)
-    }, [roomId, sessionId, userState, websocketConnected])
+    }, [sessionId, userState, websocketConnected])
 
     useEffect(() => {
-        if (!roomId) return
-
         const yDoc = new Y.Doc()
         yDocRef.current = yDoc
 

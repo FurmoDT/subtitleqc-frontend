@@ -20,7 +20,7 @@ const Production = () => {
     const [, , taskHashedId, workHashedId] = window.location.pathname.split('/')
     const [authority, setAuthority] = useState('')
     const [taskName, setTaskName] = useState('')
-    // const [endedAt, setEndedAt] = useState(null)
+    const [endedAt, setEndedAt] = useState(undefined)
     const navigate = useNavigate()
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
@@ -62,6 +62,8 @@ const Production = () => {
     const [subtitleIndex, setSubtitleIndex] = useState(-1)
     const menuToolbarRef = useRef(null)
     const crdtHandlerRef = useRef(null)
+    const [readOnly, setReadOnly] = useState(false)
+    const [crdtMode, setCrdtMode] = useState(false)
     const [crdtInitialized, setCrdtInitialized] = useState(false)
     const [crdtAwarenessInitialized, setCrdtAwarenessInitialized] = useState(false)
     const [dataInitialized, setDataInitialized] = useState(false)
@@ -122,12 +124,11 @@ const Production = () => {
     useEffect(() => {
         const handleLanguageWindowResize = () => {
             clearTimeout(resizingTimeoutRef.current);
-            const newTimeout = setTimeout(() => {
+            resizingTimeoutRef.current = setTimeout(() => {
                 setLanguageWindowSize({
                     width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
                 })
             }, 200)
-            resizingTimeoutRef.current = newTimeout
         };
         const observer = new ResizeObserver(() => {
             containerRef.current.resize([dropzoneRef.current.offsetHeight - timelineWindowRef.current.childNodes[1].offsetHeight, timelineWindowRef.current.childNodes[1].offsetHeight])
@@ -146,16 +147,39 @@ const Production = () => {
             setDataInitialized(true)
             return
         }
-        axios.get(`v1/tasks/access/${taskHashedId}`, {params: {work_hashed_id: workHashedId}}).then((response) => {
-            setAuthority(response.data.authority)
-            const task = response.data.task
+        axios.get(`v1/tasks/access/${taskHashedId}`, {params: {work_hashed_id: workHashedId}}).then(r => {
+            setAuthority(r.data.authority)
+            const task = r.data.task
             setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
             setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
             setTaskName(`${task.task_name}_${task.task_episode}`)
-            setLanguages(response.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
-            // setEndedAt(response.data.task.task_ended_at || response.data.ended_at)
+            setLanguages(r.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
+            setEndedAt(task.task_ended_at || r.data.work_ended_at || null)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
+
+    useEffect(() => {
+        if (endedAt === undefined) {
+        } else if (endedAt) {
+            let taskId, workId
+            const getTaskId = axios.get(`v1/tasks/decode/${taskHashedId}`).then(r => taskId = r.data)
+            const getWorkId = axios.get(`v1/works/decode/${workHashedId}`).then(r => workId = r.data)
+            Promise.all([getTaskId, getWorkId]).then(() => {
+                axios.get(`https://s3.subtitleqc.ai/task/${taskId}/works/${workId}/${endedAt}.fspx`, {headers: {Authorization: null}}).then(r => {
+                    cellDataRef.current = r.data.subtitle
+                    setLanguages(r.data.language)
+                    setProjectDetail(r.data.projectDetail)
+                })
+            })
+            setDataInitialized(true)
+        } else {
+            setCrdtMode(true)
+        }
+    }, [endedAt, taskHashedId, workHashedId]);
+
+    useEffect(() => {
+        if (taskHashedId && dataInitialized && !crdtMode) setReadOnly(true)
+    }, [taskHashedId, dataInitialized, crdtMode]);
 
     useEffect(() => {
         if (authority === 'sync') setTcLock(false)
@@ -222,7 +246,7 @@ const Production = () => {
                      setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
-                     taskHashedId={taskHashedId} workHashedId={workHashedId}
+                     taskHashedId={taskHashedId} workHashedId={workHashedId} endedAt={endedAt}
                      crdt={crdtHandlerRef.current} crdtAwarenessInitialized={crdtAwarenessInitialized}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcLockRef={tcLockRef} tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
@@ -231,8 +255,10 @@ const Production = () => {
                      insertLineAboveButtonRef={insertLineAboveButtonRef}
                      insertLineBelowButtonRef={insertLineBelowButtonRef} removeLineButtonRef={removeLineButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
-        <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId} menuToolbarRef={menuToolbarRef}
-                     setCrdtInitialized={setCrdtInitialized} setCrdtAwarenessInitialized={setCrdtAwarenessInitialized}/>
+        {crdtMode &&
+            <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId} menuToolbarRef={menuToolbarRef}
+                         setCrdtInitialized={setCrdtInitialized}
+                         setCrdtAwarenessInitialized={setCrdtAwarenessInitialized}/>}
         <div ref={dropzoneRef} className={'w-100 d-flex flex-row justify-content-center position-relative'}
              style={{height: 'calc(100vh - 50px - 40px)'}}>
             <Allotment ref={containerRef} vertical proportionalLayout={false} minSize={300} onReset={() => null}
@@ -260,7 +286,7 @@ const Production = () => {
                     </Allotment.Pane>
                     <Allotment.Pane ref={languageWindowRef} snap>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
-                                      hotRef={hotRef} hotSelectionRef={hotSelectionRef}
+                                      hotRef={hotRef} hotSelectionRef={hotSelectionRef} readOnly={readOnly}
                                       tcLockRef={tcLockRef} selectedSegment={selectedSegment}
                                       tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                                       tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}
@@ -278,7 +304,7 @@ const Production = () => {
                                             hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
                                             tcLock={tcLock} tcLockRef={tcLockRef} subtitleIndex={subtitleIndex}
                                             cellDataRef={cellDataRef} languages={languages}
-                                            crdt={crdtHandlerRef.current}
+                                            readOnly={readOnly} crdt={crdtHandlerRef.current}
                                             crdtAwarenessInitialized={crdtAwarenessInitialized}
                                             guideline={projectDetail.guideline} resetSegments={resetSegments}
                                             selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}

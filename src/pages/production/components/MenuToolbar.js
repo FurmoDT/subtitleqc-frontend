@@ -15,6 +15,7 @@ import ProjectSettingModal from "./dialogs/ProjectSettingModal";
 import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import SubmitModal from "../components/dialogs/SubmitModal";
 import {BsCloudCheck} from "react-icons/bs";
+import {formatTimestamp} from "../../../utils/functions";
 
 const MenuToolbar = forwardRef((props, ref) => {
     const [onlineUsers, setOnlineUsers] = useState({})
@@ -149,11 +150,14 @@ const MenuToolbar = forwardRef((props, ref) => {
                     }}>.csv</MDBDropdownItem>
                 </MDBDropdownMenu>
             </MDBDropdown>
-            {props.workHashedId && <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
-                <SubmitModal taskHashedId={props.taskHashedId} workHashedId={props.workHashedId} fileData={{
-                    projectDetail: props.projectDetail, language: props.languages, subtitle: props.cellDataRef.current,
-                }}/>
-            </MDBTooltip>}
+            {props.workHashedId && !props.endedAt &&
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
+                    <SubmitModal taskHashedId={props.taskHashedId} workHashedId={props.workHashedId} fileData={{
+                        projectDetail: props.projectDetail,
+                        language: props.languages,
+                        subtitle: props.cellDataRef.current,
+                    }}/>
+                </MDBTooltip>}
             <div ref={saveStatusDivRef} className={'align-items-center mx-1'}
                  style={{display: 'none', fontSize: '0.8rem'}}>
                 {isSaving ? <><MDBSpinner role='status' size={'sm'} className={'mx-1'}/><span className={'text-nowrap'}>저장 중...</span></> :
@@ -162,6 +166,8 @@ const MenuToolbar = forwardRef((props, ref) => {
         </div>
         <div className={'w-100 d-flex justify-content-center'}>
             <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</span>
+            <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
+                {`${formatTimestamp(props.endedAt)} 완료`}</span>
         </div>
         <div className={'w-100 d-flex justify-content-end'}>
             <OnlineUsersComponent/>

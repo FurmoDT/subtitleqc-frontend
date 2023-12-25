@@ -32,6 +32,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='번역'>
             <MDBBtn className={'transToolbar-button'} disabled={isTranslating} color={'link'} size={'sm'}
                     onClick={() => {
+                        if (props.readOnly) return
                         const ko = props.hotRef.current.getDataAtCol(props.hotRef.current.propToCol('koKR_1'))
                         if (ko && !Number.isInteger(props.hotRef.current.propToCol('spns_1'))) {
                             setIsTranslating(true)
@@ -131,6 +132,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 나누기'>
             <MDBBtn ref={props.splitLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
+                        if (props.readOnly) return
                         const selection = props.hotSelectionRef.current
                         if (selection.rowStart !== null) {
                             const selectedData = props.hotRef.current.getDataAtRow(selection.rowStart)
@@ -147,6 +149,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 합치기'>
             <MDBBtn ref={props.mergeLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
+                        if (props.readOnly) return
                         const selection = props.hotSelectionRef.current
                         const countCols = props.hotRef.current.countCols()
                         const selectedData = props.hotRef.current.getData(selection.rowStart, 0, selection.rowEnd, countCols)
@@ -171,6 +174,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='위에 줄 추가'>
             <MDBBtn ref={props.insertLineAboveButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
+                        if (props.readOnly) return
                         const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
                         if (rowStart === null) return
                         props.hotRef.current.alter('insert_row', rowStart, 1)
@@ -180,6 +184,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='아래 줄 추가'>
             <MDBBtn ref={props.insertLineBelowButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
+                        if (props.readOnly) return
                         const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
                         if (rowStart === null) return
                         props.hotRef.current.alter('insert_row', rowStart + 1, 1)
@@ -189,6 +194,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 삭제'>
             <MDBBtn ref={props.removeLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
+                        if (props.readOnly) return
                         const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
                         if (rowStart === null) return
                         props.hotRef.current.alter('remove_row', rowStart, rowEnd + 1 - rowStart)
@@ -198,7 +204,7 @@ const TransToolbar = (props) => {
         <div className={'transToolbar-vertical-divider'}/>
         <FindPopover findButtonRef={props.findButtonRef} hotRef={props.hotRef}
                      afterRenderPromise={props.afterRenderPromise}/>
-        <ReplacePopover replaceButtonRef={props.replaceButtonRef} hotRef={props.hotRef}
+        <ReplacePopover replaceButtonRef={props.replaceButtonRef} hotRef={props.hotRef} readOnly={props.readOnly}
                         afterRenderPromise={props.afterRenderPromise}/>
     </div>
 };

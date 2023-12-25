@@ -103,6 +103,7 @@ const ReplacePopover = (props) => {
                             </MDBBtn>
                         </div>
                         <MDBBtn color={'secondary'} onClick={() => {
+                            if (props.readOnly) return
                             if (replaceLabelRef.current.value) {
                                 const row = searched[curFindPosition - 1]?.row
                                 const col = searched[curFindPosition - 1]?.col

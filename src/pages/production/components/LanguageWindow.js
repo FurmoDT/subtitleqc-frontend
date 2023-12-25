@@ -131,7 +131,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             width: props.size.width,
             height: props.size.height,
             minSpareRows: 2,
-            contextMenu: {
+            readOnly: props.readOnly,
+            contextMenu: props.readOnly ? false : {
                 items: {
                     row_above: {},
                     row_below: {},
@@ -318,7 +319,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId, props.readOnly])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)

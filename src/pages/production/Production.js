@@ -62,6 +62,7 @@ const Production = () => {
     const [subtitleIndex, setSubtitleIndex] = useState(-1)
     const menuToolbarRef = useRef(null)
     const crdtHandlerRef = useRef(null)
+    const [workTypeKey, setWorkTypeKey] = useState(false)
     const [readOnly, setReadOnly] = useState(false)
     const [crdtMode, setCrdtMode] = useState(false)
     const [crdtInitialized, setCrdtInitialized] = useState(false)
@@ -154,6 +155,7 @@ const Production = () => {
             setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
             setTaskName(`${task.task_name}_${task.task_episode}`)
             setLanguages(r.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
+            setWorkTypeKey(r.data.work_type)
             setEndedAt(task.task_ended_at || r.data.work_ended_at || null)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
@@ -241,7 +243,7 @@ const Production = () => {
                          cellDataRef={cellDataRef} languageFile={languageFile} setLanguages={setLanguages}
                          waveformRef={waveformRef} resetSegments={resetSegments}/>
         <MenuToolbar ref={menuToolbarRef} cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages}
-                     hotRef={hotRef} focusedRef={focusedRef}
+                     hotRef={hotRef} focusedRef={focusedRef} workTypeKey={workTypeKey}
                      projectDetail={projectDetail} setProjectDetail={setProjectDetail}
                      setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}

@@ -16,6 +16,7 @@ import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "reac
 import SubmitModal from "../components/dialogs/SubmitModal";
 import {BsCloudCheck} from "react-icons/bs";
 import {formatTimestamp} from "../../../utils/functions";
+import {workType} from "../../../utils/config";
 
 const MenuToolbar = forwardRef((props, ref) => {
     const [onlineUsers, setOnlineUsers] = useState({})
@@ -166,8 +167,11 @@ const MenuToolbar = forwardRef((props, ref) => {
         </div>
         <div className={'w-100 d-flex justify-content-center'}>
             <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</span>
-            <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
-                {`${formatTimestamp(props.endedAt)} 완료`}</span>
+            {props.workTypeKey &&
+                <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
+                {workType[props.workTypeKey]}</span>}
+            {props.endedAt && <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
+                {`${formatTimestamp(props.endedAt)} 완료`}</span>}
         </div>
         <div className={'w-100 d-flex justify-content-end'}>
             <OnlineUsersComponent/>

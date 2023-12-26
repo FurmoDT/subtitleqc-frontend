@@ -241,8 +241,8 @@ const Production = () => {
         {!taskHashedId && <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                                     setLanguageFile={setLanguageFile} languages={languages}/>}
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
-                         cellDataRef={cellDataRef} languageFile={languageFile} setLanguages={setLanguages}
-                         waveformRef={waveformRef} resetSegments={resetSegments}/>
+                         cellDataRef={cellDataRef} waveformRef={waveformRef} resetSegments={resetSegments}
+                         languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
         <MenuToolbar ref={menuToolbarRef} cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages}
                      hotRef={hotRef} focusedRef={focusedRef} workTypeKey={workTypeKey}
                      projectDetail={projectDetail} setProjectDetail={setProjectDetail}

@@ -1,13 +1,13 @@
 import {languageCodes} from "./config";
+import {WebVTTParser} from 'webvtt-parser';
+import {secToTc} from "./functions";
 
 export const parseSrt = (srtText) => {
     const normalizedSrtData = srtText.replace(/\r\n/g, '\n');
     const lines = normalizedSrtData.split('\n');
     const items = [];
 
-    let o = {
-        srt: ''
-    };
+    let o = {text: ''}
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
@@ -21,15 +21,15 @@ export const parseSrt = (srtText) => {
             o.end = times[1];
         } else if (line === '') { // reset
             items.push(o);
-            o = {srt: ''};
+            o = {text: ''};
         } else { // text
             if (lines[i + 1] === '') {
                 lineBreak = '';
             }
-            o.srt += line + lineBreak;
+            o.text += line + lineBreak;
         }
     }
-    return {newLanguages: 'srt', subtitle: items}
+    return {subtitle: items}
 }
 
 export const parseFsp = (fspJson, languages) => {
@@ -66,6 +66,13 @@ export const parseFsp = (fspJson, languages) => {
     }
     return {newLanguages: newLanguages, subtitle: items}
 }
+
+export const parseVtt = (vttText) => {
+    const parser = new WebVTTParser();
+    const tree = parser.parse(vttText, 'metadata');
+    return {subtitle: tree.cues.map(v=>({start: secToTc(v.startTime), end: secToTc(v.endTime), text: v.text}))}
+}
+
 
 export const toSrt = (array, language) => {
     let res = "";

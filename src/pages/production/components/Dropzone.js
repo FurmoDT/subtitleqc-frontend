@@ -1,5 +1,5 @@
 import {useCallback, useEffect} from 'react';
-import {parseFsp, parseSrt} from "../../../utils/fileParser";
+import {parseFsp, parseSrt, parseVtt} from "../../../utils/fileParser";
 import {xml2json} from "xml-js";
 import {getFileInfo} from "../../../utils/functions";
 import chardet from "chardet"
@@ -43,7 +43,7 @@ const Dropzone = (props) => {
             if (['.mp4', '.mov'].includes(fileFormat)) {
                 props.setMediaInfo(JSON.parse(await getFileInfo(file)))
                 props.setMediaFile(URL.createObjectURL(file))
-            } else if (['.fsp', '.srt', '.fspx'].includes(fileFormat)) {
+            } else if (['.fsp', '.srt', '.vtt', '.fspx'].includes(fileFormat)) {
                 const reader = new FileReader()
                 reader.onload = () => {
                     let binaryStr = new ArrayBuffer(0)
@@ -52,11 +52,12 @@ const Dropzone = (props) => {
                     const encoding = chardet.detect(byteArray);
                     const decoder = new TextDecoder(encoding || 'UTF-8');
                     const str = decoder.decode(binaryStr)
-                    const languages = props.languages
                     if (file.name.endsWith('.fsp')) {
-                        props.setLanguageFile({prevLanguages: languages, ...parseFsp(JSON.parse(xml2json(str, {compact: false})), languages)})
+                        props.setLanguageFile({...parseFsp(JSON.parse(xml2json(str, {compact: false})), props.languages)})
                     } else if (file.name.endsWith('.srt')) {
-                        props.setLanguageFile({prevLanguages: languages, ...parseSrt(str)})
+                        props.setLanguageFile({...parseSrt(str)})
+                    } else if (file.name.endsWith('.vtt')) {
+                        props.setLanguageFile({...parseVtt(str)})
                     } else if (file.name.endsWith('.fspx')) {
                         props.setLanguageFile(JSON.parse(str))
                     }

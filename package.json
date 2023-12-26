@@ -47,6 +47,7 @@
     "react-sortablejs": "^6.1.4",
     "uuid": "^9.0.1",
     "web-vitals": "^3.5.0",
+    "webvtt-parser": "^2.2.0",
     "xlsx-js-style": "^1.2.0",
     "xml-js": "^1.6.11",
     "y-indexeddb": "^9.0.11",

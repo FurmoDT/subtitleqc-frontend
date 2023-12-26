@@ -1,6 +1,7 @@
 import {languageCodes} from "./config";
 import {WebVTTParser} from 'webvtt-parser';
-import {secToTc} from "./functions";
+import {VttCue, WebVtt} from '@audapolis/webvtt-writer';
+import {secToTc, tcToSec} from "./functions";
 
 export const parseSrt = (srtText) => {
     const normalizedSrtData = srtText.replace(/\r\n/g, '\n');
@@ -50,9 +51,7 @@ export const parseFsp = (fspJson, languages) => {
         const item = language[i];
         const itemCounter = languageCounts[item]--
         newLanguages.unshift({
-            code: item,
-            name: languageCodes[item] + (itemCounter > 1 ? `(${itemCounter})` : ''),
-            counter: itemCounter
+            code: item, name: languageCodes[item] + (itemCounter > 1 ? `(${itemCounter})` : ''), counter: itemCounter
         })
     }
     for (let i = 0; i < subtitle.length; i++) {
@@ -85,6 +84,18 @@ export const toSrt = (array) => {
         }
     }
     return res;
+}
+
+export const toVtt = (array) => {
+    const vtt = new WebVtt();
+    array.forEach((value, index) => {
+        if (!value.start || !value.end || !value.text) return
+        const cue = new VttCue({
+            startTime: tcToSec(value.start), endTime: tcToSec(value.end), payload: value.text, payloadEscaped: true,
+        });
+        vtt.add(cue)
+    })
+    return vtt.toString()
 }
 
 export const toFspx = (fileData) => {

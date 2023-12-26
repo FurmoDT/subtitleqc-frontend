@@ -7,7 +7,7 @@ import {
     MDBSpinner,
     MDBTooltip
 } from "mdb-react-ui-kit";
-import {toSrt} from "../../../utils/fileParser";
+import {toSrt, toVtt} from "../../../utils/fileParser";
 import {downloadCsv, downloadFspx, downloadSrt, downloadXlsx} from "../../../utils/fileDownload";
 import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
@@ -133,8 +133,11 @@ const MenuToolbar = forwardRef((props, ref) => {
                     <MDBDropdownItem link onClick={() => {
                         props.languages.forEach((value) => {
                             // downloadVtt
+                            toVtt(props.cellDataRef.current.map(v => ({
+                                start: v.start, end: v.end, text: v[`${value.code}_${value.counter}`]
+                            })))
                         })
-                    }} disabled>.vtt</MDBDropdownItem>
+                    }}>.vtt</MDBDropdownItem>
                     <MDBDropdownItem link onClick={() => {
                         const language = props.languages.map(value => `${value.code}_${value.counter}`)
                         downloadXlsx({

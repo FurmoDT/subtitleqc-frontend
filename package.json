@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://www.subtitleqc.ai",
   "dependencies": {
+    "@audapolis/webvtt-writer": "^1.0.6",
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@grammarly/editor-sdk": "^2.5.5",
     "@pdftron/webviewer": "^10.4.0",

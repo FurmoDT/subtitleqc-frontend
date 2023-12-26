@@ -36,8 +36,8 @@ const NewProjectModal = (props) => {
                                 props.setLanguageFile(null),
                                 props.setMediaFile(null),
                                 props.setMediaInfo(null),
-                                props.setTcLock(true),
-                                document.getElementById('tcLock-checkbox').checked = true,
+                                props.setTcLock(false),
+                                document.getElementById('tcLock-checkbox').checked = false,
                                 props.waveformRef.current?.segments.removeAll(),
                             ]).then(() => {
                                 localStorage.removeItem('projectDetail')

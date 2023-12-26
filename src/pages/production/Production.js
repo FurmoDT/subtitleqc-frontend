@@ -184,7 +184,8 @@ const Production = () => {
     }, [taskHashedId, dataInitialized, crdtMode]);
 
     useEffect(() => {
-        if (authority === 'sync') setTcLock(false)
+        if (authority === 'local') setTcLock(false)
+        else if (authority === 'sync') setTcLock(false)
     }, [authority])
 
     useEffect(() => {

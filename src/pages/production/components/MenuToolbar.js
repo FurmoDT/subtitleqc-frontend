@@ -8,7 +8,7 @@ import {
     MDBTooltip
 } from "mdb-react-ui-kit";
 import {toSrt, toVtt} from "../../../utils/fileParser";
-import {downloadCsv, downloadFspx, downloadSrt, downloadXlsx} from "../../../utils/fileDownload";
+import {downloadCsv, downloadFspx, downloadSrt, downloadVtt, downloadXlsx} from "../../../utils/fileDownload";
 import NewProjectModal from "./dialogs/NewProjectModal";
 import ShortcutModal from "./dialogs/ShorcutModal";
 import ProjectSettingModal from "./dialogs/ProjectSettingModal";
@@ -132,10 +132,12 @@ const MenuToolbar = forwardRef((props, ref) => {
                     }}>.srt</MDBDropdownItem>
                     <MDBDropdownItem link onClick={() => {
                         props.languages.forEach((value) => {
-                            // downloadVtt
-                            toVtt(props.cellDataRef.current.map(v => ({
-                                start: v.start, end: v.end, text: v[`${value.code}_${value.counter}`]
-                            })))
+                            downloadVtt({
+                                name: `${props.projectDetail.name}(${value.name})`,
+                                subtitle: toVtt(props.cellDataRef.current.map(v => ({
+                                    start: v.start, end: v.end, text: v[`${value.code}_${value.counter}`]
+                                })))
+                            })
                         })
                     }}>.vtt</MDBDropdownItem>
                     <MDBDropdownItem link onClick={() => {

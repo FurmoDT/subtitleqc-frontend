@@ -2,10 +2,19 @@ import XLSX from "xlsx-js-style";
 import {toFspx} from "./fileParser";
 
 export const downloadSrt = (fileData) => {
-    const blob = new Blob(['\ufeff', fileData.subtitle], {type: "text/plain"})
+    const blob = new Blob(['\ufeff', fileData.subtitle], {type: "text/srt"})
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.download = `${fileData.name}.srt`
+    link.href = url;
+    link.click();
+}
+
+export const downloadVtt = (fileData) => {
+    const blob = new Blob([fileData.subtitle], {type: "text/vtt"})
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.download = `${fileData.name}.vtt`
     link.href = url;
     link.click();
 }

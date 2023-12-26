@@ -70,18 +70,18 @@ export const parseFsp = (fspJson, languages) => {
 export const parseVtt = (vttText) => {
     const parser = new WebVTTParser();
     const tree = parser.parse(vttText, 'metadata');
-    return {subtitle: tree.cues.map(v=>({start: secToTc(v.startTime), end: secToTc(v.endTime), text: v.text}))}
+    return {subtitle: tree.cues.map(v => ({start: secToTc(v.startTime), end: secToTc(v.endTime), text: v.text}))}
 }
 
 
-export const toSrt = (array, language) => {
+export const toSrt = (array) => {
     let res = "";
     for (let i = 0; i < array.length; i++) {
         let s = array[i];
         if (s.start && s.end) {
             res += i + 1 + "\r\n";
             res += s.start.replace('.', ',') + " --> " + s.end.replace('.', ',') + "\r\n";
-            res += (s[language]?.replace("\n", "\r\n") || '') + "\r\n\r\n"
+            res += (s.text?.replace("\n", "\r\n") || '') + "\r\n\r\n"
         }
     }
     return res;

@@ -124,7 +124,9 @@ const MenuToolbar = forwardRef((props, ref) => {
                         props.languages.forEach((value) => {
                             downloadSrt({
                                 name: `${props.projectDetail.name}(${value.name})`,
-                                subtitle: toSrt(props.cellDataRef.current, `${value.code}_${value.counter}`)
+                                subtitle: toSrt(props.cellDataRef.current.map(v => ({
+                                    start: v.start, end: v.end, text: v[`${value.code}_${value.counter}`]
+                                })))
                             })
                         })
                     }}>.srt</MDBDropdownItem>

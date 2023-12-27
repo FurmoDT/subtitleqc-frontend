@@ -142,22 +142,25 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                         setStatusDisplay('loaded')
                     }
                     peaks.on('zoomview.click', (event) => {
+                        const seeker = () => {
+                            peaks.player.seek(event.time)
+                            afterSeekedPromise().then(() => {
+                                props.waveformRef.current?.player.pause()
+                                if (event.evt.ctrlKey) {
+                                    const time = peaks.player.getCurrentTime()
+                                    if (!peaks.segments.find(time, time + 1).length) {
+                                        const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), time)
+                                        props.hotRef.current.alter('insert_row', addIndex, 1)
+                                        props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
+                                    }
+                                }
+                            })
+                        }
                         if (!isDoubleClick) {
                             isDoubleClick = true
                             clickTimer = setTimeout(() => {
                                 isDoubleClick = false;
-                                peaks.player.seek(event.time)
-                                afterSeekedPromise().then(() => {
-                                    props.waveformRef.current?.player.pause()
-                                    if (event.evt.ctrlKey) {
-                                        const time = peaks.player.getCurrentTime()
-                                        if (!peaks.segments.find(time, time + 1).length) {
-                                            const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), time)
-                                            props.hotRef.current.alter('insert_row', addIndex, 1)
-                                            props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
-                                        }
-                                    }
-                                })
+                                seeker()
                             }, 300);
                         } else {
                             clearTimeout(clickTimer)
@@ -176,6 +179,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                                 peaks.views.getView('zoomview').enableSegmentDragging(true)
                                 moveCursorRef.current.style.cursor = 'move'
                             }
+                            seeker()
                         }
                     })
                     zoomviewContainerRef.current.addEventListener('wheel', onWheel, {passive: false})

@@ -248,6 +248,15 @@
     cursor: pointer;
 }
 
+.timelineWindow-checkbox-label {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    color: white;
+    user-select: none;
+    margin-left: -5px;
+}
+
 .fullscreen-block {
     position: fixed;
     width: 100%;

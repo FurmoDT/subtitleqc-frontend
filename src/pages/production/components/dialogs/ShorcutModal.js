@@ -117,11 +117,25 @@ const ShortcutModal = (props) => {
         } else if (event.ctrlKey && event.key === 'Insert') {
             props.insertLineAboveButtonRef.current.click()
         }
+        // temp
+        if (event.ctrlKey && event.shiftKey && event.code === 'KeyQ') {
+            event.preventDefault()
+            props.insertLineBelowButtonRef.current.click()
+        } else if (event.ctrlKey && event.code === 'KeyQ') {
+            event.preventDefault()
+            props.insertLineAboveButtonRef.current.click()
+        }
+        if (event.ctrlKey && event.shiftKey && event.code === 'KeyA') {
+            event.preventDefault()
+            event.stopPropagation();
+            props.mergeLineButtonRef.current.click()
+        }
+        // temp
         if (event.ctrlKey && event.key === 'Delete') {
             event.stopPropagation()
             props.removeLineButtonRef.current.click()
         }
-    }, [props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef])
+    }, [props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef, props.mergeLineButtonRef])
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);

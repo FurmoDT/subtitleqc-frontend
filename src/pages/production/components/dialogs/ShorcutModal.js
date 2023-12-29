@@ -14,11 +14,11 @@ import {
     MDBModalTitle,
     MDBRow,
 } from 'mdb-react-ui-kit';
-import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 import {TbArrowsJoin2, TbArrowsSplit2, TbClockMinus, TbClockPlus} from "react-icons/tb";
-import {MdFindReplace, MdPlayCircle, MdSearch} from "react-icons/md";
+import {MdFindReplace, MdPlayCircle, MdSearch, MdStart} from "react-icons/md";
 import {AiOutlineInsertRowAbove, AiOutlineInsertRowBelow} from "react-icons/ai";
 import {RiDeleteRow} from "react-icons/ri";
+import {FaHourglass, FaHourglassEnd, FaHourglassStart} from "react-icons/fa";
 
 const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
@@ -209,25 +209,25 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={3}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <BsFillSunriseFill color={'black'} size={20}/> F9
+                                        <MdStart color={'black'} size={20}/> F9
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <BsSun color={'black'} size={20}/> F10
+                                        <FaHourglass color={'black'} size={20}/> F10
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <BsSunrise color={'black'} size={20}/> F11
+                                        <FaHourglassStart color={'black'} size={20}/> F11
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <BsSunset color={'black'} size={20}/> F12
+                                        <FaHourglassEnd color={'black'} size={20}/> F12
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>

@@ -5,11 +5,12 @@ import {secToTc, splitLine, tcToSec} from "../../../utils/functions";
 import {useState} from "react";
 import FindPopover from "./dialogs/FindPopover";
 import ReplacePopover from "./dialogs/ReplacePopover";
-import {BsFillSunriseFill, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 import axios from "../../../utils/axios";
 import {GrDocumentSound} from "react-icons/gr";
 import {AiOutlineInsertRowAbove, AiOutlineInsertRowBelow} from "react-icons/ai";
 import {RiDeleteRow} from "react-icons/ri";
+import {FaHourglass, FaHourglassEnd, FaHourglassStart} from "react-icons/fa";
+import {MdStart} from "react-icons/md";
 
 const TransToolbar = (props) => {
     const [isTranslating, setIsTranslating] = useState(false)
@@ -59,7 +60,7 @@ const TransToolbar = (props) => {
                             if (tcIn >= offsetStart) newArray.push(...[[index, 0, secToTc(tcIn + diff)], [index, 1, secToTc(tcOut + diff)]])
                         })
                         props.hotRef.current.setDataAtCell(newArray)
-                    }}><BsFillSunriseFill color={'black'} size={20}/></MDBBtn>
+                    }}><MdStart color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN & OUT'>
             <MDBBtn ref={props.tcIoButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
@@ -71,7 +72,7 @@ const TransToolbar = (props) => {
                             props.hotRef.current.setDataAtCell([[row, 0, tc], ...(row - 1 < 0 ? [] : [[row - 1, 1, tc]])])
                             props.hotRef.current.selectCell(row + 1, 0)
                         }
-                    }}><BsSun color={'black'} size={20}/></MDBBtn>
+                    }}><FaHourglass color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC IN'>
             <MDBBtn ref={props.tcInButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
@@ -82,7 +83,7 @@ const TransToolbar = (props) => {
                             props.hotRef.current.setDataAtCell([[row, 0, secToTc(props.playerRef.current?.getCurrentTime())], [row, 1, secToTc(props.playerRef.current?.getCurrentTime() + 1)]])
                             props.hotRef.current.selectCell(row, 0)
                         }
-                    }}><BsSunrise color={'black'} size={20}/></MDBBtn>
+                    }}><FaHourglassStart color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC OUT'>
             <MDBBtn ref={props.tcOutButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
@@ -93,7 +94,7 @@ const TransToolbar = (props) => {
                             props.hotRef.current.setDataAtCell(row, 1, secToTc(props.playerRef.current?.getCurrentTime()))
                             props.hotRef.current.selectCell(row + 1, 0)
                         }
-                    }}><BsSunset color={'black'} size={20}/></MDBBtn>
+                    }}><FaHourglassEnd color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <div className={'transToolbar-vertical-divider'}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC 값 증가'>

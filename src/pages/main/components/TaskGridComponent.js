@@ -157,9 +157,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 }, // {key: 'workMemo', name: '메모'},
                 {
                     key: 'workStatus', name: '상태', renderCell: (row) => {
-                        return row.row.workEndedAt ?
+                        return row.row.workEndedAt || task.endedAt ?
                             <MDBBtn outline
-                                    className={`${(taskAndWork.get(hashedId).task.extra.pmId === userState.user.userId || Object.keys(taskAndWork.get(hashedId).task.extra.pd).includes(`${userState.user.userId}`)) ? 'button-active' : 'button-disabled'}`}
+                                    className={`${(task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) && !task.endedAt ? 'button-active' : 'button-disabled'}`}
                                     onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}>🟢완료</MDBBtn> :
                             <MDBBtn outline className={'button-disabled'}>🟡진행중</MDBBtn>
                     }

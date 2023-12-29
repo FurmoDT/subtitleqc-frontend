@@ -20,7 +20,8 @@ const Production = () => {
     const [, , taskHashedId, workHashedId] = window.location.pathname.split('/')
     const [authority, setAuthority] = useState('')
     const [taskName, setTaskName] = useState('')
-    const [endedAt, setEndedAt] = useState(undefined)
+    const [taskEndedAt, setTaskEndedAt] = useState(undefined)
+    const [workEndedAt, setWorkEndedAt] = useState(undefined)
     const navigate = useNavigate()
     const dropzoneRef = useRef(null)
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
@@ -156,32 +157,33 @@ const Production = () => {
             setTaskName(`${task.task_name}_${task.task_episode}`)
             setLanguages(r.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
             setWorkTypeKey(r.data.work_type)
-            setEndedAt(task.task_ended_at || r.data.work_ended_at || null)
+            setWorkEndedAt(r.data.work_ended_at || null)
+            setTaskEndedAt(task.task_ended_at || null)
         }).catch(() => navigate('/error'))
     }, [taskHashedId, workHashedId, navigate])
 
     useEffect(() => {
-        if (endedAt === undefined) {
-        } else if (endedAt) {
+        if (taskEndedAt === undefined || workEndedAt === undefined) {
+        } else if (workEndedAt) {
             let taskId, workId
             const getTaskId = axios.get(`v1/tasks/decode/${taskHashedId}`).then(r => taskId = r.data)
             const getWorkId = axios.get(`v1/works/decode/${workHashedId}`).then(r => workId = r.data)
             Promise.all([getTaskId, getWorkId]).then(() => {
-                axios.get(`https://s3.subtitleqc.ai/task/${taskId}/works/${workId}/${endedAt}.fspx`, {headers: {Authorization: null}}).then(r => {
+                axios.get(`https://s3.subtitleqc.ai/task/${taskId}/works/${workId}/${workEndedAt}.fspx`, {headers: {Authorization: null}}).then(r => {
                     cellDataRef.current = r.data.subtitle
                     setLanguages(r.data.language)
                     setProjectDetail(r.data.projectDetail)
                 })
             })
             setDataInitialized(true)
+            setReadOnly(true)
+        } else if (taskEndedAt){
+            setReadOnly(true)
+            setCrdtMode(true)
         } else {
             setCrdtMode(true)
         }
-    }, [endedAt, taskHashedId, workHashedId]);
-
-    useEffect(() => {
-        if (taskHashedId && dataInitialized && !crdtMode) setReadOnly(true)
-    }, [taskHashedId, dataInitialized, crdtMode]);
+    }, [taskEndedAt, workEndedAt, taskHashedId, workHashedId]);
 
     useEffect(() => {
         if (authority === 'local') setTcLock(false)
@@ -249,7 +251,8 @@ const Production = () => {
                      setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
-                     taskHashedId={taskHashedId} workHashedId={workHashedId} endedAt={endedAt}
+                     taskHashedId={taskHashedId} workHashedId={workHashedId}
+                     taskEndedAt={taskEndedAt} workEndedAt={workEndedAt}
                      crdt={crdtHandlerRef.current} crdtAwarenessInitialized={crdtAwarenessInitialized}
                      findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                      tcLockRef={tcLockRef} tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}

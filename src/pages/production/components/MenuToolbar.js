@@ -158,7 +158,7 @@ const MenuToolbar = forwardRef((props, ref) => {
                     }}>.csv</MDBDropdownItem>
                 </MDBDropdownMenu>
             </MDBDropdown>
-            {props.workHashedId && !props.endedAt &&
+            {props.workHashedId && !props.workEndedAt &&
                 <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Submit'>
                     <SubmitModal taskHashedId={props.taskHashedId} workHashedId={props.workHashedId} fileData={{
                         projectDetail: props.projectDetail,
@@ -177,8 +177,12 @@ const MenuToolbar = forwardRef((props, ref) => {
             {props.workTypeKey &&
                 <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
                 {workType[props.workTypeKey]}</span>}
-            {props.endedAt && <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
-                {`${formatTimestamp(props.endedAt)} 완료`}</span>}
+            {props.workEndedAt &&
+                <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
+                {`${formatTimestamp(props.workEndedAt)} 완료`}</span>}
+            {!props.workHashedId && props.taskEndedAt &&
+                <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
+                {`${formatTimestamp(props.taskEndedAt)} 완료`}</span>}
         </div>
         <div className={'w-100 d-flex justify-content-end'}>
             <OnlineUsersComponent/>

@@ -32,6 +32,10 @@
     color: white;
 }
 
+.text-pre-wrap {
+    white-space: pre-wrap;
+}
+
 .custom-disabled {
     pointer-events: none;
     color: black !important;
@@ -83,6 +87,16 @@
     display: block;
 }
 
+.td-bg-yellow {
+    background-color: yellow;
+    color: black
+}
+
+.td-bg-red {
+    background-color: red;
+    color: white;
+}
+
 .span-avatar {
     width: 2rem;
     height: 2rem;
@@ -122,16 +136,6 @@
     font-size: 0.8rem;
     pointer-events: none;
     user-select: none;
-}
-
-.yellow {
-    background-color: yellow;
-    color: black
-}
-
-.red {
-    background-color: red;
-    color: white;
 }
 
 .color-black {

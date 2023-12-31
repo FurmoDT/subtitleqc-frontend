@@ -24,75 +24,63 @@ import {
     MDBTabsLink,
     MDBTabsPane,
 } from 'mdb-react-ui-kit';
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {guidelines} from "../../../../utils/config";
 
-const LEVEL = {required: 2, optional: 1, none: 0, 2: 'required', 1: 'optional', 0: 'none', undefined: 0}
+const LEVEL = {required: 2, optional: 1, 2: 'required', 1: 'optional'}
 
 const ProjectSettingModal = (props) => {
-    const projectNameRef = useRef(null)
-    const clientRef = useRef(null)
     const [projectDetail, setProjectDetail] = useState(props.projectDetail)
-    const [basicModal, setBasicModal] = useState(false);
-    const toggleShow = () => setBasicModal(!basicModal);
+    const [show, setShow] = useState(false);
     const [fillActive, setFillActive] = useState(null);
-    const handleFillClick = (value) => {
-        if (value === fillActive) return
-        setFillActive(value)
-    }
-    const clientDropdowns = Object.entries(guidelines).map(([key, value]) => (
-        <MDBDropdownItem link key={key} onClick={() => {
-            setFillActive(null)
-            setProjectDetail({
-                ...projectDetail,
-                guideline: value
-            })
-        }}>{value.client}</MDBDropdownItem>))
+    const toggleShow = () => setShow(!show);
     const handleGuidelineChange = (key, value, level) => {
         const newProjectDetail = JSON.parse(JSON.stringify(projectDetail))
         if (!newProjectDetail.guideline[key]) newProjectDetail.guideline[key] = {}
         if (value) Object.assign(newProjectDetail.guideline[key], value)
-        if (level !== null) newProjectDetail.guideline[key].level = LEVEL[level]
+        newProjectDetail.guideline[key].level = LEVEL[level]
         setProjectDetail(newProjectDetail)
     }
     const handleLanguageGuidelineChange = (language, key, value, level) => {
         const newProjectDetail = JSON.parse(JSON.stringify(projectDetail))
         if (!newProjectDetail.guideline.language[language][key]) newProjectDetail.guideline.language[language][key] = {}
         if (value) Object.assign(newProjectDetail.guideline.language[language][key], value)
-        if (level !== null) newProjectDetail.guideline.language[language][key].level = LEVEL[level]
+        newProjectDetail.guideline.language[language][key].level = LEVEL[level]
         setProjectDetail(newProjectDetail)
     }
+
     useEffect(() => {
         setProjectDetail(props.projectDetail)
         localStorage.setItem('projectDetail', JSON.stringify(props.projectDetail))
     }, [props.projectDetail])
+
     useEffect(() => {
-        projectNameRef.current.value = projectDetail.name
-        clientRef.current.value = projectDetail.guideline.client
-        if (basicModal) {
-            if (fillActive === null) setFillActive(Object.keys(projectDetail.guideline.language)[0])
-            if (fillActive) {
-                document.getElementById(`${fillActive}-maxLineInput`).value = projectDetail.guideline.language[fillActive].maxLine?.value || 0
-                document.getElementById(`${fillActive}-maxLineRange`).value = LEVEL[projectDetail.guideline.language[fillActive].maxLine?.level]
-                document.getElementById(`${fillActive}-maxCharacterInput`).value = projectDetail.guideline.language[fillActive].maxCharacter?.value || 0
-                document.getElementById(`${fillActive}-maxCharacterRange`).value = LEVEL[projectDetail.guideline.language[fillActive].maxCharacter?.level]
-                document.getElementById(`${fillActive}-cpsInput`).value = projectDetail.guideline.language[fillActive].cps?.value || 0
-                document.getElementById(`${fillActive}-cpsRange`).value = LEVEL[projectDetail.guideline.language[fillActive].cps?.level]
-                document.getElementById('tcRangeMinInput').value = projectDetail.guideline.tcRange?.min || null
-                document.getElementById('tcRangeMaxInput').value = projectDetail.guideline.tcRange?.max || null
-                document.getElementById('tcRangeRange').value = LEVEL[projectDetail.guideline.tcRange?.level]
-            }
+        if (show) setFillActive(prevState=> prevState ? prevState : Object.keys(projectDetail.guideline.language)[0])
+        else {
+            setFillActive(null)
+            setProjectDetail(props.projectDetail)
         }
-    }, [projectDetail, basicModal, fillActive])
+    }, [projectDetail, props.projectDetail, show])
+
+    useEffect(() => {
+        if (fillActive) {
+            document.getElementById(`${fillActive}-maxLineInput`).value = projectDetail.guideline.language[fillActive].maxLine?.value || 0
+            document.getElementById(`${fillActive}-maxLineRange`).value = LEVEL[projectDetail.guideline.language[fillActive].maxLine?.level] || 0
+            document.getElementById(`${fillActive}-maxCharacterInput`).value = projectDetail.guideline.language[fillActive].maxCharacter?.value || 0
+            document.getElementById(`${fillActive}-maxCharacterRange`).value = LEVEL[projectDetail.guideline.language[fillActive].maxCharacter?.level] || 0
+            document.getElementById(`${fillActive}-cpsInput`).value = projectDetail.guideline.language[fillActive].cps?.value || 0
+            document.getElementById(`${fillActive}-cpsRange`).value = LEVEL[projectDetail.guideline.language[fillActive].cps?.level] || 0
+            document.getElementById('tcRangeMinInput').value = projectDetail.guideline.tcRange?.min || null
+            document.getElementById('tcRangeMaxInput').value = projectDetail.guideline.tcRange?.max || null
+            document.getElementById('tcRangeRange').value = LEVEL[projectDetail.guideline.tcRange?.level] || 0
+        }
+    }, [fillActive, projectDetail]);
+
     return <>
         <MDBBtn className={'mx-1 color-black'} size={'sm'} color={'link'} onClick={toggleShow}>
             <MDBIcon fas icon="info-circle" size={'2x'}/>
         </MDBBtn>
-        <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1' staticBackdrop
-                  onHide={() => {
-                      setFillActive(null)
-                      setProjectDetail(props.projectDetail)
-                  }}>
+        <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'lg'}>
                 <MDBModalContent>
                     <MDBModalHeader>
@@ -103,18 +91,24 @@ const ProjectSettingModal = (props) => {
                         <MDBRow>
                             <MDBCol>
                                 <h6 className='bg-light p-2 border-top border-bottom'>Project Name</h6>
-                                <MDBInput onInput={() => {
-                                    setProjectDetail({...projectDetail, name: projectNameRef.current.value})
-                                }} ref={projectNameRef} type='text'/>
+                                <MDBInput type='text' value={projectDetail.name} onInput={(event) => {
+                                    setProjectDetail({...projectDetail, name: event.target.value})
+                                }}/>
                             </MDBCol>
                             <MDBCol>
                                 <h6 className='bg-light p-2 border-top border-bottom'>Client</h6>
                                 <MDBInputGroup className='mb-3'>
-                                    <input ref={clientRef} className='form-control' type='text' disabled/>
+                                    <input className='form-control' type='text' disabled
+                                           value={projectDetail.guideline.client}/>
                                     <MDBDropdown>
-                                        <MDBDropdownToggle color={'link'} style={{height: '100%'}}/>
+                                        <MDBDropdownToggle className={'h-100'} color={'link'}/>
                                         <MDBDropdownMenu responsive={'end'}>
-                                            {clientDropdowns}
+                                            {Object.entries(guidelines).map(([key, value]) => (
+                                                <MDBDropdownItem link key={key} onClick={() => {
+                                                    setFillActive(null)
+                                                    setProjectDetail({...projectDetail, guideline: value})
+                                                }}>{value.client}</MDBDropdownItem>))
+                                            }
                                         </MDBDropdownMenu>
                                     </MDBDropdown>
                                 </MDBInputGroup>
@@ -148,7 +142,7 @@ const ProjectSettingModal = (props) => {
                         <p className='border-1 border'/>
                         <MDBTabs fill className='mb-3'>
                             {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
-                                return <MDBTabsItem key={key}><MDBTabsLink onClick={() => handleFillClick(key)}
+                                return <MDBTabsItem key={key}><MDBTabsLink onClick={() => setFillActive(key)}
                                                                            active={fillActive === key}>{value.name}
                                 </MDBTabsLink></MDBTabsItem>
                             })}
@@ -202,11 +196,8 @@ const ProjectSettingModal = (props) => {
                                         <MDBCol className={'d-flex align-items-center justify-content-center'} size={4}>
                                             <div
                                                 className={'d-flex flex-row align-items-center px-2 py-1 bg-info bg-opacity-25 rounded'}>
-                                                <h5 className={'m-0'}><MDBBadge color={'info'}>Dialog</MDBBadge>
-                                                </h5>
-                                                <h6 className='mx-2 my-0' style={{whiteSpace: 'pre-wrap'}}>{
-                                                    projectDetail.guideline.language[key].dialog?.sample?.replace(/ /g, '\u00a0')
-                                                }</h6>
+                                                <h5 className={'m-0'}><MDBBadge color={'info'}>Dialog</MDBBadge></h5>
+                                                <h6 className='mx-2 my-0 text-pre-wrap'>{projectDetail.guideline.language[key].dialog?.sample?.replace(/ /g, '\u00a0')}</h6>
                                             </div>
                                         </MDBCol>
                                     </MDBRow>
@@ -218,9 +209,7 @@ const ProjectSettingModal = (props) => {
                         <MDBBtn color='secondary' onClick={toggleShow}>NO</MDBBtn>
                         <MDBBtn onClick={() => {
                             props.setProjectDetail({
-                                ...props.projectDetail,
-                                name: projectDetail.name,
-                                guideline: projectDetail.guideline
+                                ...props.projectDetail, name: projectDetail.name, guideline: projectDetail.guideline
                             })
                             toggleShow()
                         }}>YES</MDBBtn>

@@ -6,9 +6,9 @@ import {MDBBtn, MDBIcon, MDBTooltip} from "mdb-react-ui-kit";
 import {AuthContext} from "../../../contexts/authContext";
 import {languageCodes, workType} from "../../../utils/config";
 import ModifyModal from "./dialogs/task/ModifyModal";
-import TaskDoneModal from "./dialogs/task/TaskDoneModal";
-import WorkUndoneModal from "./dialogs/task/WorkUndoneModal";
-import TaskUndoneModal from "./dialogs/task/TaskUndoneModal";
+import DoneTaskModal from "./dialogs/task/DoneTaskModal";
+import UndoneWorkModal from "./dialogs/task/UndoneWorkModal";
+import UndoneTaskModal from "./dialogs/task/UndoneTaskModal";
 
 const FilterContext = createContext(undefined);
 
@@ -17,26 +17,20 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const {userState} = useContext(AuthContext)
     let columns
     const [rows, setRows] = useState(null)
+    const [rowsCopy, setRowsCopy] = useState(null)
     const [taskAndWork, setTaskAndWork] = useState(null)
     const [modifyTaskHashedId, setModifyTaskHashedId] = useState(null)
-    const [taskDoneHashedId, setTaskDoneHashedId] = useState(null)
-    const [taskUndoneHashedId, setTaskUndoneHashedId] = useState(null)
-    const [workUndoneHashedId, setWorkUndoneHashedId] = useState(null)
+    const [doneTaskHashedId, setDoneTaskHashedId] = useState(null)
+    const [undoneTaskHashedId, setUndoneTaskHashedId] = useState(null)
+    const [undoneWorkHashedId, setUndoneWorkHashedId] = useState(null)
     const [filters, setFilters] = useState({status: 'All'})
 
-    const FilterRenderer = ({tabIndex, column, children}) => {
-        return <>
-            <div>{column.name}</div>
-            <div>{children({tabIndex, filters})}</div>
-        </>
-    }
+    const FilterRenderer = ({tabIndex, column, children}) => (<>
+        <div>{column.name}</div>
+        <div>{children({tabIndex, filters})}</div>
+    </>)
 
-    const filteredRows = useMemo(() => {
-        if (!rows) return
-        return rows.filter((r) => {
-            return filters.status !== 'All' ? r.status === filters.status : true
-        });
-    }, [rows, filters]);
+    const filteredRows = useMemo(() => rowsCopy?.filter((r) => filters.status === 'All' ? true : r.status === filters.status), [rowsCopy, filters])
 
     const groupBy = (arr, keyFunc) => {
         return arr.reduce((result, current) => {
@@ -99,7 +93,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 return <FilterRenderer {...p}>
                     {({filters, ...rest}) => {
                         return <select {...rest} value={filters.status} className={'mx-1'}
-                                       onChange={(e) => setFilters({...filters, status: e.target.value})}>
+                                       onChange={(e) => setFilters({status: e.target.value})}>
                             <option value={'All'}>전체</option>
                             <option value={'New'}>신규</option>
                             <option value={'Ing'}>🟡진행중</option>
@@ -131,14 +125,13 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         const WorkGrid = ({hashedId}) => {
             const task = taskAndWork.get(hashedId).task
             const work = taskAndWork.get(hashedId).work
-            return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-100 h-100 border-main ms-3'}
+            return work.length ? (<DataGrid className={'rdg-light fill-grid rounded w-100 h-100 border-main ms-4'}
                                             rows={work} rowHeight={() => 35} columns={[
                 {
                     key: 'workType',
                     name: '작업',
                     renderCell: row =>
                         <a className={task.taskType && (task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'custom-disabled'}
-                           color={'link'} style={{fontSize: '0.875rem'}}
                            href={`/${task.taskType}/${hashedId}/${row.row.workHashedId}`}>{row.row.workType}</a>
                 },
                 {
@@ -160,7 +153,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         return row.row.workEndedAt || task.endedAt ?
                             <MDBBtn outline
                                     className={`${(task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) && !task.endedAt ? 'button-active' : 'button-disabled'}`}
-                                    onClick={() => setWorkUndoneHashedId(row.row.workHashedId)}>🟢완료</MDBBtn> :
+                                    onClick={() => setUndoneWorkHashedId(row.row.workHashedId)}>🟢완료</MDBBtn> :
                             <MDBBtn outline className={'button-disabled'}>🟡진행중</MDBBtn>
                     }
                 }]}/>) : null
@@ -187,7 +180,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     if (row.row.type !== 'MASTER') return
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
                     return <>
-                        <a className={authorized ? '' : 'custom-disabled'} color={'link'} style={{fontSize: '0.875rem'}}
+                        <a className={authorized ? '' : 'custom-disabled'}
                            href={`/${row.row.taskType}/${row.row.extra.hashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</a>
                         {authorized && <MDBBtn className={'bg-main mx-1'} color={'link'} size={'sm'} floating
                                                onClick={() => setModifyTaskHashedId(row.row.extra.hashedId)}>
@@ -199,18 +192,17 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
                     return <>
                         <MDBBtn outline className={`${authorized ? 'button-active' : 'button-disabled'}`}
-                                onClick={() => row.row.endedAt ? setTaskUndoneHashedId(row.row.extra.hashedId) : setTaskDoneHashedId(row.row.extra.hashedId)}>
+                                onClick={() => row.row.endedAt ? setUndoneTaskHashedId(row.row.extra.hashedId) : setDoneTaskHashedId(row.row.extra.hashedId)}>
                             {{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status]}</MDBBtn>
                     </>
                 }
             }]
-    } else {
+    } else if (userState.user.userRole === 'worker') {
         columns = [defaultColumns.no, defaultColumns.client, defaultColumns.pd,
             {
                 ...defaultColumns.taskName,
                 renderCell: (row) =>
                     <a className={row.row.taskType ? '' : 'custom-disabled'}
-                       color={'link'} style={{fontSize: '0.875rem'}}
                        href={`/${row.row.taskType}/${row.row.extra.hashedId}/${row.row.extra.workHashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</a>
             }, defaultColumns.taskType,
             {key: 'workType', name: '작업', renderCell: (row) => <div>{workType[row.row.workType]}</div>},
@@ -269,7 +261,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         setRows(Array.from(taskAndWork.values()).sort((a, b) => a.work.length === 0 ? -1 : b.work.length === 0 ? 1 : 0).reduce((result, current, currentIndex) => {
             current.task.status = current.task.status || (current.work.length ? 'Ing' : 'New')
             result.push({...current.task, expanded: true, type: 'MASTER', no: currentIndex + 1})
-            current.work.length && result.push({type: 'DETAIL', hashedId: current.task.extra.hashedId})
+            current.work.length && result.push({
+                type: 'DETAIL', hashedId: current.task.extra.hashedId, status: current.task.status
+            })
             return result
         }, []))
     }, [taskAndWork])
@@ -278,26 +272,29 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         if (rows) setInitialized(true)
     }, [rows])
 
+    useEffect(() => setRowsCopy(rows), [rows, filters]);
+
     function onRowsChange(rows, {indexes}) {
         const row = rows[indexes[0]];
         if (row.type === 'MASTER') {
-            if (row.expanded) rows.splice(indexes[0] + 1, 0, {type: 'DETAIL', hashedId: row.extra.hashedId})
-            else rows.splice(indexes[0] + 1, 1)
-            setRows(rows)
+            row.expanded ? rows.splice(indexes[0] + 1, 0, {
+                type: 'DETAIL', hashedId: row.extra.hashedId, status: row.status
+            }) : rows.splice(indexes[0] + 1, 1)
+            setRowsCopy(rows)
         }
     }
 
     return initialized && <>
         <FilterContext.Provider value={filters}>
             <DataGrid className={'rdg-light fill-grid rounded h-100 border-main'} columns={columns} rows={filteredRows}
-                      rowHeight={(args) => args.row.type === 'DETAIL' ? 70 + taskAndWork?.get(args.row.hashedId).work.length * 35 : 35}
+                      rowHeight={(args) => args.row.type === 'DETAIL' ? 54 + taskAndWork?.get(args.row.hashedId).work.length * 35 : 35}
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId} forceRenderer={forceRenderer}/>
-        <TaskDoneModal hashedId={taskDoneHashedId} setHashedId={setTaskDoneHashedId} forceRenderer={forceRenderer}/>
-        <TaskUndoneModal hashedId={taskUndoneHashedId} setHashedId={setTaskUndoneHashedId}
+        <DoneTaskModal hashedId={doneTaskHashedId} setHashedId={setDoneTaskHashedId} forceRenderer={forceRenderer}/>
+        <UndoneTaskModal hashedId={undoneTaskHashedId} setHashedId={setUndoneTaskHashedId}
                          forceRenderer={forceRenderer}/>
-        <WorkUndoneModal workHashedId={workUndoneHashedId} setWorkHashedId={setWorkUndoneHashedId}
+        <UndoneWorkModal workHashedId={undoneWorkHashedId} setWorkHashedId={setUndoneWorkHashedId}
                          forceRenderer={forceRenderer}/>
     </>
 }

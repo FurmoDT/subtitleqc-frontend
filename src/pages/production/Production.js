@@ -35,7 +35,7 @@ const Production = () => {
     const [mediaInfo, setMediaInfo] = useState(null)
     const [video, setVideo] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
-    const [projectDetail, setProjectDetail] = useState(localStorage.projectDetail ? JSON.parse(localStorage.projectDetail) : defaultProjectDetail())
+    const [projectDetail, setProjectDetail] = useState(defaultProjectDetail())
     const focusedRef = useRef(null)
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
@@ -96,8 +96,25 @@ const Production = () => {
     }, [])
 
     useEffect(() => {
-        if (!dataInitialized) return
-        if (!taskHashedId) localStorage.setItem('language', JSON.stringify(languages))
+        const handleLanguageWindowResize = () => {
+            clearTimeout(resizingTimeoutRef.current);
+            resizingTimeoutRef.current = setTimeout(() => {
+                setLanguageWindowSize({
+                    width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
+                })
+            }, 200)
+        };
+        const observer = new ResizeObserver(() => {
+            containerRef.current.resize([dropzoneRef.current.offsetHeight - timelineWindowRef.current.childNodes[1].offsetHeight, timelineWindowRef.current.childNodes[1].offsetHeight])
+            handleLanguageWindowResize()
+            setTimelineWindowSize(prevState => ({height: prevState.height}))
+        });
+        observer.observe(dropzoneRef.current);
+        return () => observer.disconnect()
+    }, []);
+
+    useEffect(() => {
+        if (!taskHashedId && dataInitialized) localStorage.setItem('language', JSON.stringify(languages))
     }, [taskHashedId, languages, dataInitialized])
 
     useEffect(() => {
@@ -124,28 +141,11 @@ const Production = () => {
     }, [languageFile, resetSegments])
 
     useEffect(() => {
-        const handleLanguageWindowResize = () => {
-            clearTimeout(resizingTimeoutRef.current);
-            resizingTimeoutRef.current = setTimeout(() => {
-                setLanguageWindowSize({
-                    width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
-                })
-            }, 200)
-        };
-        const observer = new ResizeObserver(() => {
-            containerRef.current.resize([dropzoneRef.current.offsetHeight - timelineWindowRef.current.childNodes[1].offsetHeight, timelineWindowRef.current.childNodes[1].offsetHeight])
-            handleLanguageWindowResize()
-            setTimelineWindowSize(prevState => ({height: prevState.height}))
-        });
-        observer.observe(dropzoneRef.current);
-        return () => observer.disconnect()
-    }, []);
-
-    useEffect(() => {
         if (!taskHashedId) {
             setAuthority('local')
-            if (localStorage.language?.length) setLanguages(JSON.parse(localStorage.language))
+            if (localStorage.language) setLanguages(JSON.parse(localStorage.language))
             if (localStorage.subtitle) cellDataRef.current = JSON.parse(localStorage.subtitle)
+            if (localStorage.projectDetail) setProjectDetail(JSON.parse(localStorage.projectDetail))
             setDataInitialized(true)
             return
         }

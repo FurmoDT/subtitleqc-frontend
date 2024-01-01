@@ -25,8 +25,9 @@ export const workType = {
     qc: '감수',
 }
 
-export const guidelines = [
-    {
+export const guidelines = new Map([
+    [
+        'KW', {
         client: 'KBS WORLD',
         language: {
             en: {
@@ -48,8 +49,8 @@ export const guidelines = [
             }
         },
         musicNote: '♪'
-    },
-    {
+    }],
+    ['KCP', {
         client: 'KCP',
         language: {
             en: {
@@ -62,8 +63,8 @@ export const guidelines = [
         },
         tcRange: {min: 1, max: 7, level: 'optional'},
         musicNote: 'italic'
-    },
-    {
+    }],
+    ['HYBE', {
         client: 'HYBE',
         language: {
             en: {
@@ -100,8 +101,8 @@ export const guidelines = [
             }
         },
         musicNote: '♪'
-    },
-    {
+    }],
+    ['YG', {
         client: 'YG',
         language: {
             zh: {
@@ -146,8 +147,8 @@ export const guidelines = [
             }
         },
         musicNote: '♪'
-    },
-    {
+    }],
+    ['CUSTOM', {
         client: 'CUSTOM',
         language: {
             ko: {name: '한국어'},
@@ -163,8 +164,8 @@ export const guidelines = [
             es: {name: '스페인어'},
             xx: {name: '기타언어'}
         }
-    }
-]
+    }]
+])
 
 export const defaultSubtitle = () => (Array.from({length: 100}, () => ({rowId: v4()})))
 export const defaultLanguage = () => []

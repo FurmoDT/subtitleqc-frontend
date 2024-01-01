@@ -55,7 +55,7 @@ const ProjectSettingModal = (props) => {
     }, [props.projectDetail])
 
     useEffect(() => {
-        if (show) setFillActive(prevState=> prevState ? prevState : Object.keys(projectDetail.guideline.language)[0])
+        if (show) setFillActive(prevState => prevState ? prevState : Object.keys(projectDetail.guideline.language)[0])
         else {
             setFillActive(null)
             setProjectDetail(props.projectDetail)
@@ -103,7 +103,7 @@ const ProjectSettingModal = (props) => {
                                     <MDBDropdown>
                                         <MDBDropdownToggle className={'h-100'} color={'link'}/>
                                         <MDBDropdownMenu responsive={'end'}>
-                                            {Object.entries(guidelines).map(([key, value]) => (
+                                            {Array.from(guidelines).map(([key, value]) => (
                                                 <MDBDropdownItem link key={key} onClick={() => {
                                                     setFillActive(null)
                                                     setProjectDetail({...projectDetail, guideline: value})
@@ -141,14 +141,14 @@ const ProjectSettingModal = (props) => {
                         </MDBRow>
                         <p className='border-1 border'/>
                         <MDBTabs fill className='mb-3'>
-                            {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => {
+                            {Object.entries(projectDetail.guideline.language).map(([key, value]) => {
                                 return <MDBTabsItem key={key}><MDBTabsLink onClick={() => setFillActive(key)}
                                                                            active={fillActive === key}>{value.name}
                                 </MDBTabsLink></MDBTabsItem>
                             })}
                         </MDBTabs>
                         <MDBTabsContent>
-                            {Object.entries(projectDetail.guideline.language)?.map(([key, value]) => (
+                            {Object.entries(projectDetail.guideline.language).map(([key, value]) => (
                                 <MDBTabsPane key={key} show={fillActive === key}>
                                     <MDBRow className={'mb-4'}>
                                         <MDBCol className={'d-flex flex-row align-items-center'}>

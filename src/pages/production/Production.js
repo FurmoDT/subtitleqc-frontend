@@ -286,7 +286,7 @@ const Production = () => {
                                              video={video} setVideo={setVideo} setSubtitleIndex={setSubtitleIndex}/>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={50} snap>
-                                <InformationWindow/>
+                                <InformationWindow hotRef={hotRef}/>
                             </Allotment.Pane>
                         </Allotment>
                     </Allotment.Pane>

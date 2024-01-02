@@ -25,7 +25,7 @@ const SubmitModal = ({taskHashedId, workHashedId, fileData}) => {
         <MDBBtn size={'sm'} className={'mx-1'} color={'link'}>
             <FaUserCheck size={25} color={'blue'} onClick={toggleShow}/>
         </MDBBtn>
-        <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
+        <MDBModal show={basicModal} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>
                 <MDBModalContent>
                     <MDBModalHeader>

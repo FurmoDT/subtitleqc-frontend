@@ -52,7 +52,7 @@ const LanguagesModal = (props) => {
                 <GrLanguage color={'black'} size={19}/>
             </MDBBtn>
         </MDBTooltip>
-        <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>
+        <MDBModal show={show} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'sm'}>
                 <MDBModalContent>
                     <MDBModalHeader>

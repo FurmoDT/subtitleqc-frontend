@@ -90,7 +90,7 @@ const FileUploadModal = ({resetSegments, setLanguages, ...props}) => {
     }, [newSubtitle, setFile])
 
     return <>
-        <MDBModal staticBackdrop show={props.fileUploadModalShow} setShow={props.setFileUploadModalShow} tabIndex='-1'>
+        <MDBModal staticBackdrop show={props.fileUploadModalShow} tabIndex='-1'>
             <MDBModalDialog size={'sm'}>
                 <MDBModalContent>
                     <MDBModalHeader>

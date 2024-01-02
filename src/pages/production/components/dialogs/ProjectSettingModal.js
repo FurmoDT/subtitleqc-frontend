@@ -80,7 +80,7 @@ const ProjectSettingModal = (props) => {
         <MDBBtn className={'mx-1 color-black'} size={'sm'} color={'link'} onClick={toggleShow}>
             <MDBIcon fas icon="info-circle" size={'2x'}/>
         </MDBBtn>
-        <MDBModal show={show} setShow={setShow} tabIndex='-1' staticBackdrop>
+        <MDBModal show={show} tabIndex='-1' staticBackdrop>
             <MDBModalDialog size={'lg'}>
                 <MDBModalContent>
                     <MDBModalHeader>

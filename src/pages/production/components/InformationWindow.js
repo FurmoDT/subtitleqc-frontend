@@ -20,8 +20,10 @@ const InformationWindow = (props) => {
                     for (let i = 1; i < oldArray.length; i++) {
                         const tcOut = tcToSec(oldArray[i - 1][1])
                         const tcIn = tcToSec(oldArray[i][0])
-                        if (parseFloat((tcIn - tcOut).toFixed(3)) < 0.083) {
-                            newArray.push([i - 1, 1, secToTc(tcOut - 0.042)], [i, 0, secToTc(tcIn + 0.041)])
+                        const interval = parseFloat((tcIn - tcOut).toFixed(3))
+                        if (interval < 0.083) {
+                            const diff = parseFloat(((0.083 - interval) / 2).toFixed(4))
+                            newArray.push([i - 1, 1, secToTc(tcOut - parseFloat((diff - 0.0001).toFixed(3)))], [i, 0, secToTc(tcIn + parseFloat((diff + 0.00049).toFixed(3)))])
                         }
                     }
                     props.hotRef.current.setDataAtCell(newArray)

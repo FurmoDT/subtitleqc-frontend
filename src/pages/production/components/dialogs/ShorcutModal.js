@@ -24,7 +24,7 @@ const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
     const handleKeyDown = useCallback((event) => {
-        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'INPUT') || event.key === 'F6') {
+        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'INPUT') || event.code === 'F6') {
             event.preventDefault();
             const player = props.playerRef.current.getInternalPlayer()
             if (player) player.paused ? player.play() : player.pause()
@@ -33,7 +33,7 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.findButtonRef.current.click()
         }
-        if ((event.ctrlKey || event.metaKey) && event.key === 'KeyH') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'KeyH') {
             event.preventDefault();
             props.replaceButtonRef.current.click()
         }

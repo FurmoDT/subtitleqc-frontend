@@ -37,27 +37,27 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.replaceButtonRef.current.click()
         }
-        if (event.key === 'F3') {
+        if (event.code === 'F3') {
             event.preventDefault();
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() - 10, 'seconds')
         }
-        if (event.key === 'F4') {
+        if (event.code === 'F4') {
             event.preventDefault();
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() + 10, 'seconds')
         }
-        if (event.key === 'F9') {
+        if (event.code === 'F9') {
             event.preventDefault();
             props.tcOffsetButtonRef.current.click()
         }
-        if (event.key === 'F10') {
+        if (event.code === 'F10') {
             event.preventDefault();
             props.tcIoButtonRef.current.click()
         }
-        if (event.key === 'F11') {
+        if (event.code === 'F11') {
             event.preventDefault();
             props.tcInButtonRef.current.click()
         }
-        if (event.key === 'F12') {
+        if (event.code === 'F12') {
             event.preventDefault();
             props.tcOutButtonRef.current.click()
         }
@@ -65,7 +65,7 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.splitLineButtonRef.current.click()
         }
-        if (event.shiftKey && event.key === 'F12') {
+        if (event.shiftKey && event.code === 'F12') {
             event.preventDefault();
             props.mergeLineButtonRef.current.click()
         }
@@ -82,7 +82,7 @@ const ShortcutModal = (props) => {
             if (event.shiftKey) props.hotRef.current.redo()
             else props.hotRef.current.undo()
         }
-        if (event.key === 'Delete') {
+        if (event.code === 'Delete') {
             if (props.focusedRef.current === props.waveformRef.current) {
                 props.waveformRef.current.options.zoomview.container.dispatchEvent(new KeyboardEvent('keydown', {key: event.key}))
             }
@@ -90,21 +90,21 @@ const ShortcutModal = (props) => {
     }, [props.hotRef, props.waveformRef, props.playerRef, props.focusedRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
-        if ((event.ctrlKey || event.metaKey) && event.key === 'ArrowUp') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowUp') {
             event.stopPropagation()
             props.tcIncreaseButtonRef.current.click()
         }
-        if ((event.ctrlKey || event.metaKey) && event.key === 'ArrowLeft') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowLeft') {
             event.stopPropagation()
         }
-        if ((event.ctrlKey || event.metaKey) && event.key === 'ArrowDown') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowDown') {
             event.stopPropagation()
             props.tcDecreaseButtonRef.current.click()
         }
-        if ((event.ctrlKey || event.metaKey) && event.key === 'ArrowRight') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowRight') {
             event.stopPropagation()
         }
-        if (event.key === 'F2') {
+        if (event.code === 'F2') {
             event.stopPropagation()
             const segment = props.selectedSegment.current
             if (segment) {
@@ -112,9 +112,9 @@ const ShortcutModal = (props) => {
                 props.playerRef.current.getInternalPlayer().play()
             }
         }
-        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'Insert') {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'Insert') {
             props.insertLineBelowButtonRef.current.click()
-        } else if (event.ctrlKey && event.key === 'Insert') {
+        } else if (event.ctrlKey && event.code === 'Insert') {
             props.insertLineAboveButtonRef.current.click()
         }
         // temp
@@ -131,7 +131,7 @@ const ShortcutModal = (props) => {
             props.mergeLineButtonRef.current.click()
         }
         // temp
-        if ((event.ctrlKey || event.metaKey) && event.key === 'Delete') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'Delete') {
             event.stopPropagation()
             props.removeLineButtonRef.current.click()
         }

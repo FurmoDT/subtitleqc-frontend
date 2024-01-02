@@ -29,11 +29,11 @@ const ShortcutModal = (props) => {
             const player = props.playerRef.current.getInternalPlayer()
             if (player) player.paused ? player.play() : player.pause()
         }
-        if (event.ctrlKey && event.key === 'f') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'KeyF') {
             event.preventDefault();
             props.findButtonRef.current.click()
         }
-        if (event.ctrlKey && event.key === 'h') {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'KeyH') {
             event.preventDefault();
             props.replaceButtonRef.current.click()
         }
@@ -61,7 +61,7 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.tcOutButtonRef.current.click()
         }
-        if (event.ctrlKey && event.shiftKey && event.code === 'KeyD') {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'KeyD') {
             event.preventDefault();
             props.splitLineButtonRef.current.click()
         }
@@ -77,7 +77,7 @@ const ShortcutModal = (props) => {
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
-        if (event.ctrlKey && event.code === 'KeyZ') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
             event.preventDefault()
             if (event.shiftKey) props.hotRef.current.redo()
             else props.hotRef.current.undo()
@@ -90,18 +90,18 @@ const ShortcutModal = (props) => {
     }, [props.hotRef, props.waveformRef, props.playerRef, props.focusedRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
-        if (event.ctrlKey && event.key === 'ArrowUp') {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'ArrowUp') {
             event.stopPropagation()
             props.tcIncreaseButtonRef.current.click()
         }
-        if (event.ctrlKey && event.key === 'ArrowLeft') {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'ArrowLeft') {
             event.stopPropagation()
         }
-        if (event.ctrlKey && event.key === 'ArrowDown') {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'ArrowDown') {
             event.stopPropagation()
             props.tcDecreaseButtonRef.current.click()
         }
-        if (event.ctrlKey && event.key === 'ArrowRight') {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'ArrowRight') {
             event.stopPropagation()
         }
         if (event.key === 'F2') {
@@ -112,26 +112,26 @@ const ShortcutModal = (props) => {
                 props.playerRef.current.getInternalPlayer().play()
             }
         }
-        if (event.ctrlKey && event.shiftKey && event.key === 'Insert') {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'Insert') {
             props.insertLineBelowButtonRef.current.click()
         } else if (event.ctrlKey && event.key === 'Insert') {
             props.insertLineAboveButtonRef.current.click()
         }
         // temp
-        if (event.ctrlKey && event.shiftKey && event.code === 'KeyQ') {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'KeyQ') {
             event.preventDefault()
             props.insertLineBelowButtonRef.current.click()
-        } else if (event.ctrlKey && event.code === 'KeyQ') {
+        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyQ') {
             event.preventDefault()
             props.insertLineAboveButtonRef.current.click()
         }
-        if (event.ctrlKey && event.shiftKey && event.code === 'KeyA') {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'KeyA') {
             event.preventDefault()
             event.stopPropagation();
             props.mergeLineButtonRef.current.click()
         }
         // temp
-        if (event.ctrlKey && event.key === 'Delete') {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Delete') {
             event.stopPropagation()
             props.removeLineButtonRef.current.click()
         }

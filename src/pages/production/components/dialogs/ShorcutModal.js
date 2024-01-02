@@ -244,13 +244,13 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={3}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <FaHourglassStart color={'black'} size={20}/> F11
+                                        <FaHourglassStart color={'black'} size={20}/> F11, Alt Q
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <FaHourglassEnd color={'black'} size={20}/> F12
+                                        <FaHourglassEnd color={'black'} size={20}/> F12, Alt W
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>

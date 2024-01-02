@@ -80,7 +80,11 @@ const TransToolbar = (props) => {
                         if (props.tcLockRef.current) return
                         const row = props.hotSelectionRef.current.rowStart
                         if (row != null) {
-                            props.hotRef.current.setDataAtCell([[row, 0, secToTc(props.playerRef.current?.getCurrentTime())], [row, 1, secToTc(props.playerRef.current?.getCurrentTime() + 1)]])
+                            const currentTc = secToTc(props.playerRef.current?.getCurrentTime())
+                            const tcOut = props.hotRef.current.getDataAtCell(row, 1)
+                            const tcPair = [[row, 0, currentTc]]
+                            !tcOut && tcPair.push([row, 1, currentTc])
+                            props.hotRef.current.setDataAtCell(tcPair)
                             props.hotRef.current.selectCell(row, 0)
                         }
                     }}><FaHourglassStart color={'black'} size={20}/></MDBBtn>

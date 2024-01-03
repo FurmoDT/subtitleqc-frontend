@@ -8,6 +8,7 @@ import ProjectPanel from "./components/ProjectPanel";
 import {BsListTask} from "react-icons/bs";
 import {AuthContext} from "../../contexts/authContext";
 import "../../css/ReactDataGrid.css";
+import "./MainPage.css";
 
 const MainPage = () => {
     const pathname = window.location.pathname

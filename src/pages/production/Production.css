@@ -1,0 +1,21 @@
+.transToolbar-vertical-divider {
+    width: 2px;
+    height: 2rem;
+    display: inline-block;
+    flex: none;
+    background-color: rgba(55, 53, 47, 0.16);
+}
+
+.transToolbar-button {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+
+.timelineWindow-checkbox-label {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    color: white;
+    user-select: none;
+    margin-left: -5px;
+}

@@ -1,5 +1,6 @@
 import Handsontable from 'handsontable';
 import '../../../css/Handsontable.css'
+import '../../../css/HandsontableCustom.css'
 import * as Grammarly from '@grammarly/editor-sdk'
 import {useCallback, useEffect, useRef, useState} from "react";
 import {durationValidator, tcInValidator, tcOutValidator, textValidator} from "../../../utils/hotRenderer";

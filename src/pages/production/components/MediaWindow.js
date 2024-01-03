@@ -8,6 +8,7 @@ import {Direction, getTrackBackground, Range} from 'react-range';
 import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
 import {PiGlobe} from "react-icons/pi";
 import {MdPlayCircle} from "react-icons/md";
+import "./MediaWindow.css"
 import {MDBInput, MDBPopover, MDBPopoverBody} from "mdb-react-ui-kit";
 
 const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {

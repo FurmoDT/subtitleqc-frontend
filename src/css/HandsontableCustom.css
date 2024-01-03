@@ -1,0 +1,44 @@
+.td-custom-container {
+    position: relative;
+}
+
+.td-custom-highlight {
+    background-color: #98fb98 !important;
+}
+
+.td-custom-text {
+    white-space: pre !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.td-custom-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.td-custom-name {
+    display: none;
+    position: absolute;
+    color: white;
+    font-size: 0.75rem;
+    line-height: 0.875rem;
+    border-radius: 0.25rem;
+    right: 0;
+    top: 0;
+}
+
+.td-custom-container:hover .td-custom-name {
+    display: block;
+}
+
+.td-bg-yellow {
+    background-color: yellow;
+    color: black
+}
+
+.td-bg-red {
+    background-color: red;
+    color: white;
+}

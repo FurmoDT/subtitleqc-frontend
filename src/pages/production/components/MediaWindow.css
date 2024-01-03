@@ -1,0 +1,87 @@
+.span-subtitle {
+    background-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, .5) 86%);
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+    color: white;
+    white-space: pre;
+    pointer-events: none;
+    user-select: none;
+}
+
+.span-framerate {
+    background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, .5) 86%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    white-space: nowrap;
+    font-size: 0.8rem;
+    pointer-events: none;
+    user-select: none;
+}
+
+.span-duration {
+    color: white;
+    white-space: nowrap;
+    font-size: 0.8rem;
+    user-select: none;
+}
+
+.button-icon {
+    color: white;
+}
+
+.button-icon:hover {
+    opacity: .5;
+}
+
+.input-range-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 0.25rem;
+}
+
+.input-range-track-vertical {
+    width: 6px;
+    height: 100%;
+    border-radius: 0.25rem;
+}
+
+.input-range-thumb {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer !important;
+    outline: none !important;
+}
+
+.util-container {
+    position: absolute;
+    bottom: 20px;
+    max-height: 10rem;
+    padding: 1rem 1.25rem;
+    background-color: #333;
+    color: white;
+    border-radius: 0.25rem;
+    opacity: 0.95;
+    display: flex;
+    flex-direction: column;
+}
+
+.util-items {
+    border-bottom: 1px solid white;
+    margin-right: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.util-items:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.util-items:hover {
+    cursor: pointer;
+}

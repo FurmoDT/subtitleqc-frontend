@@ -1,5 +1,4 @@
 import {tcToSec} from "./functions";
-import "../css/CustomCss.css"
 
 const LEVEL = {required: 'red', optional: 'yellow'}
 

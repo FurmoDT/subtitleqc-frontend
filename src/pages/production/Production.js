@@ -15,6 +15,7 @@ import {useNavigate} from "react-router-dom";
 import {Allotment} from "allotment";
 import CrdtHandler from "./components/CrdtHandler";
 import * as Y from "yjs";
+import './Production.css'
 
 const Production = () => {
     const [, , taskHashedId, workHashedId] = window.location.pathname.split('/')
@@ -177,7 +178,7 @@ const Production = () => {
             })
             setDataInitialized(true)
             setReadOnly(true)
-        } else if (taskEndedAt){
+        } else if (taskEndedAt) {
             setReadOnly(true)
             setCrdtMode(true)
         } else {
@@ -187,7 +188,7 @@ const Production = () => {
 
     useEffect(() => {
         if (authority === 'local') setTcLock(false)
-        else if (authority === 'sync') setTcLock(false)
+        else if (authority === 'sync' || authority === 'transcribe') setTcLock(false)
     }, [authority])
 
     useEffect(() => {

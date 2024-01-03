@@ -192,8 +192,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             } else if (props.hotRef.current.colToProp(column).startsWith('arAE')) {
                 containerMain.current.querySelector('textarea').dir = 'rtl'
             }
-            const tcIn = props.hotRef.current.getDataAtCell(row, 0)
-            if (tcIn) props.playerRef.current.seekTo(tcToSec(tcIn), 'seconds')
         })
         props.hotRef.current.addHook('beforeChange', (changes) => {
             changes.forEach(v => v[1] === 'fn' && (v[3] = Boolean(v[3]) || null))

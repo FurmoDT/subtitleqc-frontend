@@ -134,7 +134,6 @@
     color: white;
     white-space: nowrap;
     font-size: 0.8rem;
-    pointer-events: none;
     user-select: none;
 }
 

@@ -20,3 +20,14 @@
     border-style: none !important;
     pointer-events: none;
 }
+
+.input-header-label {
+    font-size: 0.75rem;
+    color: black;
+}
+
+.border-main {
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: #dddddd !important;
+}

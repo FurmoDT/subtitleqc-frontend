@@ -50,21 +50,6 @@
     opacity: 1 !important;
 }
 
-.border-main {
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-color: #dddddd !important;
-}
-
-.span-avatar {
-    width: 2rem;
-    height: 2rem;
-    line-height: 2rem;
-    border-radius: 50%;
-    color: black;
-    background-color: #dddddd;
-}
-
 .pb-13 {
     padding-bottom: 13px !important;
 }
@@ -76,29 +61,20 @@
     margin: 0 0.25rem;
 }
 
-.input-header-label {
-    font-size: 0.75rem;
-    color: black;
-}
-
-.custom-dropdown::after {
+.custom-dropdown::after { /* possible no usage */
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
     border-bottom: none !important;
 }
 
-.horizontal-divider {
+.horizontal-divider { /* Login Page */
     border-bottom: solid;
     border-width: thick;
     color: rgba(55, 53, 47, 0.16);
 }
 
-.ag-header-container {
-    background-color: #f28720ff;
-}
-
-.default-splitter {
+.default-splitter { /* possible no usage */
     --default-splitter-line-margin: 0px !important; /* Override margin to 0 */
-    --default-splitter-line-size: 5px !important;
+    --default-splitter-line-size: 50px !important;
 }

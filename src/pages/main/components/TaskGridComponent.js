@@ -92,7 +92,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             renderHeaderCell: (p) => {
                 return <FilterRenderer {...p}>
                     {({filters, ...rest}) => {
-                        return <select {...rest} value={filters.status} className={'mx-1'}
+                        return <select {...rest} value={filters.status} className={'mx-1 rounded'}
                                        onChange={(e) => setFilters({status: e.target.value})}>
                             <option value={'All'}>전체</option>
                             <option value={'New'}>신규</option>

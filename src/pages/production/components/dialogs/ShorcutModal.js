@@ -69,18 +69,6 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.mergeLineButtonRef.current.click()
         }
-        if (event.shiftKey && event.key === '<') {
-            const internalPlayer = props.playerRef.current.getInternalPlayer()
-            if (internalPlayer) internalPlayer.playbackRate = Math.max(internalPlayer.playbackRate - 0.25, 0.25)
-        }
-        if (event.shiftKey && event.key === '>') {
-            const internalPlayer = props.playerRef.current.getInternalPlayer()
-            if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
-        }
-        if (event.shiftKey && event.key === '?') {
-            const internalPlayer = props.playerRef.current.getInternalPlayer()
-            if (internalPlayer) internalPlayer.playbackRate = 1
-        }
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
             event.preventDefault()
             if (event.shiftKey) props.hotRef.current.redo()
@@ -147,6 +135,24 @@ const ShortcutModal = (props) => {
         if ((event.ctrlKey || event.metaKey) && event.code === 'Delete') {
             event.stopPropagation()
             props.removeLineButtonRef.current.click()
+        }
+        if (event.shiftKey && event.key === '<') {
+            event.preventDefault()
+            event.stopPropagation()
+            const internalPlayer = props.playerRef.current.getInternalPlayer()
+            if (internalPlayer) internalPlayer.playbackRate = Math.max(internalPlayer.playbackRate - 0.25, 0.25)
+        }
+        if (event.shiftKey && event.key === '>') {
+            event.preventDefault()
+            event.stopPropagation()
+            const internalPlayer = props.playerRef.current.getInternalPlayer()
+            if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
+        }
+        if (event.shiftKey && event.key === '?') {
+            event.preventDefault()
+            event.stopPropagation()
+            const internalPlayer = props.playerRef.current.getInternalPlayer()
+            if (internalPlayer) internalPlayer.playbackRate = 1
         }
     }, [props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef, props.mergeLineButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 

@@ -1,6 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
 import {
-    MDBBadge,
     MDBBtn,
     MDBCol,
     MDBIcon,

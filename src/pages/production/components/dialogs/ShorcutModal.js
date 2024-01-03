@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
 import {
+    MDBBadge,
     MDBBtn,
     MDBCol,
     MDBIcon,
@@ -202,16 +203,22 @@ const ShortcutModal = (props) => {
                                         <MDBIcon fas icon="angle-double-right"/> F4
                                     </MDBListGroupItem>
                                 </MDBCol>
-                                <MDBCol size={3}>
+                                <MDBCol size={2}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
                                         <MDBIcon fas icon="angle-double-up"/> SHIFT >
                                     </MDBListGroupItem>
                                 </MDBCol>
-                                <MDBCol size={3}>
+                                <MDBCol size={2}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
                                         <MDBIcon fas icon="angle-double-down"/> {'SHIFT <'}
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={2}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
+                                        <span className={'px-1 border rounded'}>1x</span> {'SHIFT ?'}
                                     </MDBListGroupItem>
                                 </MDBCol>
                             </MDBRow>

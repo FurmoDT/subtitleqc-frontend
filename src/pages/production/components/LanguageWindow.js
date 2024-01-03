@@ -93,16 +93,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
-        const customTextEditor = Handsontable.editors.TextEditor.prototype.extend();
-        customTextEditor.prototype.init = function () {
-            Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
-            this.TEXTAREA_PARENT.addEventListener('keydown', (event) => {
-                if (event.code === 'Space' && !this.isOpened()) {
-                    event.stopPropagation()
-                    props.playerRef.current.getInternalPlayer()?.paused ? props.playerRef.current.getInternalPlayer().play() : props.playerRef.current.getInternalPlayer()?.pause()
-                }
-            })
-        }
         props.hotRef.current = new Handsontable(containerMain.current, {
             data: props.cellDataRef.current,
             columns: [{
@@ -110,13 +100,11 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 type: 'text',
                 renderer: tcInRenderer,
                 readOnly: props.tcLock,
-                editor: customTextEditor
             }, {
                 data: 'end',
                 type: 'text',
                 renderer: tcOutRenderer,
                 readOnly: props.tcLock,
-                editor: customTextEditor
             }, {
                 data: 'duration', type: 'text', readOnly: true, renderer: durationRenderer
             }, {
@@ -124,7 +112,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             }, ...(props.languages.map((value) => ({
                 data: `${value.code}_${value.counter}`,
                 type: 'text',
-                editor: customTextEditor,
                 renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer
             })))],
             colHeaders: ['TC IN', 'TC OUT', 'DURATION', 'FN', ...(props.languages.map((value) => value.name)), 'error'],

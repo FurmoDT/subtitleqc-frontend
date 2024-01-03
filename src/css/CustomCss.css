@@ -81,8 +81,6 @@
     color: black;
 }
 
-
-
 .custom-dropdown::after {
     border-top: none !important;
     border-left: none !important;

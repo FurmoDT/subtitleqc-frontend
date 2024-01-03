@@ -24,11 +24,6 @@ const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
     const handleKeyDown = useCallback((event) => {
-        if ((event.code === 'Space' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'INPUT') || event.code === 'F6') {
-            event.preventDefault();
-            const player = props.playerRef.current.getInternalPlayer()
-            if (player) player.paused ? player.play() : player.pause()
-        }
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyF') {
             event.preventDefault();
             props.findButtonRef.current.click()
@@ -44,6 +39,11 @@ const ShortcutModal = (props) => {
         if (event.code === 'F4') {
             event.preventDefault();
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() + 10, 'seconds')
+        }
+        if (event.code === 'F6') {
+            event.preventDefault();
+            const player = props.playerRef.current.getInternalPlayer()
+            if (player) player.paused ? player.play() : player.pause()
         }
         if (event.code === 'F9') {
             event.preventDefault();
@@ -82,6 +82,12 @@ const ShortcutModal = (props) => {
     }, [props.hotRef, props.waveformRef, props.playerRef, props.focusedRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
+        if (event.code === 'Space' && event.target.tagName !== 'INPUT' && (event.target.tagName !== 'TEXTAREA' || !props.hotRef.current.getActiveEditor().isInFullEditMode())) {
+            event.stopPropagation()
+            event.preventDefault()
+            const player = props.playerRef.current.getInternalPlayer()
+            if (player) player.paused ? player.play() : player.pause()
+        }
         if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowUp') {
             event.stopPropagation()
             props.tcIncreaseButtonRef.current.click()

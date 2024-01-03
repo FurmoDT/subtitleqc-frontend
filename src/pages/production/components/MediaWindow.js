@@ -9,7 +9,7 @@ import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
 import {PiGlobe} from "react-icons/pi";
 import {MdPlayCircle} from "react-icons/md";
 import "./MediaWindow.css"
-import {MDBInput, MDBPopover, MDBPopoverBody} from "mdb-react-ui-kit";
+import ContentEditable from "react-contenteditable";
 
 const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const subtitleLabelRef = useRef(null)
@@ -156,18 +156,19 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
                                      onClick={event => props.playerRef.current.getInternalPlayer().pause()}/> :
                         <BsPlayFill className={'button-icon'} size={20}
                                     onClick={event => props.playerRef.current.getInternalPlayer()?.play()}/>}
-                    <MDBPopover id={'temp-popover'} size={'sm'} tag={'span'} btnClassName={'span-duration ms-2'}
-                                btnChildren={<span>{secToTc(seek)}</span>}>
-                        <MDBPopoverBody>
-                            <MDBInput wrapperStyle={{width: '7.1rem'}} defaultValue={secToTc(seek)} type='text'
-                                      onBlur={(event) => {
-                                          const timestamp = tcToSec(event.target.value)
-                                          if (timestamp) props.playerRef.current.seekTo(timestamp, 'seconds')
-                                          document.getElementById('temp-popover').click()
-                                      }}/>
-                        </MDBPopoverBody>
-                    </MDBPopover>
-                    <span className={'span-duration me-2'}>&nbsp;/&nbsp;{`${secToTc(props.mediaInfo?.duration)}`}</span>
+                    <ContentEditable className={'div-playback-time rounded px-1 mx-1'} html={`${secToTc(seek)}`}
+                                     onFocus={() => props.playerRef.current.getInternalPlayer()?.pause()}
+                                     onKeyDown={(event) => {
+                                         if (event.ctrlKey) event.preventDefault()
+                                         else if (event.code === 'Escape' || event.code === 'Enter') event.target.blur()
+                                     }}
+                                     onBlur={(event) => {
+                                         const timestamp = tcToSec(event.target.innerText)
+                                         const duration = props.playerRef.current.getDuration()
+                                         if (timestamp) timestamp <= duration ? setSeek(timestamp) : setSeek(duration)
+                                         else event.target.innerText = secToTc(seek)
+                                     }}/>
+                    <span className={'span-duration me-2'}>{`/ ${secToTc(props.mediaInfo?.duration)}`}</span>
                     <MdPlayCircle className={'button-icon'} size={20} onClick={() => {
                         const segment = props.selectedSegment.current
                         if (segment) {

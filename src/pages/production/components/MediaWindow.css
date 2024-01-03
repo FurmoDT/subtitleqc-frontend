@@ -24,9 +24,18 @@
 
 .span-duration {
     color: white;
-    white-space: nowrap;
     font-size: 0.8rem;
     user-select: none;
+}
+
+.div-playback-time {
+    color: white;
+    font-size: 0.8rem;
+}
+
+.div-playback-time:hover {
+    outline: 1px solid #ccc;
+    background-color: #333333;
 }
 
 .button-icon {

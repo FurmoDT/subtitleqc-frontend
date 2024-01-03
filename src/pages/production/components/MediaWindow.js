@@ -8,6 +8,7 @@ import {Direction, getTrackBackground, Range} from 'react-range';
 import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
 import {PiGlobe} from "react-icons/pi";
 import {MdPlayCircle} from "react-icons/md";
+import {MDBInput, MDBPopover, MDBPopoverBody} from "mdb-react-ui-kit";
 
 const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const subtitleLabelRef = useRef(null)
@@ -154,9 +155,18 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
                                      onClick={event => props.playerRef.current.getInternalPlayer().pause()}/> :
                         <BsPlayFill className={'button-icon'} size={20}
                                     onClick={event => props.playerRef.current.getInternalPlayer()?.play()}/>}
-                    <span className={'span-duration mx-2'}>
-                        {`${secToTc(seek)} / ${secToTc(props.mediaInfo?.duration)}`}
-                    </span>
+                    <MDBPopover id={'temp-popover'} size={'sm'} tag={'span'} btnClassName={'span-duration ms-2'}
+                                btnChildren={<span>{secToTc(seek)}</span>}>
+                        <MDBPopoverBody>
+                            <MDBInput wrapperStyle={{width: '7.1rem'}} defaultValue={secToTc(seek)} type='text'
+                                      onBlur={(event) => {
+                                          const timestamp = tcToSec(event.target.value)
+                                          if (timestamp) props.playerRef.current.seekTo(timestamp, 'seconds')
+                                          document.getElementById('temp-popover').click()
+                                      }}/>
+                        </MDBPopoverBody>
+                    </MDBPopover>
+                    <span className={'span-duration me-2'}>&nbsp;/&nbsp;{`${secToTc(props.mediaInfo?.duration)}`}</span>
                     <MdPlayCircle className={'button-icon'} size={20} onClick={() => {
                         const segment = props.selectedSegment.current
                         if (segment) {

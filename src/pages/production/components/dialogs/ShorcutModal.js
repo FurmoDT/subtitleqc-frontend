@@ -77,6 +77,10 @@ const ShortcutModal = (props) => {
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
+        if (event.shiftKey && event.key === '?') {
+            const internalPlayer = props.playerRef.current.getInternalPlayer()
+            if (internalPlayer) internalPlayer.playbackRate = 1
+        }
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
             event.preventDefault()
             if (event.shiftKey) props.hotRef.current.redo()

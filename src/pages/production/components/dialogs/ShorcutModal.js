@@ -160,7 +160,7 @@ const ShortcutModal = (props) => {
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = 1
         }
-    }, [props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef, props.mergeLineButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+    }, [props.hotRef, props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef, props.mergeLineButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);

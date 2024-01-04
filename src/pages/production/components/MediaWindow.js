@@ -165,7 +165,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
                                      onBlur={(event) => {
                                          const timestamp = tcToSec(event.target.innerText)
                                          const duration = props.playerRef.current.getDuration()
-                                         if (timestamp) timestamp <= duration ? setSeek(timestamp) : setSeek(duration)
+                                         if (timestamp) props.playerRef.current.seekTo(timestamp <= duration ? timestamp : duration, 'seconds')
                                          else event.target.innerText = secToTc(seek)
                                      }}/>
                     <span className={'span-duration me-2'}>{`/ ${secToTc(props.mediaInfo?.duration)}`}</span>

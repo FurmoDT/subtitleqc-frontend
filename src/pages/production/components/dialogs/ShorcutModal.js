@@ -23,6 +23,15 @@ import {FaHourglass, FaHourglassEnd, FaHourglassStart} from "react-icons/fa";
 const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
     const toggleShow = () => setBasicModal(!basicModal);
+
+    const adjustedHotSelection = useCallback(() => {
+        const s = props.hotSelectionRef.current
+        return {
+            rowStart: Math.min(s.rowStart, s.rowEnd), columnStart: Math.min(s.columnStart, s.columnEnd),
+            rowEnd: Math.max(s.rowStart, s.rowEnd), columnEnd: Math.max(s.columnStart, s.columnEnd)
+        }
+    }, [props.hotSelectionRef])
+
     const handleKeyDown = useCallback((event) => {
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyF') {
             event.preventDefault();
@@ -87,14 +96,38 @@ const ShortcutModal = (props) => {
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowUp') {
             event.stopPropagation()
-            props.tcIncreaseButtonRef.current.click()
+            if (event.shiftKey) {
+                const selection = props.hotSelectionRef.current
+                const adjustedSelection = adjustedHotSelection()
+                const data = props.hotRef.current.getData(0, adjustedSelection.columnStart, adjustedSelection.rowEnd, adjustedSelection.columnEnd)
+                let targetRow = 0
+                for (let i = selection.rowEnd - 1; i >= 0; i--) {
+                    if (data[i].some(Boolean)) targetRow = i
+                    else {
+                        if (targetRow) break
+                    }
+                }
+                props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, targetRow, selection.columnEnd)
+            } else if (event.target.className === 'handsontableInput') props.tcIncreaseButtonRef.current.click()
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowLeft') {
             event.stopPropagation()
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowDown') {
             event.stopPropagation()
-            props.tcDecreaseButtonRef.current.click()
+            if (event.shiftKey) {
+                const selection = props.hotSelectionRef.current
+                const adjustedSelection = adjustedHotSelection()
+                const data = props.hotRef.current.getData(adjustedSelection.rowStart, adjustedSelection.columnStart, props.hotRef.current.countRows() - 3, adjustedSelection.columnEnd)
+                let targetRow = props.hotRef.current.countRows() - 1
+                for (let i = selection.rowEnd + 1; i < props.hotRef.current.countRows(); i++) {
+                    if (data[i - adjustedSelection.rowStart]?.some(Boolean)) targetRow = i
+                    else {
+                        if (targetRow !== props.hotRef.current.countRows() - 1) break
+                    }
+                }
+                props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, targetRow, selection.columnEnd)
+            } else if (event.target.className === 'handsontableInput') props.tcDecreaseButtonRef.current.click()
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowRight') {
             event.stopPropagation()
@@ -155,7 +188,7 @@ const ShortcutModal = (props) => {
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = 1
         }
-    }, [props.hotRef, props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef, props.mergeLineButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+    }, [props.hotRef, props.hotSelectionRef, adjustedHotSelection, props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef, props.mergeLineButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);

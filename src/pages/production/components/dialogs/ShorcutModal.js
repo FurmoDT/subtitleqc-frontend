@@ -59,15 +59,12 @@ const ShortcutModal = (props) => {
         }
         if (event.code === 'F12') {
             event.preventDefault();
-            props.tcOutButtonRef.current.click()
+            if (event.shiftKey) props.mergeLineButtonRef.current.click()
+            else props.tcOutButtonRef.current.click()
         }
         if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'KeyD') {
             event.preventDefault();
             props.splitLineButtonRef.current.click()
-        }
-        if (event.shiftKey && event.code === 'F12') {
-            event.preventDefault();
-            props.mergeLineButtonRef.current.click()
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
             event.preventDefault()
@@ -116,12 +113,10 @@ const ShortcutModal = (props) => {
             props.insertLineAboveButtonRef.current.click()
         }
         // temp
-        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'KeyQ') {
+        if ((event.ctrlKey || event.metaKey) && event.code === 'KeyQ') {
             event.preventDefault()
-            props.insertLineBelowButtonRef.current.click()
-        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyQ') {
-            event.preventDefault()
-            props.insertLineAboveButtonRef.current.click()
+            if (event.shiftKey) props.insertLineBelowButtonRef.current.click()
+            else props.insertLineAboveButtonRef.current.click()
         }
         if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'KeyA') {
             event.preventDefault()
@@ -291,16 +286,17 @@ const ShortcutModal = (props) => {
                                 </MDBCol>
                             </MDBRow>
                             <MDBRow>
-                                <MDBCol size={3}>
-                                    <MDBListGroupItem
-                                        className='d-flex justify-content-between align-items-center px-2'>
-                                        <AiOutlineInsertRowAbove color={'black'} size={20}/> CTRL INSERT
-                                    </MDBListGroupItem>
-                                </MDBCol>
                                 <MDBCol size={4}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <AiOutlineInsertRowBelow color={'black'} size={20}/> CTRL SHIFT INSERT
+                                        <AiOutlineInsertRowAbove color={'black'} size={20}/> CTRL INSERT, CTRL Q
+                                    </MDBListGroupItem>
+                                </MDBCol>
+                                <MDBCol size={5}>
+                                    <MDBListGroupItem
+                                        className='d-flex justify-content-between align-items-center px-2'>
+                                        <AiOutlineInsertRowBelow color={'black'} size={20}/>
+                                        CTRL SHIFT INSERT, CTRL SHIFT Q
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>

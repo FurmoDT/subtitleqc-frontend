@@ -268,11 +268,10 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             } else if (!props.taskHashedId) localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             setTotalLines(getTotalLines())
         })
+        props.hotRef.current.addHook('afterSelection', (row, column, row2, column2) => {
+            props.hotSelectionRef.current = {rowStart: row, columnStart: column, rowEnd: row2, columnEnd: column2}
+        })
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
-            props.hotSelectionRef.current.rowStart = Math.min(row, row2)
-            props.hotSelectionRef.current.columnStart = Math.min(column, column2)
-            props.hotSelectionRef.current.rowEnd = Math.max(row, row2)
-            props.hotSelectionRef.current.columnEnd = Math.max(column, column2)
             const curSegment = props.waveformRef.current?.segments.getSegment(props.hotRef.current.getDataAtRowProp(row, 'rowId'))
             if (curSegment && curSegment !== props.selectedSegment.current) {
                 props.selectedSegment.current?.update({color: 'white', editable: false})

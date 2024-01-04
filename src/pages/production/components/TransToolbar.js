@@ -2,7 +2,7 @@ import {MDBBtn, MDBInput, MDBTooltip} from "mdb-react-ui-kit";
 import LanguagesModal from "./dialogs/LanguagesModal";
 import {TbArrowsJoin2, TbArrowsSplit2, TbClockMinus, TbClockPlus} from "react-icons/tb";
 import {secToTc, splitLine, tcToSec} from "../../../utils/functions";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import FindPopover from "./dialogs/FindPopover";
 import ReplacePopover from "./dialogs/ReplacePopover";
 import axios from "../../../utils/axios";
@@ -14,6 +14,27 @@ import {MdStart} from "react-icons/md";
 
 const TransToolbar = (props) => {
     const [isTranslating, setIsTranslating] = useState(false)
+
+    const adjustedHotSelection = useCallback(() => {
+        const s = props.hotSelectionRef.current
+        return {
+            rowStart: Math.min(s.rowStart, s.rowEnd), columnStart: Math.min(s.columnStart, s.columnEnd),
+            rowEnd: Math.max(s.rowStart, s.rowEnd), columnEnd: Math.max(s.columnStart, s.columnEnd)
+        }
+    }, [props.hotSelectionRef])
+
+    const adjustTcValue = useCallback((value) => {
+        const {rowStart, columnStart, rowEnd, columnEnd} = adjustedHotSelection()
+        if (props.tcLockRef.current || rowStart === null) return
+        const pairs = [];
+        for (let row = rowStart; row <= rowEnd; row++) {
+            for (let col = columnStart; col <= Math.min(columnEnd, 1); col++) {
+                pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) + value)])
+            }
+        }
+        props.hotRef.current.setDataAtCell(pairs)
+        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+    }, [props.hotRef, props.tcLockRef, adjustedHotSelection])
 
     return <div className={'d-flex flex-row align-items-center mx-1'} style={{height: '2.5rem'}}>
         <MDBInput type='number' defaultValue={14} min={10} max={25} size={'sm'}
@@ -103,35 +124,11 @@ const TransToolbar = (props) => {
         <div className={'transToolbar-vertical-divider'}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC 값 증가'>
             <MDBBtn ref={props.tcIncreaseButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
-                    onClick={() => {
-                        if (props.tcLockRef.current) return
-                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                        if (rowStart === null) return
-                        const pairs = [];
-                        for (let row = rowStart; row <= rowEnd; row++) {
-                            for (let col = columnStart; col <= Math.min(columnEnd, 1); col++) {
-                                pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) + 0.2)])
-                            }
-                        }
-                        props.hotRef.current.setDataAtCell(pairs)
-                        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
-                    }}><TbClockPlus size={20} color={'black'}/></MDBBtn>
+                    onClick={() => adjustTcValue(0.2)}><TbClockPlus size={20} color={'black'}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='TC 값 감소'>
             <MDBBtn ref={props.tcDecreaseButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
-                    onClick={() => {
-                        if (props.tcLockRef.current) return
-                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                        if (rowStart === null) return
-                        const pairs = [];
-                        for (let row = rowStart; row <= rowEnd; row++) {
-                            for (let col = columnStart; col <= Math.min(columnEnd, 1); col++) {
-                                pairs.push([row, col, secToTc(tcToSec(props.hotRef.current.getDataAtCell(row, col)) - 0.2)])
-                            }
-                        }
-                        props.hotRef.current.setDataAtCell(pairs)
-                        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
-                    }}><TbClockMinus size={20} color={'black'}/></MDBBtn>
+                    onClick={() => adjustTcValue(-0.2)}><TbClockMinus size={20} color={'black'}/></MDBBtn>
         </MDBTooltip>
         <div className={'transToolbar-vertical-divider'}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 나누기'>
@@ -155,23 +152,21 @@ const TransToolbar = (props) => {
             <MDBBtn ref={props.mergeLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
                         if (props.readOnly) return
-                        const selection = props.hotSelectionRef.current
+                        const selection = adjustedHotSelection()
                         const countCols = props.hotRef.current.countCols()
                         const selectedData = props.hotRef.current.getData(selection.rowStart, 0, selection.rowEnd, countCols)
-                        if (selectedData.length <= 1) {
-                            if (selection.rowStart !== null && selection.rowEnd !== null) props.hotRef.current.selectCell(selection.rowStart, selection.columnEnd)
-                            return
+                        if (selectedData.length > 1) {
+                            const result = [];
+                            for (let i = 4; i < countCols; i++) {
+                                const colValues = selectedData.map(row => row[i]);
+                                result.push(colValues.join(' '));
+                            }
+                            props.hotRef.current.setDataAtCell([[selection.rowStart, 1, selectedData[selectedData.length - 1][1]],
+                                ...result.map((value, index) => [selection.rowStart, index + 4, value]),
+                                ...Array.from({length: selection.rowEnd - selection.rowStart}, (_, rowIndex) => Array.from({length: countCols}, (_, colIndex) => [selection.rowStart + 1 + rowIndex, colIndex, ''])).flat()
+                            ])
+                            props.hotRef.current.alter('remove_row', selection.rowStart + 1, selection.rowEnd - selection.rowStart)
                         }
-                        const result = [];
-                        for (let i = 4; i < countCols; i++) {
-                            const colValues = selectedData.map(row => row[i]);
-                            result.push(colValues.join(' '));
-                        }
-                        props.hotRef.current.setDataAtCell([[selection.rowStart, 1, selectedData[selectedData.length - 1][1]],
-                            ...result.map((value, index) => [selection.rowStart, index + 4, value]),
-                            ...Array.from({length: selection.rowEnd - selection.rowStart}, (_, rowIndex) => Array.from({length: countCols}, (_, colIndex) => [selection.rowStart + 1 + rowIndex, colIndex, ''])).flat()
-                        ])
-                        props.hotRef.current.alter('remove_row', selection.rowStart + 1, selection.rowEnd - selection.rowStart)
                         props.hotRef.current.selectCell(selection.rowStart, selection.columnEnd)
                     }}><TbArrowsJoin2 color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
@@ -179,9 +174,8 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='위에 줄 추가'>
             <MDBBtn ref={props.insertLineAboveButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
-                        if (props.readOnly) return
                         const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                        if (rowStart === null) return
+                        if (props.readOnly || rowStart === null) return
                         props.hotRef.current.alter('insert_row', rowStart, 1)
                         props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
                     }}><AiOutlineInsertRowAbove color={'black'} size={20}/></MDBBtn>
@@ -189,9 +183,8 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='아래 줄 추가'>
             <MDBBtn ref={props.insertLineBelowButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
-                        if (props.readOnly) return
                         const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                        if (rowStart === null) return
+                        if (props.readOnly || rowStart === null) return
                         props.hotRef.current.alter('insert_row', rowStart + 1, 1)
                         props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
                     }}><AiOutlineInsertRowBelow color={'black'} size={20}/></MDBBtn>
@@ -199,9 +192,8 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 삭제'>
             <MDBBtn ref={props.removeLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
-                        if (props.readOnly) return
-                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
-                        if (rowStart === null) return
+                        const {rowStart, columnStart, rowEnd, columnEnd} = adjustedHotSelection()
+                        if (props.readOnly || rowStart === null) return
                         props.hotRef.current.alter('remove_row', rowStart, rowEnd + 1 - rowStart)
                         props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
                     }}><RiDeleteRow color={'black'} size={20}/></MDBBtn>

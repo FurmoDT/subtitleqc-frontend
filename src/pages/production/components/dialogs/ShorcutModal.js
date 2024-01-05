@@ -88,7 +88,7 @@ const ShortcutModal = (props) => {
     }, [props.hotRef, props.waveformRef, props.playerRef, props.focusedRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
-        if (event.code === 'Space' && event.target.tagName !== 'INPUT' && (event.target.tagName !== 'TEXTAREA' || !props.hotRef.current.getActiveEditor().isInFullEditMode())) {
+        if (event.code === 'Space' && event.target.tagName !== 'INPUT' && (event.target.tagName !== 'TEXTAREA' || !props.hotRef.current.getActiveEditor()._opened)) {
             event.stopPropagation()
             event.preventDefault()
             const player = props.playerRef.current.getInternalPlayer()
@@ -199,18 +199,21 @@ const ShortcutModal = (props) => {
             props.removeLineButtonRef.current.click()
         }
         if (event.shiftKey && event.key === '<') {
+            if (props.hotRef.current.getActiveEditor().isInFullEditMode()) return
             event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.max(internalPlayer.playbackRate - 0.25, 0.25)
         }
         if (event.shiftKey && event.key === '>') {
+            if (props.hotRef.current.getActiveEditor().isInFullEditMode()) return
             event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
         if (event.shiftKey && event.key === '?') {
+            if (props.hotRef.current.getActiveEditor().isInFullEditMode()) return
             event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()

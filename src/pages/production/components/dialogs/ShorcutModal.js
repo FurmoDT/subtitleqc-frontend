@@ -112,6 +112,20 @@ const ShortcutModal = (props) => {
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowLeft') {
             event.stopPropagation()
+            if (event.shiftKey) {
+                const selection = props.hotSelectionRef.current
+                const adjustedSelection = adjustedHotSelection()
+                const data = props.hotRef.current.getData(adjustedSelection.rowStart, 0, adjustedSelection.rowEnd, adjustedSelection.columnEnd)
+                const transposedData = data.reduce((r, a) => a.map((v, i) => [...(r[i] || []), v]), [])
+                let targetColumn = 0
+                for (let i = selection.columnEnd - 1; i >= 0; i--) {
+                    if (transposedData[i].some(Boolean)) targetColumn = i
+                    else {
+                        if (targetColumn) break
+                    }
+                }
+                props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, targetColumn)
+            }
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowDown') {
             event.stopPropagation()
@@ -131,6 +145,20 @@ const ShortcutModal = (props) => {
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowRight') {
             event.stopPropagation()
+            if (event.shiftKey) {
+                const selection = props.hotSelectionRef.current
+                const adjustedSelection = adjustedHotSelection()
+                const data = props.hotRef.current.getData(adjustedSelection.rowStart, adjustedSelection.columnStart, adjustedSelection.rowEnd, props.hotRef.current.countCols() - 1)
+                const transposedData = data.reduce((r, a) => a.map((v, i) => [...(r[i] || []), v]), [])
+                let targetColumn = props.hotRef.current.countCols() - 1
+                for (let i = selection.columnEnd + 1; i < props.hotRef.current.countCols(); i++) {
+                    if (transposedData[i - adjustedSelection.columnStart]?.some(Boolean)) targetColumn = i
+                    else {
+                        if (targetColumn !== props.hotRef.current.countCols() - 1) break
+                    }
+                }
+                props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, targetColumn)
+            }
         }
         if (event.code === 'F2') {
             event.stopPropagation()

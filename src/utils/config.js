@@ -13,17 +13,11 @@ export const languageCodes = {
     ruRU: '러시아어',
     frFR: '프랑스어',
     esES: '스페인어',
-    xxXX: '기타 언어',
-    nar: '화자',
-    memo: '메모',
+    xxXX: '기타언어',
 }
+export const extraCodes = {nar: '화자', memo: '메모'}
 
-export const workType = {
-    sync: '싱크',
-    transcribe: '대본',
-    translate: '번역',
-    qc: '감수',
-}
+export const workType = {sync: '싱크', transcribe: '대본', translate: '번역', qc: '감수'}
 
 export const guidelines = new Map([
     [
@@ -170,26 +164,8 @@ export const guidelines = new Map([
 export const defaultSubtitle = () => (Array.from({length: 100}, () => ({rowId: v4()})))
 export const defaultLanguage = () => []
 export const defaultProjectDetail = () => ({name: '', guideline: {client: '', language: {}}})
-export const workTypeSelectOption = [
-    {value: 'sync', label: '싱크'},
-    {value: 'transcribe', label: '대본'},
-    {value: 'translate', label: '번역'},
-    {value: 'qc', label: '감수'}
-]
-export const languageSelectOption = [
-    {value: 'koKR', label: '한국어'},
-    {value: 'enUS', label: '영어'},
-    {value: 'jaJP', label: '일어'},
-    {value: 'zhCN', label: '중국어(간체)'},
-    {value: 'zhTW', label: '중국어(번체)'},
-    {value: 'viVN', label: '베트남어'},
-    {value: 'thTH', label: '태국어'},
-    {value: 'idID', label: '인니어'},
-    {value: 'arAE', label: '아랍어'},
-    {value: 'ruRU', label: '러시아어'},
-    {value: 'frFR', label: '프랑스어'},
-    {value: 'esES', label: '스페인어'},
-]
+export const workTypeSelectOption = Object.entries(workType).map(([value, label]) => ({value, label}));
+export const languageSelectOption = Object.entries(languageCodes).map(([value, label]) => ({value, label}))
 export const genreSelectOption = [
     {value: 'drama', label: '드라마'},
     {value: 'entertainment', label: '예능'},

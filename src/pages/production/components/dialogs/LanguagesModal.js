@@ -15,18 +15,21 @@ import {
     MDBTooltip,
 } from 'mdb-react-ui-kit';
 import {ReactSortable} from "react-sortablejs";
-import {languageCodes} from "../../../../utils/config";
 import {GrLanguage} from "react-icons/gr";
 import {FaBars} from "react-icons/fa";
+import {extraCodes, languageCodes} from "../../../../utils/config";
 
 const LanguagesModal = (props) => {
     const [languages, setLanguages] = useState([])
     const [show, setShow] = useState(false);
     const toggleShow = () => setShow(!show);
-    const addLanguageItem = Object.entries(languageCodes).map(([key, value]) => (
-        <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value}</MDBDropdownItem>))
-
-    addLanguageItem.splice(addLanguageItem.length - 2, 0, <MDBDropdownItem key={'languageDivider'} divider/>)
+    const LanguageItem = () => {
+        const generateItem = (codes) => Object.entries(codes).map(([key, value]) => (
+            <MDBDropdownItem link key={key} onClick={() => handleAddClick(key, value)}>{value}</MDBDropdownItem>))
+        return <>
+            {generateItem(languageCodes)} <MDBDropdownItem key={'languageDivider'} divider/> {generateItem(extraCodes)}
+        </>
+    }
 
     const languageCounter = (code) => {
         const counter = languages.filter(value => value.code === code).map(value => value.counter)
@@ -62,7 +65,7 @@ const LanguagesModal = (props) => {
                     <MDBModalBody>
                         <MDBDropdown className={'d-flex justify-content-end'}>
                             <MDBDropdownToggle size={'sm'} color={'link'}>Add Languages</MDBDropdownToggle>
-                            <MDBDropdownMenu style={{minWidth: '9rem'}}>{addLanguageItem}</MDBDropdownMenu>
+                            <MDBDropdownMenu style={{minWidth: '9rem'}}><LanguageItem/></MDBDropdownMenu>
                         </MDBDropdown>
                         <ReactSortable animation={200} easing={"ease-out"} list={languages} setList={setLanguages}>
                             {languages.map((item) => {

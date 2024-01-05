@@ -10,6 +10,7 @@ import {PiGlobe} from "react-icons/pi";
 import {MdPlayCircle} from "react-icons/md";
 import "./MediaWindow.css"
 import ContentEditable from "react-contenteditable";
+import {MDBTooltip} from "mdb-react-ui-kit";
 
 const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const subtitleLabelRef = useRef(null)
@@ -151,15 +152,17 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
             </div>
             <div className={'d-flex justify-content-between'} style={{height: '2rem'}}>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'} style={{margin: '0 0.625rem'}}>
-                    {isPlaying ?
-                        <BsPauseFill className={'button-icon'} size={20}
-                                     onClick={event => props.playerRef.current.getInternalPlayer().pause()}/> :
-                        <BsPlayFill className={'button-icon'} size={20}
-                                    onClick={event => props.playerRef.current.getInternalPlayer()?.play()}/>}
+                    <MDBTooltip tag='span' wrapperClass='d-flex' title='재생/일시정지'>
+                        {isPlaying ?
+                            <BsPauseFill className={'button-icon'} size={20}
+                                         onClick={event => props.playerRef.current.getInternalPlayer().pause()}/> :
+                            <BsPlayFill className={'button-icon'} size={20}
+                                        onClick={event => props.playerRef.current.getInternalPlayer()?.play()}/>}
+                    </MDBTooltip>
                     <ContentEditable className={'div-playback-time rounded px-1 mx-1'} html={`${secToTc(seek)}`}
                                      onFocus={() => props.playerRef.current.getInternalPlayer()?.pause()}
                                      onKeyDown={(event) => {
-                                         if (event.ctrlKey) event.preventDefault()
+                                         if ((event.ctrlKey || event.metaKey) || event.code === 'Space') event.preventDefault()
                                          else if (event.code === 'Escape' || event.code === 'Enter') event.target.blur()
                                      }}
                                      onBlur={(event) => {
@@ -169,13 +172,15 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
                                          else event.target.innerText = secToTc(seek)
                                      }}/>
                     <span className={'span-duration me-2'}>{`/ ${secToTc(props.mediaInfo?.duration)}`}</span>
-                    <MdPlayCircle className={'button-icon'} size={20} onClick={() => {
-                        const segment = props.selectedSegment.current
-                        if (segment) {
-                            props.playerRef.current.seekTo(segment.startTime, 'seconds')
-                            props.playerRef.current.getInternalPlayer().play()
-                        }
-                    }}/>
+                    <MDBTooltip tag='span' wrapperClass='d-flex' title='선택 자막 위치 재생'>
+                        <MdPlayCircle className={'button-icon'} size={20} onClick={() => {
+                            const segment = props.selectedSegment.current
+                            if (segment) {
+                                props.playerRef.current.seekTo(segment.startTime, 'seconds')
+                                props.playerRef.current.getInternalPlayer().play()
+                            }
+                        }}/>
+                    </MDBTooltip>
                 </div>
                 <div className={'h-100 d-flex flex-nowrap align-items-center'}>
                     <div className={'position-relative d-flex justify-content-center mx-2'}

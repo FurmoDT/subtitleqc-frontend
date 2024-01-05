@@ -25,6 +25,7 @@
 .span-duration {
     color: white;
     font-size: 0.8rem;
+    white-space: nowrap;
     user-select: none;
 }
 

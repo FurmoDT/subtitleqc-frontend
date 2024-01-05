@@ -199,21 +199,21 @@ const ShortcutModal = (props) => {
             props.removeLineButtonRef.current.click()
         }
         if (event.shiftKey && event.key === '<') {
-            if (props.hotRef.current.getActiveEditor().isInFullEditMode()) return
+            if (props.hotRef.current.getActiveEditor()._opened) return
             event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.max(internalPlayer.playbackRate - 0.25, 0.25)
         }
         if (event.shiftKey && event.key === '>') {
-            if (props.hotRef.current.getActiveEditor().isInFullEditMode()) return
+            if (props.hotRef.current.getActiveEditor()._opened) return
             event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
         if (event.shiftKey && event.key === '?') {
-            if (props.hotRef.current.getActiveEditor().isInFullEditMode()) return
+            if (props.hotRef.current.getActiveEditor()._opened) return
             event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()

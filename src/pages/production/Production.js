@@ -5,7 +5,7 @@ import MenuToolbar from "./components/MenuToolbar";
 import TimelineWindow from "./components/TimelineWindow";
 import {useCallback, useEffect, useRef, useState} from "react";
 import TransToolbar from "./components/TransToolbar";
-import {defaultLanguage, defaultProjectDetail, defaultSubtitle, languageCodes} from "../../utils/config";
+import {defaultLanguage, defaultProjectDetail, defaultSubtitle, guidelines, languageCodes} from "../../utils/config";
 import FileUploadModal from "./components/dialogs/FileUploadModal";
 import Dropzone from "./components/Dropzone";
 import {createSegment, fileExtension, tcToSec} from "../../utils/functions";
@@ -20,7 +20,6 @@ import './Production.css'
 const Production = () => {
     const [, , taskHashedId, workHashedId] = window.location.pathname.split('/')
     const [authority, setAuthority] = useState('')
-    const [taskName, setTaskName] = useState('')
     const [taskEndedAt, setTaskEndedAt] = useState(undefined)
     const [workEndedAt, setWorkEndedAt] = useState(undefined)
     const navigate = useNavigate()
@@ -155,8 +154,10 @@ const Production = () => {
             const task = r.data.task
             setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
             setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
-            setTaskName(`${task.task_name}_${task.task_episode}`)
             setLanguages(r.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
+            setProjectDetail({
+                name: `${task.task_name}_${task.task_episode}`, guideline: guidelines.get(r.data.task.project_guideline)
+            })
             setWorkTypeKey(r.data.work_type)
             setWorkEndedAt(r.data.work_ended_at || null)
             setTaskEndedAt(task.task_ended_at || null)
@@ -249,7 +250,7 @@ const Production = () => {
         <MenuToolbar ref={menuToolbarRef} cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages}
                      hotRef={hotRef} focusedRef={focusedRef} workTypeKey={workTypeKey}
                      projectDetail={projectDetail} setProjectDetail={setProjectDetail}
-                     setTcLock={setTcLock} taskName={taskName} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
+                     setTcLock={setTcLock} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
                      hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
                      taskHashedId={taskHashedId} workHashedId={workHashedId}
@@ -286,7 +287,7 @@ const Production = () => {
                                              video={video} setVideo={setVideo} setSubtitleIndex={setSubtitleIndex}/>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={50} snap>
-                                <InformationWindow hotRef={hotRef}/>
+                                <InformationWindow hotRef={hotRef} projectDetail={projectDetail}/>
                             </Allotment.Pane>
                         </Allotment>
                     </Allotment.Pane>

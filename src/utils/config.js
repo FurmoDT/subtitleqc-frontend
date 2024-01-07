@@ -142,6 +142,25 @@ export const guidelines = new Map([
         },
         musicNote: '♪'
     }],
+    ['SBS', {
+        client: 'SBS',
+        language: {
+            ko: {
+                name: '한국어',
+                maxLine: {value: 2, level: 'required'},
+                maxCharacter: {value: 18, level: 'required'},
+                count: {bytes2: 1, latin: 0.5, extra: 0.5}
+            },
+            en: {
+                name: '영어',
+                maxLine: {value: 2, level: 'required'},
+                maxCharacter: {value: 45, level: 'required'},
+                count: {bytes2: 2, latin: 1, extra: 1}
+            }
+        },
+        tcRange: {min: 0.3, max: 7, level: 'required'},
+        tcInterval: {value: 0.083, nonZero: true, level: 'required'},
+    }],
     ['CUSTOM', {
         client: 'CUSTOM',
         language: {

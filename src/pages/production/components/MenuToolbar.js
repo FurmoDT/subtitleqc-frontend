@@ -80,9 +80,11 @@ const MenuToolbar = forwardRef((props, ref) => {
 
     return <div className={'menu-toolbar'}>
         <div className={'d-flex w-100'}>
-            <MDBTooltip tag='span' wrapperClass='d-inline-block' title='프로젝트 설정'>
-                <ProjectSettingModal projectDetail={props.projectDetail} setProjectDetail={props.setProjectDetail}/>
-            </MDBTooltip>
+            {!props.taskHashedId &&
+                <MDBTooltip tag='span' wrapperClass='d-inline-block' title='프로젝트 설정'>
+                    <ProjectSettingModal projectDetail={props.projectDetail} setProjectDetail={props.setProjectDetail}/>
+                </MDBTooltip>
+            }
             {!props.taskHashedId &&
                 <MDBTooltip tag='span' wrapperClass='d-inline-block' title='새 프로젝트'>
                     <NewProjectModal setProjectDetail={props.setProjectDetail} hotRef={props.hotRef}
@@ -173,7 +175,7 @@ const MenuToolbar = forwardRef((props, ref) => {
             </div>
         </div>
         <div className={'w-100 d-flex justify-content-center'}>
-            <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.taskName}</span>
+            <span className={'mx-1 fw-bold text-nowrap'} style={{color: 'black'}}>{props.projectDetail.name}</span>
             {props.workTypeKey &&
                 <span className={'mx-1 text-nowrap mt-auto'} style={{color: 'black', fontSize: '0.8rem'}}>
                 {workType[props.workTypeKey]}</span>}

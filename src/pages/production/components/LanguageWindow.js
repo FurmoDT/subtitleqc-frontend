@@ -72,7 +72,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
 
         function durationRenderer(instance, td) {
             Handsontable.renderers.TextRenderer.apply(this, arguments)
-            durationValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance)
+            durationValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
         function textRenderer(instance, td) {

@@ -7,27 +7,30 @@ const setTDColor = (td, backgroundColor) => {
     if (backgroundColor === 'red') td.style.color = 'white'
 }
 
-const isTCValid = (timecode) => {
-    return timecode?.match(`^(\\d{2}:\\d{2}:\\d{2}[\\.|,]\\d{3})$`)
-}
+const isTCValid = (timecode) => timecode?.match(`^(\\d{2}:\\d{2}:\\d{2}[\\.|,]\\d{3})$`)
 
 export const tcInValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.fontSize = fontSize
     if (v) {
         const error = new Set()
-        if (LEVEL[guideline.tcRange?.level]) {
-            if (tcToSec(instance.getDataAtCell(r, c + 1)) - tcToSec(v) < guideline.tcRange?.min) {
-                setTDColor(td, LEVEL[guideline.tcRange.level])
-                error.add('TC Range Under 1 Second')
-            }
-            if (tcToSec(instance.getDataAtCell(r, c + 1)) - tcToSec(v) > guideline.tcRange?.max) {
-                setTDColor(td, LEVEL[guideline.tcRange.level])
-                error.add('TC Range Over 7 Seconds')
-            }
-        }
-        if (!isTCValid(v) || tcToSec(instance.getDataAtCell(r - 1, c + 1)) > tcToSec(v)) {
+        const interval = parseFloat((tcToSec(v) - tcToSec(instance.getDataAtCell(r - 1, c + 1))).toFixed(3))
+        if (!isTCValid(v)) {
             setTDColor(td, 'red')
             error.add('Invalid TC')
+        }
+        if (interval > 0) {
+            if (interval < guideline.tcInterval?.value) {
+                setTDColor(td, LEVEL[guideline.tcInterval.level])
+                error.add(`TC Interval Under ${guideline.tcInterval.value} seconds`)
+            }
+        } else if (interval < 0) {
+            setTDColor(td, 'red')
+            error.add('TC Interval Overlaps')
+        } else if (interval === 0) {
+            if (guideline.tcInterval?.nonZero) {
+                setTDColor(td, LEVEL[guideline.tcInterval.level])
+                error.add('Non Zero TC Interval')
+            }
         }
         if (error.size) td.setAttribute('title', [...error].join('\n'))
         else td.removeAttribute('title')
@@ -38,31 +41,53 @@ export const tcOutValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.fontSize = fontSize
     if (v) {
         const error = new Set()
-        if (LEVEL[guideline.tcRange?.level]) {
-            if (tcToSec(v) - tcToSec(instance.getDataAtCell(r, c - 1)) < guideline.tcRange?.min) {
-                setTDColor(td, LEVEL[guideline.tcRange.level])
-                error.add('TC Range Under 1 Second')
-            }
-            if (tcToSec(v) - tcToSec(instance.getDataAtCell(r, c - 1)) > guideline.tcRange?.max) {
-                setTDColor(td, LEVEL[guideline.tcRange.level])
-                error.add('TC Range Over 7 Seconds')
-            }
-        }
-        if (!isTCValid(v) || tcToSec(instance.getDataAtCell(r, c - 1)) >= tcToSec(v)) {
+        const interval = parseFloat((tcToSec(instance.getDataAtCell(r + 1, c - 1)) - tcToSec(v)).toFixed(3))
+        if (!isTCValid(v)) {
             setTDColor(td, 'red')
             error.add('Invalid TC')
+        }
+        if (interval > 0) {
+            if (interval < guideline.tcInterval?.value) {
+                setTDColor(td, LEVEL[guideline.tcInterval.level])
+                error.add(`TC Interval Under ${guideline.tcInterval.value} seconds`)
+            }
+        } else if (interval < 0) {
+            setTDColor(td, 'red')
+            error.add('TC Interval Overlaps')
+        } else if (interval === 0) {
+            if (guideline.tcInterval?.nonZero) {
+                setTDColor(td, LEVEL[guideline.tcInterval.level])
+                error.add('Non Zero TC Interval')
+            }
         }
         if (error.size) td.setAttribute('title', [...error].join('\n'))
         else td.removeAttribute('title')
     }
 }
 
-export const durationValidator = (r, c, v, td, fontSize, instance) => {
+export const durationValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.fontSize = fontSize
     td.classList.remove('htDimmed')
     td.classList.add('text-center')
-    const [start, end] = [tcToSec(instance.getDataAtCell(r, c - 2)), tcToSec(instance.getDataAtCell(r, c - 1))]
-    if (0 <= start && 0 <= end) td.innerHTML = (end - start).toFixed(3)
+    const [start, end] = instance.getDataAtRow(r).slice(0, 2).map(value => tcToSec(value))
+    const duration = parseFloat((end - start).toFixed(3))
+    const error = new Set()
+    if (duration) td.innerHTML = duration
+    else if (0 <= start || 0 <= end) {
+        setTDColor(td, 'red')
+        error.add(`TC Range Error`)
+    }
+    if (LEVEL[guideline.tcRange?.level]) {
+        if (duration < guideline.tcRange?.min) {
+            setTDColor(td, LEVEL[guideline.tcRange.level])
+            error.add(`TC Range Under ${guideline.tcRange.min} Second`)
+        } else if (duration > guideline.tcRange?.max) {
+            setTDColor(td, LEVEL[guideline.tcRange.level])
+            error.add(`TC Range Over ${guideline.tcRange.max} Seconds`)
+        }
+    }
+    if (error.size) td.setAttribute('title', [...error].join('\n'))
+    else td.removeAttribute('title')
 }
 
 export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {

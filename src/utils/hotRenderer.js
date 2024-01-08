@@ -95,9 +95,28 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
     td.style.position = 'relative'
     td.classList.add('td-custom-text')
     const span = document.createElement('span');
+    span.className = 'position-absolute top-0 text-end pe-1'
+    span.style.fontSize = '10px'
+    span.style.color = 'lightgray'
+    if (instance.colToProp(c).startsWith('arAE')) {
+        td.setAttribute('dir', "rtl")
+        span.classList.add('start-0')
+        td.style.paddingLeft = '4.75rem'
+    } else {
+        span.classList.add('end-0')
+        td.style.paddingRight = '4.75rem'
+    }
+    td.appendChild(span);
     if (v) {
-        // v = v.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         const error = new Set()
+        if (v.includes('  ')) { // multiple spaces
+            setTDColor(td, 'red')
+            error.add('Multiple Spaces')
+        }
+        if (/(^|[^.])\.{2}(?!\.)/.test(v) || /(^|[^.])\.{4,}(?!\.)/.test(v)) { // 2 or 4+ dots
+            setTDColor(td, 'red')
+            error.add('2 Or 4+ Dots')
+        }
         if (guideline.musicNote && (v.includes('♪') || v.includes('<i>') || v.includes('</i>'))) {
             let valid = true
             if (v.match(/♪ [^♪\s]+(?:\s+[^♪\s]+)* ♪/)) {
@@ -113,7 +132,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
         v = v.replaceAll(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '').replaceAll(/{(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+}/g, '')
         const language = guideline.language[instance.colToProp(c).slice(0, 2)]
         if (language) {
-            if (language.maxLine && v.split('\n').length > language.maxLine.value) {
+            if (v.split('\n').length > language.maxLine?.value) {
                 setTDColor(td, LEVEL[language.maxLine.level])
                 error.add('Max Lines Exceeded')
             }
@@ -146,37 +165,29 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                 v = v.replace(/[ \t]+/g, " ")
             }
         }
-        if (v.includes('  ')) { // multiple spaces
-            setTDColor(td, 'red')
-            error.add('Multiple Spaces')
-        }
-        if (/(^|[^.])\.{2}(?!\.)/.test(v) || /(^|[^.])\.{4,}(?!\.)/.test(v)) { // 2 or 4+ dots
-            setTDColor(td, 'red')
-            error.add('2 Or 4+ Dots')
-        }
         const [start, end] = instance.getDataAtRow(r).slice(0, 2)
-        const cps = Math.ceil(v.length / (tcToSec(end) - tcToSec(start))) || 0
-        span.innerHTML = `<span class=${cps > language?.cps?.value ? 'td-bg-' + LEVEL[language.cps.level] : ''}>cps: ${cps}</span>`
-        span.innerHTML += `&nbsp;`
-        span.innerHTML += v.split('\n').map(val => {
-            const characters = val.length
-            return `<span class=${characters > language?.maxCharacter?.value ? 'td-bg-' + LEVEL[language.maxCharacter.level] : ''}>len: ${String(val.length).padStart(2, ' ')}<br/></span>`
-        }) || '<span>len: 0</span>'
+        const length = v.split('\n').map(value => {
+            let lineLength = 0;
+            for (let i = 0; i < value.length; i++) {
+                const char = value.charAt(i);
+                if (char.match(/[\u3131-\uD79D\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7A3]/)) { // Korean, Chinese, Japanese
+                    lineLength += language?.count?.bytes3 || 1
+                } else if (char.match(/[A-Za-z\u00C0-\u00FF]/)) { // latin characters
+                    lineLength += language?.count?.latin || 1
+                } else if (char.match(/[\s!-/:-@\[-`{-~]/g)) { // Punctuation or space (0.5 length)
+                    lineLength += language?.count?.extra || 1
+                } else { // Other characters (1 length)
+                    lineLength += 1
+                }
+            }
+            return lineLength
+        })
+        const cps = Math.ceil(length.reduce((acc, v) => acc + v, 0) / (tcToSec(end) - tcToSec(start))) || 0
+        span.innerHTML = `<span class=${cps > language?.cps?.value ? 'td-bg-' + LEVEL[language.cps.level] : ''}>cps: ${cps}</span>&nbsp;`
+        length.map(value => span.innerHTML += `<span class=${value > language?.maxCharacter?.value ? 'td-bg-' + LEVEL[language.maxCharacter.level] : ''}>len: ${String(value).padStart(2, ' ')}<br/></span>`)
         if (error.size) td.setAttribute('title', [...error].join('\n'))
         else td.removeAttribute('title')
     } else {
         span.innerHTML = '<span>cps: 0&nbsp;len: 0</span>'
     }
-    span.className = 'position-absolute top-0 text-end pe-1'
-    span.style.fontSize = '10px'
-    span.style.color = 'lightgray'
-    if (instance.colToProp(c).startsWith('arAE')) {
-        td.setAttribute('dir', "rtl")
-        span.className += ' start-0'
-        td.style.paddingLeft = '4.75rem'
-    } else {
-        span.className += ' end-0'
-        td.style.paddingRight = '4.75rem'
-    }
-    td.appendChild(span);
 }

@@ -155,9 +155,10 @@ const Production = () => {
             setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
             setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
             setLanguages(r.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
-            setProjectDetail({
-                name: `${task.task_name}_${task.task_episode}`, guideline: guidelines.get(r.data.task.project_guideline)
-            })
+            setProjectDetail(prevState => ({
+                name: `${task.task_name}_${task.task_episode}`,
+                guideline: r.data.task.project_guideline ? guidelines.get(r.data.task.project_guideline) : prevState.guideline
+            }))
             setWorkTypeKey(r.data.work_type)
             setWorkEndedAt(r.data.work_ended_at || null)
             setTaskEndedAt(task.task_ended_at || null)

@@ -174,7 +174,7 @@ export const textValidator = (r, c, v, td, fontSize, instance, guideline) => {
                     lineLength += language?.count?.bytes3 || 1
                 } else if (char.match(/[A-Za-z\u00C0-\u00FF]/)) { // latin characters
                     lineLength += language?.count?.latin || 1
-                } else if (char.match(/[\s!-/:-@\[-`{-~]/g)) { // Punctuation or space (0.5 length)
+                } else if (char.match(/[\s!-/:-@[-`{-~]/g)) { // Punctuation or space (0.5 length)
                     lineLength += language?.count?.extra || 1
                 } else { // Other characters (1 length)
                     lineLength += 1

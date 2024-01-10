@@ -33,9 +33,13 @@ const ShortcutModal = (props) => {
     }, [props.hotSelectionRef])
 
     const createEmptyCellArray = (startRow, startCol, endRow, endCol) => {
+        const s = {
+            rowStart: Math.min(startRow, endRow), columnStart: Math.min(startCol, endCol),
+            rowEnd: Math.max(startRow, endRow), columnEnd: Math.max(startCol, endCol)
+        }
         const cellRangeArray = [];
-        for (let row = startRow; row <= endRow; row++) {
-            for (let col = startCol; col <= endCol; col++) {
+        for (let row = s.rowStart; row <= s.rowEnd; row++) {
+            for (let col = s.columnStart; col <= s.columnEnd; col++) {
                 cellRangeArray.push([row, col, '']);
             }
         }

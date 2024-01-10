@@ -198,7 +198,6 @@ const ShortcutModal = (props) => {
             event.stopPropagation();
             props.tcOutButtonRef.current.click()
         }
-
         if (event.code === 'Delete') {
             event.stopPropagation()
             if ((event.ctrlKey || event.metaKey)) {

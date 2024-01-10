@@ -180,7 +180,8 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                                     props.selectedSegment.current = null
                                     return
                                 }
-                                props.hotRef.current.selectRows(props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id))
+                                const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
+                                props.hotRef.current.selectCells([[row, 0, row, props.hotRef.current.countCols() - 1], [row, 4]])
                                 peaks.views.getView('zoomview').enableSegmentDragging(true)
                                 moveCursorRef.current.style.cursor = 'move'
                             }

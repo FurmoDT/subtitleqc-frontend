@@ -206,27 +206,29 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             }
             if (props.waveformRef.current && source !== 'timelineWindow') {
-                const tcChanges = changes.filter((value) => value[1] === 'start' || value[1] === 'end')
-                if (tcChanges.length) {
-                    if (tcChanges.length > 1) {
-                        props.waveformRef.current.segments.removeAll()
-                        props.waveformRef.current.segments.add(resetSegments())
-                    } else {
-                        const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(tcChanges[0][0])
-                        if (tcChanges[0][3]) {
-                            const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
-                            if (0 <= startSec && startSec <= endSec) {
-                                const segment = props.waveformRef.current.segments.getSegment(rowId)
-                                if (segment) segment.update({startTime: startSec, endTime: endSec})
-                                else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
-                            } else {
-                                props.waveformRef.current.segments.removeById(rowId)
-                                props.selectedSegment.current = null
-                            }
+                const tcChanges = changes.reduce((acc, v) => {
+                    if (v[1] === 'start' || v[1] === 'end') acc[v[0]] = Boolean(v[3])
+                    return acc
+                }, {})
+                const rowKeys = Object.keys(tcChanges)
+                if (rowKeys.length > 1) {
+                    props.waveformRef.current.segments.removeAll()
+                    props.waveformRef.current.segments.add(resetSegments())
+                } else if (rowKeys.length === 1) {
+                    const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(Number(rowKeys[0]))
+                    if (tcChanges[rowKeys]) {
+                        const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
+                        if (0 <= startSec && startSec <= endSec) {
+                            const segment = props.waveformRef.current.segments.getSegment(rowId)
+                            if (segment) segment.update({startTime: startSec, endTime: endSec})
+                            else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
                         } else {
                             props.waveformRef.current.segments.removeById(rowId)
                             props.selectedSegment.current = null
                         }
+                    } else {
+                        props.waveformRef.current.segments.removeById(rowId)
+                        props.selectedSegment.current = null
                     }
                 }
             }
@@ -357,7 +359,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     }, [props.crdtAwarenessInitialized, props.crdt, props.hotRef])
 
     return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
-        <div ref={containerMain} style={{zIndex: 0}} onClick={() => props.focusedRef.current = props.hotRef.current}/>
+        <div ref={containerMain} style={{zIndex: 0}}/>
         <MDBBtn className={'position-absolute'} style={{bottom: '1.5rem', right: '1.5rem', padding: '0.75rem'}}
                 color={'info'} rounded onClick={() => props.hotRef.current.scrollViewportTo(totalLines - 1)}>
             <MDBIcon fas icon="arrow-down"/>&nbsp;{totalLines}

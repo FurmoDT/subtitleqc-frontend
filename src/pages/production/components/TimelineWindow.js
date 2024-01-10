@@ -125,10 +125,15 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     if (props.hotRef.current.getDataAtCell(row, 1) !== end) cells.push([row, 1, end])
                     props.hotRef.current.setDataAtCell(cells, 'timelineWindow')
                 })
+                peaks.on("segments.remove_all", () => {
+                    props.selectedSegment.current = null
+                    moveCursorRef.current.style.cursor = 'default'
+                })
                 peaks.on("segments.remove", (event) => {
                     event.segments.forEach(value => {
                         if (value === props.selectedSegment.current) {
                             props.selectedSegment.current = null
+                            moveCursorRef.current.style.cursor = 'default'
                         }
                     })
                 })
@@ -183,17 +188,6 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                         }
                     })
                     zoomviewContainerRef.current.addEventListener('wheel', onWheel, {passive: false})
-                    zoomviewContainerRef.current.addEventListener('keydown', (event) => {
-                        if (!props.tcLockRef.current && event.key === 'Delete') {
-                            const curSegment = props.selectedSegment.current
-                            if (curSegment) {
-                                const curRow = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(curSegment.id)
-                                props.hotRef.current.setDataAtCell([[curRow, 0, ''], [curRow, 1, '']])
-                                props.selectedSegment.current = null
-                                moveCursorRef.current.style.cursor = 'default'
-                            }
-                        }
-                    })
                     zoomviewContainerRef.current.setAttribute('tabindex', 0)
                 })
                 amplitudeScale.current = 2
@@ -241,7 +235,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                              onChange={(event) => event.target.blur()}/>
             </div>
         </div>
-        <div style={{backgroundColor: 'black'}} onClick={() => props.focusedRef.current = props.waveformRef.current}>
+        <div style={{backgroundColor: 'black'}}>
             <div ref={statusRef} className={'position-absolute start-50 translate-middle-x'}>
                 <MDBSpinner ref={spinnerRef} className={'mt-3'}
                             style={{width: `${props.size.height / 3}px`, height: `${props.size.height / 3}px`}}/>

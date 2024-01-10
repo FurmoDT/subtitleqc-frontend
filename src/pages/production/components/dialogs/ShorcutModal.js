@@ -32,6 +32,16 @@ const ShortcutModal = (props) => {
         }
     }, [props.hotSelectionRef])
 
+    const createEmptyCellArray = (startRow, startCol, endRow, endCol) => {
+        const cellRangeArray = [];
+        for (let row = startRow; row <= endRow; row++) {
+            for (let col = startCol; col <= endCol; col++) {
+                cellRangeArray.push([row, col, '']);
+            }
+        }
+        return cellRangeArray;
+    }
+
     const handleKeyDown = useCallback((event) => {
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyF') {
             event.preventDefault();
@@ -80,12 +90,7 @@ const ShortcutModal = (props) => {
             if (event.shiftKey) props.hotRef.current.redo()
             else props.hotRef.current.undo()
         }
-        if (event.code === 'Delete') {
-            if (props.focusedRef.current === props.waveformRef.current) {
-                props.waveformRef.current.options.zoomview.container.dispatchEvent(new KeyboardEvent('keydown', {key: event.key}))
-            }
-        }
-    }, [props.hotRef, props.waveformRef, props.playerRef, props.focusedRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+    }, [props.hotRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
         if (event.code === 'Space' && event.target.tagName !== 'INPUT' && !event.target.classList.contains('div-playback-time') && (event.target.tagName !== 'TEXTAREA' || !props.hotRef.current.getActiveEditor()._opened)) {
@@ -186,7 +191,6 @@ const ShortcutModal = (props) => {
         }
         // temp
         if (event.altKey && event.code === 'KeyQ') {
-            event.preventDefault()
             event.stopPropagation()
             props.tcInButtonRef.current.click()
         }
@@ -194,27 +198,33 @@ const ShortcutModal = (props) => {
             event.stopPropagation();
             props.tcOutButtonRef.current.click()
         }
-        if ((event.ctrlKey || event.metaKey) && event.code === 'Delete') {
+
+        if (event.code === 'Delete') {
             event.stopPropagation()
-            props.removeLineButtonRef.current.click()
+            if ((event.ctrlKey || event.metaKey)) {
+                props.removeLineButtonRef.current.click()
+            } else {
+                const cells = props.hotRef.current.getSelected()?.reduce((acc, v) => {
+                    acc.push(...createEmptyCellArray(...v))
+                    return acc
+                }, [])
+                if (cells) props.hotRef.current.setDataAtCell(cells)
+            }
         }
         if (event.shiftKey && event.key === '<') {
             if (props.hotRef.current.getActiveEditor()._opened) return
-            event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.max(internalPlayer.playbackRate - 0.25, 0.25)
         }
         if (event.shiftKey && event.key === '>') {
             if (props.hotRef.current.getActiveEditor()._opened) return
-            event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
         if (event.shiftKey && event.key === '?') {
             if (props.hotRef.current.getActiveEditor()._opened) return
-            event.preventDefault()
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = 1

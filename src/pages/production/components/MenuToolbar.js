@@ -94,8 +94,7 @@ const MenuToolbar = forwardRef((props, ref) => {
                                      setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
                 </MDBTooltip>}
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='단축키'>
-                <ShortcutModal focusedRef={props.focusedRef} hotRef={props.hotRef} playerRef={props.playerRef}
-                               waveformRef={props.waveformRef} selectedSegment={props.selectedSegment}
+                <ShortcutModal hotRef={props.hotRef} playerRef={props.playerRef} selectedSegment={props.selectedSegment}
                                findButtonRef={props.findButtonRef} replaceButtonRef={props.replaceButtonRef}
                                hotSelectionRef={props.hotSelectionRef} tcLockRef={props.tcLockRef}
                                tcOffsetButtonRef={props.tcOffsetButtonRef} tcIoButtonRef={props.tcIoButtonRef}
@@ -125,7 +124,7 @@ const MenuToolbar = forwardRef((props, ref) => {
                     <MDBDropdownItem link onClick={() => {
                         props.languages.forEach((value) => {
                             downloadSrt({
-                                name: `${props.projectDetail.name}(${value.name})`,
+                                name: `${props.projectDetail.name}_${value.name}`,
                                 subtitle: toSrt(props.cellDataRef.current.map(v => ({
                                     start: v.start, end: v.end, text: v[`${value.code}_${value.counter}`]
                                 })))
@@ -135,7 +134,7 @@ const MenuToolbar = forwardRef((props, ref) => {
                     <MDBDropdownItem link onClick={() => {
                         props.languages.forEach((value) => {
                             downloadVtt({
-                                name: `${props.projectDetail.name}(${value.name})`,
+                                name: `${props.projectDetail.name}_${value.name}`,
                                 subtitle: toVtt(props.cellDataRef.current.map(v => ({
                                     start: v.start, end: v.end, text: v[`${value.code}_${value.counter}`]
                                 })))

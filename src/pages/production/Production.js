@@ -36,7 +36,6 @@ const Production = () => {
     const [video, setVideo] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
     const [projectDetail, setProjectDetail] = useState(defaultProjectDetail())
-    const focusedRef = useRef(null)
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
     const cellDataRef = useRef(defaultSubtitle())
@@ -249,7 +248,7 @@ const Production = () => {
                          cellDataRef={cellDataRef} waveformRef={waveformRef} resetSegments={resetSegments}
                          languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
         <MenuToolbar ref={menuToolbarRef} cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages}
-                     hotRef={hotRef} focusedRef={focusedRef} workTypeKey={workTypeKey}
+                     hotRef={hotRef} workTypeKey={workTypeKey}
                      projectDetail={projectDetail} setProjectDetail={setProjectDetail}
                      setTcLock={setTcLock} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
@@ -308,7 +307,7 @@ const Production = () => {
                                       afterRenderPromise={afterRenderPromise} cellDataRef={cellDataRef}
                                       languages={languages} setLanguages={setLanguages}/>
                         {((taskHashedId && dataInitialized) || !taskHashedId) &&
-                            <LanguageWindow focusedRef={focusedRef} size={languageWindowSize} hotRef={hotRef}
+                            <LanguageWindow size={languageWindowSize} hotRef={hotRef}
                                             hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
                                             tcLock={tcLock} tcLockRef={tcLockRef} subtitleIndex={subtitleIndex}
                                             cellDataRef={cellDataRef} languages={languages}
@@ -320,7 +319,7 @@ const Production = () => {
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>
-                    <TimelineWindow focusedRef={focusedRef} size={timelineWindowSize} hotRef={hotRef}
+                    <TimelineWindow size={timelineWindowSize} hotRef={hotRef}
                                     playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile} video={video}
                                     resetSegments={resetSegments}
                                     tcLock={tcLock} tcLockRef={tcLockRef} setTcLock={setTcLock}

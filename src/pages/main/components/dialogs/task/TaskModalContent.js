@@ -437,9 +437,8 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                         work_memo: value.memo,
                                                     })
                                                     workers.forEach((value) => {
-                                                        if (value.workHashedId) {
-                                                            updateWorks.push(updateWorkParser(value, false))
-                                                        } else {
+                                                        if (value.workHashedId) updateWorks.push(updateWorkParser(value, false))
+                                                        else {
                                                             newWorks.push({
                                                                 worker_id: value.workerId,
                                                                 work_type: value.workType,
@@ -454,12 +453,9 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                         updateWorks.push(updateWorkParser(value, true))
                                                     })
                                                     newWorks.length && axios.post(`v1/works`, {
-                                                        task_id: taskId,
-                                                        works: newWorks
+                                                        task_id: taskId, works: newWorks
                                                     }).then()
-                                                    updateWorks.length && axios.put(`v1/works`, {
-                                                        works: updateWorks
-                                                    }).then()
+                                                    updateWorks.length && axios.put(`v1/works`, {works: updateWorks}).then()
                                                     if (fileUpdated) {
                                                         s3UploadSource(taskId, task.fileVersion + 1, uploadedFiles, setUploadProgress).then(() => {
                                                             axios.post(`v1/tasks/initialize/${taskId}`, {

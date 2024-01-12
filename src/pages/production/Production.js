@@ -237,8 +237,8 @@ const Production = () => {
     }, [crdtInitialized]);
 
     return <>
-        {!taskHashedId && <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
-                                    setLanguageFile={setLanguageFile} languages={languages}/>}
+        <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
+                  taskHashedId={taskHashedId} setLanguageFile={setLanguageFile} languages={languages}/>
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
                          cellDataRef={cellDataRef} waveformRef={waveformRef} resetSegments={resetSegments}
                          languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>

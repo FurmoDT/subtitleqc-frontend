@@ -16,7 +16,6 @@ const dragStyle = {
 let counter = 0
 const Dropzone = (props) => {
     const handleDragEnter = useCallback((e) => {
-        if (!e.dataTransfer.files.length) return
         e.preventDefault();
         e.stopPropagation();
         counter = Math.max(counter++, 2)
@@ -40,7 +39,7 @@ const Dropzone = (props) => {
         const files = e.dataTransfer.files;
         for (const file of Array.from(files)) {
             const fileFormat = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
-            if (['.mp4', '.mov'].includes(fileFormat)) {
+            if (!props.taskHashedId && ['.mp4', '.mov'].includes(fileFormat)) {
                 props.setMediaInfo(JSON.parse(await getFileInfo(file)))
                 props.setMediaFile(URL.createObjectURL(file))
             } else if (['.fsp', '.srt', '.vtt', '.fspx'].includes(fileFormat)) {
@@ -66,9 +65,11 @@ const Dropzone = (props) => {
             }
         }
     }, [props])
+
     useEffect(() => {
         Object.assign(props.dropzoneRef.current.style, baseStyle)
     }, [props.dropzoneRef])
+
     useEffect(() => {
         props.dropzoneRef.current.addEventListener('dragenter', handleDragEnter)
         props.dropzoneRef.current.addEventListener('dragover', handleDragOver)
@@ -81,6 +82,7 @@ const Dropzone = (props) => {
             props.dropzoneRef.current?.removeEventListener('drop', handleDrop)
         }
     }, [props.dropzoneRef, handleDragEnter, handleDragOver, handleDragLeave, handleDrop]);
+
     return null
 }
 

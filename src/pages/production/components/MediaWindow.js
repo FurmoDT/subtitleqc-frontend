@@ -174,9 +174,9 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
                     <span className={'span-duration me-2'}>{`/ ${secToTc(props.mediaInfo?.duration)}`}</span>
                     <MDBTooltip tag='span' wrapperClass='d-flex' title='선택 자막 위치 재생'>
                         <MdPlayCircle className={'button-icon'} size={20} onClick={() => {
-                            const segment = props.selectedSegment.current
-                            if (segment) {
-                                props.playerRef.current.seekTo(segment.startTime, 'seconds')
+                            const start = props.hotRef.current.getSourceDataAtRow(props.hotSelectionRef.current.rowStart)?.start
+                            if (start) {
+                                props.playerRef.current.seekTo(tcToSec(start), 'seconds')
                                 props.playerRef.current.getInternalPlayer().play()
                             }
                         }}/>

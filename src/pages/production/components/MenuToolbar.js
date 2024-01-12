@@ -94,7 +94,7 @@ const MenuToolbar = forwardRef((props, ref) => {
                                      setLanguageFile={props.setLanguageFile} waveformRef={props.waveformRef}/>
                 </MDBTooltip>}
             <MDBTooltip tag='span' wrapperClass='d-inline-block' title='단축키'>
-                <ShortcutModal hotRef={props.hotRef} playerRef={props.playerRef} selectedSegment={props.selectedSegment}
+                <ShortcutModal hotRef={props.hotRef} playerRef={props.playerRef}
                                findButtonRef={props.findButtonRef} replaceButtonRef={props.replaceButtonRef}
                                hotSelectionRef={props.hotSelectionRef} tcLockRef={props.tcLockRef}
                                tcOffsetButtonRef={props.tcOffsetButtonRef} tcIoButtonRef={props.tcIoButtonRef}

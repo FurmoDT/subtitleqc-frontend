@@ -19,6 +19,7 @@ import {MdFindReplace, MdPlayCircle, MdSearch, MdStart} from "react-icons/md";
 import {AiOutlineInsertRowAbove, AiOutlineInsertRowBelow} from "react-icons/ai";
 import {RiDeleteRow} from "react-icons/ri";
 import {FaHourglass, FaHourglassEnd, FaHourglassStart} from "react-icons/fa";
+import {tcToSec} from "../../../../utils/functions";
 
 const ShortcutModal = (props) => {
     const [basicModal, setBasicModal] = useState(false);
@@ -171,9 +172,9 @@ const ShortcutModal = (props) => {
         }
         if (event.code === 'F2') {
             event.stopPropagation()
-            const segment = props.selectedSegment.current
-            if (segment) {
-                props.playerRef.current.seekTo(segment.startTime, 'seconds')
+            const start = props.hotRef.current.getSourceDataAtRow(props.hotSelectionRef.current.rowStart)?.start
+            if (start) {
+                props.playerRef.current.seekTo(tcToSec(start), 'seconds')
                 props.playerRef.current.getInternalPlayer().play()
             }
         }
@@ -233,7 +234,7 @@ const ShortcutModal = (props) => {
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = 1
         }
-    }, [props.hotRef, props.hotSelectionRef, adjustedHotSelection, props.playerRef, props.selectedSegment, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef, props.mergeLineButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+    }, [props.hotRef, props.hotSelectionRef, adjustedHotSelection, props.playerRef, props.insertLineAboveButtonRef, props.insertLineBelowButtonRef, props.removeLineButtonRef, props.tcIncreaseButtonRef, props.tcDecreaseButtonRef, props.mergeLineButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);

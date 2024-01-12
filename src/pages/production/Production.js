@@ -243,11 +243,10 @@ const Production = () => {
                          cellDataRef={cellDataRef} waveformRef={waveformRef} resetSegments={resetSegments}
                          languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
         <MenuToolbar ref={menuToolbarRef} cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages}
-                     hotRef={hotRef} workTypeKey={workTypeKey}
+                     hotRef={hotRef} hotSelectionRef={hotSelectionRef} workTypeKey={workTypeKey}
                      projectDetail={projectDetail} setProjectDetail={setProjectDetail}
                      setTcLock={setTcLock} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                      setLanguageFile={setLanguageFile} playerRef={playerRef} waveformRef={waveformRef}
-                     hotSelectionRef={hotSelectionRef} selectedSegment={selectedSegment}
                      taskHashedId={taskHashedId} workHashedId={workHashedId}
                      taskEndedAt={taskEndedAt} workEndedAt={workEndedAt}
                      crdt={crdtHandlerRef.current} crdtAwarenessInitialized={crdtAwarenessInitialized}
@@ -278,7 +277,7 @@ const Production = () => {
                             <Allotment.Pane minSize={300}>
                                 <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} languages={languages}
                                              playerRef={playerRef} mediaFile={mediaFile} mediaInfo={mediaInfo}
-                                             waveformRef={waveformRef} selectedSegment={selectedSegment}
+                                             waveformRef={waveformRef} hotSelectionRef={hotSelectionRef}
                                              video={video} setVideo={setVideo} setSubtitleIndex={setSubtitleIndex}/>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={50} snap>

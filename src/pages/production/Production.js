@@ -57,7 +57,7 @@ const Production = () => {
     const findButtonRef = useRef(null)
     const replaceButtonRef = useRef(null)
     const selectedSegment = useRef(null)
-    const [tcLock, setTcLock] = useState(true)
+    const [tcLock, setTcLock] = useState(false)
     const tcLockRef = useRef(true)
     const [subtitleIndex, setSubtitleIndex] = useState(-1)
     const menuToolbarRef = useRef(null)
@@ -186,11 +186,6 @@ const Production = () => {
             setCrdtMode(true)
         }
     }, [taskEndedAt, workEndedAt, taskHashedId, workHashedId]);
-
-    useEffect(() => {
-        if (authority === 'local') setTcLock(false)
-        else if (authority === 'sync' || authority === 'transcribe') setTcLock(false)
-    }, [authority])
 
     useEffect(() => {
         if (crdtInitialized) {

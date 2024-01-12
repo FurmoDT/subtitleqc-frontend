@@ -144,7 +144,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     key: 'workDueDate',
                     name: '완료예정일',
                     renderCell: row => {
-                        const bg = convertToTimestamp(row.row.workDueDate) >= new Date() ? '' : 'bg-red'
+                        const bg = !row.row.workEndedAt && convertToTimestamp(row.row.workDueDate) < new Date() ? 'bg-red' : ''
                         return <div className={bg}>{row.row.workDueDate}</div>
                     }
                 }, // {key: 'workMemo', name: '메모'},

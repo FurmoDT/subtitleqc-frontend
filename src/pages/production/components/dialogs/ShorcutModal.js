@@ -207,6 +207,7 @@ const ShortcutModal = (props) => {
             if ((event.ctrlKey || event.metaKey)) {
                 props.removeLineButtonRef.current.click()
             } else {
+                if (props.hotRef.current.getActiveEditor()._opened) return
                 const cells = props.hotRef.current.getSelected()?.reduce((acc, v) => {
                     acc.push(...createEmptyCellArray(...v))
                     return acc

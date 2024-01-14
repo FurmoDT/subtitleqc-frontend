@@ -287,7 +287,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     return initialized && <>
         <FilterContext.Provider value={filters}>
             <DataGrid className={'rdg-light fill-grid rounded h-100 border-main'} columns={columns} rows={filteredRows}
-                      rowHeight={(args) => args.row.type === 'DETAIL' ? 54 + taskAndWork?.get(args.row.hashedId).work.length * 35 : 35}
+                      rowHeight={(args) => args.type === 'DETAIL' ? 54 + taskAndWork?.get(args.hashedId).work.length * 35 : 35}
                       onRowsChange={onRowsChange} defaultColumnOptions={{resizable: true}}/>
         </FilterContext.Provider>
         <ModifyModal hashedId={modifyTaskHashedId} setHashedId={setModifyTaskHashedId} forceRenderer={forceRenderer}/>

@@ -88,11 +88,11 @@ const Production = () => {
         const segments = []
         cellDataRef.current.forEach((value) => {
             const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-            if (0 <= start && start <= end) segments.push(createSegment(start, end, value.rowId))
+            if (0 <= start && start <= end) segments.push(createSegment(start, end, value.rowId, languages[0] ? value[`${languages[0].code}_${languages[0].counter}`] : ''))
         })
         selectedSegment.current = null
         return segments
-    }, [])
+    }, [languages])
 
     useEffect(() => {
         const handleLanguageWindowResize = () => {
@@ -113,8 +113,12 @@ const Production = () => {
     }, []);
 
     useEffect(() => {
+        if (waveformRef.current) {
+            waveformRef.current.segments.removeAll()
+            waveformRef.current.segments.add(resetSegments())
+        }
         if (!taskHashedId && dataInitialized) localStorage.setItem('language', JSON.stringify(languages))
-    }, [taskHashedId, languages, dataInitialized])
+    }, [taskHashedId, languages, dataInitialized, resetSegments])
 
     useEffect(() => {
         tcLockRef.current = tcLock
@@ -131,10 +135,6 @@ const Production = () => {
                 localStorage.setItem('subtitle', JSON.stringify(cellDataRef.current))
                 setLanguages(languageFile.language)
                 setProjectDetail(languageFile.projectDetail)
-                if (waveformRef.current) {
-                    waveformRef.current.segments.removeAll()
-                    waveformRef.current.segments.add(resetSegments())
-                }
             } else setFileUploadModalShow(true)
         }
     }, [languageFile, resetSegments])

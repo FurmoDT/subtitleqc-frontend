@@ -57,9 +57,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
         window.addEventListener('error', errorHandler)
         const options = {
             mediaElement: document.querySelector('video'),
-            webAudio: {
-                audioContext: new AudioContext()
-            },
+            webAudio: {audioContext: new AudioContext()},
             withCredentials: true,
             zoomview: {
                 container: zoomviewContainerRef.current,
@@ -77,10 +75,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                 highlightColor: 'black',
                 highlightStrokeColor: 'black'
             },
-            segmentOptions: {
-                overlay: true,
-                overlayOpacity: 0.4
-            },
+            segmentOptions: {overlay: true, overlayOpacity: 0.4},
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],
             segments: []
         }
@@ -127,13 +122,13 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                 })
                 peaks.on("segments.remove_all", () => {
                     props.selectedSegment.current = null
-                    moveCursorRef.current.style.cursor = 'default'
+                    if (moveCursorRef.current) moveCursorRef.current.style.cursor = 'default'
                 })
                 peaks.on("segments.remove", (event) => {
                     event.segments.forEach(value => {
                         if (value === props.selectedSegment.current) {
                             props.selectedSegment.current = null
-                            moveCursorRef.current.style.cursor = 'default'
+                            if (moveCursorRef.current) moveCursorRef.current.style.cursor = 'default'
                         }
                     })
                 })

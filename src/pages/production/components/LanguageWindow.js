@@ -189,9 +189,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         })
         props.hotRef.current.addHook('afterChange', (changes, source) => {
             if (props.taskHashedId) {
-                if (source === 'sync') {
-                    props.hotRef.current.undoRedo.doneActions.pop()
-                } else {
+                if (source === 'sync') props.hotRef.current.undoRedo.doneActions.pop()
+                else {
                     props.crdt.yDoc().transact(() => {
                         const rows = props.crdt.yMap().get('cells')
                         const user = userRef.current.user
@@ -205,12 +204,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                         })
                     }, 'local')
                 }
-            } else {
-                localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            }
+            } else localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             if (props.waveformRef.current && source !== 'timelineWindow') {
+                const languageKey = `${props.languages[0].code}_${props.languages[0].counter}`
                 const tcChanges = changes.reduce((acc, v) => {
-                    if (v[1] === 'start' || v[1] === 'end') acc[v[0]] = Boolean(v[3])
+                    if (v[1] === 'start' || v[1] === 'end' || v[1] === languageKey) {
+                        if (!acc.hasOwnProperty(v[0])) acc[v[0]] = {}
+                        acc[v[0]][v[1]] = v[3]
+                    }
                     return acc
                 }, {})
                 const rowKeys = Object.keys(tcChanges)
@@ -218,17 +219,14 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     props.waveformRef.current.segments.removeAll()
                     props.waveformRef.current.segments.add(resetSegments())
                 } else if (rowKeys.length === 1) {
-                    const {rowId, start, end} = props.hotRef.current.getSourceDataAtRow(Number(rowKeys[0]))
-                    if (tcChanges[rowKeys]) {
-                        const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
-                        if (0 <= startSec && startSec <= endSec) {
-                            const segment = props.waveformRef.current.segments.getSegment(rowId)
-                            if (segment) segment.update({startTime: startSec, endTime: endSec})
-                            else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
-                        } else {
-                            props.waveformRef.current.segments.removeById(rowId)
-                            props.selectedSegment.current = null
-                        }
+                    const {
+                        rowId, start, end, [languageKey]: text
+                    } = props.hotRef.current.getSourceDataAtRow(Number(rowKeys[0]))
+                    const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
+                    if (0 <= startSec && startSec <= endSec) {
+                        const segment = props.waveformRef.current.segments.getSegment(rowId)
+                        if (segment) segment.update({startTime: startSec, endTime: endSec, labelText: text})
+                        else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
                     } else {
                         props.waveformRef.current.segments.removeById(rowId)
                         props.selectedSegment.current = null

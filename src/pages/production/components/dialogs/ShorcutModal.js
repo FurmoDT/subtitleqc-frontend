@@ -33,20 +33,6 @@ const ShortcutModal = (props) => {
         }
     }, [props.hotSelectionRef])
 
-    const createEmptyCellArray = (startRow, startCol, endRow, endCol) => {
-        const s = {
-            rowStart: Math.min(startRow, endRow), columnStart: Math.min(startCol, endCol),
-            rowEnd: Math.max(startRow, endRow), columnEnd: Math.max(startCol, endCol)
-        }
-        const cellRangeArray = [];
-        for (let row = s.rowStart; row <= s.rowEnd; row++) {
-            for (let col = s.columnStart; col <= s.columnEnd; col++) {
-                cellRangeArray.push([row, col, '']);
-            }
-        }
-        return cellRangeArray;
-    }
-
     const handleKeyDown = useCallback((event) => {
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyF') {
             event.preventDefault();
@@ -204,16 +190,9 @@ const ShortcutModal = (props) => {
             props.tcOutButtonRef.current.click()
         }
         if (event.code === 'Delete') {
-            event.stopPropagation()
             if ((event.ctrlKey || event.metaKey)) {
+                event.stopPropagation()
                 props.removeLineButtonRef.current.click()
-            } else {
-                if (props.hotRef.current.getActiveEditor()._opened) return
-                const cells = props.hotRef.current.getSelected()?.reduce((acc, v) => {
-                    acc.push(...createEmptyCellArray(...v))
-                    return acc
-                }, [])
-                if (cells) props.hotRef.current.setDataAtCell(cells)
             }
         }
         if (event.shiftKey && event.key === '<') {

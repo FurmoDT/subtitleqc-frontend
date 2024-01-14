@@ -93,6 +93,16 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
+        const languageTextEditor = Handsontable.editors.TextEditor.prototype.extend();
+        languageTextEditor.prototype.init = function () {
+            Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
+            this.TEXTAREA.addEventListener('input', (event) => this.col === 4 && props.selectedSegment.current?.update({labelText: event.target.value}))
+        }
+        languageTextEditor.prototype.finishEditing = function (revertToOriginal) {
+            Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
+            if (this.col === 4 && revertToOriginal) props.selectedSegment.current?.update({labelText: this.originalValue})
+        }
+
         props.hotRef.current = new Handsontable(containerMain.current, {
             data: props.cellDataRef.current,
             columns: [{
@@ -112,6 +122,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             }, ...(props.languages.map((value) => ({
                 data: `${value.code}_${value.counter}`,
                 type: 'text',
+                editor: languageTextEditor,
                 renderer: value.code.match(/^[a-z]{2}[A-Z]{2}$/) ? textLanguageRenderer : textRenderer
             })))],
             colHeaders: ['TC IN', 'TC OUT', 'DURATION', 'FN', ...(props.languages.map((value) => value.name)), 'error'],

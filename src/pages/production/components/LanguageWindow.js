@@ -176,7 +176,9 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             },
         })
         const autoRowSizePlugin = props.hotRef.current.getPlugin('autoRowSize');
-        setTotalLines(getTotalLines())
+        const totalLines = getTotalLines()
+        setTotalLines(totalLines)
+        props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
         let grammarlyPlugin = null
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
             if (props.hotRef.current.colToProp(column).startsWith('enUS')) {
@@ -264,7 +266,9 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     rows.insert(index, newRows)
                 })
             } else if (!props.taskHashedId) localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            setTotalLines(getTotalLines())
+            const totalLines = getTotalLines()
+            setTotalLines(totalLines)
+            props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
             if (props.waveformRef.current) {

@@ -137,7 +137,7 @@ const Production = () => {
                 setProjectDetail(languageFile.projectDetail)
             } else setFileUploadModalShow(true)
         }
-    }, [languageFile, resetSegments])
+    }, [languageFile])
 
     useEffect(() => {
         if (!taskHashedId) {

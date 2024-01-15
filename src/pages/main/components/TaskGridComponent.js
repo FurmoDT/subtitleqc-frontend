@@ -23,14 +23,17 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const [doneTaskHashedId, setDoneTaskHashedId] = useState(null)
     const [undoneTaskHashedId, setUndoneTaskHashedId] = useState(null)
     const [undoneWorkHashedId, setUndoneWorkHashedId] = useState(null)
-    const [filters, setFilters] = useState({status: 'All'})
+    const [filters, setFilters] = useState({status: 'All', taskName: 'All'})
 
     const FilterRenderer = ({tabIndex, column, children}) => (<>
         <div>{column.name}</div>
         <div>{children({tabIndex, filters})}</div>
     </>)
 
-    const filteredRows = useMemo(() => rowsCopy?.filter((r) => filters.status === 'All' ? true : r.status === filters.status), [rowsCopy, filters])
+    const filteredRows = useMemo(() => rowsCopy?.filter((r) => {
+        return (filters.status === 'All' ? true : r.status === filters.status) &&
+            (filters.taskName === 'All' ? true : r.taskName.split('_')[0] === filters.taskName)
+    }), [rowsCopy, filters])
 
     const groupBy = (arr, keyFunc) => {
         return arr.reduce((result, current) => {
@@ -75,16 +78,26 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const defaultColumns = {
         no: {key: 'no', name: '번호', width: 60},
         pm: {key: 'pm', name: '담당자(외부)'}, pd: {key: 'pd', name: '담당자(내부)'}, client: {key: 'client', name: '거래처'},
-        taskName: {key: 'taskName', name: '태스크명'},
+        taskName: {
+            key: 'taskName', name: '태스크명', renderHeaderCell: (p) => {
+                return <FilterRenderer {...p}>
+                    {({filters, ...rest}) => {
+                        const taskNames = [...new Set(rows.filter(v => v.taskName).map(v => v.taskName.split('_')[0]))]
+                        return <select {...rest} value={filters.taskName} className={'mx-1 rounded'}
+                                       onChange={(e) => setFilters(prevState => ({
+                                           ...prevState, taskName: e.target.value
+                                       }))}>
+                            <option value={'All'}>전체</option>
+                            {taskNames.map((value, index) => <option key={index} value={value}>{value}</option>)}
+                        </select>
+                    }}
+                </FilterRenderer>
+            }
+        },
         taskType: {key: 'taskType', name: '소재', renderCell: (row) => <div>{row.row.taskType?.toUpperCase()}</div>},
         createdAt: {key: 'createdAt', name: '생성일'},
         endedAt: {key: 'endedAt', name: '완료일'}, dueDate: {key: 'dueDate', name: '납품기한'},
-        memo: {
-            key: 'memo',
-            name: '메모',
-            renderCell: row => <div className={'text-truncate'}>{row.row.memo}</div>,
-            width: 100
-        },
+        memo: {key: 'memo', name: '메모', renderCell: row => <div className={'text-truncate'}>{row.row.memo}</div>},
         status: {
             key: 'status',
             name: '상태',
@@ -93,7 +106,9 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 return <FilterRenderer {...p}>
                     {({filters, ...rest}) => {
                         return <select {...rest} value={filters.status} className={'mx-1 rounded'}
-                                       onChange={(e) => setFilters({status: e.target.value})}>
+                                       onChange={(e) => setFilters(prevState => ({
+                                           ...prevState, status: e.target.value
+                                       }))}>
                             <option value={'All'}>전체</option>
                             <option value={'New'}>신규</option>
                             <option value={'Ing'}>🟡진행중</option>
@@ -104,7 +119,6 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             },
             renderCell: (row) => <div>{{New: '신규', Ing: '🟡진행중', Done: '🟢완료'}[row.row.status]}</div>,
         },
-        buttons: {key: 'buttons', name: '', width: 210, maxWidth: 210, minWidth: 210}
     }
 
     if (userState.user.userRole === 'client') {
@@ -113,13 +127,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             defaultColumns.taskName, defaultColumns.taskType,
             {...defaultColumns.createdAt, name: '의뢰일'}, defaultColumns.endedAt, defaultColumns.dueDate,
             defaultColumns.memo,
-            defaultColumns.status,
-            {
-                ...defaultColumns.buttons,
-                renderCell: (row) => <MDBBtn href={`/${row.row.taskType}/${row.row.extra.hashedId}`}
-                                             color={'link'}
-                                             disabled={!row.row.taskType || !row.row.extra.work.length}>이동하기</MDBBtn>
-            }
+            defaultColumns.status
         ];
     } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
         const WorkGrid = ({hashedId}) => {
@@ -262,7 +270,10 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             current.task.status = current.task.status || (current.work.length ? 'Ing' : 'New')
             result.push({...current.task, expanded: true, type: 'MASTER', no: currentIndex + 1})
             current.work.length && result.push({
-                type: 'DETAIL', hashedId: current.task.extra.hashedId, status: current.task.status
+                type: 'DETAIL',
+                hashedId: current.task.extra.hashedId,
+                status: current.task.status,
+                taskName: current.task.taskName
             })
             return result
         }, []))
@@ -278,7 +289,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         const row = rows[indexes[0]];
         if (row.type === 'MASTER') {
             row.expanded ? rows.splice(indexes[0] + 1, 0, {
-                type: 'DETAIL', hashedId: row.extra.hashedId, status: row.status
+                type: 'DETAIL', hashedId: row.extra.hashedId, status: row.status, taskName: row.taskName
             }) : rows.splice(indexes[0] + 1, 1)
             setRowsCopy(rows)
         }

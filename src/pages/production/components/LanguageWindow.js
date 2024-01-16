@@ -238,8 +238,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
                     if (0 <= startSec && startSec <= endSec) {
                         const segment = props.waveformRef.current.segments.getSegment(rowId)
-                        if (segment) segment.update({startTime: startSec, endTime: endSec, labelText: text})
-                        else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId, text))
+                        if (segment) segment.update({startTime: startSec, endTime: endSec, labelText: text || ''})
+                        else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId, text || ''))
                     } else {
                         props.waveformRef.current.segments.removeById(rowId)
                         props.selectedSegment.current = null

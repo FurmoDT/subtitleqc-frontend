@@ -152,6 +152,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                                         const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), time)
                                         props.hotRef.current.alter('insert_row', addIndex, 1)
                                         props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
+                                        props.hotRef.current.selectCells([[addIndex, 0, addIndex, props.hotRef.current.countCols() - 1], [addIndex, 4]])
                                     }
                                 }
                             })

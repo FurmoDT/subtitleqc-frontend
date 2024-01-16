@@ -239,7 +239,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     if (0 <= startSec && startSec <= endSec) {
                         const segment = props.waveformRef.current.segments.getSegment(rowId)
                         if (segment) segment.update({startTime: startSec, endTime: endSec, labelText: text})
-                        else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId))
+                        else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId, text))
                     } else {
                         props.waveformRef.current.segments.removeById(rowId)
                         props.selectedSegment.current = null
@@ -266,7 +266,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     rows.insert(index, newRows)
                 })
             } else {
-                props.hotRef.current.setDataAtRowProp(index, 'rowId', v4())
+                props.hotRef.current.setDataAtRowProp(Array.from({length: amount}, (_, i) => [index + i, 'rowId', v4()]))
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             }
             const totalLines = getTotalLines()

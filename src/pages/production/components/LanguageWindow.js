@@ -266,7 +266,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     rows.insert(index, newRows)
                 })
             } else {
-                props.hotRef.current.setDataAtRowProp(Array.from({length: amount}, (_, i) => [index + i, 'rowId', v4()]))
+                props.cellDataRef.current.splice(index, amount, ...Array.from({length: amount}, () => ({rowId: v4()})))
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             }
             const totalLines = getTotalLines()

@@ -280,11 +280,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     rows.delete(index, amount)
                 })
             } else localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            if (props.waveformRef.current) {
-                physicalRows.forEach((row) => {
-                    props.waveformRef.current.segments.removeById(props.hotRef.current.getDataAtRowProp(row, 'rowId'))
-                })
-            }
+            if (props.waveformRef.current) physicalRows.forEach((row) => props.waveformRef.current.segments.removeById(props.hotRef.current.getDataAtRowProp(row, 'rowId')))
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('afterSelection', (row, column, row2, column2) => {
@@ -314,9 +310,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 nameDiv.innerHTML = cellProperties.awareness.name
                 TD.append(borderDiv, nameDiv)
             }
-            if (column === props.hotRef.current.countCols() - 1 && cellProperties.subtitle) {
-                TD.parentNode.childNodes.forEach(child => child.classList.add('td-custom-highlight'))
-            }
+            if (column === props.hotRef.current.countCols() - 1 && cellProperties.subtitle) TD.parentNode.childNodes.forEach(child => child.classList.add('td-custom-highlight'))
         })
         props.hotRef.current.addHook('afterSetCellMeta', () => debounceRender())
         props.hotRef.current.addHook('afterRemoveCellMeta', () => debounceRender())
@@ -331,9 +325,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
         props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, () => Math.floor((props.size.width - 365) / props.languages.length))]})
         props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
-        Object.entries(userCursorsRef.current).forEach(([, aw]) => {
-            if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
-        })
+        Object.entries(userCursorsRef.current).forEach(([, aw]) => aw.cursor && props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user))
     }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize]);
 
     useEffect(() => {

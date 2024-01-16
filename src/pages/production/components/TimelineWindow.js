@@ -29,11 +29,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
         }
     }, [props.waveformRef])
     const afterSeekedPromise = useCallback(() => {
-        return new Promise(resolve => {
-            props.waveformRef.current.on('player.seeked', () => {
-                resolve()
-            })
-        })
+        return new Promise(resolve => props.waveformRef.current.on('player.seeked', () => resolve()))
     }, [props.waveformRef])
     const setStatusDisplay = (status) => {
         if (status === 'isLoading') {
@@ -143,7 +139,6 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     }
                     peaks.on('zoomview.click', (event) => {
                         const seeker = () => {
-                            peaks.player.seek(event.time)
                             afterSeekedPromise().then(() => {
                                 props.waveformRef.current?.player.pause()
                                 if (event.evt.ctrlKey) {
@@ -156,6 +151,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                                     }
                                 }
                             })
+                            peaks.player.seek(event.time)
                         }
                         if (!isDoubleClick) {
                             isDoubleClick = true

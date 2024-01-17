@@ -14,7 +14,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
 
     const onWheel = useCallback((e) => {
         const waveform = props.waveformRef.current
-        if (e.ctrlKey) {
+        if (e.ctrlKey || e.metaKey) {
             e.preventDefault()
             if (e.deltaY > 0) waveform.zoom.zoomOut()
             else waveform.zoom.zoomIn()

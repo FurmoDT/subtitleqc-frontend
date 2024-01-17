@@ -141,7 +141,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                         const seeker = () => {
                             afterSeekedPromise().then(() => {
                                 props.waveformRef.current?.player.pause()
-                                if (event.evt.ctrlKey) {
+                                if (event.evt.ctrlKey || event.evt.metaKey) {
                                     const time = peaks.player.getCurrentTime()
                                     if (!peaks.segments.find(time, time + 1).length) {
                                         const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), time)

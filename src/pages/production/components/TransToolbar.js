@@ -139,7 +139,8 @@ const TransToolbar = (props) => {
                         if (selection.rowStart !== null) {
                             const selectedData = props.hotRef.current.getDataAtRow(selection.rowStart)
                             props.hotRef.current.alter('insert_row', selection.rowStart + 1, 1)
-                            const mid = secToTc(tcToSec(selectedData[0]) + Number(((tcToSec(selectedData[1]) - tcToSec(selectedData[0])) / 2).toFixed(3)))
+                            const currentTime = props.playerRef.current.getCurrentTime()
+                            const mid = tcToSec(selectedData[0]) < currentTime && currentTime < tcToSec(selectedData[1]) ? secToTc(currentTime) : secToTc(tcToSec(selectedData[0]) + Number(((tcToSec(selectedData[1]) - tcToSec(selectedData[0])) / 2).toFixed(3)))
                             props.hotRef.current.setDataAtCell([[selection.rowStart, 1, mid], [selection.rowStart + 1, 0, mid], [selection.rowStart + 1, 1, selectedData[1]], ...Array.from({length: props.hotRef.current.countCols() - 4}, (_, colIndex) => {
                                 const lines = splitLine(selectedData[4 + colIndex])
                                 return [[selection.rowStart, colIndex + 4, lines[0]], [selection.rowStart + 1, colIndex + 4, lines[1]]]

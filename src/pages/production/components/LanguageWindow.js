@@ -1,4 +1,3 @@
-import Handsontable from 'handsontable';
 import '../../../css/Handsontable.css'
 import '../../../css/HandsontableCustom.css'
 import * as Grammarly from '@grammarly/editor-sdk'
@@ -61,22 +60,22 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         props.hotRef.current?.destroy()
 
         function tcInRenderer(instance, td) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments)
+            window.Handsontable.renderers.TextRenderer.apply(this, arguments)
             tcInValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
         function tcOutRenderer(instance, td) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments)
+            window.Handsontable.renderers.TextRenderer.apply(this, arguments)
             tcOutValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
         function durationRenderer(instance, td) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments)
+            window.Handsontable.renderers.TextRenderer.apply(this, arguments)
             durationValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
         function textRenderer(instance, td) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments)
+            window.Handsontable.renderers.TextRenderer.apply(this, arguments)
             if (arguments[5]) {
                 td.style.fontSize = props.hotFontSize
                 td.classList.add('td-custom-text')
@@ -84,26 +83,26 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         }
 
         function checkboxRenderer(instance, td) {
-            Handsontable.renderers.CheckboxRenderer.apply(this, arguments)
+            window.Handsontable.renderers.CheckboxRenderer.apply(this, arguments)
             td.classList.add('text-center')
         }
 
         function textLanguageRenderer(instance, td) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments)
+            window.Handsontable.renderers.TextRenderer.apply(this, arguments)
             textValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
-        const languageTextEditor = Handsontable.editors.TextEditor.prototype.extend();
+        const languageTextEditor = window.Handsontable.editors.TextEditor.prototype.extend();
         languageTextEditor.prototype.init = function () {
-            Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
+            window.Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
             this.TEXTAREA.addEventListener('input', (event) => this.col === 4 && props.selectedSegment.current?.update({labelText: event.target.value}))
         }
         languageTextEditor.prototype.finishEditing = function (revertToOriginal) {
-            Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
+            window.Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
             if (this.col === 4 && revertToOriginal) props.selectedSegment.current?.update({labelText: this.originalValue})
         }
 
-        props.hotRef.current = new Handsontable(containerMain.current, {
+        props.hotRef.current = new window.Handsontable(containerMain.current, {
             data: props.cellDataRef.current,
             columns: [{
                 data: 'start',
@@ -136,10 +135,10 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                     row_above: {},
                     row_below: {},
                     remove_row: {},
-                    separator: Handsontable.plugins.ContextMenu.SEPARATOR,
+                    separator: window.Handsontable.plugins.ContextMenu.SEPARATOR,
                     undo: {},
                     redo: {},
-                    separator2: Handsontable.plugins.ContextMenu.SEPARATOR,
+                    separator2: window.Handsontable.plugins.ContextMenu.SEPARATOR,
                     make_read_only: {},
                     italic: {
                         name: 'Italic', callback: () => {
@@ -153,10 +152,10 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                             props.hotRef.current.setDataAtCell(newData)
                         }
                     },
-                    separator3: Handsontable.plugins.ContextMenu.SEPARATOR,
+                    separator3: window.Handsontable.plugins.ContextMenu.SEPARATOR,
                     cut: {},
                     copy: {},
-                    separator4: Handsontable.plugins.ContextMenu.SEPARATOR,
+                    separator4: window.Handsontable.plugins.ContextMenu.SEPARATOR,
                     info: {
                         name: 'Info',
                         hidden: () => {

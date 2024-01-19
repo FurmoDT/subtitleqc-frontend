@@ -22,7 +22,6 @@
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "gh-pages": "^6.0.0",
-    "handsontable": "^6.2.2",
     "js-base64": "^3.7.5",
     "konva": "^9.2.2",
     "mdb-react-ui-kit": "^6.3.0",

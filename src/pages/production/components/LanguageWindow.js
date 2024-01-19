@@ -274,13 +274,15 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
+            if (props.waveformRef.current) physicalRows.forEach((row) => props.waveformRef.current.segments.removeById(props.hotRef.current.getDataAtRowProp(row, 'rowId')))
+        })
+        props.hotRef.current.addHook('afterRemoveRow', (index, amount) => {
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
                     const rows = props.crdt.yMap().get('cells')
                     rows.delete(index, amount)
                 })
             } else localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
-            if (props.waveformRef.current) physicalRows.forEach((row) => props.waveformRef.current.segments.removeById(props.hotRef.current.getDataAtRowProp(row, 'rowId')))
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('afterSelection', (row, column, row2, column2) => {

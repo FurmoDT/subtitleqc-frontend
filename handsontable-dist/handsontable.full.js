@@ -24,7 +24,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
  * Version: 6.2.2
- * Release date: 19/12/2018 (built at 20/01/2024 02:30:48)
+ * Release date: 19/12/2018 (built at 20/01/2024 17:22:24)
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -34998,7 +34998,7 @@ Handsontable.DefaultSettings = _defaultSettings.default;
 Handsontable.EventManager = _eventManager.default;
 Handsontable._getListenersCounter = _eventManager.getListenersCounter; // For MemoryLeak tests
 
-Handsontable.buildDate = "20/01/2024 02:30:48";
+Handsontable.buildDate = "20/01/2024 17:22:24";
 Handsontable.packageName = "handsontable";
 Handsontable.version = "6.2.2";
 var baseVersion = "";
@@ -69760,11 +69760,8 @@ function UndoRedo(instance) {
       return;
     }
 
-    var originalData = plugin.instance.getSourceDataArray();
-    var rowIndex = (originalData.length + index) % originalData.length;
-    var physicalRowIndex = instance.toPhysicalRow(rowIndex);
-    var removedData = (0, _object.deepClone)(originalData.slice(physicalRowIndex, physicalRowIndex + amount));
-    plugin.done(new UndoRedo.RemoveRowAction(rowIndex, removedData));
+    var removedData = (0, _object.deepClone)(plugin.instance.getSourceDataArray(index, 0, index + amount - 1, instance.countCols() - 1));
+    plugin.done(new UndoRedo.RemoveRowAction(index, removedData));
   });
   instance.addHook('afterCreateCol', function (index, amount, source) {
     if (source === 'UndoRedo.undo' || source === 'UndoRedo.redo' || source === 'auto') {

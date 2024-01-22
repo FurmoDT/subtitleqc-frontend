@@ -27,6 +27,7 @@ const Production = () => {
     const [fileUploadModalShow, setFileUploadModalShow] = useState(false)
     const containerRef = useRef(null)
     const languageWindowRef = useRef(null)
+    const workWindowRef = useRef(null)
     const timelineWindowRef = useRef(null)
     const [languageWindowSize, setLanguageWindowSize] = useState({width: 0, height: 0})
     const [timelineWindowSize, setTimelineWindowSize] = useState({height: 320})
@@ -97,7 +98,7 @@ const Production = () => {
             clearTimeout(resizingTimeoutRef.current);
             resizingTimeoutRef.current = setTimeout(() => {
                 setLanguageWindowSize({
-                    width: languageWindowRef.current.offsetWidth, height: languageWindowRef.current.offsetHeight - 40
+                    width: workWindowRef.current.offsetWidth, height: workWindowRef.current.offsetHeight - 40
                 })
             }, 200)
         };
@@ -207,18 +208,19 @@ const Production = () => {
                     })
                     yMap.set('cells', Y.Array.from(yCellData))
                 }
-                yMap.get('cells').observe(event => { // new row
+                yMap.get('cells').observe(event => { // row changes
                     let retain, inserts, deletes
-                    for (let i = 0; i < event.changes.delta.length; i++) {
-                        retain = event.changes.delta[i].retain || retain || 0
-                        inserts = event.changes.delta[i].insert?.map(value => ({rowId: value.get('rowId')})) || []
-                        deletes = event.changes.delta[i].delete || 0
-                    }
+                    event.changes.delta.forEach(change => {
+                        retain = change.retain || retain || 0
+                        inserts = change.insert?.map(value => ({rowId: value.get('rowId')})) || []
+                        deletes = change.delete || deletes || 0
+                    })
                     if (event.transaction.local) {
                         inserts?.forEach((value, i) => cellDataRef.current[retain + i].rowId = value.rowId)
                     } else {
                         cellDataRef.current.splice(retain, deletes, ...inserts)
                         hotRef.current.render()
+                        languageWindowRef.current.setTotalLines()
                     }
                 })
                 yMap.get('cells').observeDeep(events => {
@@ -285,7 +287,7 @@ const Production = () => {
                             </Allotment.Pane>
                         </Allotment>
                     </Allotment.Pane>
-                    <Allotment.Pane ref={languageWindowRef} snap>
+                    <Allotment.Pane ref={workWindowRef} snap>
                         <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} readOnly={readOnly}
                                       tcLockRef={tcLockRef} selectedSegment={selectedSegment}
@@ -301,7 +303,7 @@ const Production = () => {
                                       afterRenderPromise={afterRenderPromise} cellDataRef={cellDataRef}
                                       languages={languages} setLanguages={setLanguages}/>
                         {((taskHashedId && dataInitialized) || !taskHashedId) &&
-                            <LanguageWindow size={languageWindowSize} hotRef={hotRef}
+                            <LanguageWindow ref={languageWindowRef} size={languageWindowSize} hotRef={hotRef}
                                             hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
                                             tcLock={tcLock} tcLockRef={tcLockRef} subtitleIndex={subtitleIndex}
                                             cellDataRef={cellDataRef} languages={languages}

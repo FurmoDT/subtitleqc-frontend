@@ -1,17 +1,13 @@
 import '../../../css/Handsontable.css'
 import '../../../css/HandsontableCustom.css'
-import * as Grammarly from '@grammarly/editor-sdk'
-import {useCallback, useEffect, useRef, useState} from "react";
+import {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {durationValidator, tcInValidator, tcOutValidator, textValidator} from "../../../utils/hotRenderer";
 import {createSegment, tcToSec} from "../../../utils/functions";
 import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 import * as Y from "yjs";
 
-const grammarly = (async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98Sn"))()
-
-
-const LanguageWindow = ({resetSegments, ...props}) => {
+const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
     const debounceTimeoutRef = useRef(null)
@@ -20,13 +16,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     const subtitleIndexRef = useRef(-1)
     const userCursorsRef = useRef({})
     const userRef = useRef(null)
-
-    const afterRenderPromise = useCallback(() => {
-        return new Promise(resolve => {
-            const afterRenderCallback = () => resolve()
-            props.hotRef.current?.addHookOnce('afterRender', afterRenderCallback)
-        })
-    }, [props.hotRef])
 
     const debounceRender = useCallback(() => {
         clearTimeout(debounceTimeoutRef.current)
@@ -55,6 +44,10 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         }
         return allPairs
     }
+
+    useImperativeHandle(ref, () => ({
+        setTotalLines: () => setTotalLines(getTotalLines())
+    }), [getTotalLines])
 
     useEffect(() => {
         props.hotRef.current?.destroy()
@@ -178,18 +171,8 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         const totalLines = getTotalLines()
         setTotalLines(totalLines)
         props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
-        let grammarlyPlugin = null
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
-            if (props.hotRef.current.colToProp(column).startsWith('enUS')) {
-                grammarly.then(r => {
-                    grammarlyPlugin = r.addPlugin(containerMain.current.querySelector('textarea'), {
-                        documentDialect: "american",
-                    },)
-                    containerMain.current.querySelector('grammarly-editor-plugin').style.setProperty('--grammarly-button-position-top', `${64 + 7 + props.size.height}px`)
-                    containerMain.current.querySelector('grammarly-editor-plugin').style.setProperty('--grammarly-button-position-right', '100px')
-                    containerMain.current.querySelector('grammarly-editor-plugin').querySelector('textarea').focus()
-                });
-            } else if (props.hotRef.current.colToProp(column).startsWith('arAE')) {
+            if (props.hotRef.current.colToProp(column).startsWith('arAE')) {
                 containerMain.current.querySelector('textarea').dir = 'rtl'
             }
         })
@@ -246,14 +229,13 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 }
             }
             if (props.playerRef.current.getInternalPlayer()?.paused && changes.filter(value => value[0] === subtitleIndexRef.current).length) props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds') // update subtitle
-            grammarlyPlugin?.disconnect()
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('beforePaste', (data, coords) => {
             const newRows = Math.max(data.length + coords[0].startRow - props.hotRef.current.countRows(), 0)
             if (newRows) props.hotRef.current.alter('insert_row', props.hotRef.current.countRows(), newRows)
         })
-        props.hotRef.current.addHook('afterCreateRow', (index, amount, source) => {
+        props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
                     const rows = props.crdt.yMap().get('cells')
@@ -318,7 +300,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, afterRenderPromise, resetSegments, debounceRender, getTotalLines, props.taskHashedId, props.readOnly])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, debounceRender, getTotalLines, props.taskHashedId, props.readOnly])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
@@ -339,8 +321,7 @@ const LanguageWindow = ({resetSegments, ...props}) => {
     useEffect(() => {
         if (props.crdtAwarenessInitialized) {
             const awareness = props.crdt.awareness()
-            const user = awareness.getStates().get(props.crdt.yDoc().clientID)
-            userCursorsRef.current[props.crdt.yDoc().clientID] = userRef.current = user
+            userRef.current = awareness.getStates().get(props.crdt.yDoc().clientID)
             awareness.on('change', ({added, removed, updated}) => {
                 const states = awareness.getStates()
                 added.forEach(id => {
@@ -355,7 +336,9 @@ const LanguageWindow = ({resetSegments, ...props}) => {
                 updated.forEach(id => {
                     if (id === props.crdt.yDoc().clientID) return
                     const prevCursor = userCursorsRef.current[id]?.cursor
-                    if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
+                    if (prevCursor && prevCursor.row < props.hotRef.current.countRows()) {
+                        props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
+                    }
                     const aw = userCursorsRef.current[id] = states.get(id)
                     if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
                 })
@@ -375,6 +358,6 @@ const LanguageWindow = ({resetSegments, ...props}) => {
             <MDBIcon fas icon="arrow-down"/>&nbsp;{totalLines}
         </MDBBtn>
     </div>
-}
+})
 
 export default LanguageWindow

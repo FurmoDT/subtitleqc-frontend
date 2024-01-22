@@ -77,9 +77,7 @@ const Production = () => {
             }, 100)
             const afterRenderCallback = (isForced) => {
                 clearTimeout(timeOut)
-                if (!isForced) {
-                    resolve()
-                }
+                if (!isForced) resolve()
             }
             hotRef.current?.addHookOnce('afterRender', afterRenderCallback)
         })
@@ -113,11 +111,13 @@ const Production = () => {
     }, []);
 
     useEffect(() => {
-        if (waveformRef.current) {
-            waveformRef.current.segments.removeAll()
-            waveformRef.current.segments.add(resetSegments())
+        if (dataInitialized) {
+            if (waveformRef.current) {
+                waveformRef.current.segments.removeAll()
+                waveformRef.current.segments.add(resetSegments())
+            }
+            if (!taskHashedId) localStorage.setItem('language', JSON.stringify(languages))
         }
-        if (!taskHashedId && dataInitialized) localStorage.setItem('language', JSON.stringify(languages))
     }, [taskHashedId, languages, dataInitialized, resetSegments])
 
     useEffect(() => {

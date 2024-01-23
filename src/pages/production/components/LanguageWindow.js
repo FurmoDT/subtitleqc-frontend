@@ -186,18 +186,26 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
             if (props.taskHashedId) {
                 if (source === 'sync') props.hotRef.current.undoRedo.doneActions.pop()
                 else {
-                    props.crdt.yDoc().transact(() => {
-                        const rows = props.crdt.yMap().get('cells')
-                        const user = userRef.current.user
-                        changes.forEach(change => {
-                            if (change[2] !== change[3] && (change[2] || change[3])) {
-                                rows.get(change[0])?.set(change[1], {
-                                    value: change[3],
-                                    metadata: {user: {id: user.id, name: user.name}}
-                                })
+                    let i = 0
+                    let counter = 0
+                    while (i < changes.length) {
+                        props.crdt.yDoc().transact(() => {
+                            const rows = props.crdt.yMap().get('cells');
+                            const user = userRef.current.user;
+                            while (i < changes.length && counter < 500) {
+                                const change = changes[i]
+                                if (change[2] !== change[3] && (change[2] || change[3])) {
+                                    rows.get(change[0])?.set(change[1], {
+                                        value: change[3],
+                                        metadata: {user: {id: user.id, name: user.name}}
+                                    });
+                                    counter++
+                                }
+                                i++
                             }
-                        })
-                    }, 'local')
+                        }, 'local');
+                        counter = 0
+                    }
                 }
             } else localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             if (props.waveformRef.current && source !== 'timelineWindow') {

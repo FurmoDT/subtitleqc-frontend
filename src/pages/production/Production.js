@@ -218,20 +218,26 @@ const Production = () => {
                     if (event.transaction.local) {
                         inserts?.forEach((value, i) => cellDataRef.current[retain + i].rowId = value.rowId)
                     } else {
+                        /* TODO - change editor row
+                        if (hotRef.current.getActiveEditor().isInFullEditMode()) {
+                            hotRef.current.getActiveEditor().beginEditing()
+                            hotRef.current.getActiveEditor().enableFullEditMode()
+                        }
+                        */
                         cellDataRef.current.splice(retain, deletes, ...inserts)
                         hotRef.current.render()
                         languageWindowRef.current.setTotalLines()
                     }
                 })
                 yMap.get('cells').observeDeep(events => {
+                    const updates = []
                     events.forEach(event => {
                         if (!event.transaction.local) {
                             const row = hotRef.current.getSourceDataAtCol('rowId').indexOf(event.target.get('rowId'))
-                            const updates = []
                             event.changes.keys.forEach((change, key) => updates.push([row, key, event.target.get(key).value]))
-                            hotRef.current.setDataAtRowProp(updates, 'sync')
                         }
                     })
+                    hotRef.current.setDataAtRowProp(updates, 'sync')
                 })
             })
             setDataInitialized(true)

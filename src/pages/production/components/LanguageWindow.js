@@ -34,6 +34,23 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         return Math.max(totalLines + 1, 0)
     }, [props.hotRef])
 
+    const updateUserCursors = useCallback((index, amount) => {
+        for (let key in userCursorsRef.current) {
+            const aw = userCursorsRef.current[key]
+            if (aw.cursor) {
+                const prevRow = aw.cursor.row
+                const curRow = aw.cursor.row - amount
+                if (index <= prevRow && prevRow <= props.hotRef.current.countRows() + amount) {
+                    props.hotRef.current.removeCellMeta(prevRow, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness')
+                }
+                if (prevRow < props.hotRef.current.countRows()) {
+                    if (index < prevRow) props.hotRef.current.setCellMeta(curRow, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
+                    else if (index === prevRow) setTimeout(() => props.hotRef.current.setCellMeta(prevRow, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user), 200)
+                }
+            }
+        }
+    }, [props.hotRef])
+
     const getSelectedPairs = (rangeArray) => {
         const allPairs = []
         for (const range of rangeArray) {
@@ -243,6 +260,9 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
             const newRows = Math.max(data.length + coords[0].startRow - props.hotRef.current.countRows(), 0)
             if (newRows) props.hotRef.current.alter('insert_row', props.hotRef.current.countRows(), newRows)
         })
+        props.hotRef.current.addHook('beforeCreateRow', (index, amount) => {
+            if (props.taskHashedId) updateUserCursors(index, amount)
+        })
         props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
@@ -264,6 +284,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
             if (props.waveformRef.current) physicalRows.forEach((row) => props.waveformRef.current.segments.removeById(props.hotRef.current.getDataAtRowProp(row, 'rowId')))
+            if (props.taskHashedId) updateUserCursors(index, -amount)
         })
         props.hotRef.current.addHook('afterRemoveRow', (index, amount) => {
             if (props.taskHashedId) {
@@ -308,7 +329,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, debounceRender, getTotalLines, props.taskHashedId, props.readOnly])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, debounceRender, getTotalLines, updateUserCursors, props.taskHashedId, props.readOnly])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)

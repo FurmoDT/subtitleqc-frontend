@@ -203,25 +203,23 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
             if (props.taskHashedId) {
                 if (source === 'sync') props.hotRef.current.undoRedo.doneActions.pop()
                 else {
-                    let i = 0
-                    let counter = 0
-                    while (i < changes.length) {
+                    const index = [0]
+                    const user = userRef.current.user;
+                    while (index[0] < changes.length) {
                         props.crdt.yDoc().transact(() => {
+                            let counter = 0
                             const rows = props.crdt.yMap().get('cells');
-                            const user = userRef.current.user;
-                            while (i < changes.length && counter < 500) {
-                                const change = changes[i]
+                            while (index[0] < changes.length && counter < 500) {
+                                const change = changes[index[0]]
                                 if (change[2] !== change[3] && (change[2] || change[3])) {
                                     rows.get(change[0])?.set(change[1], {
-                                        value: change[3],
-                                        metadata: {user: {id: user.id, name: user.name}}
+                                        value: change[3], metadata: {user: {id: user.id, name: user.name}}
                                     });
                                     counter++
                                 }
-                                i++
+                                index[0]++
                             }
                         }, 'local');
-                        counter = 0
                     }
                 }
             } else localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))

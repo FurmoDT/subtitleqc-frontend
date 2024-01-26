@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import Peaks from 'peaks.js';
 import {bisect, secToTc, tcToSec} from "../../../utils/functions";
 import {MDBBtn, MDBCheckbox, MDBIcon, MDBSpinner} from "mdb-react-ui-kit";
@@ -11,6 +11,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
     const warningRef = useRef(null);
     const amplitudeScale = useRef(2)
     const moveCursorRef = useRef(null)
+    const [initialized, setInitialized] = useState(false)
 
     const onWheel = useCallback((e) => {
         const waveform = props.waveformRef.current
@@ -85,7 +86,6 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             }
             if (peaks) {
                 props.waveformRef.current = peaks
-                peaks.segments.add(resetSegments())
                 peaks.on("segments.mouseenter", (event) => {
                     if (event.segment.editable) {
                         moveCursorRef.current = event.evt.target
@@ -134,6 +134,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                 let isDoubleClick = false;
                 let clickTimer;
                 peaks.on('peaks.ready', () => {
+                    setInitialized(true)
                     if (!props.playerRef.current.getInternalPlayer()?.src.startsWith(props.video)) {
                         props.waveformRef.current?.destroy()
                         props.waveformRef.current = null
@@ -165,17 +166,17 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                             isDoubleClick = false
                             const segment = peaks.segments.find(event.time, event.time)[0]
                             if (segment) {
-                                peaks.views.getView('zoomview').enableSegmentDragging(false)
                                 moveCursorRef.current = event.evt.target
                                 if (props.selectedSegment.current === segment) {
                                     moveCursorRef.current.style.cursor = 'default'
-                                    props.selectedSegment.current.update({color: 'white', editable: false})
+                                    props.selectedSegment.current.update({color: 'white'})
                                     props.selectedSegment.current = null
                                     return
                                 }
                                 const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
                                 props.hotRef.current.selectCells([[row, 0, row, props.hotRef.current.countCols() - 1], [row, 4]])
-                                peaks.views.getView('zoomview').enableSegmentDragging(true)
+                                props.hotRef.current.getActiveEditor().enableFullEditMode()
+                                props.hotRef.current.getActiveEditor().beginEditing()
                                 moveCursorRef.current.style.cursor = 'move'
                             }
                             seeker()
@@ -187,6 +188,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                 amplitudeScale.current = 2
                 peaks.views.getView('zoomview')?.setAmplitudeScale(amplitudeScale.current)
                 peaks.views.getView('zoomview')?.setSegmentDragMode('no-overlap')
+                peaks.views.getView('zoomview')?.enableSegmentDragging(true)
                 peaks.views.getView('zoomview')?.enableSeek(false)
             }
         })
@@ -194,9 +196,10 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
             props.selectedSegment.current = null
+            setInitialized(false)
             window.removeEventListener('error', errorHandler)
         }
-    }, [props.video, props.waveformRef, onWheel, errorHandler, afterSeekedPromise, resetSegments, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
+    }, [props.video, props.waveformRef, onWheel, errorHandler, afterSeekedPromise, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()
@@ -211,6 +214,13 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             props.waveformRef.current = null
         } else statusRef.current.style.display = ''
     }, [props.mediaFile, props.waveformRef])
+
+    useEffect(() => {
+        if (initialized && props.waveformRef.current) {
+            props.waveformRef.current.segments.removeAll()
+            props.waveformRef.current.segments.add(resetSegments())
+        }
+    }, [initialized, props.waveformRef, resetSegments]);
 
     return <>
         <div className={'position-absolute end-0'} style={{zIndex: 1}}>

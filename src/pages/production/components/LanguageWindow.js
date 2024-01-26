@@ -244,7 +244,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
                     if (0 <= startSec && startSec <= endSec) {
                         const segment = props.waveformRef.current.segments.getSegment(rowId)
                         if (segment) segment.update({startTime: startSec, endTime: endSec, labelText: text || ''})
-                        else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId, text || ''))
+                        else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId, text || '', !props.tcLock))
                     } else {
                         props.waveformRef.current.segments.removeById(rowId)
                         props.selectedSegment.current = null
@@ -299,9 +299,9 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         props.hotRef.current.addHook('afterSelectionEnd', (row, column, row2, column2) => {
             const curSegment = props.waveformRef.current?.segments.getSegment(props.hotRef.current.getDataAtRowProp(row, 'rowId'))
             if (curSegment && curSegment !== props.selectedSegment.current) {
-                props.selectedSegment.current?.update({color: 'white', editable: false})
+                props.selectedSegment.current?.update({color: 'white'})
                 props.selectedSegment.current = curSegment
-                props.selectedSegment.current.update({color: 'red', editable: !props.tcLock})
+                props.selectedSegment.current.update({color: 'red'})
             }
         })
         props.hotRef.current.addHook('afterSelectionEndByProp', (row, prop, row2, prop2) => {

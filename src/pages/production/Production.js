@@ -87,11 +87,11 @@ const Production = () => {
         const segments = []
         cellDataRef.current.forEach((value) => {
             const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
-            if (0 <= start && start <= end) segments.push(createSegment(start, end, value.rowId, languages[0] ? value[`${languages[0].code}_${languages[0].counter}`] : ''))
+            if (0 <= start && start <= end) segments.push(createSegment(start, end, value.rowId, languages[0] ? value[`${languages[0].code}_${languages[0].counter}`] : '', !tcLock))
         })
         selectedSegment.current = null
         return segments
-    }, [languages])
+    }, [languages, tcLock])
 
     useEffect(() => {
         const handleLanguageWindowResize = () => {

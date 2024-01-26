@@ -29,12 +29,12 @@ export const secToTc = (sec) => {
     return `${h}:${m}:${s}`
 }
 
-export const createSegment = (start, end, id, text) => {
+export const createSegment = (start, end, id, text, editable) => {
     return {
         startTime: start,
         endTime: end,
         color: 'white',
-        editable: false,
+        editable: editable,
         labelText: text,
         id: id
     }

@@ -24,13 +24,15 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             else amplitudeScale.current = Math.min(amplitudeScale.current + 0.5, 5)
             waveform.views.getView('zoomview').setAmplitudeScale(amplitudeScale.current)
         } else {
-            if (e.deltaY > 0) waveform.views.getView('zoomview').scrollWaveform({seconds: -1})
-            else waveform.views.getView('zoomview').scrollWaveform({seconds: 1})
+            const player = props.playerRef.current
+            player.seekTo(player.getCurrentTime() + (e.deltaY > 0 ? -0.5 : 0.5), 'seconds')
         }
-    }, [props.waveformRef])
+    }, [props.waveformRef, props.playerRef])
+
     const afterSeekedPromise = useCallback(() => {
         return new Promise(resolve => props.waveformRef.current.on('player.seeked', () => resolve()))
     }, [props.waveformRef])
+
     const setStatusDisplay = (status) => {
         if (status === 'isLoading') {
             spinnerRef.current.style.display = ''
@@ -43,6 +45,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             warningRef.current.style.display = 'none'
         }
     }
+
     const errorHandler = useCallback((ev) => {
         if (ev.error?.name === 'TypeError' && ev.error.message.startsWith('WaveformData')) setStatusDisplay('error')
     }, [])
@@ -134,9 +137,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     if (!props.playerRef.current.getInternalPlayer()?.src.startsWith(props.video)) {
                         props.waveformRef.current?.destroy()
                         props.waveformRef.current = null
-                    } else {
-                        setStatusDisplay('loaded')
-                    }
+                    } else setStatusDisplay('loaded')
                     peaks.on('zoomview.click', (event) => {
                         const seeker = () => {
                             afterSeekedPromise().then(() => {

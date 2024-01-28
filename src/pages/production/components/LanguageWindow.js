@@ -224,7 +224,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
                 }
             } else localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             if (props.waveformRef.current && source !== 'timelineWindow') {
-                const languageKey = `${props.languages[0].code}_${props.languages[0].counter}`
+                const languageKey = props.languages.length ? `${props.languages[0].code}_${props.languages[0].counter}` : null
                 const tcChanges = changes.reduce((acc, v) => {
                     if (v[1] === 'start' || v[1] === 'end' || v[1] === languageKey) {
                         if (!acc.hasOwnProperty(v[0])) acc[v[0]] = {}

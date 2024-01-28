@@ -149,7 +149,13 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                                         const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), time)
                                         props.hotRef.current.alter('insert_row', addIndex, 1)
                                         props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
-                                        props.hotRef.current.selectCells([[addIndex, 0, addIndex, props.hotRef.current.countCols() - 1], [addIndex, 4]])
+                                        const select = [[addIndex, 0, addIndex, props.hotRef.current.countCols() - 1]]
+                                        if (props.hotRef.current.countCols() > 4) select.push([addIndex, 4])
+                                        props.hotRef.current.selectCells(select)
+                                        if (select.length === 2) {
+                                            props.hotRef.current.getActiveEditor().enableFullEditMode()
+                                            props.hotRef.current.getActiveEditor().beginEditing()
+                                        }
                                     }
                                 }
                             })
@@ -167,16 +173,14 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                             const segment = peaks.segments.find(event.time, event.time)[0]
                             if (segment) {
                                 moveCursorRef.current = event.evt.target
-                                if (props.selectedSegment.current === segment) {
-                                    moveCursorRef.current.style.cursor = 'default'
-                                    props.selectedSegment.current.update({color: 'white'})
-                                    props.selectedSegment.current = null
-                                    return
-                                }
                                 const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
-                                props.hotRef.current.selectCells([[row, 0, row, props.hotRef.current.countCols() - 1], [row, 4]])
-                                props.hotRef.current.getActiveEditor().enableFullEditMode()
-                                props.hotRef.current.getActiveEditor().beginEditing()
+                                const select = [[row, 0, row, props.hotRef.current.countCols() - 1]]
+                                if (props.hotRef.current.countCols() > 4) select.push([row, 4])
+                                props.hotRef.current.selectCells(select)
+                                if (select.length === 2) {
+                                    props.hotRef.current.getActiveEditor().enableFullEditMode()
+                                    props.hotRef.current.getActiveEditor().beginEditing()
+                                }
                                 moveCursorRef.current.style.cursor = 'move'
                             }
                             seeker()

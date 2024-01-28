@@ -101,10 +101,10 @@ const TransToolbar = (props) => {
                         if (props.tcLockRef.current) return
                         const row = props.hotSelectionRef.current.rowStart
                         if (row != null) {
-                            const currentTc = secToTc(props.playerRef.current?.getCurrentTime())
+                            const currentTime = props.playerRef.current?.getCurrentTime() || 0
                             const tcOut = props.hotRef.current.getDataAtCell(row, 1)
-                            const tcPair = [[row, 0, currentTc]]
-                            !tcOut && tcPair.push([row, 1, currentTc])
+                            const tcPair = [[row, 0, secToTc(currentTime)]]
+                            !tcOut && tcPair.push([row, 1, secToTc(currentTime + 1)])
                             props.hotRef.current.setDataAtCell(tcPair)
                             props.hotRef.current.selectCell(row, 0)
                         }

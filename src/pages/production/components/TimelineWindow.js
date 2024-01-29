@@ -19,6 +19,21 @@ const TimelineWindow = ({resetSegments, ...props}) => {
     const [contextMenuSegment, setContextMenuSegment] = useState(null)
     const {show: contextMenuShow} = useContextMenu({id: contextMenuId});
 
+    const insertSegment = useCallback((time) => {
+        if (!props.waveformRef.current.segments.find(time, time + 1).length) {
+            const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), time)
+            props.hotRef.current.alter('insert_row', addIndex, 1)
+            props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
+            const select = [[addIndex, 0, addIndex, props.hotRef.current.countCols() - 1]]
+            if (props.hotRef.current.countCols() > SCRIPT_COLUMN) select.push([addIndex, SCRIPT_COLUMN])
+            props.hotRef.current.selectCells(select)
+            if (select.length === 2) {
+                props.hotRef.current.getActiveEditor().enableFullEditMode()
+                props.hotRef.current.getActiveEditor().beginEditing()
+            }
+        }
+    }, [props.waveformRef, props.hotRef])
+
     const onWheel = useCallback((e) => {
         const waveform = props.waveformRef.current
         if (e.ctrlKey || e.metaKey) {
@@ -155,20 +170,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                         isDoubleClick = true
                         clickTimer = setTimeout(() => {
                             isDoubleClick = false;
-                            if (event.evt.ctrlKey || event.evt.metaKey) {
-                                if (!peaks.segments.find(event.time, event.time + 1).length) {
-                                    const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), event.time)
-                                    props.hotRef.current.alter('insert_row', addIndex, 1)
-                                    props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(event.time)], [addIndex, 1, secToTc(event.time + 1)]])
-                                    const select = [[addIndex, 0, addIndex, props.hotRef.current.countCols() - 1]]
-                                    if (props.hotRef.current.countCols() > SCRIPT_COLUMN) select.push([addIndex, SCRIPT_COLUMN])
-                                    props.hotRef.current.selectCells(select)
-                                    if (select.length === 2) {
-                                        props.hotRef.current.getActiveEditor().enableFullEditMode()
-                                        props.hotRef.current.getActiveEditor().beginEditing()
-                                    }
-                                }
-                            }
+                            if (event.evt.ctrlKey || event.evt.metaKey) insertSegment(event.time)
                         }, 300);
                     } else {
                         clearTimeout(clickTimer)
@@ -198,10 +200,9 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             props.waveformRef.current?.destroy()
             props.waveformRef.current = null
             props.selectedSegment.current = null
-            setInitialized(false)
             window.removeEventListener('error', errorHandler)
         }
-    }, [props.video, props.waveformRef, onWheel, errorHandler, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
+    }, [props.video, props.waveformRef, insertSegment, onWheel, errorHandler, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()
@@ -225,7 +226,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
     }, [initialized, props.waveformRef, resetSegments]);
 
     useEffect(() => {
-        if (props.waveformRef.current) {
+        if (initialized) {
             props.waveformRef.current.on('zoomview.contextmenu', (event) => {
                 setContextMenuSegment(null)
                 const segment = props.waveformRef.current.segments.find(event.time, event.time)[0]
@@ -238,6 +239,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     contextMenuShow({event: event.evt, props: {time: event.time}})
                 }
             })
+            setInitialized(false)
         }
     }, [initialized, contextMenuShow, props.waveformRef, props.hotRef])
 

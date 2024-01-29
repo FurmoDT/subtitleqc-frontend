@@ -1,6 +1,7 @@
 import {tcToSec} from "./functions";
 
 const LEVEL = {required: 'red', optional: 'yellow'}
+export const SCRIPT_COLUMN = 4
 
 const setTDColor = (td, backgroundColor) => {
     if (td.style.backgroundColor !== 'red') td.style.backgroundColor = backgroundColor

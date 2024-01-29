@@ -11,6 +11,7 @@ import {AiOutlineInsertRowAbove, AiOutlineInsertRowBelow} from "react-icons/ai";
 import {RiDeleteRow} from "react-icons/ri";
 import {FaHourglass, FaHourglassEnd, FaHourglassStart} from "react-icons/fa";
 import {MdStart} from "react-icons/md";
+import {SCRIPT_COLUMN} from "../../../utils/hotRenderer";
 
 const TransToolbar = (props) => {
     const [isTranslating, setIsTranslating] = useState(false)
@@ -141,9 +142,9 @@ const TransToolbar = (props) => {
                             props.hotRef.current.alter('insert_row', selection.rowStart + 1, 1)
                             const currentTime = props.playerRef.current.getCurrentTime()
                             const mid = tcToSec(selectedData[0]) < currentTime && currentTime < tcToSec(selectedData[1]) ? secToTc(currentTime) : secToTc(tcToSec(selectedData[0]) + Number(((tcToSec(selectedData[1]) - tcToSec(selectedData[0])) / 2).toFixed(3)))
-                            props.hotRef.current.setDataAtCell([[selection.rowStart, 1, mid], [selection.rowStart + 1, 0, mid], [selection.rowStart + 1, 1, selectedData[1]], ...Array.from({length: props.hotRef.current.countCols() - 4}, (_, colIndex) => {
-                                const lines = splitLine(selectedData[4 + colIndex])
-                                return [[selection.rowStart, colIndex + 4, lines[0]], [selection.rowStart + 1, colIndex + 4, lines[1]]]
+                            props.hotRef.current.setDataAtCell([[selection.rowStart, 1, mid], [selection.rowStart + 1, 0, mid], [selection.rowStart + 1, 1, selectedData[1]], ...Array.from({length: props.hotRef.current.countCols() - SCRIPT_COLUMN}, (_, colIndex) => {
+                                const lines = splitLine(selectedData[SCRIPT_COLUMN + colIndex])
+                                return [[selection.rowStart, colIndex + SCRIPT_COLUMN, lines[0]], [selection.rowStart + 1, colIndex + SCRIPT_COLUMN, lines[1]]]
                             }).flat()])
                             props.hotRef.current.selectCell(selection.rowStart + 1, selection.columnStart)
                         }
@@ -158,12 +159,12 @@ const TransToolbar = (props) => {
                         const selectedData = props.hotRef.current.getData(selection.rowStart, 0, selection.rowEnd, countCols)
                         if (selectedData.length > 1) {
                             const result = [];
-                            for (let i = 4; i < countCols; i++) {
+                            for (let i = SCRIPT_COLUMN; i < countCols; i++) {
                                 const colValues = selectedData.map(row => row[i]);
                                 result.push(colValues.join(' '));
                             }
                             props.hotRef.current.setDataAtCell([[selection.rowStart, 1, selectedData[selectedData.length - 1][1]],
-                                ...result.map((value, index) => [selection.rowStart, index + 4, value]),
+                                ...result.map((value, index) => [selection.rowStart, index + SCRIPT_COLUMN, value]),
                                 ...Array.from({length: selection.rowEnd - selection.rowStart}, (_, rowIndex) => Array.from({length: countCols}, (_, colIndex) => [selection.rowStart + 1 + rowIndex, colIndex, ''])).flat()
                             ])
                             props.hotRef.current.alter('remove_row', selection.rowStart + 1, selection.rowEnd - selection.rowStart)

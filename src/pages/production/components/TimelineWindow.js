@@ -2,6 +2,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import Peaks from 'peaks.js';
 import {bisect, secToTc, tcToSec} from "../../../utils/functions";
 import {MDBBtn, MDBCheckbox, MDBIcon, MDBSpinner} from "mdb-react-ui-kit";
+import {SCRIPT_COLUMN} from "../../../utils/hotRenderer";
 
 const TimelineWindow = ({resetSegments, ...props}) => {
     const zoomviewContainerRef = useRef(null);
@@ -150,7 +151,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                                         props.hotRef.current.alter('insert_row', addIndex, 1)
                                         props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
                                         const select = [[addIndex, 0, addIndex, props.hotRef.current.countCols() - 1]]
-                                        if (props.hotRef.current.countCols() > 4) select.push([addIndex, 4])
+                                        if (props.hotRef.current.countCols() > SCRIPT_COLUMN) select.push([addIndex, SCRIPT_COLUMN])
                                         props.hotRef.current.selectCells(select)
                                         if (select.length === 2) {
                                             props.hotRef.current.getActiveEditor().enableFullEditMode()
@@ -175,7 +176,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                                 moveCursorRef.current = event.evt.target
                                 const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
                                 const select = [[row, 0, row, props.hotRef.current.countCols() - 1]]
-                                if (props.hotRef.current.countCols() > 4) select.push([row, 4])
+                                if (props.hotRef.current.countCols() > SCRIPT_COLUMN) select.push([row, SCRIPT_COLUMN])
                                 props.hotRef.current.selectCells(select)
                                 if (select.length === 2) {
                                     props.hotRef.current.getActiveEditor().enableFullEditMode()

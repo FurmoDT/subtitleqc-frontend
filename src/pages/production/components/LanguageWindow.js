@@ -1,7 +1,13 @@
 import '../../../css/Handsontable.css'
 import '../../../css/HandsontableCustom.css'
 import {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from "react";
-import {durationValidator, tcInValidator, tcOutValidator, textValidator} from "../../../utils/hotRenderer";
+import {
+    durationValidator,
+    SCRIPT_COLUMN,
+    tcInValidator,
+    tcOutValidator,
+    textValidator
+} from "../../../utils/hotRenderer";
 import {createSegment, tcToSec} from "../../../utils/functions";
 import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
@@ -105,11 +111,11 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         const languageTextEditor = window.Handsontable.editors.TextEditor.prototype.extend();
         languageTextEditor.prototype.init = function () {
             window.Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
-            this.TEXTAREA.addEventListener('input', (event) => this.col === 4 && props.selectedSegment.current?.update({labelText: event.target.value}))
+            this.TEXTAREA.addEventListener('input', (event) => this.col === SCRIPT_COLUMN && this.state === 'STATE_EDITING' && props.selectedSegment.current?.update({labelText: event.target.value}))
         }
         languageTextEditor.prototype.finishEditing = function (revertToOriginal) {
             window.Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
-            if (this.col === 4 && revertToOriginal) props.selectedSegment.current?.update({labelText: this.originalValue})
+            if (this.col === SCRIPT_COLUMN && revertToOriginal) props.selectedSegment.current?.update({labelText: this.originalValue})
         }
 
         props.hotRef.current = new window.Handsontable(containerMain.current, {

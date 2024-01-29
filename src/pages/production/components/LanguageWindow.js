@@ -84,17 +84,17 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
             durationValidator(arguments[2], arguments[3], arguments[5], td, props.hotFontSize, instance, props.guideline)
         }
 
+        function checkboxRenderer(instance, td) {
+            window.Handsontable.renderers.CheckboxRenderer.apply(this, arguments)
+            td.classList.add('text-center')
+        }
+
         function textRenderer(instance, td) {
             window.Handsontable.renderers.TextRenderer.apply(this, arguments)
             if (arguments[5]) {
                 td.style.fontSize = props.hotFontSize
                 td.classList.add('td-custom-text')
             }
-        }
-
-        function checkboxRenderer(instance, td) {
-            window.Handsontable.renderers.CheckboxRenderer.apply(this, arguments)
-            td.classList.add('text-center')
         }
 
         function textLanguageRenderer(instance, td) {

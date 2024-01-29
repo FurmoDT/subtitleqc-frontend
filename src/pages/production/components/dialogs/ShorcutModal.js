@@ -90,70 +90,90 @@ const ShortcutModal = (props) => {
             const player = props.playerRef.current.getInternalPlayer()
             if (player) player.paused ? player.play() : player.pause()
         }
-        if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowUp') {
-            event.stopPropagation()
-            if (event.shiftKey) {
-                const selection = props.hotSelectionRef.current
-                const adjustedSelection = adjustedHotSelection()
-                const data = props.hotRef.current.getData(0, adjustedSelection.columnStart, adjustedSelection.rowEnd, adjustedSelection.columnEnd)
-                let targetRow = 0
-                for (let i = selection.rowEnd - 1; i >= 0; i--) {
-                    if (data[i].some(Boolean)) targetRow = i
-                    else {
-                        if (targetRow) break
+        if (event.code === 'ArrowUp') {
+            if (event.ctrlKey || event.metaKey) {
+                event.stopPropagation()
+                if (event.shiftKey) {
+                    const selection = props.hotSelectionRef.current
+                    const adjustedSelection = adjustedHotSelection()
+                    const data = props.hotRef.current.getData(0, adjustedSelection.columnStart, adjustedSelection.rowEnd, adjustedSelection.columnEnd)
+                    let targetRow = 0
+                    for (let i = selection.rowEnd - 1; i >= 0; i--) {
+                        if (data[i].some(Boolean)) targetRow = i
+                        else {
+                            if (targetRow) break
+                        }
                     }
-                }
-                props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, targetRow, selection.columnEnd)
-            } else if (event.target.className === 'handsontableInput') props.tcIncreaseButtonRef.current.click()
-        }
-        if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowLeft') {
-            event.stopPropagation()
-            if (event.shiftKey) {
+                    props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, targetRow, selection.columnEnd)
+                } else if (event.target.tagName === 'TEXTAREA') props.tcIncreaseButtonRef.current.click()
+            } else {
                 const selection = props.hotSelectionRef.current
-                const adjustedSelection = adjustedHotSelection()
-                const data = props.hotRef.current.getData(adjustedSelection.rowStart, 0, adjustedSelection.rowEnd, adjustedSelection.columnEnd)
-                const transposedData = data.reduce((r, a) => a.map((v, i) => [...(r[i] || []), v]), [])
-                let targetColumn = 0
-                for (let i = selection.columnEnd - 1; i >= 0; i--) {
-                    if (transposedData[i].some(Boolean)) targetColumn = i
-                    else {
-                        if (targetColumn) break
-                    }
-                }
-                props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, targetColumn)
+                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, selection.columnEnd)
             }
         }
-        if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowDown') {
-            event.stopPropagation()
-            if (event.shiftKey) {
-                const selection = props.hotSelectionRef.current
-                const adjustedSelection = adjustedHotSelection()
-                const data = props.hotRef.current.getData(adjustedSelection.rowStart, adjustedSelection.columnStart, props.hotRef.current.countRows() - 3, adjustedSelection.columnEnd)
-                let targetRow = props.hotRef.current.countRows() - 1
-                for (let i = selection.rowEnd + 1; i < props.hotRef.current.countRows(); i++) {
-                    if (data[i - adjustedSelection.rowStart]?.some(Boolean)) targetRow = i
-                    else {
-                        if (targetRow !== props.hotRef.current.countRows() - 1) break
+        if (event.code === 'ArrowLeft') {
+            if (event.ctrlKey || event.metaKey) {
+                event.stopPropagation()
+                if (event.shiftKey) {
+                    const selection = props.hotSelectionRef.current
+                    const adjustedSelection = adjustedHotSelection()
+                    const data = props.hotRef.current.getData(adjustedSelection.rowStart, 0, adjustedSelection.rowEnd, adjustedSelection.columnEnd)
+                    const transposedData = data.reduce((r, a) => a.map((v, i) => [...(r[i] || []), v]), [])
+                    let targetColumn = 0
+                    for (let i = selection.columnEnd - 1; i >= 0; i--) {
+                        if (transposedData[i].some(Boolean)) targetColumn = i
+                        else {
+                            if (targetColumn) break
+                        }
                     }
+                    props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, targetColumn)
                 }
-                props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, targetRow, selection.columnEnd)
-            } else if (event.target.className === 'handsontableInput') props.tcDecreaseButtonRef.current.click()
+            } else {
+                const selection = props.hotSelectionRef.current
+                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, selection.columnEnd)
+            }
         }
-        if ((event.ctrlKey || event.metaKey) && event.code === 'ArrowRight') {
-            event.stopPropagation()
-            if (event.shiftKey) {
-                const selection = props.hotSelectionRef.current
-                const adjustedSelection = adjustedHotSelection()
-                const data = props.hotRef.current.getData(adjustedSelection.rowStart, adjustedSelection.columnStart, adjustedSelection.rowEnd, props.hotRef.current.countCols() - 1)
-                const transposedData = data.reduce((r, a) => a.map((v, i) => [...(r[i] || []), v]), [])
-                let targetColumn = props.hotRef.current.countCols() - 1
-                for (let i = selection.columnEnd + 1; i < props.hotRef.current.countCols(); i++) {
-                    if (transposedData[i - adjustedSelection.columnStart]?.some(Boolean)) targetColumn = i
-                    else {
-                        if (targetColumn !== props.hotRef.current.countCols() - 1) break
+        if (event.code === 'ArrowDown') {
+            if (event.ctrlKey || event.metaKey) {
+                event.stopPropagation()
+                if (event.shiftKey) {
+                    const selection = props.hotSelectionRef.current
+                    const adjustedSelection = adjustedHotSelection()
+                    const data = props.hotRef.current.getData(adjustedSelection.rowStart, adjustedSelection.columnStart, props.hotRef.current.countRows() - 3, adjustedSelection.columnEnd)
+                    let targetRow = props.hotRef.current.countRows() - 1
+                    for (let i = selection.rowEnd + 1; i < props.hotRef.current.countRows(); i++) {
+                        if (data[i - adjustedSelection.rowStart]?.some(Boolean)) targetRow = i
+                        else {
+                            if (targetRow !== props.hotRef.current.countRows() - 1) break
+                        }
                     }
+                    props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, targetRow, selection.columnEnd)
+                } else if (event.target.tagName === 'TEXTAREA') props.tcDecreaseButtonRef.current.click()
+            } else {
+                const selection = props.hotSelectionRef.current
+                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, selection.columnEnd)
+            }
+        }
+        if (event.code === 'ArrowRight') {
+            if (event.ctrlKey || event.metaKey) {
+                event.stopPropagation()
+                if (event.shiftKey) {
+                    const selection = props.hotSelectionRef.current
+                    const adjustedSelection = adjustedHotSelection()
+                    const data = props.hotRef.current.getData(adjustedSelection.rowStart, adjustedSelection.columnStart, adjustedSelection.rowEnd, props.hotRef.current.countCols() - 1)
+                    const transposedData = data.reduce((r, a) => a.map((v, i) => [...(r[i] || []), v]), [])
+                    let targetColumn = props.hotRef.current.countCols() - 1
+                    for (let i = selection.columnEnd + 1; i < props.hotRef.current.countCols(); i++) {
+                        if (transposedData[i - adjustedSelection.columnStart]?.some(Boolean)) targetColumn = i
+                        else {
+                            if (targetColumn !== props.hotRef.current.countCols() - 1) break
+                        }
+                    }
+                    props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, targetColumn)
                 }
-                props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, targetColumn)
+            } else {
+                const selection = props.hotSelectionRef.current
+                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, selection.columnEnd)
             }
         }
         if (event.code === 'F2') {

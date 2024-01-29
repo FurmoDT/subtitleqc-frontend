@@ -188,7 +188,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                         }
                     })
                     zoomviewContainerRef.current.addEventListener('wheel', onWheel, {passive: false})
-                    zoomviewContainerRef.current.setAttribute('tabindex', 0)
+                    // zoomviewContainerRef.current.setAttribute('tabindex', 0)
                 })
                 amplitudeScale.current = 2
                 peaks.views.getView('zoomview')?.setAmplitudeScale(amplitudeScale.current)

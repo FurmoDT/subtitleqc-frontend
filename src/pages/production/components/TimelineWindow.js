@@ -3,6 +3,8 @@ import Peaks from 'peaks.js';
 import {bisect, secToTc, tcToSec} from "../../../utils/functions";
 import {MDBBtn, MDBCheckbox, MDBIcon, MDBSpinner} from "mdb-react-ui-kit";
 import {SCRIPT_COLUMN} from "../../../utils/hotRenderer";
+import {Item, Menu, useContextMenu} from "react-contexify";
+import "../../../css/ReactContexify.css";
 
 const TimelineWindow = ({resetSegments, ...props}) => {
     const zoomviewContainerRef = useRef(null);
@@ -13,6 +15,9 @@ const TimelineWindow = ({resetSegments, ...props}) => {
     const amplitudeScale = useRef(2)
     const moveCursorRef = useRef(null)
     const [initialized, setInitialized] = useState(false)
+    const contextMenuId = 'context-menu'
+    const [contextMenuSegment, setContextMenuSegment] = useState(null)
+    const {show: contextMenuShow} = useContextMenu({id: contextMenuId});
 
     const onWheel = useCallback((e) => {
         const waveform = props.waveformRef.current
@@ -31,9 +36,10 @@ const TimelineWindow = ({resetSegments, ...props}) => {
         }
     }, [props.waveformRef, props.playerRef])
 
-    const afterSeekedPromise = useCallback(() => {
-        return new Promise(resolve => props.waveformRef.current.on('player.seeked', () => resolve()))
-    }, [props.waveformRef])
+    const handleContextMenuItemClick = useCallback(({props: p}) => {
+        console.log(props.hotRef.current)
+        console.log(p)
+    }, [props.hotRef])
 
     const setStatusDisplay = (status) => {
         if (status === 'isLoading') {
@@ -88,13 +94,11 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             if (peaks) {
                 props.waveformRef.current = peaks
                 peaks.on("segments.mouseenter", (event) => {
-                    if (event.segment.editable) {
-                        moveCursorRef.current = event.evt.target
-                        moveCursorRef.current.style.cursor = 'move'
-                    }
+                    moveCursorRef.current = event.evt.target
+                    moveCursorRef.current.style.cursor = 'move'
                 })
-                peaks.on("segments.mouseleave", (event) => {
-                    event.evt.target.style.cursor = 'default'
+                peaks.on("segments.mouseleave", () => {
+                    moveCursorRef.current.style.cursor = 'default'
                 })
                 peaks.on("segments.dragged", (event) => {
                     const [start, end] = [secToTc(Number(event.segment.startTime.toFixed(3))), secToTc(Number(event.segment.endTime.toFixed(3)))]
@@ -132,64 +136,57 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                         }
                     })
                 })
-                let isDoubleClick = false;
-                let clickTimer;
                 peaks.on('peaks.ready', () => {
                     setInitialized(true)
                     if (!props.playerRef.current.getInternalPlayer()?.src.startsWith(props.video)) {
                         props.waveformRef.current?.destroy()
                         props.waveformRef.current = null
                     } else setStatusDisplay('loaded')
-                    peaks.on('zoomview.click', (event) => {
-                        const seeker = () => {
-                            afterSeekedPromise().then(() => {
-                                props.waveformRef.current?.player.pause()
-                                if (event.evt.ctrlKey || event.evt.metaKey) {
-                                    const time = peaks.player.getCurrentTime()
-                                    if (!peaks.segments.find(time, time + 1).length) {
-                                        const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), time)
-                                        props.hotRef.current.alter('insert_row', addIndex, 1)
-                                        props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(time)], [addIndex, 1, secToTc(time + 1)]])
-                                        const select = [[addIndex, 0, addIndex, props.hotRef.current.countCols() - 1]]
-                                        if (props.hotRef.current.countCols() > SCRIPT_COLUMN) select.push([addIndex, SCRIPT_COLUMN])
-                                        props.hotRef.current.selectCells(select)
-                                        if (select.length === 2) {
-                                            props.hotRef.current.getActiveEditor().enableFullEditMode()
-                                            props.hotRef.current.getActiveEditor().beginEditing()
-                                        }
-                                    }
-                                }
-                            })
-                            peaks.player.seek(event.time)
-                        }
-                        if (!isDoubleClick) {
-                            isDoubleClick = true
-                            clickTimer = setTimeout(() => {
-                                isDoubleClick = false;
-                                seeker()
-                            }, 300);
-                        } else {
-                            clearTimeout(clickTimer)
-                            isDoubleClick = false
-                            const segment = peaks.segments.find(event.time, event.time)[0]
-                            if (segment) {
-                                moveCursorRef.current = event.evt.target
-                                const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
-                                const select = [[row, 0, row, props.hotRef.current.countCols() - 1]]
-                                if (props.hotRef.current.countCols() > SCRIPT_COLUMN) select.push([row, SCRIPT_COLUMN])
-                                props.hotRef.current.selectCells(select)
-                                if (select.length === 2) {
-                                    props.hotRef.current.getActiveEditor().enableFullEditMode()
-                                    props.hotRef.current.getActiveEditor().beginEditing()
-                                }
-                                moveCursorRef.current.style.cursor = 'move'
-                            }
-                            seeker()
-                        }
-                    })
                     zoomviewContainerRef.current.addEventListener('wheel', onWheel, {passive: false})
                     // zoomviewContainerRef.current.setAttribute('tabindex', 0)
                 })
+                let isDoubleClick = false;
+                let clickTimer;
+                peaks.on('zoomview.click', (event) => {
+                    if (event.evt.button !== 0) return
+                    props.playerRef.current.getInternalPlayer().pause()
+                    props.playerRef.current.seekTo(event.time, 'seconds')
+                    if (!isDoubleClick) {
+                        isDoubleClick = true
+                        clickTimer = setTimeout(() => {
+                            isDoubleClick = false;
+                            if (event.evt.ctrlKey || event.evt.metaKey) {
+                                if (!peaks.segments.find(event.time, event.time + 1).length) {
+                                    const addIndex = bisect(props.hotRef.current.getSourceDataAtCol('start').map(v => tcToSec(v)).filter(value => !isNaN(value)), event.time)
+                                    props.hotRef.current.alter('insert_row', addIndex, 1)
+                                    props.hotRef.current.setDataAtCell([[addIndex, 0, secToTc(event.time)], [addIndex, 1, secToTc(event.time + 1)]])
+                                    const select = [[addIndex, 0, addIndex, props.hotRef.current.countCols() - 1]]
+                                    if (props.hotRef.current.countCols() > SCRIPT_COLUMN) select.push([addIndex, SCRIPT_COLUMN])
+                                    props.hotRef.current.selectCells(select)
+                                    if (select.length === 2) {
+                                        props.hotRef.current.getActiveEditor().enableFullEditMode()
+                                        props.hotRef.current.getActiveEditor().beginEditing()
+                                    }
+                                }
+                            }
+                        }, 300);
+                    } else {
+                        clearTimeout(clickTimer)
+                        isDoubleClick = false
+                        const segment = peaks.segments.find(event.time, event.time)[0]
+                        if (segment) {
+                            const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
+                            const select = [[row, 0, row, props.hotRef.current.countCols() - 1]]
+                            if (props.hotRef.current.countCols() > SCRIPT_COLUMN) select.push([row, SCRIPT_COLUMN])
+                            props.hotRef.current.selectCells(select)
+                            if (select.length === 2) {
+                                props.hotRef.current.getActiveEditor().enableFullEditMode()
+                                props.hotRef.current.getActiveEditor().beginEditing()
+                            }
+                        }
+                    }
+                })
+
                 amplitudeScale.current = 2
                 peaks.views.getView('zoomview')?.setAmplitudeScale(amplitudeScale.current)
                 peaks.views.getView('zoomview')?.setSegmentDragMode('no-overlap')
@@ -204,7 +201,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             setInitialized(false)
             window.removeEventListener('error', errorHandler)
         }
-    }, [props.video, props.waveformRef, onWheel, errorHandler, afterSeekedPromise, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
+    }, [props.video, props.waveformRef, onWheel, errorHandler, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()
@@ -226,6 +223,23 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             props.waveformRef.current.segments.add(resetSegments())
         }
     }, [initialized, props.waveformRef, resetSegments]);
+
+    useEffect(() => {
+        if (props.waveformRef.current) {
+            props.waveformRef.current.on('zoomview.contextmenu', (event) => {
+                setContextMenuSegment(null)
+                const segment = props.waveformRef.current.segments.find(event.time, event.time)[0]
+                if (segment) {
+                    const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
+                    props.hotRef.current.selectRows(row)
+                    setContextMenuSegment(segment)
+                    contextMenuShow({event: event.evt, props: {segment: segment}})
+                } else {
+                    contextMenuShow({event: event.evt, props: {time: event.time}})
+                }
+            })
+        }
+    }, [initialized, contextMenuShow, props.waveformRef, props.hotRef])
 
     return <>
         <div className={'position-absolute end-0'} style={{zIndex: 1}}>
@@ -254,6 +268,10 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             </div>
             <div ref={zoomviewContainerRef} className={'w-100'} style={{height: `${props.size.height - 100}px`}}/>
             <div ref={overviewContainerRef} className={'w-100'} style={{height: '30px'}}/>
+            <Menu id={contextMenuId} animation={false} onContextMenu={(e) => e.preventDefault()}>
+                {contextMenuSegment ? <Item onClick={handleContextMenuItemClick} disabled>삭제</Item> :
+                    <Item onClick={handleContextMenuItemClick} disabled>추가</Item>}
+            </Menu>
         </div>
     </>
 };

@@ -74,7 +74,8 @@ export const durationValidator = (r, c, v, td, fontSize, instance, guideline) =>
     const duration = parseFloat((end - start).toFixed(3))
     const error = new Set()
     if (duration) td.innerHTML = duration
-    else if (0 <= start || 0 <= end) {
+    if (start || end) {
+        if (!duration || duration < 0)
         setTDColor(td, 'red')
         error.add(`TC Range Error`)
     }

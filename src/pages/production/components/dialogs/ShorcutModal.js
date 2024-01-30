@@ -76,11 +76,6 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.splitLineButtonRef.current.click()
         }
-        if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
-            event.preventDefault()
-            if (event.shiftKey) props.hotRef.current.redo()
-            else props.hotRef.current.undo()
-        }
     }, [props.hotRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
@@ -89,6 +84,14 @@ const ShortcutModal = (props) => {
             event.preventDefault()
             const player = props.playerRef.current.getInternalPlayer()
             if (player) player.paused ? player.play() : player.pause()
+        }
+        if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
+            event.stopPropagation()
+            if (!props.hotRef.current.getActiveEditor().isOpened()) {
+                event.preventDefault()
+                if (event.shiftKey) props.hotRef.current.redo()
+                else props.hotRef.current.undo()
+            }
         }
         if (event.code === 'ArrowUp') {
             if (event.ctrlKey || event.metaKey) {

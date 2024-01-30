@@ -219,29 +219,26 @@ const TimelineWindow = ({resetSegments, ...props}) => {
     }, [props.mediaFile, props.waveformRef])
 
     useEffect(() => {
-        if (initialized && props.waveformRef.current) {
-            props.waveformRef.current.segments.removeAll()
-            props.waveformRef.current.segments.add(resetSegments())
-        }
-    }, [initialized, props.waveformRef, resetSegments]);
-
-    useEffect(() => {
         if (initialized) {
-            props.waveformRef.current.on('zoomview.contextmenu', (event) => {
-                setContextMenuSegment(null)
-                const segment = props.waveformRef.current.segments.find(event.time, event.time)[0]
-                if (segment) {
-                    const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
-                    props.hotRef.current.selectRows(row)
-                    setContextMenuSegment(segment)
-                    contextMenuShow({event: event.evt, props: {segment: segment}})
-                } else {
-                    contextMenuShow({event: event.evt, props: {time: event.time}})
-                }
-            })
             setInitialized(false)
+            if (props.waveformRef.current) {
+                props.waveformRef.current.segments.removeAll()
+                props.waveformRef.current.segments.add(resetSegments())
+                props.waveformRef.current.on('zoomview.contextmenu', (event) => {
+                    setContextMenuSegment(null)
+                    const segment = props.waveformRef.current.segments.find(event.time, event.time)[0]
+                    if (segment) {
+                        const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(segment.id)
+                        props.hotRef.current.selectRows(row)
+                        setContextMenuSegment(segment)
+                        contextMenuShow({event: event.evt, props: {segment: segment}})
+                    } else {
+                        contextMenuShow({event: event.evt, props: {time: event.time}})
+                    }
+                })
+            }
         }
-    }, [initialized, contextMenuShow, props.waveformRef, props.hotRef])
+    }, [initialized, contextMenuShow, props.waveformRef, props.hotRef, resetSegments])
 
     return <>
         <div className={'position-absolute end-0'} style={{zIndex: 1}}>

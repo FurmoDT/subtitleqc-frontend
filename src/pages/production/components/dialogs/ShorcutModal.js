@@ -188,15 +188,15 @@ const ShortcutModal = (props) => {
             }
         }
         if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'Insert') {
-            props.insertLineBelowButtonRef.current.click()
-        } else if (event.ctrlKey && event.code === 'Insert') {
             props.insertLineAboveButtonRef.current.click()
+        } else if (event.ctrlKey && event.code === 'Insert') {
+            props.insertLineBelowButtonRef.current.click()
         }
         // temp
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyQ') {
             event.preventDefault()
-            if (event.shiftKey) props.insertLineBelowButtonRef.current.click()
-            else props.insertLineAboveButtonRef.current.click()
+            if (event.shiftKey) props.insertLineAboveButtonRef.current.click()
+            else props.insertLineBelowButtonRef.current.click()
         }
         if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'KeyA') {
             event.preventDefault()
@@ -370,14 +370,14 @@ const ShortcutModal = (props) => {
                                 <MDBCol size={4}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <AiOutlineInsertRowAbove color={'black'} size={20}/> CTRL INSERT, CTRL Q
+                                        <AiOutlineInsertRowAbove color={'black'} size={20}/>
+                                        CTRL SHIFT INSERT, CTRL SHIFT Q
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={5}>
                                     <MDBListGroupItem
                                         className='d-flex justify-content-between align-items-center px-2'>
-                                        <AiOutlineInsertRowBelow color={'black'} size={20}/>
-                                        CTRL SHIFT INSERT, CTRL SHIFT Q
+                                        <AiOutlineInsertRowBelow color={'black'} size={20}/>CTRL INSERT, CTRL Q
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>

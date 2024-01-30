@@ -51,10 +51,31 @@ const TimelineWindow = ({resetSegments, ...props}) => {
         }
     }, [props.waveformRef, props.playerRef])
 
-    const handleContextMenuItemClick = useCallback(({props: p}) => {
-        console.log(props.hotRef.current)
-        console.log(p)
-    }, [props.hotRef])
+    const ContextMenu = () => {
+        const handleContextMenuItemClick = useCallback(({props: p, data}) => {
+            if (data === 'add') {
+                insertSegment(p.time)
+            } else if (data === 'remove') {
+                const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(p.segment.id)
+                props.hotRef.current.alter('remove_row', row, 1)
+            } else if (data === 'playSegment') {
+                props.playerRef.current.seekTo(p.segment.startTime, 'seconds')
+                props.playerRef.current.getInternalPlayer().play()
+            }
+        }, [])
+
+        if (contextMenuSegment) {
+            return <Menu id={contextMenuId} animation={false} onContextMenu={(e) => e.preventDefault()}>
+                <Item onClick={handleContextMenuItemClick} data={'remove'}>삭제</Item>
+                <Item onClick={handleContextMenuItemClick} data={'playSegment'}>선택 자막 위치 재생</Item>
+            </Menu>
+        } else {
+            return <Menu id={contextMenuId} animation={false} onContextMenu={(e) => e.preventDefault()}>
+                <Item onClick={handleContextMenuItemClick} data={'add'}>추가</Item>
+            </Menu>
+
+        }
+    }
 
     const setStatusDisplay = (status) => {
         if (status === 'isLoading') {
@@ -267,11 +288,8 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             </div>
             <div ref={zoomviewContainerRef} className={'w-100'} style={{height: `${props.size.height - 100}px`}}/>
             <div ref={overviewContainerRef} className={'w-100'} style={{height: '30px'}}/>
-            <Menu id={contextMenuId} animation={false} onContextMenu={(e) => e.preventDefault()}>
-                {contextMenuSegment ? <Item onClick={handleContextMenuItemClick} disabled>삭제</Item> :
-                    <Item onClick={handleContextMenuItemClick} disabled>추가</Item>}
-            </Menu>
         </div>
+        <ContextMenu/>
     </>
 };
 

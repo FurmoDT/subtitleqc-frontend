@@ -195,6 +195,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         setTotalLines(totalLines)
         props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
+            if (!props.hotRef.current.getActiveEditor().isInFullEditMode()) props.hotRef.current.getActiveEditor().enableFullEditMode()
             if (props.hotRef.current.colToProp(column).startsWith('arAE')) {
                 containerMain.current.querySelector('textarea').dir = 'rtl'
             }

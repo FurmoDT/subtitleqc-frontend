@@ -200,7 +200,8 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
                 containerMain.current.querySelector('textarea').dir = 'rtl'
             }
         })
-        props.hotRef.current.addHook('beforeChange', (changes) => {
+        props.hotRef.current.addHook('beforeChange', (changes, source) => {
+            if (source === 'edit' && props.hotRef.current.getActiveEditor().state === 'STATE_EDITING') props.hotRef.current.getActiveEditor().finishEditing() // setDataAtCell called while editing
             changes.forEach(v => {
                 if (v[1] === 'fn') (v[3] = Boolean(v[3]) || null)
                 else v[3] = v[3]?.replaceAll('|', '\n')

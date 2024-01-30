@@ -87,7 +87,7 @@ const ShortcutModal = (props) => {
         }
         if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
             event.stopPropagation()
-            if (!props.hotRef.current.getActiveEditor().isOpened()) {
+            if (!props.hotRef.current.getActiveEditor()?.isOpened()) {
                 event.preventDefault()
                 if (event.shiftKey) props.hotRef.current.redo()
                 else props.hotRef.current.undo()
@@ -219,19 +219,19 @@ const ShortcutModal = (props) => {
             }
         }
         if (event.shiftKey && event.key === '<') {
-            if (props.hotRef.current.getActiveEditor()._opened) return
+            if (props.hotRef.current.getActiveEditor()?.isOpened()) return
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.max(internalPlayer.playbackRate - 0.25, 0.25)
         }
         if (event.shiftKey && event.key === '>') {
-            if (props.hotRef.current.getActiveEditor()._opened) return
+            if (props.hotRef.current.getActiveEditor()?.isOpened()) return
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = Math.min(internalPlayer.playbackRate + 0.25, 2)
         }
         if (event.shiftKey && event.key === '?') {
-            if (props.hotRef.current.getActiveEditor()._opened) return
+            if (props.hotRef.current.getActiveEditor()?.isOpened()) return
             event.stopPropagation()
             const internalPlayer = props.playerRef.current.getInternalPlayer()
             if (internalPlayer) internalPlayer.playbackRate = 1

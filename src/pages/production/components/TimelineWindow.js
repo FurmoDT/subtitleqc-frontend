@@ -55,6 +55,13 @@ const TimelineWindow = ({resetSegments, ...props}) => {
         const handleContextMenuItemClick = useCallback(({props: p, data}) => {
             if (data === 'add') {
                 insertSegment(p.time)
+            } else if (data === 'editText') {
+                const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(p.segment.id)
+                if (props.hotRef.current.countCols() > SCRIPT_COLUMN) {
+                    props.hotRef.current.selectCell(row, SCRIPT_COLUMN)
+                    props.hotRef.current.getActiveEditor().enableFullEditMode()
+                    props.hotRef.current.getActiveEditor().beginEditing()
+                }
             } else if (data === 'remove') {
                 const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(p.segment.id)
                 props.hotRef.current.alter('remove_row', row, 1)
@@ -66,6 +73,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
 
         if (contextMenuSegment) {
             return <Menu id={contextMenuId} animation={false} onContextMenu={(e) => e.preventDefault()}>
+                <Item onClick={handleContextMenuItemClick} data={'editText'}>텍스트 수정</Item>
                 <Item onClick={handleContextMenuItemClick} data={'remove'}>삭제</Item>
                 <Item onClick={handleContextMenuItemClick} data={'playSegment'}>선택 자막 위치 재생</Item>
             </Menu>

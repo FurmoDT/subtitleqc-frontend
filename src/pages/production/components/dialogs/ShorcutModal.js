@@ -84,7 +84,7 @@ const ShortcutModal = (props) => {
     }, [props.hotRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
-        if (event.code === 'Space' && event.target.tagName !== 'INPUT' && !event.target.classList.contains('div-playback-time') && (event.target.tagName !== 'TEXTAREA' || !props.hotRef.current.getActiveEditor()._opened)) {
+        if (event.code === 'Space' && event.target.tagName !== 'INPUT' && !event.target.classList.contains('div-playback-time') && (event.target.tagName !== 'TEXTAREA' || !props.hotRef.current.getActiveEditor().isOpened())) {
             event.stopPropagation()
             event.preventDefault()
             const player = props.playerRef.current.getInternalPlayer()
@@ -108,7 +108,7 @@ const ShortcutModal = (props) => {
                 } else if (event.target.tagName === 'TEXTAREA') props.tcIncreaseButtonRef.current.click()
             } else {
                 const selection = props.hotSelectionRef.current
-                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, selection.columnEnd)
+                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart || 0, selection.columnStart || 0, selection.rowEnd || 0, selection.columnEnd || 0)
             }
         }
         if (event.code === 'ArrowLeft') {
@@ -130,7 +130,7 @@ const ShortcutModal = (props) => {
                 }
             } else {
                 const selection = props.hotSelectionRef.current
-                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, selection.columnEnd)
+                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart || 0, selection.columnStart || 0, selection.rowEnd || 0, selection.columnEnd || 0)
             }
         }
         if (event.code === 'ArrowDown') {
@@ -151,7 +151,7 @@ const ShortcutModal = (props) => {
                 } else if (event.target.tagName === 'TEXTAREA') props.tcDecreaseButtonRef.current.click()
             } else {
                 const selection = props.hotSelectionRef.current
-                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, selection.columnEnd)
+                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart || 0, selection.columnStart || 0, selection.rowEnd || 0, selection.columnEnd || 0)
             }
         }
         if (event.code === 'ArrowRight') {
@@ -173,7 +173,7 @@ const ShortcutModal = (props) => {
                 }
             } else {
                 const selection = props.hotSelectionRef.current
-                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart, selection.columnStart, selection.rowEnd, selection.columnEnd)
+                if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart || 0, selection.columnStart || 0, selection.rowEnd || 0, selection.columnEnd || 0)
             }
         }
         if (event.code === 'F2') {

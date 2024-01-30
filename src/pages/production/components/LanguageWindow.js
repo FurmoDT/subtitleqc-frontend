@@ -115,7 +115,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         }
         languageTextEditor.prototype.finishEditing = function (revertToOriginal) {
             window.Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
-            if (this.col === SCRIPT_COLUMN && revertToOriginal) props.selectedSegment.current?.update({labelText: this.originalValue})
+            if (this.col === SCRIPT_COLUMN && revertToOriginal) props.selectedSegment.current?.update({labelText: this.originalValue || ''})
         }
 
         props.hotRef.current = new window.Handsontable(containerMain.current, {

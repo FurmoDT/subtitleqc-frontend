@@ -145,10 +145,10 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     moveCursorRef.current.style.cursor = 'default'
                 })
                 peaks.on("segments.dragged", (event) => {
-                    const [start, end] = [secToTc(Number(event.segment.startTime.toFixed(3))), secToTc(Number(event.segment.endTime.toFixed(3)))]
                     const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id)
                     const startElement = props.hotRef.current.getCell(row, 0)
                     const endElement = props.hotRef.current.getCell(row, 1)
+                    const [start, end] = [secToTc(event.segment.startTime), secToTc(event.segment.endTime)]
                     const cells = []
                     if (startElement && start !== startElement.innerHTML) {
                         cells.push([row, 0, row, 0])
@@ -161,11 +161,11 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                     if (JSON.stringify(props.hotRef.current.getSelected()) !== JSON.stringify(cells)) props.hotRef.current.selectCells(cells)
                 })
                 peaks.on("segments.dragend", (event) => {
-                    const [start, end] = [secToTc(Number(event.segment.startTime.toFixed(3))), secToTc(Number(event.segment.endTime.toFixed(3)))]
                     const row = props.hotRef.current.getSourceDataAtCol('rowId').indexOf(event.segment.id)
+                    const [prevStart, prevEnd] = [props.hotRef.current.getDataAtCell(row, 0), props.hotRef.current.getDataAtCell(row, 1)]
                     const cells = []
-                    if (props.hotRef.current.getDataAtCell(row, 0) !== start) cells.push([row, 0, start])
-                    if (props.hotRef.current.getDataAtCell(row, 1) !== end) cells.push([row, 1, end])
+                    if (prevStart !== secToTc(event.segment.startTime)) cells.push([row, 0, secToTc(Math.min(event.segment.startTime, event.segment.endTime - 0.001))])
+                    if (prevEnd !== secToTc(event.segment.endTime)) cells.push([row, 1, secToTc(Math.max(event.segment.endTime, event.segment.startTime + 0.001))])
                     props.hotRef.current.setDataAtCell(cells, 'timelineWindow')
                 })
                 peaks.on("segments.remove_all", () => {

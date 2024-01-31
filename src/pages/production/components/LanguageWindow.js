@@ -249,7 +249,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
                         rowId, start, end, [languageKey]: text
                     } = props.hotRef.current.getSourceDataAtRow(Number(rowKeys[0]))
                     const [startSec, endSec] = [tcToSec(start), tcToSec(end)]
-                    if (0 <= startSec && startSec <= endSec) {
+                    if (startSec < endSec) {
                         const segment = props.waveformRef.current.segments.getSegment(rowId)
                         if (segment) segment.update({startTime: startSec, endTime: endSec, labelText: text || ''})
                         else props.waveformRef.current.segments.add(createSegment(startSec, endSec, rowId, text || '', !props.tcLock))

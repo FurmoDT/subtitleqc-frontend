@@ -18,6 +18,9 @@ const Dropzone = (props) => {
     const handleDragEnter = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
+        for (const item of e.dataTransfer.items) {
+            if (item.kind !== 'file') return
+        }
         counter = Math.max(counter++, 2)
         Object.assign(props.dropzoneRef.current.style, dragStyle);
     }, [props.dropzoneRef])

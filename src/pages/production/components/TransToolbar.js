@@ -188,7 +188,7 @@ const TransToolbar = (props) => {
                         const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
                         if (props.readOnly || rowStart === null) return
                         props.hotRef.current.alter('insert_row', rowStart + 1, 1)
-                        props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
+                        props.hotRef.current.selectCell(rowStart + 1, columnStart, rowStart + 1, columnEnd)
                     }}><AiOutlineInsertRowBelow color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 삭제'>

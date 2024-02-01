@@ -76,7 +76,7 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.splitLineButtonRef.current.click()
         }
-    }, [props.hotRef, props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
+    }, [props.playerRef, props.findButtonRef, props.replaceButtonRef, props.splitLineButtonRef, props.mergeLineButtonRef, props.tcOffsetButtonRef, props.tcIoButtonRef, props.tcInButtonRef, props.tcOutButtonRef])
 
     const handleKeyDownCapturing = useCallback((event) => {
         if (event.code === 'Space' && event.target.tagName !== 'INPUT' && !event.target.classList.contains('div-playback-time') && (event.target.tagName !== 'TEXTAREA' || !props.hotRef.current.getActiveEditor().isOpened())) {

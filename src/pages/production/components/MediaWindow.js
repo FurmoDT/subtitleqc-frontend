@@ -62,7 +62,6 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
         } else {
             if (curSubtitleIndexRef.current === nextSubtitleIndexRef.current) {
                 curSubtitleIndexRef.current = -1
-                subtitleLabelRef.current.innerHTML = ''
                 setSubtitleIndex(-1)
             } else {
                 isSeek && props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? getCenterSubtitleIndex() : nextSubtitleIndexRef.current)
@@ -92,11 +91,12 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const onReady = useCallback(() => {
         if (props.video !== props.mediaFile) {
             setVideo(props.mediaFile) // generate waveform after video is loaded
-            curSubtitleIndexRef.current = -1
-            nextSubtitleIndexRef.current = 0
-            setSubtitleIndex(-1)
         }
-    }, [props.mediaFile, props.video, setVideo, setSubtitleIndex])
+    }, [props.mediaFile, props.video, setVideo])
+
+    useEffect(() => {
+        if (props.subtitleIndex === -1) subtitleLabelRef.current.innerHTML = ''
+    }, [props.subtitleIndex])
 
     useEffect(() => {
         if (!language || !props.languages.map((value) => `${value.code}_${value.counter}`).includes(language)) {
@@ -105,8 +105,11 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     }, [props.languages, language])
 
     useEffect(() => {
-        subtitleLabelRef.current.innerHTML = ''
-    }, [props.mediaFile])
+        curSubtitleIndexRef.current = -1
+        nextSubtitleIndexRef.current = 0
+        setIsPlaying(false)
+        setSubtitleIndex(-1)
+    }, [props.mediaFile, setIsPlaying, setSubtitleIndex])
 
     useEffect(() => {
         if (volume[0]) {

@@ -184,7 +184,7 @@ const ShortcutModal = (props) => {
             const start = props.hotRef.current.getSourceDataAtRow(props.hotSelectionRef.current.rowStart)?.start
             if (start) {
                 props.playerRef.current.seekTo(tcToSec(start), 'seconds')
-                props.playerRef.current.getInternalPlayer().play()
+                props.playerRef.current.getInternalPlayer()?.play()
             }
         }
         if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === 'Insert') {

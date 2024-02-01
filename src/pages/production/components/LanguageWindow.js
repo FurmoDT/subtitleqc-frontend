@@ -278,6 +278,12 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
             const newRows = Math.max(data.length + coords[0].startRow - props.hotRef.current.countRows(), 0)
             if (newRows) props.hotRef.current.alter('insert_row', props.hotRef.current.countRows(), newRows)
         })
+        props.hotRef.current.addHook('afterUndo', (action) => {
+            if (action.actionType === 'insert_row' || action.actionType === 'remove_row') props.hotRef.current.selectCell(action.index, 0, action.index + action.data.length - 1, props.hotRef.current.countCols() - 1)
+        })
+        props.hotRef.current.addHook('afterRedo', (action) => {
+            if (action.actionType === 'insert_row' || action.actionType === 'remove_row') props.hotRef.current.selectCell(action.index, 0, action.index + action.data.length - 1, props.hotRef.current.countCols() - 1)
+        })
         props.hotRef.current.addHook('beforeCreateRow', (index, amount) => {
             if (props.taskHashedId) updateUserCursors(index, amount)
         })

@@ -40,35 +40,35 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
         hideUtilTimeoutRef.current = setTimeout(() => target.classList.add('d-none'), 1000)
     }, [])
 
+    const getCenterSubtitleIndex = useCallback(() => Math.max(nextSubtitleIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0), [props.hotRef])
+
     const setLabel = useCallback((seconds, start, end, isSeek) => {
         setSeek(seconds)
-        const targetIndex = nextSubtitleIndexRef.current
-        const nextSubtitle = props.cellDataRef.current[targetIndex][language] || ''
-        const centerTargetIndex = Math.max(targetIndex - Math.round(props.hotRef.current.countVisibleRows() / 2), 0)
         if (seconds >= start && seconds <= end) {
-            if (curSubtitleIndexRef.current !== targetIndex) {
-                curSubtitleIndexRef.current = targetIndex
-                setSubtitleIndex(targetIndex)
+            if (curSubtitleIndexRef.current !== nextSubtitleIndexRef.current) {
+                curSubtitleIndexRef.current = nextSubtitleIndexRef.current
+                setSubtitleIndex(nextSubtitleIndexRef.current)
                 if (!props.hotRef.current.getActiveEditor()?.isOpened()) {
                     if (isSeek) {
-                        props.hotRef.current.scrollViewportTo(targetIndex)
+                        props.hotRef.current.scrollViewportTo(nextSubtitleIndexRef.current)
                     } else {
                         // TODO scroll if invisible
                     }
-                    if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(centerTargetIndex)
+                    if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(getCenterSubtitleIndex())
                 }
             }
+            const nextSubtitle = props.cellDataRef.current[nextSubtitleIndexRef.current][language] || ''
             if (subtitleLabelRef.current.innerHTML !== nextSubtitle) subtitleLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
         } else {
-            if (curSubtitleIndexRef.current === targetIndex) {
+            if (curSubtitleIndexRef.current === nextSubtitleIndexRef.current) {
                 curSubtitleIndexRef.current = -1
                 subtitleLabelRef.current.innerHTML = ''
                 setSubtitleIndex(-1)
             } else {
-                isSeek && props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? centerTargetIndex : targetIndex)
+                isSeek && props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? getCenterSubtitleIndex() : nextSubtitleIndexRef.current)
             }
         }
-    }, [props.cellDataRef, props.hotRef, language, setSubtitleIndex])
+    }, [props.cellDataRef, props.hotRef, language, getCenterSubtitleIndex, setSubtitleIndex])
 
     const onSeek = useCallback((seconds) => {
         nextSubtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)

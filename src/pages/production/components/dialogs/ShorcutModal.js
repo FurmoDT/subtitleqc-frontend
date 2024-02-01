@@ -42,6 +42,11 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.replaceButtonRef.current.click()
         }
+        if (event.code === 'F1') {
+            event.preventDefault();
+            const player = props.playerRef.current.getInternalPlayer()
+            if (player) player.paused ? player.play() : player.pause()
+        }
         if (event.code === 'F3') {
             event.preventDefault();
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() - 10, 'seconds')
@@ -49,11 +54,6 @@ const ShortcutModal = (props) => {
         if (event.code === 'F4') {
             event.preventDefault();
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() + 10, 'seconds')
-        }
-        if (event.code === 'F6') {
-            event.preventDefault();
-            const player = props.playerRef.current.getInternalPlayer()
-            if (player) player.paused ? player.play() : player.pause()
         }
         if (event.code === 'F9') {
             event.preventDefault();
@@ -267,7 +267,7 @@ const ShortcutModal = (props) => {
                                             <MDBIcon fas icon="play" color={'dark'}/> / <MDBIcon fas icon="pause"
                                                                                                  color={'dark'}/>
                                         </div>
-                                        SPACE , F6
+                                        SPACE , F1
                                     </MDBListGroupItem>
                                 </MDBCol>
                                 <MDBCol size={3}>

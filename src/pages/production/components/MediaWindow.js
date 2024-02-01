@@ -37,7 +37,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
 
     const hideUtilHandler = useCallback((target) => {
         clearTimeout(hideUtilTimeoutRef.current)
-        hideUtilTimeoutRef.current = setTimeout(() => target.classList.add('d-none'), 2000)
+        hideUtilTimeoutRef.current = setTimeout(() => target.classList.add('d-none'), 1000)
     }, [])
 
     const setLabel = useCallback((seconds, start, end, isSeek) => {

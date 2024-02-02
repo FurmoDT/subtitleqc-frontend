@@ -14,7 +14,7 @@ import {MDBTooltip} from "mdb-react-ui-kit";
 
 const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const subtitleLabelRef = useRef(null)
-    const subtitleIndexRef = useRef(-1)
+    const subtitleIndexRef = useRef(0)
     const [t] = useState(Date.now())
     const [seek, setSeek] = useState(0)
     const [isMuted, setIsMuted] = useState(false)
@@ -46,7 +46,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
         const subtitle = props.cellDataRef.current[index]
         if (!subtitle) return
         const [start, end, text] = [tcToSec(subtitle.start), tcToSec(subtitle.end), subtitle[language] || '']
-        if (!start || !end) {
+        if (!(start >= 0 && end >= 0)) {
             subtitleIndexRef.current += 1
             return
         }
@@ -102,7 +102,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     useEffect(() => {
         setIsPlaying(false)
         setSubtitleIndex(-1)
-        subtitleIndexRef.current = -1
+        subtitleIndexRef.current = 0
     }, [props.mediaFile, setIsPlaying, setSubtitleIndex])
 
     useEffect(() => {

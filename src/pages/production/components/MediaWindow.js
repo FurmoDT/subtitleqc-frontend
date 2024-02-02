@@ -44,6 +44,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const setLabel = useCallback((seconds, index, isSeek) => {
         setSeek(seconds)
         const subtitle = props.cellDataRef.current[index]
+        if (!subtitle) return
         const [start, end, text] = [tcToSec(subtitle.start), tcToSec(subtitle.end), subtitle[language] || '']
         if (!start || !end) {
             subtitleIndexRef.current += 1
@@ -75,7 +76,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
             setLabel(state.playedSeconds, subtitleIndexRef.current, false)
             if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current.views.getView('zoomview').getWidth() / 2)
         }
-    }, [props.cellDataRef, props.waveformRef, setLabel])
+    }, [props.waveformRef, setLabel])
 
     const onPlayPause = useCallback((event) => {
         setIsPlaying(event?.type !== 'pause')

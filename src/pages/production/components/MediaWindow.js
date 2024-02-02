@@ -69,7 +69,8 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const onProgress = useCallback((state) => {
         if (subtitleIndexRef.current > -1) {
             const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[subtitleIndexRef.current]
-            setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), false)
+            if (subtitleStart && subtitleEnd) setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), false)
+            else subtitleIndexRef.current += 1
             if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current.views.getView('zoomview').getWidth() / 2)
         }
     }, [props.cellDataRef, props.waveformRef, setLabel])

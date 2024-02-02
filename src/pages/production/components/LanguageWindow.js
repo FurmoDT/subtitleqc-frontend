@@ -368,7 +368,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
 
     useEffect(() => {
         // highlight current subtitle
-        if (subtitleIndexRef.current > -1) props.hotRef.current.removeCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle')
+        if (subtitleIndexRef.current > -1 && props.hotRef.current.getCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1).subtitle) props.hotRef.current.removeCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle')
         subtitleIndexRef.current = props.subtitleIndex
         if (subtitleIndexRef.current > -1) props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
     }, [props.subtitleIndex, props.hotRef])

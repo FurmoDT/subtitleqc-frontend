@@ -14,8 +14,7 @@ import {MDBTooltip} from "mdb-react-ui-kit";
 
 const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const subtitleLabelRef = useRef(null)
-    const curSubtitleIndexRef = useRef(-1)
-    const nextSubtitleIndexRef = useRef(0)
+    const subtitleIndexRef = useRef(-1)
     const [t] = useState(Date.now())
     const [seek, setSeek] = useState(0)
     const [isMuted, setIsMuted] = useState(false)
@@ -40,49 +39,40 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
         hideUtilTimeoutRef.current = setTimeout(() => target.classList.add('d-none'), 1000)
     }, [])
 
-    const getCenterSubtitleIndex = useCallback(() => Math.max(nextSubtitleIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0), [props.hotRef])
+    const getCenterSubtitleIndex = useCallback(() => Math.max(subtitleIndexRef.current - Math.round(props.hotRef.current.countVisibleRows() / 2), 0), [props.hotRef])
 
     const setLabel = useCallback((seconds, start, end, isSeek) => {
         setSeek(seconds)
-        if (seconds >= start && seconds <= end) {
-            if (curSubtitleIndexRef.current !== nextSubtitleIndexRef.current) {
-                curSubtitleIndexRef.current = nextSubtitleIndexRef.current
-                setSubtitleIndex(nextSubtitleIndexRef.current)
-                if (!props.hotRef.current.getActiveEditor()?.isOpened()) {
-                    if (isSeek) {
-                        props.hotRef.current.scrollViewportTo(nextSubtitleIndexRef.current)
-                    } else {
-                        // TODO scroll if invisible
-                    }
-                    if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(getCenterSubtitleIndex())
-                }
+        if (start <= seconds && seconds <= end) {
+            const nextSubtitle = props.cellDataRef.current[subtitleIndexRef.current][language] || ''
+            if (subtitleLabelRef.current.innerHTML !== nextSubtitle) {
+                subtitleLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
+                setSubtitleIndex(subtitleIndexRef.current)
+                if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(getCenterSubtitleIndex())
             }
-            const nextSubtitle = props.cellDataRef.current[nextSubtitleIndexRef.current][language] || ''
-            if (subtitleLabelRef.current.innerHTML !== nextSubtitle) subtitleLabelRef.current.innerHTML = nextSubtitle.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/&lt;i&gt;/g, '<i>').replaceAll(/&lt;\/i&gt;/g, '</i>')
+            if (isSeek) props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? getCenterSubtitleIndex() : subtitleIndexRef.current)
         } else {
-            if (curSubtitleIndexRef.current === nextSubtitleIndexRef.current) {
-                curSubtitleIndexRef.current = -1
-                setSubtitleIndex(-1)
-            } else {
-                isSeek && props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? getCenterSubtitleIndex() : nextSubtitleIndexRef.current)
-            }
+            setSubtitleIndex(-1)
+            if (seconds > end) subtitleIndexRef.current += 1
+            if (isSeek) props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? getCenterSubtitleIndex() : subtitleIndexRef.current)
         }
     }, [props.cellDataRef, props.hotRef, language, getCenterSubtitleIndex, setSubtitleIndex])
 
     const onSeek = useCallback((seconds) => {
-        nextSubtitleIndexRef.current = bisect(props.cellDataRef.current.map((value) => tcToSec(value.start)), seconds)
-        if (tcToSec(props.cellDataRef.current[nextSubtitleIndexRef.current].start) !== seconds) nextSubtitleIndexRef.current = Math.max(nextSubtitleIndexRef.current - 1, 0)
-        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[nextSubtitleIndexRef.current]
+        const index = bisect(props.cellDataRef.current.map((value) => tcToSec(value.end)), seconds)
+        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[index]
+        subtitleIndexRef.current = index
         setLabel(seconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), true)
         if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current.views.getView('zoomview').getWidth() / 2)
-    }, [props.cellDataRef, setLabel, props.waveformRef])
+    }, [props.cellDataRef, props.waveformRef, setLabel])
 
     const onProgress = useCallback((state) => {
-        const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[nextSubtitleIndexRef.current]
-        setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), false)
-        if (state.playedSeconds >= tcToSec(props.cellDataRef.current[nextSubtitleIndexRef.current].end)) nextSubtitleIndexRef.current += 1
-        if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current.views.getView('zoomview').getWidth() / 2)
-    }, [props.cellDataRef, setLabel, props.waveformRef])
+        if (subtitleIndexRef.current > -1) {
+            const {start: subtitleStart, end: subtitleEnd} = props.cellDataRef.current[subtitleIndexRef.current]
+            setLabel(state.playedSeconds, tcToSec(subtitleStart), tcToSec(subtitleEnd), false)
+            if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current.views.getView('zoomview').getWidth() / 2)
+        }
+    }, [props.cellDataRef, props.waveformRef, setLabel])
 
     const onPlayPause = useCallback((event) => {
         setIsPlaying(event?.type !== 'pause')
@@ -96,6 +86,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
 
     useEffect(() => {
         if (props.subtitleIndex === -1) subtitleLabelRef.current.innerHTML = ''
+        else subtitleIndexRef.current = props.subtitleIndex
     }, [props.subtitleIndex])
 
     useEffect(() => {
@@ -105,10 +96,9 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     }, [props.languages, language])
 
     useEffect(() => {
-        curSubtitleIndexRef.current = -1
-        nextSubtitleIndexRef.current = 0
         setIsPlaying(false)
         setSubtitleIndex(-1)
+        subtitleIndexRef.current = -1
     }, [props.mediaFile, setIsPlaying, setSubtitleIndex])
 
     useEffect(() => {

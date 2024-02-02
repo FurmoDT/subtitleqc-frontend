@@ -13,7 +13,7 @@ import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 import * as Y from "yjs";
 
-const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
+const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, ref) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
     const debounceTimeoutRef = useRef(null)
@@ -287,7 +287,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         props.hotRef.current.addHook('beforeCreateRow', (index, amount) => {
             if (props.taskHashedId) updateUserCursors(index, amount)
         })
-        props.hotRef.current.addHook('afterCreateRow', (index, amount) => {
+        props.hotRef.current.addHook('afterCreateRow', (index, amount, source) => {
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
                     const rows = props.crdt.yMap().get('cells')
@@ -302,6 +302,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
                 props.cellDataRef.current.splice(index, amount, ...Array.from({length: amount}, () => ({rowId: v4()})))
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             }
+            setSubtitleIndex(prevState => prevState >= index ? prevState + amount : prevState)
             const totalLines = getTotalLines()
             setTotalLines(totalLines)
             props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
@@ -310,13 +311,14 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
             if (props.waveformRef.current) physicalRows.forEach((row) => props.waveformRef.current.segments.removeById(props.hotRef.current.getDataAtRowProp(row, 'rowId')))
             if (props.taskHashedId) updateUserCursors(index, -amount)
         })
-        props.hotRef.current.addHook('afterRemoveRow', (index, amount) => {
+        props.hotRef.current.addHook('afterRemoveRow', (index, amount, source) => {
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
                     const rows = props.crdt.yMap().get('cells')
                     rows.delete(index, amount)
                 })
             } else localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+            setSubtitleIndex(prevState => prevState > index ? prevState - amount : prevState)
             setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('afterSelection', (row, column, row2, column2) => {
@@ -353,7 +355,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, debounceRender, getTotalLines, updateUserCursors, props.taskHashedId, props.readOnly])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, debounceRender, getTotalLines, updateUserCursors, props.taskHashedId, props.readOnly])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
@@ -368,7 +370,7 @@ const LanguageWindow = forwardRef(({resetSegments, ...props}, ref) => {
         // highlight current subtitle
         if (subtitleIndexRef.current > -1) props.hotRef.current.removeCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle')
         subtitleIndexRef.current = props.subtitleIndex
-        props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
+        if (subtitleIndexRef.current > -1) props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
     }, [props.subtitleIndex, props.hotRef])
 
     useEffect(() => {

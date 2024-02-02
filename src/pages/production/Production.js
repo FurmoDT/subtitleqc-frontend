@@ -286,7 +286,8 @@ const Production = () => {
                                 <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} languages={languages}
                                              playerRef={playerRef} mediaFile={mediaFile} mediaInfo={mediaInfo}
                                              waveformRef={waveformRef} hotSelectionRef={hotSelectionRef}
-                                             video={video} setVideo={setVideo} setSubtitleIndex={setSubtitleIndex}/>
+                                             video={video} setVideo={setVideo}
+                                             subtitleIndex={subtitleIndex} setSubtitleIndex={setSubtitleIndex}/>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={50} snap>
                                 <InformationWindow hotRef={hotRef} projectDetail={projectDetail}/>
@@ -311,7 +312,8 @@ const Production = () => {
                         {((taskHashedId && dataInitialized) || !taskHashedId) &&
                             <LanguageWindow ref={languageWindowRef} size={languageWindowSize} hotRef={hotRef}
                                             hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
-                                            tcLock={tcLock} tcLockRef={tcLockRef} subtitleIndex={subtitleIndex}
+                                            tcLock={tcLock} tcLockRef={tcLockRef}
+                                            subtitleIndex={subtitleIndex} setSubtitleIndex={setSubtitleIndex}
                                             cellDataRef={cellDataRef} languages={languages}
                                             readOnly={readOnly} crdt={crdtHandlerRef.current}
                                             crdtAwarenessInitialized={crdtAwarenessInitialized}

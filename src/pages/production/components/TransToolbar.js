@@ -176,19 +176,19 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='위에 줄 추가'>
             <MDBBtn ref={props.insertLineAboveButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
-                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+                        const {rowStart, columnStart, rowEnd, columnEnd} = adjustedHotSelection()
                         if (props.readOnly || rowStart === null) return
-                        props.hotRef.current.alter('insert_row', rowStart, 1)
+                        props.hotRef.current.alter('insert_row', rowStart, rowEnd - rowStart + 1)
                         props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
                     }}><AiOutlineInsertRowAbove color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='아래 줄 추가'>
             <MDBBtn ref={props.insertLineBelowButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
-                        const {rowStart, columnStart, rowEnd, columnEnd} = props.hotSelectionRef.current
+                        const {rowStart, columnStart, rowEnd, columnEnd} = adjustedHotSelection()
                         if (props.readOnly || rowStart === null) return
-                        props.hotRef.current.alter('insert_row', rowStart + 1, 1)
-                        props.hotRef.current.selectCell(rowStart + 1, columnStart, rowStart + 1, columnEnd)
+                        props.hotRef.current.alter('insert_row', rowStart + 1, rowEnd - rowStart + 1)
+                        props.hotRef.current.selectCell(rowStart + 1, columnStart, rowEnd + 1, columnEnd)
                     }}><AiOutlineInsertRowBelow color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='줄 삭제'>

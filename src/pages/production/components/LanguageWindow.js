@@ -116,7 +116,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         const languageTextEditor = window.Handsontable.editors.TextEditor.prototype.extend();
         languageTextEditor.prototype.init = function () {
             window.Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
-            this.TEXTAREA.addEventListener('input', (event) => this.col === SCRIPT_COLUMN && this.state === 'STATE_EDITING' && props.selectedSegment.current?.update({labelText: event.target.value}))
+            // this.TEXTAREA.addEventListener('input', (event) => this.col === SCRIPT_COLUMN && this.state === 'STATE_EDITING' && props.selectedSegment.current?.update({labelText: event.target.value}))
         }
         languageTextEditor.prototype.finishEditing = function (revertToOriginal) {
             window.Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);

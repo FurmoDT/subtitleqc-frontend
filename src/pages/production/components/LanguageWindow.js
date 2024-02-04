@@ -57,6 +57,11 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         }
     }, [props.hotRef])
 
+    const updateSubtitleHighlight = useCallback((isRemove) => {
+        const curCell = props.hotRef.current.getCell(subtitleIndexRef.current, 0)
+        if (subtitleIndexRef.current > -1 && curCell) curCell.parentNode.childNodes.forEach(child => isRemove ? child.classList.remove('td-custom-highlight') : child.classList.add('td-custom-highlight'))
+    }, [props.hotRef])
+
     const getSelectedPairs = (rangeArray) => {
         const allPairs = []
         for (const range of rangeArray) {
@@ -348,30 +353,29 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
                 nameDiv.innerHTML = cellProperties.awareness.name
                 TD.append(borderDiv, nameDiv)
             }
-            if (column === props.hotRef.current.countCols() - 1 && cellProperties.subtitle) TD.parentNode.childNodes.forEach(child => child.classList.add('td-custom-highlight'))
         })
-        props.hotRef.current.addHook('afterSetCellMeta', () => debounceRender())
-        props.hotRef.current.addHook('afterRemoveCellMeta', () => debounceRender())
+        props.hotRef.current.addHook('afterRender', () => updateSubtitleHighlight(false))
+        props.hotRef.current.addHook('afterSetCellMeta', debounceRender)
+        props.hotRef.current.addHook('afterRemoveCellMeta', debounceRender)
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, debounceRender, getTotalLines, updateUserCursors, props.taskHashedId, props.readOnly])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, debounceRender, getTotalLines, updateUserCursors, updateSubtitleHighlight, props.taskHashedId, props.readOnly])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
         props.hotRef.current.undoRedo.doneActions = persistentUndoRedoRef.current.doneActions
         props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
         props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, () => Math.floor((props.size.width - 365) / props.languages.length))]})
-        props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
         Object.entries(userCursorsRef.current).forEach(([, aw]) => aw.cursor && props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user))
     }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize]);
 
     useEffect(() => {
         // highlight current subtitle
-        if (subtitleIndexRef.current > -1 && props.hotRef.current.getCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1).subtitle) props.hotRef.current.removeCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle')
+        updateSubtitleHighlight(true)
         subtitleIndexRef.current = props.subtitleIndex
-        if (subtitleIndexRef.current > -1) props.hotRef.current.setCellMeta(subtitleIndexRef.current, props.hotRef.current.countCols() - 1, 'subtitle', true)
-    }, [props.subtitleIndex, props.hotRef])
+        updateSubtitleHighlight(false)
+    }, [props.subtitleIndex, props.hotRef, updateSubtitleHighlight])
 
     useEffect(() => {
         if (props.crdtAwarenessInitialized) {

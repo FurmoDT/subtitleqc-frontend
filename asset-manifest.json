@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.e036e54a.css",
-    "main.js": "/static/js/main.fbefcdca.js",
+    "main.js": "/static/js/main.686f3d63.js",
     "reactPlayerYouTube.js": "/static/js/reactPlayerYouTube.31ea57f8.chunk.js",
     "reactPlayerSoundCloud.js": "/static/js/reactPlayerSoundCloud.dc743566.chunk.js",
     "reactPlayerVimeo.js": "/static/js/reactPlayerVimeo.37b65721.chunk.js",
@@ -28,6 +28,6 @@
   },
   "entrypoints": [
     "static/css/main.e036e54a.css",
-    "static/js/main.fbefcdca.js"
+    "static/js/main.686f3d63.js"
   ]
 }

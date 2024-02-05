@@ -42,32 +42,27 @@ const ShortcutModal = (props) => {
             event.preventDefault();
             props.replaceButtonRef.current.click()
         }
-        if (event.code === 'F1') {
-            event.preventDefault();
-            const player = props.playerRef.current.getInternalPlayer()
-            if (player) player.paused ? player.play() : player.pause()
-        }
-        if (event.code === 'F3') {
+        if (event.key === 'F3') {
             event.preventDefault();
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() - 10, 'seconds')
         }
-        if (event.code === 'F4') {
+        if (event.key === 'F4') {
             event.preventDefault();
             props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() + 10, 'seconds')
         }
-        if (event.code === 'F9') {
+        if (event.key === 'F9') {
             event.preventDefault();
             props.tcOffsetButtonRef.current.click()
         }
-        if (event.code === 'F10') {
+        if (event.key === 'F10') {
             event.preventDefault();
             props.tcIoButtonRef.current.click()
         }
-        if (event.code === 'F11') {
+        if (event.key === 'F11') {
             event.preventDefault();
             props.tcInButtonRef.current.click()
         }
-        if (event.code === 'F12') {
+        if (event.key === 'F12') {
             event.preventDefault();
             if (event.shiftKey) props.mergeLineButtonRef.current.click()
             else props.tcOutButtonRef.current.click()
@@ -179,7 +174,12 @@ const ShortcutModal = (props) => {
                 if (document.activeElement.tagName !== 'TEXTAREA') props.hotRef.current.selectCell(selection.rowStart || 0, selection.columnStart || 0, selection.rowEnd || 0, selection.columnEnd || 0)
             }
         }
-        if (event.code === 'F2') {
+        if (event.key === 'F1') {
+            event.preventDefault();
+            const player = props.playerRef.current.getInternalPlayer()
+            if (player) player.paused ? player.play() : player.pause()
+        }
+        if (event.key === 'F2') {
             event.stopPropagation()
             const start = props.hotRef.current.getSourceDataAtRow(props.hotSelectionRef.current.rowStart)?.start
             if (start) {

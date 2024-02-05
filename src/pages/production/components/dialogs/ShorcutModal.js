@@ -44,11 +44,11 @@ const ShortcutModal = (props) => {
         }
         if (event.key === 'F3') {
             event.preventDefault();
-            props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() - 10, 'seconds')
+            props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() - 1, 'seconds')
         }
         if (event.key === 'F4') {
             event.preventDefault();
-            props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() + 10, 'seconds')
+            props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime() + 1, 'seconds')
         }
         if (event.key === 'F9') {
             event.preventDefault();

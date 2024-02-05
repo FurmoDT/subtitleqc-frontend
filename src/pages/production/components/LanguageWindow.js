@@ -272,16 +272,9 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
             }
             if (props.playerRef.current.getInternalPlayer()?.paused && changes.filter(value => value[0] === subtitleIndexRef.current).length) props.playerRef.current.seekTo(props.playerRef.current.getCurrentTime(), 'seconds') // update subtitle
             if (source === 'UndoRedo.undo' || source === 'UndoRedo.redo') {
-                const selects = [];
-                let currentGroup = null;
-
-                for (const [row, prop, ,] of changes) {
-                    const col = props.hotRef.current.propToCol(prop);
-                    currentGroup = [row, col, row, col]
-                }
-
-                if (currentGroup) selects.push(currentGroup)
-                props.hotRef.current.selectCells(selects)
+                const [row, prop, ,] = changes[changes.length - 1]
+                const col = props.hotRef.current.propToCol(prop);
+                props.hotRef.current.selectCell(row, col, row, col)
             }
             setTotalLines(getTotalLines())
         })

@@ -40,6 +40,12 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         return Math.max(totalLines + 1, 0)
     }, [props.hotRef])
 
+    const updateAwarenessCellMeta = useCallback((row, prop, user, isRemove) => {
+        const col = props.hotRef.current.propToCol(prop)
+        if (isRemove) props.hotRef.current.removeCellMeta(row, col, 'awareness')
+        else props.hotRef.current.setCellMeta(row, col, 'awareness', user)
+    }, [props.hotRef])
+
     const updateUserCursors = useCallback((index, amount) => {
         for (let key in userCursorsRef.current) {
             const aw = userCursorsRef.current[key]
@@ -47,15 +53,15 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
                 const prevRow = aw.cursor.row
                 const curRow = aw.cursor.row - amount
                 if (index <= prevRow && prevRow <= props.hotRef.current.countRows() + amount) {
-                    props.hotRef.current.removeCellMeta(prevRow, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness')
+                    updateAwarenessCellMeta(prevRow, aw.cursor.colProp, null, true)
                 }
                 if (prevRow < props.hotRef.current.countRows()) {
-                    if (index < prevRow) props.hotRef.current.setCellMeta(curRow, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
-                    else if (index === prevRow) setTimeout(() => props.hotRef.current.setCellMeta(prevRow, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user), 200)
+                    if (index < prevRow) updateAwarenessCellMeta(curRow, aw.cursor.colProp, aw.user, false)
+                    else if (index === prevRow) setTimeout(() => updateAwarenessCellMeta(prevRow, aw.cursor.colProp, aw.user, false), 200)
                 }
             }
         }
-    }, [props.hotRef])
+    }, [props.hotRef, updateAwarenessCellMeta])
 
     const updateSubtitleHighlight = useCallback((isRemove) => {
         const curCell = props.hotRef.current.getCell(subtitleIndexRef.current, 0)
@@ -360,15 +366,15 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, debounceRender, getTotalLines, updateUserCursors, updateSubtitleHighlight, props.taskHashedId, props.readOnly])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, debounceRender, getTotalLines, updateUserCursors, updateAwarenessCellMeta, updateSubtitleHighlight, props.taskHashedId, props.readOnly])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
         props.hotRef.current.undoRedo.doneActions = persistentUndoRedoRef.current.doneActions
         props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
         props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, () => Math.floor((props.size.width - 365) / props.languages.length))]})
-        Object.entries(userCursorsRef.current).forEach(([, aw]) => aw.cursor && props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user))
-    }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize]);
+        Object.entries(userCursorsRef.current).forEach(([, aw]) => aw.cursor && updateAwarenessCellMeta(aw.cursor.row, aw.cursor.colProp, aw.user, false))
+    }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize, updateAwarenessCellMeta]);
 
     useEffect(() => {
         // highlight current subtitle
@@ -385,30 +391,26 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
                 const states = awareness.getStates()
                 added.forEach(id => {
                     const aw = userCursorsRef.current[id] = states.get(id)
-                    if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
+                    if (aw.cursor) updateAwarenessCellMeta(aw.cursor.row, aw.cursor.colProp, aw.user, false)
                 })
                 removed.forEach(id => {
                     const prevCursor = userCursorsRef.current[id]?.cursor
-                    if (prevCursor) props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
+                    if (prevCursor) updateAwarenessCellMeta(prevCursor.row, prevCursor.colProp, null, true)
                     userCursorsRef.current = Object.fromEntries(Object.entries(userCursorsRef.current).filter(value => value[0] !== `${id}`))
                 })
                 updated.forEach(id => {
                     if (id === props.crdt.yDoc().clientID) return
                     const prevCursor = userCursorsRef.current[id]?.cursor
-                    if (prevCursor && prevCursor.row < props.hotRef.current.countRows()) {
-                        props.hotRef.current.removeCellMeta(prevCursor.row, props.hotRef.current.propToCol(prevCursor.colProp), 'awareness')
-                    }
+                    if (prevCursor && prevCursor.row < props.hotRef.current.countRows()) updateAwarenessCellMeta(prevCursor.row, prevCursor.colProp, null, true)
                     const aw = userCursorsRef.current[id] = states.get(id)
-                    if (aw.cursor) props.hotRef.current.setCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness', aw.user)
+                    if (aw.cursor) updateAwarenessCellMeta(aw.cursor.row, aw.cursor.colProp, aw.user, false)
                 })
             })
         } else {
-            Object.entries(userCursorsRef.current).forEach(([, aw]) => {
-                if (aw.cursor) props.hotRef.current.removeCellMeta(aw.cursor.row, props.hotRef.current.propToCol(aw.cursor.colProp), 'awareness')
-            })
+            Object.entries(userCursorsRef.current).forEach(([, aw]) => aw.cursor && updateAwarenessCellMeta(aw.cursor.row, aw.cursor.colProp, null, true))
             userCursorsRef.current = {}
         }
-    }, [props.crdtAwarenessInitialized, props.crdt, props.hotRef])
+    }, [props.crdtAwarenessInitialized, props.crdt, props.hotRef, updateAwarenessCellMeta])
 
     return <div className={'position-relative'} style={{height: 'calc(100% - 40px)'}}>
         <div ref={containerMain} style={{zIndex: 0}}/>

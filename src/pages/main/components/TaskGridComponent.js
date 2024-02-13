@@ -188,7 +188,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     if (row.row.type !== 'MASTER') return
                     const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
                     return <>
-                        <a className={authorized ? '' : 'custom-disabled'}
+                        <a className={authorized && row.row.taskType ? '' : 'custom-disabled'}
                            href={`/${row.row.taskType}/${row.row.extra.hashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</a>
                         {authorized && <MDBBtn className={'bg-main mx-1'} color={'link'} size={'sm'} floating
                                                onClick={() => setModifyTaskHashedId(row.row.extra.hashedId)}>

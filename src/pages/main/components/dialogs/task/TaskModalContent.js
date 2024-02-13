@@ -417,9 +417,9 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                     task_genre: task.genre?.value,
                                                     task_due_date: task.dueDate,
                                                     task_group_key: task.projectGroup,
-                                                    ...(fileUpdated ? {
-                                                        task_file_version: task.fileVersion + 1,
-                                                        task_file_info: await getFileInfo(uploadedFiles[0])
+                                                    task_file_version: task.fileVersion + (fileUpdated ? 1 : 0),
+                                                    ...(fileUpdated || !uploadedFiles[0] ? {
+                                                        task_file_info: fileUpdated ? await getFileInfo(uploadedFiles[0]) : null
                                                     } : {})
                                                 }).then((response) => {
                                                     const taskId = response.data

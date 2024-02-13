@@ -13,7 +13,7 @@ import {FaUserCheck} from "react-icons/fa6";
 import {BsCheckCircleFill} from "react-icons/bs";
 import axios from "../../../../utils/axios";
 import {useNavigate} from 'react-router-dom';
-import {s3UploadWork} from "../../../../utils/awsS3Upload";
+import {s3UploadWork} from "../../../../utils/aws/s3";
 import {toFspx} from "../../../../utils/fileParser";
 
 const SubmitModal = ({taskHashedId, workHashedId, fileData}) => {

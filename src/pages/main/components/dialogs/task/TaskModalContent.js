@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
 import {genreSelectOption, languageSelectOption, workTypeSelectOption} from "../../../../../utils/config";
 import TaskDropzone from "../../TaskDropzone";
 import {AuthContext} from "../../../../../contexts/authContext";
-import {s3UploadSource} from "../../../../../utils/awsS3Upload";
+import {s3UploadSource} from "../../../../../utils/aws/s3";
 import {fileExtension, getFileInfo} from "../../../../../utils/functions";
 import {DateInput, inputStyle, labelStyle} from "../../../../../components/Inputs";
 
@@ -33,7 +33,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [pmListOption, setPmListOption] = useState([])
     const {userState} = useContext(AuthContext)
     const modifySpinnerRef = useRef(null)
-    const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploadProgress, setUploadProgress] = useState('');
     const projectCodeRef = useRef(null)
     const taskValidationSpanRef = useRef(null)
     const workerValidationSpanRef = useRef(null)
@@ -385,7 +385,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                         <MDBSpinner role='status'>
                             <span className='visually-hidden'>Loading...</span>
                         </MDBSpinner>
-                        <span>{`${uploadProgress} %`}</span>
+                        <span>{`${uploadProgress}`}</span>
                     </div>
                 </MDBCol> : <MDBCol>
                     <MDBBtn color={'dark'} onClick={inputValidation}>수정</MDBBtn>
@@ -487,7 +487,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                         <MDBSpinner role='status'>
                             <span className='visually-hidden'>Loading...</span>
                         </MDBSpinner>
-                        <span>{`${uploadProgress} %`}</span>
+                        <span>{`${uploadProgress}`}</span>
                     </div>
                     <MDBModal show={deleteModal} setShow={setDeleteModal} tabIndex='-1'>
                         <MDBModalDialog centered>

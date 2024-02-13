@@ -34,7 +34,7 @@ const Production = () => {
     const resizingTimeoutRef = useRef(null)
     const [mediaFile, setMediaFile] = useState(null)
     const [mediaInfo, setMediaInfo] = useState(null)
-    const [video, setVideo] = useState(null)
+    const [waveformSource, setWaveformSource] = useState(null)
     const [languageFile, setLanguageFile] = useState(null)
     const [projectDetail, setProjectDetail] = useState(defaultProjectDetail())
     const playerRef = useRef(null)
@@ -152,7 +152,7 @@ const Production = () => {
         axios.get(`v1/tasks/access/${taskHashedId}`, {params: {work_hashed_id: workHashedId}}).then(r => {
             setAuthority(r.data.authority)
             const task = r.data.task
-            setMediaFile(`https://s3.subtitleqc.ai/task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
+            setMediaFile(`task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
             setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
             setLanguages(r.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
             setProjectDetail(prevState => ({
@@ -286,7 +286,7 @@ const Production = () => {
                                 <MediaWindow hotRef={hotRef} cellDataRef={cellDataRef} languages={languages}
                                              playerRef={playerRef} mediaFile={mediaFile} mediaInfo={mediaInfo}
                                              waveformRef={waveformRef} hotSelectionRef={hotSelectionRef}
-                                             video={video} setVideo={setVideo}
+                                             setWaveformSource={setWaveformSource}
                                              subtitleIndex={subtitleIndex} setSubtitleIndex={setSubtitleIndex}/>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={50} snap>
@@ -323,9 +323,8 @@ const Production = () => {
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>
-                    <TimelineWindow size={timelineWindowSize} hotRef={hotRef}
-                                    playerRef={playerRef} waveformRef={waveformRef} mediaFile={mediaFile} video={video}
-                                    resetSegments={resetSegments}
+                    <TimelineWindow size={timelineWindowSize} hotRef={hotRef} resetSegments={resetSegments}
+                                    playerRef={playerRef} waveformRef={waveformRef} waveformSource={waveformSource}
                                     tcLock={tcLock} tcLockRef={tcLockRef} setTcLock={setTcLock}
                                     tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}
                                     tcInButtonRef={tcInButtonRef} tcOutButtonRef={tcOutButtonRef}

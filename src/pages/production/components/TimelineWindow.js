@@ -18,6 +18,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
     const contextMenuId = 'context-menu'
     const [contextMenuSegment, setContextMenuSegment] = useState(null)
     const {show: contextMenuShow} = useContextMenu({id: contextMenuId});
+    const [waveformData, setWaveformData] = useState(null)
 
     const insertSegment = useCallback((time) => {
         if (!props.waveformRef.current.segments.find(time, time + 1).length) {
@@ -103,12 +104,12 @@ const TimelineWindow = ({resetSegments, ...props}) => {
     }, [])
 
     useEffect(() => {
-        if (!props.video) return
+        if (!waveformData) return
         setStatusDisplay('isLoading')
         window.addEventListener('error', errorHandler)
         const options = {
             mediaElement: document.querySelector('video'),
-            webAudio: {audioContext: new AudioContext()},
+            ...(waveformData.startsWith('blob') ? {webAudio: {audioContext: new AudioContext()}} : {dataUri: {arraybuffer: waveformData}}),
             withCredentials: true,
             zoomview: {
                 container: zoomviewContainerRef.current,
@@ -182,12 +183,8 @@ const TimelineWindow = ({resetSegments, ...props}) => {
                 })
                 peaks.on('peaks.ready', () => {
                     setInitialized(true)
-                    if (!props.playerRef.current.getInternalPlayer()?.src.startsWith(props.video)) {
-                        props.waveformRef.current?.destroy()
-                        props.waveformRef.current = null
-                    } else setStatusDisplay('loaded')
+                    setStatusDisplay('loaded')
                     zoomviewContainerRef.current.addEventListener('wheel', onWheel, {passive: false})
-                    // zoomviewContainerRef.current.setAttribute('tabindex', 0)
                 })
                 let isDoubleClick = false;
                 let clickTimer;
@@ -231,21 +228,25 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             props.selectedSegment.current = null
             window.removeEventListener('error', errorHandler)
         }
-    }, [props.video, props.waveformRef, insertSegment, onWheel, errorHandler, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
+    }, [waveformData, props.waveformRef, insertSegment, onWheel, errorHandler, props.hotRef, props.playerRef, props.tcLockRef, props.selectedSegment])
+
+    useEffect(() => {
+        setStatusDisplay('default')
+        if (!props.waveformSource) {
+            statusRef.current.style.display = 'none'
+            props.waveformRef.current?.destroy()
+            props.waveformRef.current = null
+            setWaveformData(null)
+        } else {
+            statusRef.current.style.display = ''
+            setWaveformData(props.waveformSource)
+        }
+    }, [props.waveformSource, props.waveformRef])
 
     useEffect(() => {
         props.waveformRef.current?.views.getView('zoomview')?.fitToContainer()
         props.waveformRef.current?.views.getView('overview')?.fitToContainer()
     }, [props.size, props.waveformRef])
-
-    useEffect(() => {
-        setStatusDisplay('default')
-        if (!props.mediaFile) {
-            statusRef.current.style.display = 'none'
-            props.waveformRef.current?.destroy()
-            props.waveformRef.current = null
-        } else statusRef.current.style.display = ''
-    }, [props.mediaFile, props.waveformRef])
 
     useEffect(() => {
         if (initialized) {

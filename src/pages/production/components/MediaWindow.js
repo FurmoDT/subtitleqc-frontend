@@ -11,10 +11,12 @@ import {MdPlayCircle} from "react-icons/md";
 import "./MediaWindow.css"
 import ContentEditable from "react-contenteditable";
 import {MDBTooltip} from "mdb-react-ui-kit";
+import axios from "../../../utils/axios";
 
-const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
+const MediaWindow = ({setWaveformSource, setSubtitleIndex, ...props}) => {
     const subtitleLabelRef = useRef(null)
     const subtitleIndexRef = useRef(0)
+    const [mediaSource, setMediaSource] = useState('')
     const [t] = useState(Date.now())
     const [seek, setSeek] = useState(0)
     const [isMuted, setIsMuted] = useState(false)
@@ -24,12 +26,11 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     const languageRef = useRef(null)
     const [volume, setVolume] = useState([1])
     const [language, setLanguage] = useState(null)
+    const [initialized, setInitialized] = useState(false)
     const hideUtilTimeoutRef = useRef(null)
 
     const showUtilHandler = useCallback((target) => {
-        [volumeRef.current, speedRef.current, languageRef.current].forEach(v => {
-            if (v !== target) v.classList.add('d-none')
-        })
+        [volumeRef.current, speedRef.current, languageRef.current].forEach(v => v !== target && v.classList.add('d-none'))
         clearTimeout(hideUtilTimeoutRef.current)
         target.classList.remove('d-none')
     }, [])
@@ -83,10 +84,16 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
     }, [])
 
     const onReady = useCallback(() => {
-        if (props.video !== props.mediaFile) {
-            setVideo(props.mediaFile) // generate waveform after video is loaded
+        if (!initialized) {
+            setInitialized(true)
+            if (props.mediaFile.startsWith('blob')) setWaveformSource(props.mediaFile)
+            else {
+                const dataPath = props.mediaFile.replace(/\.[^/.]+$/, ".dat")
+                if (process.env.NODE_ENV === 'development') axios.get('v1/aws/cloudfront/signed-url', {params: {file_path: dataPath}}).then(r => setWaveformSource(r.data))
+                else setWaveformSource(`https://s3.subtitleqc.ai/${dataPath}`)
+            }
         }
-    }, [props.mediaFile, props.video, setVideo])
+    }, [props.mediaFile, initialized, setWaveformSource])
 
     useEffect(() => {
         if (props.subtitleIndex === -1) subtitleLabelRef.current.innerHTML = ''
@@ -101,9 +108,19 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
 
     useEffect(() => {
         setIsPlaying(false)
+        setInitialized(false)
+        setSeek(0)
         setSubtitleIndex(-1)
         subtitleIndexRef.current = 0
-    }, [props.mediaFile, setIsPlaying, setSubtitleIndex])
+        if (props.mediaFile) {
+            if (props.mediaFile.startsWith('blob')) setMediaSource(props.mediaFile)
+            else if (process.env.NODE_ENV === 'development') axios.get('v1/aws/cloudfront/signed-url', {params: {file_path: props.mediaFile}}).then(r => setMediaSource(r.data))
+            else setMediaSource(`https://s3.subtitleqc.ai/${props.mediaFile}?t=${t}`)
+        } else {
+            setMediaSource('')
+            setWaveformSource(null)
+        }
+    }, [props.mediaFile, t, setIsPlaying, setSubtitleIndex, setWaveformSource])
 
     useEffect(() => {
         if (volume[0]) {
@@ -123,8 +140,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
              }}>
             <ReactPlayer ref={props.playerRef} width={'100%'} height={'100%'} progressInterval={1} muted={isMuted}
                          onProgress={onProgress} onReady={onReady} onPlay={onPlayPause} onPause={onPlayPause}
-                         onSeek={onSeek}
-                         url={props.mediaFile?.startsWith('https://s3.subtitleqc.ai') ? `${props.mediaFile}?t=${t}` : props.mediaFile}
+                         onSeek={onSeek} url={mediaSource}
                          config={{file: {attributes: {onContextMenu: e => e.preventDefault()}}}}/>
             <div className={'w-100 h-100 position-absolute top-0'}/>
             <span className={'span-framerate mx-1'}>
@@ -133,7 +149,7 @@ const MediaWindow = ({setVideo, setSubtitleIndex, ...props}) => {
         </div>
         <div className={'w-100 h-100'} style={{backgroundColor: 'black'}}>
             <div className={'d-flex align-items-center px-3'} style={{height: '1rem'}}>
-                <Range min={0} max={props.mediaInfo?.duration || 1} values={[seek]} disabled={!props.mediaFile}
+                <Range min={0} max={props.mediaInfo?.duration || 1} values={[seek]} disabled={!Boolean(mediaSource)}
                        onChange={values => props.playerRef.current.seekTo(values[0], 'seconds')}
                        onFinalChange={values => seek === values[0] && !isPlaying && props.playerRef.current.seekTo(values[0], 'seconds')}
                        renderTrack={({props: _props, children}) => (

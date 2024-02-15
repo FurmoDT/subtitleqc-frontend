@@ -122,10 +122,7 @@ const TimelineWindow = ({resetSegments, ...props}) => {
             },
             overview: {
                 container: overviewContainerRef.current,
-                waveformColor: 'yellow',
                 playheadColor: 'white',
-                highlightColor: 'black',
-                highlightStrokeColor: 'black'
             },
             segmentOptions: {overlay: true, overlayOpacity: 0.4, overlayLabelColor: 'white'},
             zoomLevels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384],

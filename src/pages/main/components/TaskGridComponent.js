@@ -38,13 +38,12 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const groupBy = (arr, keyFunc) => {
         return arr.reduce((result, current) => {
             const key = keyFunc(current);
-            const pd = JSON.parse(current.pd)
             if (!result.has(key)) {
                 result.set(key, {
                     task: {
                         client: current.client_name,
                         pm: current.pm_name,
-                        pd: Object.values(pd).join(','),
+                        pd: Object.values(current.pd).join(','),
                         projectCode: current.project_code,
                         projectName: current.project_name,
                         group: current.task_group_key,
@@ -55,7 +54,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         dueDate: formatTimestamp(current.task_due_date),
                         memo: current.task_memo,
                         status: current.task_ended_at ? 'Done' : null,
-                        extra: {hashedId: current.task_hashed_id, pmId: current.pm_id, pd: pd},
+                        extra: {hashedId: current.task_hashed_id, pmId: current.pm_id, pd: current.pd},
                     }, work: []
                 })
             }

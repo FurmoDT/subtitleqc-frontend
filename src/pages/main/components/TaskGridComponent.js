@@ -242,11 +242,10 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         } else {
             axios.get('v1/tasks/worker', {params: {start_date: startAt, end_date: endAt}}).then((response) => {
                 setRows(response.data.map((item, index) => {
-                    const pd = JSON.parse(item.pd)
                     return {
                         no: index + 1,
                         client: item.client_name,
-                        pd: Object.values(pd).join(','),
+                        pd: Object.values(item.pd).join(','),
                         taskName: `${item.task_name}_${item.task_episode}`,
                         taskType: fileType(item.task_file_info?.name),
                         workType: item.work_type,
@@ -256,7 +255,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                         endedAt: formatTimestamp(item.work_ended_at),
                         dueDate: formatTimestamp(item.work_due_date),
                         memo: item.work_memo,
-                        extra: {hashedId: item.task_hashed_id, workHashedId: item.work_hashed_id, pd: pd}
+                        extra: {hashedId: item.task_hashed_id, workHashedId: item.work_hashed_id, pd: item.pd}
                     }
                 }))
             })

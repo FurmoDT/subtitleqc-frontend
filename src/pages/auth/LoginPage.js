@@ -32,7 +32,7 @@ const LoginPage = () => {
     }, [userState, navigate])
 
     const authenticate = useCallback((data) => {
-        axios.post(`v1/auth/login`, data).then((response) => {
+        axios.post(`v1/auth/login`, data, {withCredentials: true}).then((response) => {
             if (response.status === HttpStatusCode.Ok) {
                 updateAccessToken(response.data.access_token).then()
             }
@@ -43,7 +43,7 @@ const LoginPage = () => {
                 if (data.auth.auth_type !== 'email') {
                     axios.post(`v1/auth/register`, {
                         ...data, user: {}
-                    }).then((registerResponse) => {
+                    }, {withCredentials: true}).then((registerResponse) => {
                         updateAccessToken(registerResponse.data.access_token).then()
                     })
                 } else {

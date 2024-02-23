@@ -35,7 +35,7 @@ export const AuthProvider = ({children}) => {
     }, []);
 
     useEffect(() => {
-        axios.post('v1/auth/refresh').then((response) => {
+        axios.post('v1/auth/refresh', null, {withCredentials: true}).then((response) => {
             return updateAccessToken(response.data.access_token).then()
         }).catch(() => null).finally(() => setIsInitialized(true))
     }, [updateAccessToken])

@@ -77,7 +77,7 @@ export default function Navbar(props) {
                             }, [navigate])}>내 프로필</MDBDropdownItem>
                             <MDBDropdownItem divider/>
                             <MDBDropdownItem link onClick={useCallback(() => {
-                                axios.post(`v1/auth/logout`, {}).then((response) => {
+                                axios.post(`v1/auth/logout`, null, {withCredentials: true}).then((response) => {
                                     if (response.status === HttpStatusCode.Ok) {
                                         updateAccessToken(null).then(() => navigate('/', {replace: true}))
                                     }

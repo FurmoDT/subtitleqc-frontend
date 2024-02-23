@@ -54,7 +54,7 @@ const SignupPage = () => {
                     }, user: {
                         user_name: nameInputRef.current.value, user_birthday: birthInputRef.current.value
                     }
-                }).then((response) => {
+                }, {withCredentials: true}).then((response) => {
                     if (response.status === HttpStatusCode.Ok) {
                         updateAccessToken(response.data.access_token)
                         navigate('/')

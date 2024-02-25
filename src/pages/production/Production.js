@@ -218,14 +218,20 @@ const Production = () => {
                     if (event.transaction.local) {
                         inserts?.forEach((value, i) => cellDataRef.current[retain + i].rowId = value.rowId)
                     } else {
-                        /* TODO - change editor row
-                        if (hotRef.current.getActiveEditor().isInFullEditMode()) {
-                            hotRef.current.getActiveEditor().beginEditing()
-                            hotRef.current.getActiveEditor().enableFullEditMode()
+                        let editingValue, row, col
+                        if (hotRef.current.getActiveEditor()?.state === 'STATE_EDITING') {
+                            editingValue = hotRef.current.getActiveEditor().getValue()
+                            row = hotRef.current.getActiveEditor().cellProperties.row
+                            col = hotRef.current.getActiveEditor().cellProperties.col
+                            hotRef.current.getActiveEditor().finishEditing(true)
                         }
-                        */
                         cellDataRef.current.splice(retain, deletes, ...inserts)
                         hotRef.current.render()
+                        if (editingValue) {
+                            hotRef.current.selectCell(row - deletes + inserts.length, col)
+                            hotRef.current.getActiveEditor().beginEditing()
+                            hotRef.current.getActiveEditor().setValue(editingValue)
+                        }
                         languageWindowRef.current.setTotalLines()
                     }
                 })
@@ -237,7 +243,10 @@ const Production = () => {
                             event.changes.keys.forEach((change, key) => updates.push([row, key, event.target.get(key).value]))
                         }
                     })
+                    let editingValue = null
+                    if (hotRef.current.getActiveEditor()?.state === 'STATE_EDITING') editingValue = hotRef.current.getActiveEditor().getValue()
                     hotRef.current.setDataAtRowProp(updates, 'sync')
+                    if (editingValue) hotRef.current.getActiveEditor().setValue(editingValue)
                 })
             })
             setDataInitialized(true)

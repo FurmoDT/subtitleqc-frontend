@@ -5,6 +5,7 @@ export const AuthContext = createContext(null);
 
 export const AuthProvider = ({children}) => {
     const [isInitialized, setIsInitialized] = useState(false);
+    const initiatedRef = useRef(false)
     const [userState, setUserState] = useState({})
     const accessTokenRef = useRef(null)
 
@@ -35,6 +36,8 @@ export const AuthProvider = ({children}) => {
     }, []);
 
     useEffect(() => {
+        if (initiatedRef.current) return
+        initiatedRef.current = true
         axios.post('v1/auth/refresh', null, {withCredentials: true}).then((response) => updateAccessToken(response.data.access_token).then()).catch(() => null).finally(() => setIsInitialized(true))
     }, [updateAccessToken])
 

@@ -9,8 +9,6 @@ export const WebsocketProvider = ({children}) => {
     const [websocketConnected, setWebsocketConnected] = useState(false)
     const {userState, accessTokenRef, updateAccessToken} = useContext(AuthContext)
     const wsRef = useRef(null)
-    const pingIntervalRef = useRef(null)
-    const pingTimeoutRef = useRef(null)
 
     const connect = useCallback(() => {
         return new Promise((resolve) => {
@@ -27,42 +25,16 @@ export const WebsocketProvider = ({children}) => {
             }
             wsRef.current.onmessage = (event) => {
                 const data = JSON.parse(event.data)
-                if (data.type === 'connected') {
-                    setWebsocketConnected(true)
-                    pingIntervalRef.current = setInterval(() => {
-                        if (wsRef.current.readyState === WebSocket.OPEN) {
-                            wsRef.current.send(JSON.stringify({type: 'ping'}))
-                            pingTimeoutRef.current = setTimeout(() => {
-                                if (wsRef.current) {
-                                    console.log('ws ping timeout')
-                                    wsRef.current.close()
-                                }
-                            }, 4000)
-                        } else {
-                            clearInterval(pingIntervalRef.current)
-                            setWebsocketConnected(false)
-                            wsRef.current = null
-                            connect().then()
-                        }
-                    }, 5000)
-                } else if (data.type === 'pong') {
-                    clearTimeout(pingTimeoutRef.current)
-                }
+                if (data.type === 'connected') setWebsocketConnected(true)
             }
             wsRef.current.onclose = (event) => {
-                clearInterval(pingIntervalRef.current)
                 setWebsocketConnected(false)
                 wsRef.current = null
-                if (event.code === 1008) axios.post('v1/auth/refresh').then((response) => {
-                    return updateAccessToken(response.data.access_token).then(() => connect())
-                })
-                else if (event.code === 4000) {
-                } else setTimeout(() => connect(), 5000)
+                if (event.code === 1008) axios.post('v1/auth/refresh', null, {withCredentials: true}).then((response) => updateAccessToken(response.data.access_token).then(() => connect()))
+                else setTimeout(() => connect(), 5000)
                 console.log('ws closed')
             }
-            wsRef.current.onerror = (error) => {
-                console.log('ws closed on error')
-            }
+            wsRef.current.onerror = (error) => console.log('ws closed on error')
         })
     }, [accessTokenRef, updateAccessToken])
 

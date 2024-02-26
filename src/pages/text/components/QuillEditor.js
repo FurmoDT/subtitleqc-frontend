@@ -40,7 +40,7 @@ const grammarly = async () => await Grammarly.init("client_3a8upV1a1GuH7TqFpd98S
 
 const QuillEditor = ({editorType, taskHashedId, targetLanguage, iceservers, connectionType, disabled, onSave}) => {
     const {sessionId} = useContext(SessionContext)
-    const {userState} = useContext(AuthContext);
+    const {userRef} = useContext(AuthContext);
     const reactQuillRef = useRef(null)
     const [value, setValue] = useState('');
     const {wsRef, isOnline, websocketConnected} = useContext(WebsocketContext)
@@ -99,7 +99,7 @@ const QuillEditor = ({editorType, taskHashedId, targetLanguage, iceservers, conn
             peerOpts: {config: {iceServers: iceservers}}
         })
         const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
-        provider.awareness.setLocalStateField('user', {name: `${userState.user.userEmail}`})
+        provider.awareness.setLocalStateField('user', {name: `${userRef.current.userEmail}`})
         if (disabled) provider.awareness.setLocalState(null)
         const binding = new QuillBinding(yText, reactQuillRef.current.getEditor(), provider.awareness)
         reactQuillRef.current.getEditor().format('size', '13px')
@@ -127,7 +127,7 @@ const QuillEditor = ({editorType, taskHashedId, targetLanguage, iceservers, conn
             binding.destroy()
             yDoc.destroy()
         }
-    }, [sessionId, userState, wsRef, websocketConnected, editorType, taskHashedId, targetLanguage, iceservers, forceRender, disabled, onSave])
+    }, [sessionId, userRef, wsRef, websocketConnected, editorType, taskHashedId, targetLanguage, iceservers, forceRender, disabled, onSave])
 
     useEffect(() => {
         if (initializedRef.current) setForceRender(prevState => prevState + 1)

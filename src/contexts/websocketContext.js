@@ -7,7 +7,7 @@ export const WebsocketContext = createContext(null);
 
 export const WebsocketProvider = ({children}) => {
     const [websocketConnected, setWebsocketConnected] = useState(false)
-    const {userState, accessTokenRef, updateAccessToken} = useContext(AuthContext)
+    const {isAuthenticated, accessTokenRef, updateAccessToken} = useContext(AuthContext)
     const wsRef = useRef(null)
 
     const connect = useCallback(() => {
@@ -45,7 +45,7 @@ export const WebsocketProvider = ({children}) => {
 
     useEffect(() => {
         connect().then()
-    }, [connect, userState])
+    }, [connect, isAuthenticated])
 
     return <WebsocketContext.Provider value={{wsRef, websocketConnected}}>
         {children}

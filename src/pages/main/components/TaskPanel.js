@@ -10,7 +10,7 @@ import TaskGridComponent from "./TaskGridComponent";
 const TaskPanel = () => {
     const [startAt, setStartAt] = useState(null);
     const [endAt, setEndAt] = useState(null);
-    const {userState} = useContext(AuthContext)
+    const {userRef} = useContext(AuthContext)
     const [forceRender, setForceRender] = useState(0)
 
     useEffect(() => {
@@ -31,16 +31,16 @@ const TaskPanel = () => {
     }, [])
 
     const ModalComponent = () => {
-        if (userState.user.userRole === 'client') { // TODO Modal rerender as accessToken refreshed
+        if (userRef.current.userRole === 'client') { // TODO Modal rerender as accessToken refreshed
             return <RequestModal forceRender={forceRenderer}/>
-        } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
+        } else if (/^(admin|pm)$/.test(userRef.current.userRole)) {
             return <RegisterModal forceRender={forceRenderer}/>
         } else return null
     }
 
     return <div className={'h-100 text-center px-2'} style={{width: 'calc(100vw - 4rem)'}}>
         <div className={'w-100 h-100 p-2 bg-white rounded-5'}>
-            {userState.user.userRole ? <>
+            {userRef.current.userRole ? <>
                 <MDBRow className={'mb-2 d-flex align-items-center'}>
                     <MDBCol sm={4} className={'d-flex justify-content-start align-items-end'}>
                         <ModalComponent/>

@@ -23,13 +23,13 @@ const LoginPage = () => {
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)
     const errorLabelRef = useRef(null)
-    const {userState, updateAccessToken} = useContext(AuthContext);
+    const {isAuthenticated, updateAccessToken} = useContext(AuthContext);
     const [showShow, setShowShow] = useState(false);
     const toggleShow = () => setShowShow(!showShow);
 
     useEffect(() => {
-        if (userState.isAuthenticated) navigate('/')
-    }, [userState, navigate])
+        if (isAuthenticated) navigate('/')
+    }, [isAuthenticated, navigate])
 
     const authenticate = useCallback((data) => {
         axios.post(`v1/auth/login`, data, {withCredentials: true}).then((response) => {

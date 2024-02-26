@@ -22,13 +22,13 @@ import {AxiosInterceptor} from "./components/AxiosInterceptor";
 
 function App() {
     const basename = `/${publicUrl.split('/').slice(1).join('/')}`
-    const {userState} = useContext(AuthContext);
+    const {isAuthenticated} = useContext(AuthContext);
 
     return <div className={'app-container'}>
         <AxiosInterceptor>
             <BrowserRouter basename={basename}>
                 <Routes>
-                    <Route path={"/"} element={userState.isAuthenticated ? <Navbar basename={basename}/> :
+                    <Route path={"/"} element={isAuthenticated ? <Navbar basename={basename}/> :
                         <Navigate to={'/login'} replace/>}>
                         <Route index element={<MainPage/>}/>
                         <Route path={'/*'} element={<MainPage/>}/>

@@ -21,7 +21,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
     const persistentUndoRedoRef = useRef({doneActions: [], undoneActions: []})
     const subtitleIndexRef = useRef(-1)
     const userCursorsRef = useRef({})
-    const userRef = useRef(null)
+    const userAwarenessRef = useRef(null)
 
     const debounceRender = useCallback(() => {
         clearTimeout(debounceTimeoutRef.current)
@@ -223,7 +223,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
                 if (source === 'sync') props.hotRef.current.undoRedo.doneActions.pop()
                 else {
                     const index = [0]
-                    const user = userRef.current.user;
+                    const user = userAwarenessRef.current.user;
                     while (index[0] < changes.length) {
                         props.crdt.yDoc().transact(() => {
                             let counter = 0
@@ -379,7 +379,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
     useEffect(() => {
         if (props.crdtAwarenessInitialized) {
             const awareness = props.crdt.awareness()
-            userRef.current = awareness.getStates().get(props.crdt.yDoc().clientID)
+            userAwarenessRef.current = awareness.getStates().get(props.crdt.yDoc().clientID)
             awareness.on('change', ({added, removed, updated}) => {
                 const states = awareness.getStates()
                 added.forEach(id => {

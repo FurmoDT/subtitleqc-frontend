@@ -14,7 +14,7 @@ const UserPage = () => {
     const [isAdminInitialized, setIsAdminInitialized] = useState(false)
     const userInfoRef = useRef({})
     const userListRef = useRef([])
-    const {userState} = useContext(AuthContext)
+    const {userRef} = useContext(AuthContext)
 
     useEffect(() => {
         axios.get(`v1/users/me`).then((response) => {
@@ -24,13 +24,13 @@ const UserPage = () => {
     }, [])
 
     useEffect(() => {
-        if (/^(admin|pm)$/.test(userState.user.userRole)) {
+        if (/^(admin|pm)$/.test(userRef.current.userRole)) {
             axios.get(`v1/users`).then((response) => {
                 userListRef.current = response.data
                 setIsAdminInitialized(true)
             })
         }
-    }, [userState])
+    }, [userRef])
 
     const LeftPanel = () => {
         const [basicActive, setBasicActive] = useState(pathname)
@@ -43,7 +43,7 @@ const UserPage = () => {
             <MDBListGroup>
                 <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user')} action
                                   active={basicActive === '/user'}>내 정보</MDBListGroupItem>
-                {/^(admin|pm)$/.test(userState.user.userRole) &&
+                {/^(admin|pm)$/.test(userRef.current.userRole) &&
                     <MDBListGroupItem tag={'button'} onClick={() => handleBasicClick('/user/admin')} action
                                       active={basicActive === '/user/admin'}>관리자 화면</MDBListGroupItem>}
             </MDBListGroup>

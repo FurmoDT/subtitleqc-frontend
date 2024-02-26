@@ -32,7 +32,7 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
     const [estimateItems, setEstimateItems] = useState([])
     const [clientListOption, setClientListOption] = useState([])
     const [pmListOption, setPmListOption] = useState([])
-    const {userState} = useContext(AuthContext)
+    const {userRef} = useContext(AuthContext)
 
     useEffect(() => {
         if (!show) return
@@ -52,9 +52,9 @@ const ProjectModalContent = ({show, toggleShow, projectId}) => {
 
     useEffect(() => {
         if (!projectId && pmListOption.length) setProject(prevState => ({
-            ...prevState, pm: pmListOption.find(value => value.value === userState.user.userId)
+            ...prevState, pm: pmListOption.find(value => value.value === userRef.current.userId)
         }))
-    }, [pmListOption, projectId, userState])
+    }, [pmListOption, projectId, userRef])
 
     useEffect(() => {
         if (!show) {

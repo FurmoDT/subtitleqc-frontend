@@ -14,7 +14,7 @@ const MainPage = () => {
     const pathname = window.location.pathname
     const [activeMenu, setActiveMenu] = useState(null)
     const navigate = useNavigate()
-    const {userState} = useContext(AuthContext)
+    const {userRef} = useContext(AuthContext)
 
     useEffect(() => {
         if (pathname === '/') navigate('/tasks') // before dashboard
@@ -39,7 +39,7 @@ const MainPage = () => {
                           component={<Link to={'/tasks'}/>}>
                     <BsListTask size={25} color={'#6cadd0'}/>
                 </MenuItem>
-                {/^(admin|pm)$/.test(userState.user.userRole) &&
+                {/^(admin|pm)$/.test(userRef.current.userRole) &&
                     <MenuItem className={'mb-3'} active={activeMenu === '/projects'}
                               onClick={() => setActiveMenu('/projects')}
                               component={<Link to={'/projects'}/>}>

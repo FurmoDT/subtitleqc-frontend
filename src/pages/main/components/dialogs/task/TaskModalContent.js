@@ -31,7 +31,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
     const [uploadedFiles, setUploadedFiles] = useState([])
     const [workerListOption, setWorkerListOption] = useState([])
     const [pmListOption, setPmListOption] = useState([])
-    const {userState} = useContext(AuthContext)
+    const {userRef} = useContext(AuthContext)
     const modifySpinnerRef = useRef(null)
     const [uploadProgress, setUploadProgress] = useState('');
     const projectCodeRef = useRef(null)
@@ -93,8 +93,8 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
 
     useEffect(() => {
         if (!show || hashedId || !pmListOption.length) return
-        setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userState.user.userId)]}))
-    }, [show, hashedId, pmListOption, userState])
+        setTask(prevState => ({...prevState, pd: [pmListOption.find(value => value.value === userRef.current.userId)]}))
+    }, [show, hashedId, pmListOption, userRef])
 
     useEffect(() => {
         if (!show) {
@@ -331,7 +331,7 @@ const TaskModalContent = ({toggleShow, show, hashedId, forceRenderer}) => {
                                                 submitToggleShow()
                                                 axios.post('v1/tasks', {
                                                     project_id: task.projectInfo?.projectId,
-                                                    pm_id: userState.user.userId,
+                                                    pm_id: userRef.current.userId,
                                                     pd_ids: task.pd.map(value => value.value),
                                                     task_name: task.programName,
                                                     task_episode: task.episode,

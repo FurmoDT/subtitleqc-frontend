@@ -14,7 +14,7 @@ const FilterContext = createContext(undefined);
 
 const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     const [initialized, setInitialized] = useState(false)
-    const {userState} = useContext(AuthContext)
+    const {userRef} = useContext(AuthContext)
     let columns
     const [rows, setRows] = useState(null)
     const [rowsCopy, setRowsCopy] = useState(null)
@@ -120,7 +120,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
         },
     }
 
-    if (userState.user.userRole === 'client') {
+    if (userRef.current.userRole === 'client') {
         columns = [
             defaultColumns.no, defaultColumns.pm,
             defaultColumns.taskName, defaultColumns.taskType,
@@ -128,7 +128,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
             defaultColumns.memo,
             defaultColumns.status
         ];
-    } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
+    } else if (/^(admin|pm)$/.test(userRef.current.userRole)) {
         const WorkGrid = ({hashedId}) => {
             const task = taskAndWork.get(hashedId).task
             const work = taskAndWork.get(hashedId).work
@@ -138,7 +138,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     key: 'workType',
                     name: '작업',
                     renderCell: row =>
-                        <a className={task.taskType && (task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) ? '' : 'custom-disabled'}
+                        <a className={task.taskType && (task.extra.pmId === userRef.current.userId || Object.keys(task.extra.pd).includes(`${userRef.current.userId}`)) ? '' : 'custom-disabled'}
                            href={`/${task.taskType}/${hashedId}/${row.row.workHashedId}`}>{row.row.workType}</a>
                 },
                 {
@@ -159,7 +159,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     key: 'workStatus', name: '상태', renderCell: (row) => {
                         return row.row.workEndedAt || task.endedAt ?
                             <MDBBtn outline
-                                    className={`${(task.extra.pmId === userState.user.userId || Object.keys(task.extra.pd).includes(`${userState.user.userId}`)) && !task.endedAt ? 'button-active' : 'button-disabled'}`}
+                                    className={`${(task.extra.pmId === userRef.current.userId || Object.keys(task.extra.pd).includes(`${userRef.current.userId}`)) && !task.endedAt ? 'button-active' : 'button-disabled'}`}
                                     onClick={() => setUndoneWorkHashedId(row.row.workHashedId)}>🟢완료</MDBBtn> :
                             <MDBBtn outline className={'button-disabled'}>🟡진행중</MDBBtn>
                     }
@@ -185,7 +185,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 ...defaultColumns.taskName,
                 renderCell: (row) => {
                     if (row.row.type !== 'MASTER') return
-                    const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
+                    const authorized = row.row.extra.pmId === userRef.current.userId || Object.keys(row.row.extra.pd).includes(`${userRef.current.userId}`)
                     return <>
                         <a className={authorized && row.row.taskType ? '' : 'custom-disabled'}
                            href={`/${row.row.taskType}/${row.row.extra.hashedId}`}>{row.row.taskName.endsWith('_null') ? row.row.taskName.slice(0, -5) : row.row.taskName}</a>
@@ -196,7 +196,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 }
             }, defaultColumns.taskType, defaultColumns.createdAt, defaultColumns.dueDate, {
                 ...defaultColumns.status, renderCell: (row) => {
-                    const authorized = row.row.extra.pmId === userState.user.userId || Object.keys(row.row.extra.pd).includes(`${userState.user.userId}`)
+                    const authorized = row.row.extra.pmId === userRef.current.userId || Object.keys(row.row.extra.pd).includes(`${userRef.current.userId}`)
                     return <>
                         <MDBBtn outline className={`${authorized ? 'button-active' : 'button-disabled'}`}
                                 onClick={() => row.row.endedAt ? setUndoneTaskHashedId(row.row.extra.hashedId) : setDoneTaskHashedId(row.row.extra.hashedId)}>
@@ -204,7 +204,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     </>
                 }
             }]
-    } else if (userState.user.userRole === 'worker') {
+    } else if (userRef.current.userRole === 'worker') {
         columns = [defaultColumns.no, defaultColumns.client, defaultColumns.pd,
             {
                 ...defaultColumns.taskName,
@@ -221,7 +221,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
     useEffect(() => {
         if (!startAt || !endAt) return
         setInitialized(false)
-        if (userState.user.userRole === 'client') {
+        if (userRef.current.userRole === 'client') {
             axios.get('v1/tasks/client', {params: {start_date: startAt, end_date: endAt}}).then((response) =>
                 setRows(response.data.map((item, index) => ({
                     no: index + 1,
@@ -235,7 +235,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                     status: item.task_ended_at ? 'Done' : item.work.length ? 'Ing' : 'New',
                     extra: {hashedId: item.task_hashed_id, work: item.work}
                 }))))
-        } else if (/^(admin|pm)$/.test(userState.user.userRole)) {
+        } else if (/^(admin|pm)$/.test(userRef.current.userRole)) {
             axios.get('v1/tasks/pm', {params: {start_date: startAt, end_date: endAt}}).then((response) =>
                 setTaskAndWork(groupBy(response.data, (item) => item.task_hashed_id))
             )
@@ -260,7 +260,7 @@ const TaskGridComponent = ({startAt, endAt, forceRender, forceRenderer}) => {
                 }))
             })
         }
-    }, [userState.user.userRole, startAt, endAt, forceRender])
+    }, [userRef, startAt, endAt, forceRender])
 
     useEffect(() => {
         if (!taskAndWork) return

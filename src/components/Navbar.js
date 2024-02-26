@@ -1,5 +1,4 @@
 import {
-    MDBBtn,
     MDBCollapse,
     MDBContainer,
     MDBDropdown,
@@ -22,7 +21,7 @@ import {HttpStatusCode} from "axios";
 
 export default function Navbar(props) {
     const [showNavNoTogglerSecond, setShowNavNoTogglerSecond] = useState(false);
-    const {userState, updateAccessToken} = useContext(AuthContext);
+    const {userRef, updateAccessToken} = useContext(AuthContext);
     const [activeNav, setActiveNav] = useState('')
     const navigate = useNavigate()
 
@@ -62,13 +61,10 @@ export default function Navbar(props) {
                                 onClick={() => window.open('https://docs.google.com/presentation/d/14zk9I95cR7y-E8ujeheKwtvlXKsnK4c0nUhUDyyUh0s/edit?usp=sharing')}>MANUAL</MDBNavbarLink>
                         </MDBNavbarItem>
                     </MDBNavbarNav>
-                    <MDBBtn outline color={'link'} className={'text-nowrap'}
-                            style={{display: userState.isAuthenticated ? 'none' : ''}}
-                            onClick={useCallback(() => navigate('/login'), [navigate])}>로그인</MDBBtn>
-                    <MDBDropdown style={{display: userState.isAuthenticated ? '' : 'none', color: 'black'}}>
+                    <MDBDropdown style={{color: 'black'}}>
                         <MDBDropdownToggle tag={'section'}
                                            onMouseEnter={(event) => event.target.style.cursor = 'pointer'}>
-                            <span className={'me-2'}>{`${userState.user?.userEmail} 님`}</span>
+                            <span className={'me-2'}>{`${userRef.current.userEmail} 님`}</span>
                             <MDBIcon fas icon="user-circle" size={'xl'} color={'black-50'}/>
                         </MDBDropdownToggle>
                         <MDBDropdownMenu responsive={'end'}>

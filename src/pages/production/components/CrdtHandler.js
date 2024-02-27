@@ -12,7 +12,7 @@ import {generateHexColor} from "../../../utils/functions";
 
 const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized, ...props}, ref) => {
     const {sessionId} = useContext(SessionContext)
-    const {userState} = useContext(AuthContext);
+    const {userRef} = useContext(AuthContext);
     const [iceservers, setIceServers] = useState(null)
     const {wsRef, websocketConnected} = useContext(WebsocketContext)
     const yDocRef = useRef(null)
@@ -30,7 +30,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
     useEffect(() => {
         if (websocketConnected) axios.get(`v1/twilio/iceservers`).then((response) => setIceServers(response.data))
         else setIceServers(null)
-    }, [sessionId, userState, websocketConnected])
+    }, [sessionId, websocketConnected])
 
     useEffect(() => {
         const yDoc = new Y.Doc()
@@ -60,25 +60,25 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
     }, [roomId, sessionId, setCrdtInitialized, wsRef, props.menuToolbarRef])
 
     useEffect(() => {
-        providerRef.current?.destroy()
-        providerRef.current = null
         if (!iceservers) {
             setCrdtAwarenessInitialized(false)
+            providerRef.current?.destroy()
+            providerRef.current = null
             return
         }
+        if (providerRef.current) return
         const provider = new WebrtcProvider(roomId, yDocRef.current, {
             signaling: [`${process.env.NODE_ENV === 'development' ? localWsUrl : wsUrl}/v1/webrtc`],
             maxConns: 20,
             peerOpts: {config: {iceServers: iceservers}}
         })
         providerRef.current = provider
-
         const awareness = provider.awareness
         awarenessRef.current = awareness
         awareness.setLocalStateField('user', {
-            id: userState.user.userId,
-            name: userState.user.userName,
-            email: userState.user.userEmail,
+            id: userRef.current.userId,
+            name: userRef.current.userName,
+            email: userRef.current.userEmail,
             color: generateHexColor(),
             connectedAt: Date.now()
         })
@@ -92,7 +92,8 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
             }
         }
         setCrdtAwarenessInitialized(true)
-    }, [roomId, userState, iceservers, setCrdtAwarenessInitialized, wsRef, props.menuToolbarRef]);
+        console.log('provider connected')
+    }, [roomId, userRef, iceservers, setCrdtAwarenessInitialized, wsRef, props.menuToolbarRef]);
 
     return <></>
 })

@@ -34,7 +34,7 @@ export const WebsocketProvider = ({children}) => {
             wsRef.current.onclose = (event) => {
                 setWebsocketConnected(false)
                 wsRef.current = null
-                if (event.code === 1008) axios.post('v1/auth/refresh', null, {withCredentials: true}).then((response) => updateAccessToken(response.data.access_token))
+                if (event.code === 1008) axios.post('v1/auth/refresh', null, {withCredentials: true}).then((response) => updateAccessToken(response.data.access_token).then(() => connect()))
                 else if (event.code === 4000) {
                 } else setTimeout(() => connect(), 5000)
                 console.log('ws closed')

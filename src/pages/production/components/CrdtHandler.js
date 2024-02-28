@@ -39,17 +39,16 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
         const persistence = new IndexeddbPersistence(`crdt-${sessionId}-${roomId}`, yDoc)
         persistence.whenSynced.then(() => {
             axios.get(`v1/tasks/content/${roomId}`).then((r) => {
-                if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt))
+                if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt), 'initialize')
             }).finally(() => setCrdtInitialized(true))
         })
 
         yDoc.on('update', (update, origin, doc, tr) => {
-            if (wsRef.current?.readyState === WebSocket.OPEN) {
+            if (origin === 'initialize') return
+            if (origin === 'local') {
                 wsRef.current.send(JSON.stringify({room_id: `${roomId}`, update: fromUint8Array(update)}))
-                if (origin === 'local') props.menuToolbarRef.current.showSavingStatus(false)
-                else props.menuToolbarRef.current.showSavingStatus(true)
-            } else {
-                offlineUpdate.current = offlineUpdate.current ? Y.mergeUpdates([offlineUpdate.current, update]) : update
+                props.menuToolbarRef.current.showSavingStatus(false)
+                // offlineUpdate.current = offlineUpdate.current ? Y.mergeUpdates([offlineUpdate.current, update]) : update
             }
         })
         return () => {

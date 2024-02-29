@@ -14,7 +14,6 @@ import axios from "../../utils/axios";
 import {useNavigate} from "react-router-dom";
 import {Allotment} from "allotment";
 import CrdtHandler from "./components/CrdtHandler";
-import * as Y from "yjs";
 import './Production.css'
 
 const Production = () => {
@@ -192,22 +191,13 @@ const Production = () => {
         if (crdtInitialized) {
             const crdt = crdtHandlerRef.current
             const yMap = crdt.yMap()
-            crdt.yDoc().transact(() => {
-                if (yMap.get('cells')) {
-                    cellDataRef.current = yMap.get('cells').toArray().map(value => {
-                        return Object.entries(value.toJSON()).reduce((acc, [key, value]) => {
-                            if (value) acc[key] = typeof value !== 'object' ? value : value.value;
-                            return acc;
-                        }, {});
-                    })
-                } else {
-                    const yCellData = cellDataRef.current.map(value => {
-                        const map = new Y.Map()
-                        Object.entries(value).forEach(([key, value]) => map.set(key, value))
-                        return map
-                    })
-                    yMap.set('cells', Y.Array.from(yCellData))
-                }
+            if (yMap.get('cells')) {
+                cellDataRef.current = yMap.get('cells').toArray().map(value => {
+                    return Object.entries(value.toJSON()).reduce((acc, [key, value]) => {
+                        if (value) acc[key] = typeof value !== 'object' ? value : value.value;
+                        return acc;
+                    }, {});
+                })
                 yMap.get('cells').observe(event => { // row changes
                     let retain, inserts, deletes
                     event.changes.delta.forEach(change => {
@@ -248,7 +238,7 @@ const Production = () => {
                     hotRef.current.setDataAtRowProp(updates, 'sync')
                     if (editingValue) hotRef.current.getActiveEditor().setValue(editingValue)
                 })
-            })
+            }
             setDataInitialized(true)
         }
     }, [crdtInitialized]);

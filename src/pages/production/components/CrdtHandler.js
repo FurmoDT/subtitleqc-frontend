@@ -23,9 +23,9 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
 
     useImperativeHandle(ref, () => ({
         yDoc: () => yDocRef.current,
-        yMap: () => yDocRef.current.getMap(roomId),
+        yMap: () => yDocRef.current.getMap('subtitle'),
         awareness: () => awarenessRef.current
-    }), [roomId])
+    }), [])
 
     useEffect(() => {
         if (websocketConnected) axios.get(`v1/twilio/iceservers`).then((response) => setIceServers(response.data))

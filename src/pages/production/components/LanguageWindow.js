@@ -155,7 +155,6 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
             rowHeaders: true,
             width: props.size.width,
             height: props.size.height,
-            minSpareRows: 2,
             readOnly: props.readOnly,
             contextMenu: props.readOnly ? false : {
                 items: {
@@ -308,6 +307,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
             if (props.taskHashedId) updateUserCursors(index, -amount)
         })
         props.hotRef.current.addHook('afterRemoveRow', (index, amount, source) => {
+            if (Number.isNaN(index)) return
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
                     const rows = props.crdt.yMap().get('cells')
@@ -348,6 +348,9 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         props.hotRef.current.addHook('afterRender', () => updateSubtitleHighlight(false))
         props.hotRef.current.addHook('afterSetCellMeta', debounceRender)
         props.hotRef.current.addHook('afterRemoveCellMeta', debounceRender)
+        props.hotRef.current.addHook('afterDeselect', () => {
+            if (!props.hotRef.current.countRows()) props.hotSelectionRef.current = {rowStart: null, columnStart: null, rowEnd: null, columnEnd: null}
+        })
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
@@ -363,7 +366,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
 
     useEffect(() => {
         props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
-    }, [totalLines]);
+    }, [props.hotRef, totalLines]);
 
     useEffect(() => {
         // highlight current subtitle

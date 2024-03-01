@@ -195,11 +195,10 @@ const TransToolbar = (props) => {
             <MDBBtn ref={props.removeLineButtonRef} className={'transToolbar-button'} color={'link'} size={'sm'}
                     onClick={() => {
                         const {rowStart, columnStart, rowEnd, columnEnd} = adjustedHotSelection()
-                        if (props.readOnly || rowStart === null) return
-                        const length = rowEnd + 1 - rowStart
                         const maxLength = props.hotRef.current.countRows()
-                        if (maxLength !== length) props.hotRef.current.alter('remove_row', rowStart, length)
-                        else props.hotRef.current.alter('remove_row', rowStart, Math.min(length, maxLength - 1))
+                        if (props.readOnly || rowStart === null || maxLength === 1) return
+                        const length = rowEnd + 1 - rowStart
+                        props.hotRef.current.alter('remove_row', rowStart, Math.min(length, maxLength - 1))
                         props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
                     }}><RiDeleteRow color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>

@@ -263,7 +263,7 @@ const Production = () => {
                      insertLineBelowButtonRef={insertLineBelowButtonRef} removeLineButtonRef={removeLineButtonRef}
                      splitLineButtonRef={splitLineButtonRef} mergeLineButtonRef={mergeLineButtonRef}/>
         {crdtMode && <CrdtHandler ref={crdtHandlerRef} taskHashedId={taskHashedId} menuToolbarRef={menuToolbarRef}
-                                  setCrdtInitialized={setCrdtInitialized}
+                                  crdtInitialized={crdtInitialized} setCrdtInitialized={setCrdtInitialized}
                                   setCrdtAwarenessInitialized={setCrdtAwarenessInitialized}/>}
         <div ref={dropzoneRef} className={'w-100 d-flex flex-row justify-content-center position-relative'}
              style={{height: 'calc(100vh - 50px - 40px)'}}>

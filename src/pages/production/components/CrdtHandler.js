@@ -59,6 +59,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
     }, [roomId, sessionId, setCrdtInitialized, wsRef, props.menuToolbarRef])
 
     useEffect(() => {
+        if (!props.crdtInitialized) return
         if (!iceservers) {
             setCrdtAwarenessInitialized(false)
             providerRef.current?.destroy()
@@ -92,7 +93,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
         }
         setCrdtAwarenessInitialized(true)
         console.log('provider connected')
-    }, [roomId, userRef, iceservers, setCrdtAwarenessInitialized, wsRef, props.menuToolbarRef]);
+    }, [roomId, userRef, iceservers, props.crdtInitialized, setCrdtAwarenessInitialized, wsRef, props.menuToolbarRef]);
 
     return <></>
 })

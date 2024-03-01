@@ -158,9 +158,6 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
             readOnly: props.readOnly,
             contextMenu: props.readOnly ? false : {
                 items: {
-                    row_above: {},
-                    row_below: {},
-                    remove_row: {},
                     separator: window.Handsontable.plugins.ContextMenu.SEPARATOR,
                     undo: {},
                     redo: {},
@@ -307,7 +304,6 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
             if (props.taskHashedId) updateUserCursors(index, -amount)
         })
         props.hotRef.current.addHook('afterRemoveRow', (index, amount, source) => {
-            if (Number.isNaN(index)) return
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
                     const rows = props.crdt.yMap().get('cells')
@@ -348,9 +344,6 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         props.hotRef.current.addHook('afterRender', () => updateSubtitleHighlight(false))
         props.hotRef.current.addHook('afterSetCellMeta', debounceRender)
         props.hotRef.current.addHook('afterRemoveCellMeta', debounceRender)
-        props.hotRef.current.addHook('afterDeselect', () => {
-            if (!props.hotRef.current.countRows()) props.hotSelectionRef.current = {rowStart: null, columnStart: null, rowEnd: null, columnEnd: null}
-        })
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }

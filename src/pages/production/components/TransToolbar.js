@@ -196,7 +196,10 @@ const TransToolbar = (props) => {
                     onClick={() => {
                         const {rowStart, columnStart, rowEnd, columnEnd} = adjustedHotSelection()
                         if (props.readOnly || rowStart === null) return
-                        props.hotRef.current.alter('remove_row', rowStart, rowEnd + 1 - rowStart)
+                        const length = rowEnd + 1 - rowStart
+                        const maxLength = props.hotRef.current.countRows()
+                        if (maxLength !== length) props.hotRef.current.alter('remove_row', rowStart, length)
+                        else props.hotRef.current.alter('remove_row', rowStart, Math.min(length, maxLength - 1))
                         props.hotRef.current.selectCell(rowStart, columnStart, rowEnd, columnEnd)
                     }}><RiDeleteRow color={'black'} size={20}/></MDBBtn>
         </MDBTooltip>

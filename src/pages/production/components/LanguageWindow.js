@@ -30,14 +30,14 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
 
     const getTotalLines = useCallback(() => {
         const data = props.hotRef.current.getData()
-        let totalLines = -1
+        let line = -1
         for (let i = data.length - 1; i >= 0; i--) {
             if (data[i].filter(v => v).length > 0) {
-                totalLines = i
+                line = i
                 break
             }
         }
-        return Math.max(totalLines + 1, 0)
+        return Math.max(line + 1, 0)
     }, [props.hotRef])
 
     const updateAwarenessCellMeta = useCallback((row, prop, user, isRemove) => {
@@ -202,9 +202,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
             },
         })
         const autoRowSizePlugin = props.hotRef.current.getPlugin('autoRowSize');
-        const totalLines = getTotalLines()
-        setTotalLines(totalLines)
-        props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
+        setTotalLines(getTotalLines())
         props.hotRef.current.addHook('afterBeginEditing', (row, column) => {
             if (!props.hotRef.current.getActiveEditor().isInFullEditMode()) props.hotRef.current.getActiveEditor().enableFullEditMode()
             if (props.hotRef.current.colToProp(column).startsWith('arAE')) {
@@ -303,9 +301,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             }
             setSubtitleIndex(prevState => prevState >= index ? prevState + amount : prevState)
-            const totalLines = getTotalLines()
-            setTotalLines(totalLines)
-            props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
+            setTotalLines(getTotalLines())
         })
         props.hotRef.current.addHook('beforeRemoveRow', (index, amount, physicalRows) => {
             if (props.waveformRef.current) physicalRows.forEach((row) => props.waveformRef.current.segments.removeById(props.hotRef.current.getDataAtRowProp(row, 'rowId')))
@@ -364,6 +360,10 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, () => Math.floor((props.size.width - 365) / props.languages.length))]})
         Object.entries(userCursorsRef.current).forEach(([, aw]) => aw.cursor && updateAwarenessCellMeta(aw.cursor.row, aw.cursor.colProp, aw.user, false))
     }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize, updateAwarenessCellMeta]);
+
+    useEffect(() => {
+        props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})
+    }, [totalLines]);
 
     useEffect(() => {
         // highlight current subtitle

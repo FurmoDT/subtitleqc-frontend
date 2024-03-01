@@ -137,7 +137,7 @@ const ShortcutModal = (props) => {
                 if (event.shiftKey) {
                     const selection = props.hotSelectionRef.current
                     const adjustedSelection = adjustedHotSelection()
-                    const data = props.hotRef.current.getData(adjustedSelection.rowStart, adjustedSelection.columnStart, props.hotRef.current.countRows() - 3, adjustedSelection.columnEnd)
+                    const data = props.hotRef.current.getData(adjustedSelection.rowStart, adjustedSelection.columnStart, props.hotRef.current.countRows() - 1, adjustedSelection.columnEnd)
                     let targetRow = props.hotRef.current.countRows() - 1
                     for (let i = selection.rowEnd + 1; i < props.hotRef.current.countRows(); i++) {
                         if (data[i - adjustedSelection.rowStart]?.some(Boolean)) targetRow = i

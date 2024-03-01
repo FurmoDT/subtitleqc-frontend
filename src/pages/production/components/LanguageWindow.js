@@ -292,18 +292,14 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
             if (props.taskHashedId) updateUserCursors(index, amount)
         })
         props.hotRef.current.addHook('afterCreateRow', (index, amount, source) => {
+            const newRows = Array.from({length: amount}, () => ({rowId: v4()}))
+            props.cellDataRef.current.splice(index, amount, ...newRows)
             if (props.taskHashedId) {
                 props.crdt.yDoc().transact(() => {
                     const rows = props.crdt.yMap().get('cells')
-                    const newRows = Array.from({length: amount}, () => {
-                        const map = new Y.Map()
-                        map.set('rowId', v4())
-                        return map
-                    })
-                    rows.insert(index, newRows)
-                })
+                    rows.insert(index, newRows.map(value => new Y.Map([['rowId', value.rowId]])))
+                }, 'local')
             } else {
-                props.cellDataRef.current.splice(index, amount, ...Array.from({length: amount}, () => ({rowId: v4()})))
                 localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             }
             setSubtitleIndex(prevState => prevState >= index ? prevState + amount : prevState)
@@ -320,7 +316,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
                 props.crdt.yDoc().transact(() => {
                     const rows = props.crdt.yMap().get('cells')
                     rows.delete(index, amount)
-                })
+                }, 'local')
             } else localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
             setSubtitleIndex(prevState => prevState > index ? prevState - amount : prevState)
             setTotalLines(getTotalLines())

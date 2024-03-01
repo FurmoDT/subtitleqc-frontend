@@ -205,9 +205,7 @@ const Production = () => {
                         inserts = change.insert?.map(value => ({rowId: value.get('rowId')})) || []
                         deletes = change.delete || deletes || 0
                     })
-                    if (event.transaction.local) {
-                        inserts?.forEach((value, i) => cellDataRef.current[retain + i].rowId = value.rowId)
-                    } else {
+                    if (!event.transaction.local) {
                         let editingValue, row, col
                         if (hotRef.current.getActiveEditor()?.state === 'STATE_EDITING') {
                             editingValue = hotRef.current.getActiveEditor().getValue()

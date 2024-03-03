@@ -1,6 +1,6 @@
 import '../../../css/Handsontable.css'
 import '../../../css/HandsontableCustom.css'
-import {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from "react";
+import {forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {
     durationValidator,
     SCRIPT_COLUMN,
@@ -12,6 +12,7 @@ import {createSegment, tcToSec} from "../../../utils/functions";
 import {v4} from "uuid";
 import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 import * as Y from "yjs";
+import {AuthContext} from "../../../contexts/authContext";
 
 const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, ref) => {
     const containerMain = useRef(null);
@@ -20,8 +21,8 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
     const persistentRowIndexRef = useRef(0);
     const persistentUndoRedoRef = useRef({doneActions: [], undoneActions: []})
     const subtitleIndexRef = useRef(-1)
+    const {userRef} = useContext(AuthContext);
     const userCursorsRef = useRef({})
-    const userAwarenessRef = useRef(null)
 
     const debounceRender = useCallback(() => {
         clearTimeout(debounceTimeoutRef.current)
@@ -217,7 +218,6 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
                 if (source === 'sync') props.hotRef.current.undoRedo.doneActions.pop()
                 else {
                     const index = [0]
-                    const user = userAwarenessRef.current.user;
                     while (index[0] < changes.length) {
                         props.crdt.yDoc().transact(() => {
                             let counter = 0
@@ -226,7 +226,8 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
                                 const change = changes[index[0]]
                                 if (change[2] !== change[3] && (change[2] || change[3])) {
                                     rows.get(change[0])?.set(change[1], {
-                                        value: change[3], metadata: {user: {id: user.id, name: user.name}}
+                                        value: change[3],
+                                        metadata: {user: {id: userRef.current.userId, name: userRef.current.userName}}
                                     });
                                     counter++
                                 }
@@ -347,7 +348,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, debounceRender, getTotalLines, updateUserCursors, updateAwarenessCellMeta, updateSubtitleHighlight, props.taskHashedId, props.readOnly])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, debounceRender, getTotalLines, userRef, updateUserCursors, updateAwarenessCellMeta, updateSubtitleHighlight, props.taskHashedId, props.readOnly])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
@@ -371,7 +372,6 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
     useEffect(() => {
         if (props.crdtAwarenessInitialized) {
             const awareness = props.crdt.awareness()
-            userAwarenessRef.current = awareness.getStates().get(props.crdt.yDoc().clientID)
             awareness.on('change', ({added, removed, updated}) => {
                 const states = awareness.getStates()
                 added.forEach(id => {

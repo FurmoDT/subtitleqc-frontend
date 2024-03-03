@@ -19,6 +19,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
     const providerRef = useRef(null)
     const awarenessRef = useRef(null)
     const offlineUpdate = useRef(null)
+    const [yDocInitialized, setYDocInitialized] = useState(false)
     const roomId = props.taskHashedId
 
     useImperativeHandle(ref, () => ({
@@ -40,7 +41,7 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
         persistence.whenSynced.then(() => {
             axios.get(`v1/tasks/content/${roomId}`).then((r) => {
                 if (r.data) Y.applyUpdate(yDoc, toUint8Array(r.data.task_crdt), 'initialize')
-            }).finally(() => setCrdtInitialized(true))
+            }).finally(() => setYDocInitialized(true))
         })
 
         yDoc.on('update', (update, origin, doc, tr) => {
@@ -52,14 +53,13 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
             }
         })
         return () => {
-            setCrdtInitialized(false)
             yDoc.destroy()
             yDocRef.current = null
         }
-    }, [roomId, sessionId, setCrdtInitialized, wsRef, props.menuToolbarRef])
+    }, [roomId, sessionId, wsRef, props.menuToolbarRef])
 
     useEffect(() => {
-        if (!props.crdtInitialized) return
+        if (!yDocInitialized) return
         if (!iceservers) {
             setCrdtAwarenessInitialized(false)
             providerRef.current?.destroy()
@@ -91,9 +91,10 @@ const CrdtHandler = forwardRef(({setCrdtInitialized, setCrdtAwarenessInitialized
                 offlineUpdate.current = null
             }
         }
+        setCrdtInitialized(true)
         setCrdtAwarenessInitialized(true)
         console.log('provider connected')
-    }, [roomId, userRef, iceservers, props.crdtInitialized, setCrdtAwarenessInitialized, wsRef, props.menuToolbarRef]);
+    }, [roomId, userRef, iceservers, yDocInitialized, setCrdtInitialized, setCrdtAwarenessInitialized, wsRef, props.menuToolbarRef]);
 
     return <></>
 })

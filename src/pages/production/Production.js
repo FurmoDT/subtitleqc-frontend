@@ -38,7 +38,7 @@ const Production = () => {
     const [projectDetail, setProjectDetail] = useState(defaultProjectDetail())
     const playerRef = useRef(null)
     const waveformRef = useRef(null)
-    const cellDataRef = useRef(defaultSubtitle())
+    const cellDataRef = useRef(null)
     const [languages, setLanguages] = useState(defaultLanguage())
     const hotRef = useRef(null)
     const hotSelectionRef = useRef({rowStart: null, columnStart: null, rowEnd: null, columnEnd: null})
@@ -144,6 +144,7 @@ const Production = () => {
             setAuthority('local')
             if (localStorage.language) setLanguages(JSON.parse(localStorage.language))
             if (localStorage.subtitle) cellDataRef.current = JSON.parse(localStorage.subtitle)
+            else cellDataRef.current = defaultSubtitle()
             if (localStorage.projectDetail) setProjectDetail(JSON.parse(localStorage.projectDetail))
             setDataInitialized(true)
             return

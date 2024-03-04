@@ -44,7 +44,7 @@ const MediaWindow = ({setWaveformSource, setSubtitleIndex, ...props}) => {
 
     const setLabel = useCallback((seconds, index, isSeek) => {
         setSeek(seconds)
-        const subtitle = props.cellDataRef.current[index]
+        const subtitle = props.cellDataRef.current?.[index]
         if (!subtitle) return
         const [start, end, text] = [tcToSec(subtitle.start), tcToSec(subtitle.end), subtitle[language] || '']
         if (!(start >= 0 && end >= 0)) {

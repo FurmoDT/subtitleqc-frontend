@@ -68,6 +68,7 @@ const Production = () => {
     const [crdtInitialized, setCrdtInitialized] = useState(false)
     const [crdtAwarenessInitialized, setCrdtAwarenessInitialized] = useState(false)
     const [dataInitialized, setDataInitialized] = useState(false)
+    const [hotInitialized, setHotInitialized] = useState(false)
 
     const afterRenderPromise = useCallback(() => {
         return new Promise(resolve => {
@@ -84,7 +85,7 @@ const Production = () => {
     }, [])
     const resetSegments = useCallback(() => {
         const segments = []
-        cellDataRef.current.forEach((value) => {
+        cellDataRef.current?.forEach((value) => {
             const [start, end] = [tcToSec(value.start), tcToSec(value.end)]
             if (0 <= start && start <= end) segments.push(createSegment(start, end, value.rowId, languages[0] ? value[`${languages[0].code}_${languages[0].counter}`] : '', !tcLock))
         })
@@ -111,14 +112,15 @@ const Production = () => {
     }, []);
 
     useEffect(() => {
-        if (dataInitialized) {
-            if (waveformRef.current) {
-                waveformRef.current.segments.removeAll()
-                waveformRef.current.segments.add(resetSegments())
-            }
-            if (!taskHashedId) localStorage.setItem('language', JSON.stringify(languages))
+        if (dataInitialized && waveformRef.current) {
+            waveformRef.current.segments.removeAll()
+            waveformRef.current.segments.add(resetSegments())
         }
-    }, [taskHashedId, languages, dataInitialized, resetSegments])
+    }, [taskHashedId, dataInitialized, resetSegments])
+
+    useEffect(() => {
+        if (!taskHashedId && dataInitialized) localStorage.setItem('language', JSON.stringify(languages))
+    }, [taskHashedId, languages, dataInitialized]);
 
     useEffect(() => {
         tcLockRef.current = tcLock
@@ -140,6 +142,7 @@ const Production = () => {
     }, [languageFile])
 
     useEffect(() => {
+        if (!hotInitialized) return
         if (!taskHashedId) {
             setAuthority('local')
             if (localStorage.language) setLanguages(JSON.parse(localStorage.language))
@@ -147,23 +150,23 @@ const Production = () => {
             else cellDataRef.current = defaultSubtitle()
             if (localStorage.projectDetail) setProjectDetail(JSON.parse(localStorage.projectDetail))
             setDataInitialized(true)
-            return
+        } else {
+            axios.get(`v1/tasks/access/${taskHashedId}`, {params: {work_hashed_id: workHashedId}}).then(r => {
+                setAuthority(r.data.authority)
+                const task = r.data.task
+                setMediaFile(`task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
+                setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
+                setLanguages(r.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
+                setProjectDetail(prevState => ({
+                    name: `${task.task_name}_${task.task_episode}`,
+                    guideline: r.data.task.project_guideline ? guidelines.get(r.data.task.project_guideline) : prevState.guideline
+                }))
+                setWorkTypeKey(r.data.work_type)
+                setWorkEndedAt(r.data.work_ended_at || null)
+                setTaskEndedAt(task.task_ended_at || null)
+            }).catch(() => navigate('/error'))
         }
-        axios.get(`v1/tasks/access/${taskHashedId}`, {params: {work_hashed_id: workHashedId}}).then(r => {
-            setAuthority(r.data.authority)
-            const task = r.data.task
-            setMediaFile(`task/${task.task_id}/source/original_v${task.task_file_version}.${fileExtension(task.task_file_info.name)}`)
-            setMediaInfo({framerate: task.task_file_info.framerate, duration: task.task_file_info.duration})
-            setLanguages(r.data.languages.map(value => ({code: value, name: languageCodes[value], counter: 1})))
-            setProjectDetail(prevState => ({
-                name: `${task.task_name}_${task.task_episode}`,
-                guideline: r.data.task.project_guideline ? guidelines.get(r.data.task.project_guideline) : prevState.guideline
-            }))
-            setWorkTypeKey(r.data.work_type)
-            setWorkEndedAt(r.data.work_ended_at || null)
-            setTaskEndedAt(task.task_ended_at || null)
-        }).catch(() => navigate('/error'))
-    }, [taskHashedId, workHashedId, navigate])
+    }, [hotInitialized, taskHashedId, workHashedId, navigate])
 
     useEffect(() => {
         if (taskEndedAt === undefined || workEndedAt === undefined) {
@@ -307,17 +310,17 @@ const Production = () => {
                                       findButtonRef={findButtonRef} replaceButtonRef={replaceButtonRef}
                                       afterRenderPromise={afterRenderPromise} cellDataRef={cellDataRef}
                                       languages={languages} setLanguages={setLanguages}/>
-                        {((taskHashedId && dataInitialized) || !taskHashedId) &&
-                            <LanguageWindow ref={languageWindowRef} size={languageWindowSize} hotRef={hotRef}
-                                            hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
-                                            tcLock={tcLock} tcLockRef={tcLockRef}
-                                            subtitleIndex={subtitleIndex} setSubtitleIndex={setSubtitleIndex}
-                                            cellDataRef={cellDataRef} languages={languages}
-                                            readOnly={readOnly} crdt={crdtHandlerRef.current}
-                                            crdtAwarenessInitialized={crdtAwarenessInitialized}
-                                            guideline={projectDetail.guideline} resetSegments={resetSegments}
-                                            selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
-                                            taskHashedId={taskHashedId} workHashedId={workHashedId}/>}
+                        <LanguageWindow ref={languageWindowRef} size={languageWindowSize} hotRef={hotRef}
+                                        hotFontSize={hotFontSize} playerRef={playerRef} waveformRef={waveformRef}
+                                        tcLock={tcLock} tcLockRef={tcLockRef}
+                                        subtitleIndex={subtitleIndex} setSubtitleIndex={setSubtitleIndex}
+                                        cellDataRef={cellDataRef} languages={languages}
+                                        readOnly={readOnly} crdt={crdtHandlerRef.current}
+                                        setHotInitialized={setHotInitialized} dataInitialized={dataInitialized}
+                                        crdtAwarenessInitialized={crdtAwarenessInitialized}
+                                        guideline={projectDetail.guideline} resetSegments={resetSegments}
+                                        selectedSegment={selectedSegment} hotSelectionRef={hotSelectionRef}
+                                        taskHashedId={taskHashedId} workHashedId={workHashedId}/>
                     </Allotment.Pane>
                 </Allotment>
                 <Allotment.Pane ref={timelineWindowRef} minSize={30} snap>

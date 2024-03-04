@@ -14,7 +14,7 @@ import {MDBBtn, MDBIcon} from "mdb-react-ui-kit";
 import * as Y from "yjs";
 import {AuthContext} from "../../../contexts/authContext";
 
-const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, ref) => {
+const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, setHotInitialized, ...props}, ref) => {
     const containerMain = useRef(null);
     const [totalLines, setTotalLines] = useState(0)
     const debounceTimeoutRef = useRef(null)
@@ -131,7 +131,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         }
 
         props.hotRef.current = new window.Handsontable(containerMain.current, {
-            data: props.cellDataRef.current,
+            data: props.dataInitialized ? props.cellDataRef.current : [],
             columns: [{
                 data: 'start',
                 type: 'text',
@@ -345,10 +345,11 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         props.hotRef.current.addHook('afterRender', () => updateSubtitleHighlight(false))
         props.hotRef.current.addHook('afterSetCellMeta', debounceRender)
         props.hotRef.current.addHook('afterRemoveCellMeta', debounceRender)
+        setHotInitialized(true)
         return () => {
             persistentRowIndexRef.current = autoRowSizePlugin.getFirstVisibleRow()
         }
-    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, debounceRender, getTotalLines, userRef, updateUserCursors, updateAwarenessCellMeta, updateSubtitleHighlight, props.taskHashedId, props.readOnly])
+    }, [props.size, props.hotFontSize, props.cellDataRef, props.languages, props.crdt, props.hotRef, props.hotSelectionRef, props.tcLock, props.playerRef, props.waveformRef, props.guideline, props.selectedSegment, resetSegments, setSubtitleIndex, setHotInitialized, props.dataInitialized, debounceRender, getTotalLines, userRef, updateUserCursors, updateAwarenessCellMeta, updateSubtitleHighlight, props.taskHashedId, props.readOnly])
 
     useEffect(() => {
         props.hotRef.current.scrollViewportTo(persistentRowIndexRef.current)
@@ -356,7 +357,7 @@ const LanguageWindow = forwardRef(({resetSegments, setSubtitleIndex, ...props}, 
         props.hotRef.current.undoRedo.undoneActions = persistentUndoRedoRef.current.undoneActions
         props.hotRef.current.updateSettings({manualColumnResize: [99, 99, 75, 25, ...Array.from({length: props.languages.length}, () => Math.floor((props.size.width - 365) / props.languages.length))]})
         Object.entries(userCursorsRef.current).forEach(([, aw]) => aw.cursor && updateAwarenessCellMeta(aw.cursor.row, aw.cursor.colProp, aw.user, false))
-    }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize, updateAwarenessCellMeta]);
+    }, [props.hotRef, props.size, props.languages, props.tcLock, props.hotFontSize, props.dataInitialized, updateAwarenessCellMeta]);
 
     useEffect(() => {
         props.hotRef.current.updateSettings({copyPaste: {rowsLimit: totalLines}})

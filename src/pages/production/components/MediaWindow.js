@@ -57,7 +57,13 @@ const MediaWindow = ({setWaveformSource, setSubtitleIndex, ...props}) => {
                 setSubtitleIndex(subtitleIndexRef.current)
                 if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(getCenterSubtitleIndex())
             }
-            if (isSeek) props.hotRef.current.scrollViewportTo(document.getElementById('scrollView-checkbox').checked ? getCenterSubtitleIndex() : subtitleIndexRef.current)
+            if (isSeek) {
+                if (document.getElementById('scrollView-checkbox').checked) props.hotRef.current.scrollViewportTo(getCenterSubtitleIndex())
+                else {
+                    const firstRowIndex = props.hotRef.current.getPlugin('autoRowSize').getFirstVisibleRow()
+                    if (subtitleIndexRef.current < firstRowIndex || subtitleIndexRef.current > firstRowIndex + props.hotRef.current.countVisibleRows()) props.hotRef.current.scrollViewportTo(subtitleIndexRef.current)
+                }
+            }
         } else {
             setSubtitleIndex(-1)
             if (seconds > end) subtitleIndexRef.current += 1

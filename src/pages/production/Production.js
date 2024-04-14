@@ -296,7 +296,7 @@ const Production = () => {
                         </Allotment>
                     </Allotment.Pane>
                     <Allotment.Pane ref={workWindowRef} snap>
-                        <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef}
+                        <TransToolbar setHotFontSize={setHotFontSize} playerRef={playerRef} taskHashedId={taskHashedId}
                                       hotRef={hotRef} hotSelectionRef={hotSelectionRef} readOnly={readOnly}
                                       tcLockRef={tcLockRef} selectedSegment={selectedSegment}
                                       tcOffsetButtonRef={tcOffsetButtonRef} tcIoButtonRef={tcIoButtonRef}

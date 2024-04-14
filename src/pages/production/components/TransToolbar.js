@@ -14,6 +14,7 @@ import {MdStart} from "react-icons/md";
 import {SCRIPT_COLUMN} from "../../../utils/hotRenderer";
 
 const TransToolbar = (props) => {
+    const [isTranscribing, setIsTranscribing] = useState(false)
     const [isTranslating, setIsTranslating] = useState(false)
 
     const adjustedHotSelection = useCallback(() => {
@@ -44,13 +45,11 @@ const TransToolbar = (props) => {
         <LanguagesModal languages={props.languages} setLanguages={props.setLanguages}/>
         <div className={'transToolbar-vertical-divider'}/>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Speech To Text'>
-            <MDBBtn className={'transToolbar-button'} disabled={true} color={'link'} size={'sm'} onClick={() => {
-                // axios.get(`https://s3.subtitleqc.ai/task/demo/stt.json`, {headers: {Authorization: null}}).then((response) => {
-                //     setTimeout(() => {
-                //         props.cellDataRef.current = response.data.cells
-                //         props.setLanguages(response.data.languages)
-                //     }, 13000)
-                // }).catch(() => null)
+            <MDBBtn className={'transToolbar-button'} disabled={!props.taskHashedId || isTranscribing} color={'link'}
+                    size={'sm'} onClick={() => {
+                if (window.confirm('예상 소요시간: 5분 이상')) {
+                    axios.post('v1/tasks/stt', {hashed_id: props.taskHashedId}).then(() => setIsTranscribing(true))
+                }
             }}><GrDocumentSound color={'black'} size={20}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='번역'>
             <MDBBtn className={'transToolbar-button'} disabled={isTranslating} color={'link'} size={'sm'}

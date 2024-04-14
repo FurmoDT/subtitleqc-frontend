@@ -48,7 +48,8 @@ const TransToolbar = (props) => {
             <MDBBtn className={'transToolbar-button'} disabled={!props.taskHashedId || isTranscribing} color={'link'}
                     size={'sm'} onClick={() => {
                 if (window.confirm('예상 소요시간: 5분 이상')) {
-                    axios.post('v1/tasks/stt', {hashed_id: props.taskHashedId}).then(() => setIsTranscribing(true))
+                    setIsTranscribing(true)
+                    axios.post('v1/tasks/stt', {hashed_id: props.taskHashedId}).then()
                 }
             }}><GrDocumentSound color={'black'} size={20}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='번역'>

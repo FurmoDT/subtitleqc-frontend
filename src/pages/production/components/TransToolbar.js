@@ -47,7 +47,7 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Speech To Text'>
             <MDBBtn className={'transToolbar-button'} disabled={!props.taskHashedId || isTranscribing} color={'link'}
                     size={'sm'} onClick={() => {
-                if (window.confirm('예상 소요시간: 5분 이상')) {
+                if (window.confirm('예상 소요시간: 30분 영상 기준 5분')) {
                     setIsTranscribing(true)
                     axios.post('v1/tasks/stt', {hashed_id: props.taskHashedId}).then()
                 }

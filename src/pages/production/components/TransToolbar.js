@@ -12,6 +12,7 @@ import {RiDeleteRow} from "react-icons/ri";
 import {FaHourglass, FaHourglassEnd, FaHourglassStart} from "react-icons/fa";
 import {MdStart} from "react-icons/md";
 import {SCRIPT_COLUMN} from "../../../utils/hotRenderer";
+import {parseSrt} from "../../../utils/fileParser";
 
 const TransToolbar = (props) => {
     const [isTranscribing, setIsTranscribing] = useState(false)
@@ -47,10 +48,42 @@ const TransToolbar = (props) => {
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='Speech To Text'>
             <MDBBtn className={'transToolbar-button'} disabled={!props.taskHashedId || isTranscribing} color={'link'}
                     size={'sm'} onClick={() => {
-                if (window.confirm('예상 소요시간: 30분 영상 기준 5분')) {
-                    setIsTranscribing(true)
-                    axios.post('v1/tasks/stt', {hashed_id: props.taskHashedId}).then()
-                }
+                axios.get(`v1/tasks/${props.taskHashedId}`).then((response) => {
+                    axios.get(`https://s3.subtitleqc.ai/task/${response.data.task_id}/source/original_v${response.data.task_file_version}.srt`, {
+                        headers: {Authorization: null}, withCredentials: true
+                    }).then((fileResponse) => {
+                        const subtitle = []
+                        parseSrt(fileResponse.data).subtitle.forEach((item, index) => {
+                            for (const key in item) {
+                                if (key === 'start' || key === 'end') subtitle.push([index, key, item[key]])
+                                else subtitle.push([index, 'koKR_1', item[key]])
+                            }
+                        })
+                        props.hotRef.current.setDataAtRowProp(subtitle)
+                    }).catch(() => {
+                        if (window.confirm('예상 소요시간: 30분 영상 기준 5분')) {
+                            setIsTranscribing(true)
+                            axios.post('v1/tasks/stt', {hashed_id: props.taskHashedId}).then(() => {
+                                const fetch = () => {
+                                    axios.get(`https://s3.subtitleqc.ai/task/${response.data.task_id}/source/original_v${response.data.task_file_version}.srt`, {
+                                        headers: {Authorization: null}, withCredentials: true
+                                    }).then((fileResponse) => {
+                                        const subtitle = []
+                                        parseSrt(fileResponse.data).subtitle.forEach((item, index) => {
+                                            for (const key in item) {
+                                                if (key === 'start' || key === 'end') subtitle.push([index, key, item[key]])
+                                                else subtitle.push([index, 'koKR_1', item[key]])
+                                            }
+                                        })
+                                        props.hotRef.current.setDataAtRowProp(subtitle)
+                                        clearInterval(intervalId)
+                                    })
+                                }
+                                const intervalId = setInterval(fetch, 20000);
+                            })
+                        }
+                    })
+                })
             }}><GrDocumentSound color={'black'} size={20}/></MDBBtn></MDBTooltip>
         <MDBTooltip tag='span' wrapperClass='d-inline-block' title='번역'>
             <MDBBtn className={'transToolbar-button'} disabled={isTranslating} color={'link'} size={'sm'}

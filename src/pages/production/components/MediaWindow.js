@@ -72,7 +72,7 @@ const MediaWindow = ({setWaveformSource, setSubtitleIndex, ...props}) => {
     }, [props.cellDataRef, props.hotRef, language, getCenterSubtitleIndex, setSubtitleIndex])
 
     const onSeek = useCallback((seconds) => {
-        const index = bisect(props.cellDataRef.current.map((value) => tcToSec(value.end)), seconds)
+        const index = bisect((props.cellDataRef.current || []).map((value) => tcToSec(value.end)), seconds)
         subtitleIndexRef.current = index
         setLabel(seconds, index, true)
         if (document.getElementById('playheadCenter-checkbox').checked) props.waveformRef.current?.views.getView('zoomview').updateWaveform(props.waveformRef.current.views.getView('zoomview')._playheadLayer._playheadPixel - props.waveformRef.current.views.getView('zoomview').getWidth() / 2)

@@ -62,7 +62,8 @@ export const s3UploadWork = async (taskHashedId, workHashedId, fileName, file) =
     try {
         const taskId = (await axios.get(`v1/tasks/decode/${taskHashedId}`)).data
         const workId = (await axios.get(`v1/works/decode/${workHashedId}`)).data
-        const uploader = await s3Uploader(`task/${taskId}/works/${workId}/${fileName}.fspx`, file)
+        const sts = await getSts()
+        const uploader = await s3Uploader(`task/${taskId}/works/${workId}/${fileName}.fspx`, file, sts)
         uploader.promise().then(() => console.log('upload completed'))
     } catch (e) {
         console.log(e)

@@ -175,7 +175,9 @@ const Production = () => {
             const getTaskId = axios.get(`v1/tasks/decode/${taskHashedId}`).then(r => taskId = r.data)
             const getWorkId = axios.get(`v1/works/decode/${workHashedId}`).then(r => workId = r.data)
             Promise.all([getTaskId, getWorkId]).then(() => {
-                axios.get(`https://s3.subtitleqc.ai/task/${taskId}/works/${workId}/${workEndedAt}.fspx`, {headers: {Authorization: null}}).then(r => {
+                axios.get(`https://s3.subtitleqc.ai/task/${taskId}/works/${workId}/${workEndedAt}.fspx`, {
+                    headers: {Authorization: null}, withCredentials: true
+                }).then(r => {
                     cellDataRef.current = r.data.subtitle
                     setLanguages(r.data.language)
                     setProjectDetail(r.data.projectDetail)
@@ -249,6 +251,7 @@ const Production = () => {
         <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                   taskHashedId={taskHashedId} setLanguageFile={setLanguageFile} languages={languages}/>
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
+                         hotRef={hotRef}
                          cellDataRef={cellDataRef} waveformRef={waveformRef} resetSegments={resetSegments}
                          languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
         <MenuToolbar ref={menuToolbarRef} cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages}

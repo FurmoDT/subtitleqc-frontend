@@ -17,7 +17,6 @@ import {
 } from 'mdb-react-ui-kit';
 import {useCallback, useEffect, useRef, useState} from "react";
 import {languageCodes} from "../../../../utils/config";
-import {v4} from "uuid";
 
 const FileUploadModal = ({resetSegments, setLanguages, ...props}) => {
     const [selectionActive, setSelectionActive] = useState(false)
@@ -64,20 +63,12 @@ const FileUploadModal = ({resetSegments, setLanguages, ...props}) => {
         }
     }, [props.languageFile])
 
-    const setFile = useCallback((update) => {
+    const setFile = useCallback(() => {
         const subtitle = [];
-        const l1 = props.cellDataRef.current.length
-        const l2 = newSubtitle.length
-        const maxLength = Math.max(l1, l2)
-        for (let i = 0; i < maxLength; i++) {
-            const {start: startA, end: endA, ...subtitleA} = props.cellDataRef.current[i] || {}
-            const {start: startB, end: endB, ...subtitleB} = newSubtitle[i] || {}
-            const start = update ? startB : startA
-            const end = update ? endB : endA
-            subtitle.push(Object.assign({}, {rowId: v4(), ...(start ? {start} : {}), ...(end ? {end} : {})}, subtitleA, subtitleB))
-        }
-        props.cellDataRef.current = subtitle
-        localStorage.setItem('subtitle', JSON.stringify(props.cellDataRef.current))
+        newSubtitle.forEach((item, index) => {
+            for (const key in item) subtitle.push([index, key, item[key]])
+        });
+        props.hotRef.current.setDataAtRowProp(subtitle)
         setLanguages(prevState => prevState.concat(newLanguages))
         if (props.waveformRef.current) {
             props.waveformRef.current.segments.removeAll()
@@ -86,7 +77,7 @@ const FileUploadModal = ({resetSegments, setLanguages, ...props}) => {
     }, [newLanguages, resetSegments, props.cellDataRef, props.waveformRef, setLanguages, newSubtitle])
 
     useEffect(() => {
-        if (newSubtitle) setFile(!updateRadioRef.current.checked)
+        if (newSubtitle) setFile()
     }, [newSubtitle, setFile])
 
     return <>
@@ -112,8 +103,7 @@ const FileUploadModal = ({resetSegments, setLanguages, ...props}) => {
                         <MDBBtn onClick={() => {
                             if (newLanguages.length && (remainRadioRef.current.checked || updateRadioRef.current.checked)) {
                                 setNewSubtitle(props.languageFile.newLanguages === undefined ? props.languageFile.subtitle.map(v => ({
-                                    start: v.start,
-                                    end: v.end,
+                                    ...(updateRadioRef.current.checked ? {start: v.start, end: v.end} : {}),
                                     [`${newLanguages[0].code}_${newLanguages[0].counter}`]: v.text
                                 })) : props.languageFile.subtitle)
                                 toggleShow()

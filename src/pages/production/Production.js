@@ -251,8 +251,7 @@ const Production = () => {
         <Dropzone dropzoneRef={dropzoneRef} setMediaFile={setMediaFile} setMediaInfo={setMediaInfo}
                   taskHashedId={taskHashedId} setLanguageFile={setLanguageFile} languages={languages}/>
         <FileUploadModal fileUploadModalShow={fileUploadModalShow} setFileUploadModalShow={setFileUploadModalShow}
-                         hotRef={hotRef}
-                         cellDataRef={cellDataRef} waveformRef={waveformRef} resetSegments={resetSegments}
+                         hotRef={hotRef} waveformRef={waveformRef} resetSegments={resetSegments}
                          languageFile={languageFile} languages={languages} setLanguages={setLanguages}/>
         <MenuToolbar ref={menuToolbarRef} cellDataRef={cellDataRef} languages={languages} setLanguages={setLanguages}
                      hotRef={hotRef} hotSelectionRef={hotSelectionRef} workTypeKey={workTypeKey}

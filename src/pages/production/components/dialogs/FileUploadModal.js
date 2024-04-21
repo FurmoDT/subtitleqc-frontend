@@ -74,7 +74,7 @@ const FileUploadModal = ({resetSegments, setLanguages, ...props}) => {
             props.waveformRef.current.segments.removeAll()
             props.waveformRef.current.segments.add(resetSegments())
         }
-    }, [newLanguages, resetSegments, props.cellDataRef, props.waveformRef, setLanguages, newSubtitle])
+    }, [newLanguages, resetSegments, props.hotRef, props.waveformRef, setLanguages, newSubtitle])
 
     useEffect(() => {
         if (newSubtitle) setFile()
